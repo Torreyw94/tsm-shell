@@ -1,0 +1,11 @@
+app = "tsm-shell"
+primary_region = "lax"
+
+[build]
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
+[processes]
+  app = "sleep infinity"
