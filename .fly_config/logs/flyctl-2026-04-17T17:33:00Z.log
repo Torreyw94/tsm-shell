@@ -1,0 +1,15 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly_config/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell/.fly-build/tsm-honorhealth-dee"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly_config"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG client initialized.
+DEBUG Config has metrics token
+
+DEBUG Starting task manager
+DEBUG Task manager done

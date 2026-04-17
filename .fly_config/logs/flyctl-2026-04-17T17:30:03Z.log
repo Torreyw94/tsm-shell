@@ -1,0 +1,706 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly_config/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell/.fly-build/rrd-command"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly_config"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG started querying for statuspage incidents
+DEBUG client initialized.
+DEBUG app config loaded from /workspaces/tsm-shell/.fly-build/rrd-command/fly.toml
+DEBUG started querying for host issues
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($appName: String!) { apphostissues:app(name: $appName) { hostIssues { nodes { internalId message createdAt updatedAt } } } }",
+  "variables": {
+    "appName": "rrd-command"
+  }
+}
+
+
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (412.62ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG app config loaded from /workspaces/tsm-shell/.fly-build/rrd-command/fly.toml
+DEBUG Starting task manager
+DEBUG monitoring tokens at /workspaces/tsm-shell/.fly_config/config.yml
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command (37.56ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command: {"id":"mkp298nylp069orx","name":"rrd-command","internal_numeric_id":17087157,"network":"default","status":"deployed","machine_count":2,"volume_count":0,"organization":{"name":"Latorrey Whitehead","slug":"latorrey-whitehead","internal_numeric_id":1592053},"cname_target":"lez62d3.rrd-command.fly.dev","app_role":""}
+
+DEBUG <-- 200 https://api.fly.io/graphql (467.3ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"apphostissues":{"hostIssues":{"nodes":[]}}}}
+DEBUG --> GET https://api.fly.io/api/v1/organizations/latorrey-whitehead
+
+DEBUG <-- 200 https://api.fly.io/api/v1/organizations/latorrey-whitehead (217.86ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/organizations/latorrey-whitehead: {"organization":{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","internal_numeric_id":1592053,"slug":"personal","raw_slug":"latorrey-whitehead","paid_plan":true,"personal":true,"billing_status":"CURRENT","provisions_beta_extensions":false,"name":"Latorrey Whitehead","billable":true,"remote_builder_image":"docker-hub-mirror.fly.io/flyio/rchab:sha-8d37d90"}}
+DEBUG trying remote docker daemon
+DEBUG --> POST https://api.fly.io/api/v1/builds
+
+DEBUG {
+  "app_name": "rrd-command",
+  "builder_type": "depot.dev",
+  "strategies_available": [
+    "depot.dev"
+  ]
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds (529.48ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds: {"id":20793941,"status":"started"}
+DEBUG Trying 'depot.dev' strategy
+
+DEBUG --> POST https://api.fly.io/api/v1/builds/depot_builder
+
+DEBUG {
+  "app_name": "rrd-command",
+  "builder_scope": "organization",
+  "region": ""
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds/depot_builder (200.41ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds/depot_builder: {"build_id":"zcdz6mhhv1","build_token":"c8e02966-5781-481b-b136-086620116011"}
+DEBUG result image:registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N error:<nil>
+
+DEBUG --> POST https://api.fly.io/api/v1/builds/finish
+
+DEBUG {
+  "build_id": 20793941,
+  "app_name": "rrd-command",
+  "machine_id": "",
+  "status": "completed",
+  "strategies_attempted": [
+    {
+      "error": "",
+      "note": "",
+      "result": "success",
+      "strategy": "depot.dev"
+    }
+  ],
+  "builder_meta": {
+    "builder_type": "depot.dev",
+    "buildkit_enabled": false,
+    "docker_version": "",
+    "platform": "",
+    "remote_app_name": "",
+    "remote_machine_id": "0803192f011738"
+  },
+  "final_image": {
+    "id": "sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478",
+    "size_bytes": 22971720,
+    "tag": "registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N"
+  },
+  "timings": {
+    "build_and_push_ms": 2034,
+    "build_ms": 2886,
+    "builder_init_ms": 555,
+    "context_build_ms": -1,
+    "image_build_ms": 2886,
+    "push_ms": -1
+  },
+  "logs": ""
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds/finish (575.72ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds/finish: {"id":20793941,"status":"completed","wallclock_time_ms":3483}
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines (140.39ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines: [{"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPDWSXPG1VQM78XKSADQB9FW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_gop4y73kdr782n89","fly_release_version":"1"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines: ":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPDWS8661BKEMV70FRGRFRXS","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPDWS8661BKEMV70FRGRFRXS","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T14:16:36Z","events":[{"id":"01KPDWSZENM4VV36SYHDPH4E8M","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435396053},{"id":"01KPDWSXQSKQY09HHXVY3A7A7B","type":"launch","status":"created","source":"user","timestamp":1776435394297},{"id":"01KPDWSXPG1VQM78XKSB77B0KV","typ
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines: e":"launch","status":"pending","source":"flyd","timestamp":1776435394256}],"host_status":"ok"},{"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPDWSJXQX3A0NVKH87S84BD5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_gop4y73kdr782n89","fly_release_version":"1"},"services":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPDWS8661BKEMV70FRGRFRXS","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPDWS8661BKEMV70FRGRFRXS","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T14:16:25Z","events":[{"id":"01KPDWSMYQQREFTMRTTFEADSNA","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435385303},{"id":"01KPDWSJZCVRMSCQEWQG4HQ67E","type":"launch","status":"created","source":"user","timestamp":1776435383276},{"id":"01KPDWSJXQX3A0NVKH88F78E82","type":"launch","status":"pending","source":"flyd","timestamp":1776435383223}],"host_status":"ok"}]
+
+DEBUG --> POST https://api.fly.io/api/v1/releases
+
+DEBUG {
+  "app_name": "rrd-command",
+  "build_id": 20793941,
+  "definition": {
+    "app": "rrd-command",
+    "primary_region": "iad",
+    "http_service": {
+      "internal_port": 80,
+      "force_https": true,
+      "auto_stop_machines": true,
+      "auto_start_machines": true,
+      "min_machines_running": 0
+    }
+  },
+  "image": "registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N",
+  "strategy": "ROLLING"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases (555.56ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases: {"release":{"id":"rel_8ld7y41wmp8eynwo","version":3,"stable":false,"in_progress":true,"status":"pending","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:30:08.959Z","image_ref":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N"}}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query ($appName: String!) { app(name: $appName) { egressIpAddresses { nodes { id ip version region updatedAt } } } }",
+  "variables": {
+    "appName": "rrd-command"
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (186.56ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"app":{"egressIpAddresses":{"nodes":[]}}}}
+DEBUG --> PATCH https://api.fly.io/api/v1/releases/rel_8ld7y41wmp8eynwo
+
+DEBUG {
+  "metadata": null,
+  "status": "running"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases/rel_8ld7y41wmp8eynwo (398.05ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases/rel_8ld7y41wmp8eynwo: {"release":{"id":"rel_8ld7y41wmp8eynwo","version":3,"stable":false,"in_progress":true,"status":"running","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:30:08.959Z","image_ref":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N"}}
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines (85.61ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines: [{"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPDWSXPG1VQM78XKSADQB9FW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_gop4y73kdr782n89","fly_release_version":"1"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines: ":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPDWS8661BKEMV70FRGRFRXS","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPDWS8661BKEMV70FRGRFRXS","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T14:16:36Z","events":[{"id":"01KPDWSZENM4VV36SYHDPH4E8M","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435396053},{"id":"01KPDWSXQSKQY09HHXVY3A7A7B","type":"launch","status":"created","source":"user","timestamp":1776435394297},{"id":"01KPDWSXPG1VQM78XKSB77B0KV","typ
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines: e":"launch","status":"pending","source":"flyd","timestamp":1776435394256}],"host_status":"ok"},{"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPDWSJXQX3A0NVKH87S84BD5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_gop4y73kdr782n89","fly_release_version":"1"},"services":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPDWS8661BKEMV70FRGRFRXS","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPDWS8661BKEMV70FRGRFRXS","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T14:16:25Z","events":[{"id":"01KPDWSMYQQREFTMRTTFEADSNA","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435385303},{"id":"01KPDWSJZCVRMSCQEWQG4HQ67E","type":"launch","status":"created","source":"user","timestamp":1776435383276},{"id":"01KPDWSJXQX3A0NVKH88F78E82","type":"launch","status":"pending","source":"flyd","timestamp":1776435383223}],"host_status":"ok"}]
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (81.14ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447022,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWSXPG1VQM78XKSADQB9FW"}}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (78.41ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447022,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWSJXQX3A0NVKH87S84BD5"}}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG {
+  "config": {
+    "env": {
+      "FLY_PROCESS_GROUP": "app",
+      "PRIMARY_REGION": "iad"
+    },
+    "init": {},
+    "guest": {
+      "cpu_kind": "shared",
+      "cpus": 1,
+      "memory_mb": 256
+    },
+    "metadata": {
+      "fly_builder_id": "0803192f011738",
+      "fly_flyctl_version": "0.4.35",
+      "fly_platform_version": "v2",
+      "fly_process_group": "app",
+      "fly_release_id": "rel_8ld7y41wmp8eynwo",
+      "fly_release_version": "3"
+    },
+    "services": [
+      {
+        "protocol": "tcp",
+        "internal_port": 80,
+        "autostop": true,
+        "autostart": true,
+        "min_machines_running": 0,
+        "ports": [
+          {
+            "port": 80,
+            "handlers": [
+              "http"
+            ],
+            "force_https": true
+          },
+          {
+            "port": 443,
+            "handlers": [
+              "http",
+              "tls"
+            ]
+          }
+        ],
+        "force_instance_key": null
+      }
+    ],
+    "image": "registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N"
+  },
+  "region": "iad",
+  "skip_secrets": false
+}
+
+DEBUG {0x322a16d95cb0}
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (1.06s)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"created","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:10Z","events":[{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type":"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/wait?state=suspended&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/wait?state=started&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/wait?state=stopped&timeout=60
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (80.73ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447026,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a166b1780  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (78.14ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447026,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWSJXQX3A0NVKH87S84BD5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a166b1900  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/wait?state=started&timeout=60 (3.84s)
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps (113.95ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps: [{"pid":1,"stime":0,"rtime":2,"command":"/fly/init","directory":"/","cpu":0,"rss":6500352,"listen_sockets":[]},{"pid":2,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":3,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":4,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":5,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":6,"stime":0,"r
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps: time":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":7,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":8,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":9,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":10,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":11,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":12,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":13,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":14,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":15,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":16,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_socket
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps: s":[]},{"pid":17,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":18,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":19,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":20,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":21,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":22,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":24,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":25,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":26,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":27,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":28,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":29,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":30,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":31,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":32,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":33,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":34,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":35,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":36,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":37,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":38,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":39,"stime":0,"rtim
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps: e":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":52,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":68,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":72,"stime":0,"rtime":2,"co
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/ps: mmand":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":80,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":137,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":140,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":143,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":146,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":149,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":152,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":153,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":156,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":161,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":164,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":167,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":168,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":171,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":174,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":177,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":180,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":183,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":191,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":199,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":223,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":236,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":238,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":249,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":250,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":257,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":258,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":626,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":627,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":628,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":629,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":630,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":634,"stime":0,"rtime":2,"command":"nginx: master process nginx -g daemon off;","directory":"/","cpu":0,"rss":5885952,"listen_sockets":[{"proto":"tcp","address":"0.0.0.0:80"},{"proto":"tcp","address":"[::]:80"}]},{"pid":635,"stime":0,"rtime":2,"command":"/.fly/hallpass","directory":"/","cpu":0,"rss":20008960,"listen_sockets":[{"proto":"tcp","address":"[fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2]:22"}]},{"pid":664,"stime":0,"rtime":2,"command":"nginx: worker process","directory":"/","cpu":0,"rss":2772992,"listen_sockets":[{"proto":"tcp","address":"0.0.0.0:80"},{"proto":"tcp","address":"[::]:80"}]}]
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (82.83ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (84.37ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (84.64ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (85.88ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447030,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a171823c0  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (80.49ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447031,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWSJXQX3A0NVKH87S84BD5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a17182540  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (75.7ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (77.54ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (90.83ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (82.59ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447035,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a17142200  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (87.31ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447035,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWSJXQX3A0NVKH87S84BD5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a171e6400  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (78.19ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58 (118.34ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: {"id":"148e063dbe5d58","name":"rough-smoke-6424","state":"started","region":"iad","instance_id":"01KPE7WDZSYNBA29SGMFRG34HW","private_ip":"fdaa:69:f2a1:a7b:7d4:6fa6:5d96:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:34Z","updated_at":"2026-04-17T17:30:13Z","events":[{"id":"01KPE7WGTQ63SRED351FMGPPP9","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447013719},{"id":"01KPE7WE2Q76JA90KCSF0MVN2D","type":"launch","status":"created","source":"user","timestamp":1776447010903},{"id":"01KPE7WDZSYNBA29SGMFSQAPTD","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58: :"launch","status":"pending","source":"flyd","timestamp":1776447010809}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG {
+  "config": {
+    "env": {
+      "FLY_PROCESS_GROUP": "app",
+      "PRIMARY_REGION": "iad"
+    },
+    "init": {},
+    "guest": {
+      "cpu_kind": "shared",
+      "cpus": 1,
+      "memory_mb": 256
+    },
+    "metadata": {
+      "fly_builder_id": "0803192f011738",
+      "fly_flyctl_version": "0.4.35",
+      "fly_platform_version": "v2",
+      "fly_process_group": "app",
+      "fly_release_id": "rel_8ld7y41wmp8eynwo",
+      "fly_release_version": "3"
+    },
+    "services": [
+      {
+        "protocol": "tcp",
+        "internal_port": 80,
+        "autostop": true,
+        "autostart": true,
+        "min_machines_running": 0,
+        "ports": [
+          {
+            "port": 80,
+            "handlers": [
+              "http"
+            ],
+            "force_https": true
+          },
+          {
+            "port": 443,
+            "handlers": [
+              "http",
+              "tls"
+            ]
+          }
+        ],
+        "force_instance_key": null
+      }
+    ],
+    "image": "registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N"
+  },
+  "region": "iad",
+  "skip_secrets": false
+}
+
+DEBUG {0x322a171537d0}
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (283.36ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"created","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:24Z","events":[{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":"launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/wait?state=stopped&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/wait?state=started&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/wait?state=suspended&timeout=60
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (72.93ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447039,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a17166340  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (86.93ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447039,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWSJXQX3A0NVKH87S84BD5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a171e6480  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/wait?state=started&timeout=60 (3.87s)
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (82.37ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (83.44ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (79.09ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (75.75ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447043,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a16e58b80  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (83.41ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447043,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a17166900  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (77.02ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (135.89ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (88.5ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447047,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a17166ec0  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (82.5ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447047,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a17167080  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (90.51ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108 (75.82ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: {"id":"48e4647b05e108","name":"damp-brook-9805","state":"started","region":"iad","instance_id":"01KPE7WVB2JBHGZNG8QVDVHVS5","private_ip":"fdaa:69:f2a1:a7b:50b:cd84:daa7:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_8ld7y41wmp8eynwo","fly_release_version":"3"},"services":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: [{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"rrd-command","tag":"deployment-01KPE7W76N1YRER7WG2N7SC86N","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:23Z","updated_at":"2026-04-17T17:30:27Z","events":[{"id":"01KPE7WYD4J3AYRSW12KY2RTGH","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447027620},{"id":"01KPE7WVCYDFZS4TV117P616RX","type":"launch","status":"created","source":"user","timestamp":1776447024542},{"id":"01KPE7WVB2JBHGZNG8QYY100GC","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108: "launch","status":"pending","source":"flyd","timestamp":1776447024482}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (83.33ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447051,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a1655b400  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (75.39ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447051,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a1655b800  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (79.19ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447055,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a17167380  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (79.08ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447055,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a17167580  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (79.46ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447059,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a16699e80  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (76.96ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447059,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a165c2340  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (85.4ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447063,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a166e0a00  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (87.35ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447063,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a166e0c00  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (129.3ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447067,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a166e0e40  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (76.82ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447067,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a1687c4c0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13 (78.06ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease?ttl=13: {"status":"success","data":{"nonce":"1e2de5094768","expires_at":1776447071,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WDZSYNBA29SGMFRG34HW"}}
+
+DEBUG got lease on machine 148e063dbe5d58: &{success 0x322a166e10c0  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13 (81.4ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease?ttl=13: {"status":"success","data":{"nonce":"aaa6b9a2ae84","expires_at":1776447072,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7WVB2JBHGZNG8QVDVHVS5"}}
+
+DEBUG got lease on machine 48e4647b05e108: &{success 0x322a166e1240  }
+
+DEBUG --> DELETE https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease
+
+DEBUG --> DELETE https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/48e4647b05e108/lease (76.14ms)
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/machines/148e063dbe5d58/lease (77.33ms)
+
+DEBUG --> PATCH https://api.fly.io/api/v1/releases/rel_8ld7y41wmp8eynwo
+
+DEBUG {
+  "metadata": {
+    "post_deployment_info": {
+      "flyctl_version": "0.4.35",
+      "error": ""
+    }
+  },
+  "status": "complete"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases/rel_8ld7y41wmp8eynwo (369.81ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases/rel_8ld7y41wmp8eynwo: {"release":{"id":"rel_8ld7y41wmp8eynwo","version":3,"stable":false,"in_progress":false,"status":"complete","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:30:08.959Z","image_ref":"registry.fly.io/rrd-command:deployment-01KPE7W76N1YRER7WG2N7SC86N"}}
+DEBUG --> GET https://api.machines.dev/v1/apps/rrd-command/ip_assignments
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/rrd-command/ip_assignments (165.57ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/rrd-command/ip_assignments: {"ips":[{"created_at":"2026-04-17T17:30:03.480Z","ip":"2a09:8280:1::104:bab5:1","region":"global","service_name":null,"shared":false},{"created_at":"2026-04-17T14:16:16.240Z","ip":"2a09:8280:1::104:bab5:0","region":"global","service_name":"","shared":false},{"created_at":null,"ip":"66.241.124.192","region":null,"service_name":null,"shared":true}]}
+DEBUG Task manager done
+DEBUG done monitoring tokens
+DEBUG querying for host issues resulted to []
+DEBUG querying for statuspage incidents resulted to &{[]}

@@ -1,0 +1,10 @@
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell"
+DEBUG determined config directory: "/workspaces/tsm-shell/fake_root/.fly"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG client initialized.

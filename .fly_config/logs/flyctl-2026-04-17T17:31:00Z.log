@@ -1,0 +1,61 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly_config/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell/.fly-build/strategist"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly_config"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG client initialized.
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (183.15ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG Starting task manager
+DEBUG monitoring tokens at /workspaces/tsm-shell/.fly_config/config.yml
+DEBUG <-- 200 https://api.fly.io/graphql (113.7ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "mutation($input: CreateAppInput!) { createApp(input: $input) { app { id name organization { slug } config { definition } regions { name code } } } }",
+  "variables": {
+    "input": {
+      "organizationId": "896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl",
+      "name": "strategist",
+      "machines": true
+    }
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (441.54ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"createApp":null},"errors":[{"message":"Validation failed: Name has already been taken","locations":[{"line":1,"column":37}],"path":["createApp"],"extensions":{"code":"UNPROCESSABLE"}}]}
+DEBUG Task manager done
+DEBUG done monitoring tokens

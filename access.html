@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TSM Matter · Client Portal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#030508;--panel:#080d14;--border:rgba(0,243,255,0.12);--teal:#00f3ff;--gold:#c9a84c;--text:#8ab8c8;--bright:#eef8ff;--dim:#3a5a6a;--red:#ff4060;--green:#00e878}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.logo{font-size:11px;letter-spacing:4px;color:var(--teal);margin-bottom:8px;text-align:center}
+.title{font-size:28px;font-weight:700;color:var(--bright);letter-spacing:2px;text-align:center;margin-bottom:4px}
+.sub{font-size:10px;color:var(--dim);letter-spacing:3px;text-align:center;margin-bottom:40px}
+/* LOGIN */
+#loginBox{width:100%;max-width:480px}
+.field-label{font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:6px}
+.token-input{width:100%;background:#050c14;border:1px solid var(--border);color:var(--bright);font-family:'Courier New',monospace;font-size:13px;padding:12px 16px;outline:none;margin-bottom:16px}
+.token-input:focus{border-color:var(--teal)}
+.access-btn{width:100%;background:var(--teal);color:#000;border:none;padding:14px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer}
+.access-btn:hover{opacity:0.9}
+.demo-section{margin-top:24px;border-top:1px solid var(--border);padding-top:20px}
+.demo-label{font-size:9px;letter-spacing:2px;color:var(--dim);margin-bottom:12px;text-align:center}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.demo-btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;text-align:left;transition:border .2s}
+.demo-btn:hover{border-color:var(--teal);color:var(--bright)}
+.demo-name{color:var(--bright);font-weight:700;display:block;margin-bottom:2px}
+.demo-sector{color:var(--dim);font-size:9px}
+.error-msg{color:var(--red);font-size:10px;letter-spacing:1px;margin-top:8px;text-align:center;display:none}
+/* PORTAL */
+#portalBox{display:none;width:100%;max-width:1100px}
+.portal-hdr{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:24px}
+.client-badge{display:flex;align-items:center;gap:12px}
+.client-avatar{width:40px;height:40px;background:rgba(0,243,255,0.1);border:1px solid var(--teal);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--teal)}
+.client-name{font-size:18px;font-weight:700;color:var(--bright);letter-spacing:1px}
+.client-meta{font-size:9px;color:var(--dim);letter-spacing:1px;margin-top:2px}
+.status-pill{font-size:9px;padding:4px 12px;border:1px solid var(--green);color:var(--green);letter-spacing:2px}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--dim);padding:6px 14px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;letter-spacing:1px}
+.logout-btn:hover{border-color:var(--red);color:var(--red)}
+.portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.portal-grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--border);padding:20px}
+.panel-title{font-size:9px;letter-spacing:3px;color:var(--teal);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.panel-title::before{content:'◆';font-size:8px}
+/* Intake queue */
+.intake-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#030810;border:1px solid var(--border);margin-bottom:6px}
+.intake-name{font-size:11px;color:var(--bright);font-weight:700}
+.intake-meta{font-size:9px;color:var(--dim);margin-top:2px}
+.analyze-btn{font-size:9px;padding:4px 10px;background:var(--teal);color:#000;font-weight:700;cursor:pointer;border:none;font-family:'Courier New',monospace;white-space:nowrap}
+.empty-state{font-size:10px;color:var(--dim);text-align:center;padding:24px;letter-spacing:1px}
+.upload-link{display:block;text-align:center;margin-top:12px;font-size:10px;color:var(--teal);text-decoration:none;letter-spacing:1px;border:1px solid var(--border);padding:10px}
+.upload-link:hover{border-color:var(--teal)}
+/* Chat */
+.chat-window{height:320px;overflow-y:auto;background:#030810;border:1px solid var(--border);padding:12px;margin-bottom:10px}
+.msg{margin-bottom:12px;display:flex;gap:8px}
+.msg-av{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.msg-av.ai{background:rgba(0,243,255,0.1);color:var(--teal);border:1px solid var(--teal)}
+.msg-av.user{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid var(--gold)}
+.msg-body{font-size:11px;line-height:1.6;color:var(--text);flex:1;white-space:pre-wrap}
+.msg-body.ai{color:var(--bright)}
+.chat-input-row{display:flex;gap:8px}
+.chat-inp{flex:1;background:#030810;border:1px solid var(--border);color:var(--bright);font-family:'Courier New',monospace;font-size:11px;padding:10px 12px;outline:none}
+.chat-inp:focus{border-color:var(--teal)}
+.send-btn{background:var(--teal);color:#000;border:none;padding:10px 16px;font-family:'Courier New',monospace;font-size:11px;font-weight:700;cursor:pointer}
+/* Apps */
+.apps-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.app-link{display:block;padding:10px 12px;background:#030810;border:1px solid var(--border);text-decoration:none;transition:border .2s}
+.app-link:hover{border-color:var(--teal)}
+.app-link-name{font-size:11px;color:var(--bright);font-weight:700}
+.app-link-desc{font-size:9px;color:var(--dim);margin-top:2px}
+.spinner{display:inline-block;width:10px;height:10px;border:2px solid var(--dim);border-top-color:var(--teal);border-radius:50%;animation:spin .6s linear infinite;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="logo">TSM · MATTER</div>
+<div class="title">CLIENT PORTAL</div>
+<div class="sub">SOVEREIGN INTELLIGENCE · SECURE ACCESS</div>
+
+<div id="loginBox">
+  <div class="field-label">ACCESS TOKEN</div>
+  <input class="token-input" id="tokenInput" type="text" placeholder="tkn_xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+  <button class="access-btn" onclick="doLogin()">▶ ACCESS PORTAL</button>
+  <div class="error-msg" id="errMsg">⛔ INVALID TOKEN — CONTACT TSM MATTER</div>
+  <div class="demo-section">
+    <div class="demo-label">DEMO ACCESS — CLICK TO LOAD</div>
+    <div class="demo-grid">
+      <button class="demo-btn" onclick="loadDemo('tkn_demo-healthcare_4a950f91ae4a7550')">
+        <span class="demo-name">Healthcare</span>
+        <span class="demo-sector">Revenue Cycle · Compliance</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_demo-construction_a31444c1b6c6218a')">
+        <span class="demo-name">Construction</span>
+        <span class="demo-sector">COI · Lien Waiver · OSHA</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_demo-legal_97def2e6476e3c64')">
+        <span class="demo-name">Legal</span>
+        <span class="demo-sector">Contract Analysis · Compliance</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_demo-mortgage_5bf9f91ed131c19d')">
+        <span class="demo-name">Mortgage</span>
+        <span class="demo-sector">Pre-Underwriting · TRID</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_demo-tax_1cd3a5bd6532c2ea')">
+        <span class="demo-name">Tax</span>
+        <span class="demo-sector">Nexus · Cost Segregation</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_demo-realty_0442ae8ae89c115a')">
+        <span class="demo-name">Real Estate</span>
+        <span class="demo-sector">Transaction · Title · BPO</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_insurance_b0886b24b0f3a1d5')">
+        <span class="demo-name">Insurance</span>
+        <span class="demo-sector">P&C · Medicare · ACA</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_hotelops_e51541de0e6b4765')">
+        <span class="demo-name">Hospitality</span>
+        <span class="demo-sector">HotelOps · Concierge · BPO</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_financial_2404de124a60b2e1')">
+        <span class="demo-name">Financial</span>
+        <span class="demo-sector">Command · Tax · Zero Trust</span>
+      </button>
+      <button class="demo-btn" onclick="loadDemo('tkn_mesa-hq_f60be80b2eab8e82')">
+        <span class="demo-name">Enterprise</span>
+        <span class="demo-sector">MESA HQ · Strategist · RRD</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="portalBox">
+  <div class="portal-hdr">
+    <div class="client-badge">
+      <div class="client-avatar" id="clientAvatar">?</div>
+      <div>
+        <div class="client-name" id="clientName">Loading...</div>
+        <div class="client-meta" id="clientMeta">Authenticated · TSM Intelligence Platform</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="status-pill">● SECURE</span>
+      <button class="logout-btn" onclick="doLogout()">LOGOUT</button>
+    </div>
+  </div>
+  <div class="portal-grid">
+    <!-- Intake Queue -->
+    <div class="panel">
+      <div class="panel-title">DOCUMENT INTAKE QUEUE</div>
+      <div id="intakeQueue"><div class="empty-state">Loading queue...</div></div>
+      <a class="upload-link" id="uploadLink" href="#" target="_blank">⬆ SUBMIT DOCUMENTS TO SECURE VAULT</a>
+    </div>
+    <!-- AI Chat -->
+    <div class="panel">
+      <div class="panel-title">AI INTELLIGENCE · LIVE</div>
+      <div class="chat-window" id="chatWindow">
+        <div class="msg"><div class="msg-av ai">AI</div><div class="msg-body ai">TSM Intelligence online. Ask me anything about your documents, compliance posture, or operational risks.</div></div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-inp" id="chatInp" placeholder="Ask about your documents, risks, actions..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="send-btn" onclick="sendChat()">▶</button>
+      </div>
+    </div>
+    <!-- Command Centers -->
+    <div class="panel" style="grid-column:span 2">
+      <div class="panel-title">YOUR COMMAND CENTERS</div>
+      <div class="apps-grid" id="appsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const INTAKE_API = 'https://intake.tsmatter.com';
+const AI_API = 'https://intake.tsmatter.com';
+
+// Client config map
+const CLIENT_CONFIG = {
+  'banner':       {name:'Banner Health',     avatar:'BH', sector:'Healthcare',    chat_url:'https://banner-health.tsmatter.com/api/chat',    apps:[{name:'Banner Command',url:'https://banner-health.tsmatter.com'},{name:'HC Billing',url:'https://hc-billing.tsmatter.com'},{name:'HC Compliance',url:'https://hc-compliance.tsmatter.com'},{name:'HC Strategist',url:'https://hc-strategist.tsmatter.com'}]},
+  'honorhealth':  {name:'HonorHealth',       avatar:'HH', sector:'Healthcare',    chat_url:'https://honorhealth.tsmatter.com/api/chat',       apps:[{name:'HonorHealth Command',url:'https://honorhealth.tsmatter.com'},{name:'HC Grants',url:'https://hc-grants.tsmatter.com'},{name:'HC Medical',url:'https://hc-medical.tsmatter.com'}]},
+  'dignity':      {name:'Dignity Health AZ', avatar:'DH', sector:'Healthcare',    chat_url:'https://dignity-health.tsmatter.com/api/chat',    apps:[{name:'Dignity Command',url:'https://dignity-health.tsmatter.com'},{name:'HC Compliance',url:'https://hc-compliance.tsmatter.com'}]},
+  'valleywise':   {name:'ValleyWise Health', avatar:'VW', sector:'Healthcare',    chat_url:'https://valleywise.tsmatter.com/api/chat',        apps:[{name:'ValleyWise Command',url:'https://valleywise.tsmatter.com'},{name:'HC Grants',url:'https://hc-grants.tsmatter.com'}]},
+  'abrazo':       {name:'Abrazo Health',     avatar:'AH', sector:'Healthcare',    chat_url:'https://abrazo.tsmatter.com/api/chat',            apps:[{name:'Abrazo Command',url:'https://abrazo.tsmatter.com'},{name:'HC Billing',url:'https://hc-billing.tsmatter.com'}]},
+  'rrd':          {name:'RRD Construction',  avatar:'RC', sector:'Construction',  chat_url:'https://rrd-command.tsmatter.com/api/chat',       apps:[{name:'RRD Command',url:'https://rrd-command.tsmatter.com'},{name:'Construction BPO',url:'https://bpo-construction.tsmatter.com'}]},
+  'ameris':       {name:'Ameris Construction',avatar:'AC',sector:'Construction',  chat_url:'https://ameris-construction.tsmatter.com/api/chat',apps:[{name:'Ameris Command',url:'https://ameris-construction.tsmatter.com'},{name:'Construction BPO',url:'https://bpo-construction.tsmatter.com'}]},
+  'montana':      {name:'Montana Del Sur',   avatar:'MS', sector:'Real Estate',   chat_url:'https://montana-del-sur.tsmatter.com/api/chat',   apps:[{name:'Montana Command',url:'https://montana-del-sur.tsmatter.com'},{name:'REO Pro',url:'https://reo-pro.tsmatter.com'}]},
+  'bpo-mortgage': {name:'LoanOps BPO',       avatar:'LO', sector:'Mortgage',      chat_url:'https://bpo-mortgage.tsmatter.com/api/chat',      apps:[{name:'Mortgage BPO',url:'https://bpo-mortgage.tsmatter.com'},{name:'Mortgage Command',url:'https://mortgage-command.tsmatter.com'}]},
+  'bpo-legal':    {name:'LegalOps BPO',      avatar:'LG', sector:'Legal',         chat_url:'https://bpo-legal.tsmatter.com/api/chat',         apps:[{name:'Legal BPO',url:'https://bpo-legal.tsmatter.com'},{name:'Legal Intelligence',url:'https://legal.tsmatter.com'}]},
+  'bpo-tax':      {name:'TaxOps BPO',        avatar:'TX', sector:'Tax',           chat_url:'https://bpo-tax.tsmatter.com/api/chat',           apps:[{name:'Tax BPO',url:'https://bpo-tax.tsmatter.com'},{name:'Tax Intelligence',url:'https://tax.tsmatter.com'}]},
+  'bpo-realty':   {name:'BrokerOps BPO',     avatar:'BR', sector:'Realty',        chat_url:'https://bpo-realty.tsmatter.com/api/chat',        apps:[{name:'Realty BPO',url:'https://bpo-realty.tsmatter.com'},{name:'REO Pro',url:'https://reo-pro.tsmatter.com'}]},
+  'bpo-construction':{name:'ConstructOps BPO',avatar:'CO',sector:'Construction',  chat_url:'https://bpo-construction.tsmatter.com/api/chat',  apps:[{name:'Construction BPO',url:'https://bpo-construction.tsmatter.com'},{name:'Construction Command',url:'https://construction-command.tsmatter.com'}]},
+  'hotelops':     {name:'HotelOps Command',  avatar:'HO', sector:'Hospitality',   chat_url:'https://hotelops.tsmatter.com/api/chat',          apps:[{name:'HotelOps Command',url:'https://hotelops.tsmatter.com'},{name:'Concierge Command',url:'https://concierge-command.tsmatter.com'}]},
+  'insurance':    {name:'Insurance Command', avatar:'IC', sector:'Insurance',     chat_url:'https://insurance-command.tsmatter.com/api/chat', apps:[{name:'Insurance Command',url:'https://insurance-command.tsmatter.com'},{name:'P&C Enterprise',url:'https://pc-command.tsmatter.com'}]},
+  'financial':    {name:'Financial Command', avatar:'FC', sector:'Financial',     chat_url:'https://financial-command.tsmatter.com/api/chat', apps:[{name:'Financial Command',url:'https://financial-command.tsmatter.com'},{name:'Tax Intelligence',url:'https://tax.tsmatter.com'},{name:'Zero Trust',url:'https://zero-trust.tsmatter.com'}]},
+  'mesa-hq':      {name:'MESA HQ',           avatar:'MH', sector:'Enterprise',    chat_url:'https://auditops.tsmatter.com/api/chat',          apps:[{name:'AuditOps',url:'https://auditops.tsmatter.com'},{name:'Strategist',url:'https://strategist.tsmatter.com'},{name:'RRD Command',url:'https://rrd-command.tsmatter.com'}]},
+  'reo-pro':      {name:'RealtyOps AI',      avatar:'RE', sector:'Real Estate',   chat_url:'https://reo-pro.tsmatter.com/api/chat',           apps:[{name:'REO Pro',url:'https://reo-pro.tsmatter.com'},{name:'Realty BPO',url:'https://bpo-realty.tsmatter.com'}]},
+  'demo-construction':{name:'Construction Demo',avatar:'CD',sector:'Construction',chat_url:'https://bpo-construction.tsmatter.com/api/chat', apps:[{name:'Construction BPO',url:'https://bpo-construction.tsmatter.com'},{name:'RRD Command',url:'https://rrd-command.tsmatter.com'}]},
+  'demo-legal':   {name:'Legal Demo',        avatar:'LD', sector:'Legal',         chat_url:'https://bpo-legal.tsmatter.com/api/chat',         apps:[{name:'Legal BPO',url:'https://bpo-legal.tsmatter.com'},{name:'Legal Intelligence',url:'https://legal.tsmatter.com'}]},
+  'demo-mortgage':{name:'Mortgage Demo',     avatar:'MD', sector:'Mortgage',      chat_url:'https://bpo-mortgage.tsmatter.com/api/chat',      apps:[{name:'Mortgage BPO',url:'https://bpo-mortgage.tsmatter.com'}]},
+  'demo-healthcare':{name:'Healthcare Demo', avatar:'HD', sector:'Healthcare',    chat_url:'https://banner-health.tsmatter.com/api/chat',     apps:[{name:'Banner Health',url:'https://banner-health.tsmatter.com'},{name:'HC Billing',url:'https://hc-billing.tsmatter.com'}]},
+  'demo-tax':     {name:'Tax Demo',          avatar:'TD', sector:'Tax',           chat_url:'https://bpo-tax.tsmatter.com/api/chat',           apps:[{name:'Tax BPO',url:'https://bpo-tax.tsmatter.com'}]},
+
+  'az-insurance':    {name:'AZ Insurance Command', avatar:'AZ', sector:'Insurance',    chat_url:'https://az-insurance.tsmatter.com/api/chat',      apps:[{name:'AZ Insurance',url:'https://az-insurance.tsmatter.com'},{name:'AZ Ins Portal',url:'https://az-ins.tsmatter.com'},{name:'Insurance Command',url:'https://insurance-command.tsmatter.com'}]},
+  'pc-command':      {name:'P&C Enterprise',        avatar:'PC', sector:'Insurance',    chat_url:'https://pc-command.tsmatter.com/api/chat',         apps:[{name:'P&C Enterprise',url:'https://pc-command.tsmatter.com'},{name:'Insurance Command',url:'https://insurance-command.tsmatter.com'}]},
+  'schools':         {name:'Schools Command',       avatar:'SC', sector:'Education',    chat_url:'https://schools-command.tsmatter.com/api/chat',    apps:[{name:'Schools Command',url:'https://schools-command.tsmatter.com'},{name:'Schools',url:'https://schools.tsmatter.com'}]},
+  'desert-financial':{name:'Desert Financial CU',   avatar:'DF', sector:'Financial',    chat_url:'https://desert-financial.tsmatter.com/api/chat',   apps:[{name:'Desert Financial',url:'https://desert-financial.tsmatter.com'},{name:'Financial Command',url:'https://financial-command.tsmatter.com'}]},
+  'concierge':       {name:'Concierge Command',     avatar:'CC', sector:'Hospitality',  chat_url:'https://concierge-command.tsmatter.com/api/chat',  apps:[{name:'Concierge Command',url:'https://concierge-command.tsmatter.com'},{name:'HotelOps',url:'https://hotelops.tsmatter.com'}]},
+  'zero-trust':      {name:'Zero Trust Security',   avatar:'ZT', sector:'Security',     chat_url:'https://zero-trust.tsmatter.com/api/chat',         apps:[{name:'Zero Trust',url:'https://zero-trust.tsmatter.com'},{name:'Compliance',url:'https://compliance.tsmatter.com'}]},
+  'hc-billing':      {name:'HC Billing Command',    avatar:'HB', sector:'Healthcare',   chat_url:'https://hc-billing.tsmatter.com/api/chat',         apps:[{name:'HC Billing',url:'https://hc-billing.tsmatter.com'},{name:'HC Compliance',url:'https://hc-compliance.tsmatter.com'}]},
+  'hc-medical':      {name:'HC Medical Command',    avatar:'HM', sector:'Healthcare',   chat_url:'https://hc-medical.tsmatter.com/api/chat',         apps:[{name:'HC Medical',url:'https://hc-medical.tsmatter.com'},{name:'HC Insurance',url:'https://hc-insurance.tsmatter.com'}]},
+  'hc-compliance':   {name:'HC Compliance Center',  avatar:'HC', sector:'Healthcare',   chat_url:'https://hc-compliance.tsmatter.com/api/chat',      apps:[{name:'HC Compliance',url:'https://hc-compliance.tsmatter.com'},{name:'HC Legal',url:'https://hc-legal.tsmatter.com'}]},
+  'hc-grants':       {name:'HC Grants Command',     avatar:'HG', sector:'Healthcare',   chat_url:'https://hc-grants.tsmatter.com/api/chat',          apps:[{name:'HC Grants',url:'https://hc-grants.tsmatter.com'},{name:'HC Financial',url:'https://hc-financial.tsmatter.com'}]},
+  'hc-legal':        {name:'HC Legal Command',      avatar:'HL', sector:'Healthcare',   chat_url:'https://hc-legal.tsmatter.com/api/chat',           apps:[{name:'HC Legal',url:'https://hc-legal.tsmatter.com'},{name:'HC Compliance',url:'https://hc-compliance.tsmatter.com'}]},
+  'hc-pharmacy':     {name:'HC Pharmacy Command',   avatar:'HP', sector:'Healthcare',   chat_url:'https://hc-pharmacy.tsmatter.com/api/chat',        apps:[{name:'HC Pharmacy',url:'https://hc-pharmacy.tsmatter.com'},{name:'HC Medical',url:'https://hc-medical.tsmatter.com'}]},
+  'hc-insurance':    {name:'HC Insurance Command',  avatar:'HI', sector:'Healthcare',   chat_url:'https://hc-insurance.tsmatter.com/api/chat',       apps:[{name:'HC Insurance',url:'https://hc-insurance.tsmatter.com'},{name:'Insurance Command',url:'https://insurance-command.tsmatter.com'}]},
+  'hc-strategist':   {name:'HC Strategist',         avatar:'HS', sector:'Healthcare',   chat_url:'https://hc-strategist.tsmatter.com/api/chat',      apps:[{name:'HC Strategist',url:'https://hc-strategist.tsmatter.com'},{name:'HC Medical',url:'https://hc-medical.tsmatter.com'}]},
+  'hc-vendors':      {name:'HC Vendors Command',    avatar:'HV', sector:'Healthcare',   chat_url:'https://hc-vendors.tsmatter.com/api/chat',         apps:[{name:'HC Vendors',url:'https://hc-vendors.tsmatter.com'},{name:'HC Compliance',url:'https://hc-compliance.tsmatter.com'}]},
+  'hc-taxprep':      {name:'HC Tax Prep',           avatar:'HT', sector:'Healthcare',   chat_url:'https://hc-taxprep.tsmatter.com/api/chat',         apps:[{name:'HC Tax Prep',url:'https://hc-taxprep.tsmatter.com'},{name:'Tax Intelligence',url:'https://tax.tsmatter.com'}]},
+  'hc-financial':    {name:'HC Financial Command',  avatar:'HF', sector:'Healthcare',   chat_url:'https://hc-financial.tsmatter.com/api/chat',       apps:[{name:'HC Financial',url:'https://hc-financial.tsmatter.com'},{name:'Financial Command',url:'https://financial-command.tsmatter.com'}]},
+  'demo-realty':  {name:'Realty Demo',       avatar:'RD', sector:'Realty',        chat_url:'https://bpo-realty.tsmatter.com/api/chat',        apps:[{name:'Realty BPO',url:'https://bpo-realty.tsmatter.com'}]},
+};
+
+let currentToken = '';
+let currentConfig = null;
+let chatHistory = [];
+
+function extractClientId(token) {
+  const m = token.match(/^tkn_([^_]+)/);
+  return m ? m[1] : null;
+}
+
+function loadDemo(token) {
+  document.getElementById('tokenInput').value = token;
+  doLogin();
+}
+
+async function doLogin() {
+  const token = document.getElementById('tokenInput').value.trim();
+  if (!token) return;
+  const err = document.getElementById('errMsg');
+  err.style.display = 'none';
+
+  // Validate token against intake API
+  try {
+    const r = await fetch(`${INTAKE_API}/api/intake/session`, {
+      headers: {'X-Intake-Token': token}
+    });
+    if (!r.ok) throw new Error('Invalid');
+    const session = await r.json();
+
+    currentToken = token;
+    const clientId = extractClientId(token);
+    currentConfig = CLIENT_CONFIG[clientId] || {
+      name: session.client_name || 'Client',
+      avatar: (session.client_name||'C').substring(0,2).toUpperCase(),
+      sector: 'General',
+      chat_url: 'https://auditops.tsmatter.com/api/chat',
+      apps: []
+    };
+
+    // Show portal
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('portalBox').style.display = 'block';
+    document.getElementById('clientName').textContent = currentConfig.name;
+    document.getElementById('clientAvatar').textContent = currentConfig.avatar;
+    document.getElementById('clientMeta').textContent = `${currentConfig.sector} · ${session.expires_at ? 'Expires ' + new Date(session.expires_at).toLocaleDateString() : 'Active'}`;
+    document.getElementById('uploadLink').href = `https://intake.tsmatter.com/upload?tkn=${token}`;
+
+    // Load apps
+    const grid = document.getElementById('appsGrid');
+    grid.innerHTML = currentConfig.apps.map(a =>
+      `<a class="app-link" href="${a.url}" target="_blank">
+        <div class="app-link-name">${a.name} ↗</div>
+        <div class="app-link-desc">${currentConfig.sector} · Command Center</div>
+      </a>`
+    ).join('');
+
+    // Load intake queue
+    loadIntakeQueue();
+    
+    // Greet
+    addMsg('ai', `${currentConfig.name} intelligence online. I have full context on your operations, compliance posture, and document queue. What would you like to analyze?`);
+
+  } catch(e) {
+    err.style.display = 'block';
+  }
+}
+
+async function loadIntakeQueue() {
+  const queue = document.getElementById('intakeQueue');
+  try {
+    const r = await fetch(`${INTAKE_API}/api/intake/records`, {
+      headers: {'X-Intake-Token': currentToken}
+    });
+    const d = await r.json();
+    const records = (d.records||[]).slice(0,5);
+    if (!records.length) {
+      queue.innerHTML = '<div class="empty-state">No documents in queue.<br>Submit files using the link below.</div>';
+      return;
+    }
+    queue.innerHTML = records.map(p => `
+      <div class="intake-item">
+        <div>
+          <div class="intake-name">${p.original_name}</div>
+          <div class="intake-meta">${p.doc_type} · ${p.project_ref||'no ref'} · ${new Date(p.uploaded_at).toLocaleString()}</div>
+        </div>
+        <button class="analyze-btn" onclick="analyzeDoc('${p.id}','${p.original_name}','${p.doc_type}')">ANALYZE</button>
+      </div>`).join('');
+  } catch(e) {
+    queue.innerHTML = '<div class="empty-state">Queue unavailable.</div>';
+  }
+}
+
+async function analyzeDoc(id, name, docType) {
+  try {
+    const r = await fetch(`${INTAKE_API}/api/intake/content/${id}`);
+    const d = await r.json();
+    const d = await r.json();
+    const txt = (d.text||'').slice(0,3000);
+    const prompt = `Analyze this document for compliance exposure, risk, and required actions.\n\nFile: ${name}\nType: ${docType}${txt ? '\n\nContent:\n'+txt : ''}`;
+    document.getElementById('chatInp').value = prompt;
+    sendChat();
+  } catch(e) {}
+}
+
+async function sendChat() {
+  const inp = document.getElementById('chatInp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  addMsg('user', msg);
+  chatHistory.push({role:'user', content:msg});
+
+  const thinkingId = 'thinking-' + Date.now();
+  addMsg('ai', '<span class="spinner"></span>Analyzing...', thinkingId);
+
+  try {
+    const r = await fetch(currentConfig.chat_url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),
+        messages: chatHistory.slice(-8),
+        message: msg
+      })
+    });
+    const d = await r.json();
+    const reply = d.answer || d.response || d.content ||
+      (d.choices&&d.choices[0]?.message?.content) || 'No response.';
+    
+    // Parse JSON if structured
+    let display = reply;
+    try {
+      const parsed = JSON.parse(reply.replace(/```json|```/g,'').trim());
+      if (parsed.executive_summary) {
+        display = `📋 ${parsed.primary_issue||''}\n\n${parsed.executive_summary}\n\n⚡ BNCA: ${parsed.bnca||''}\n\n🎯 Actions:\n${(parsed.priority_actions||[]).map((a,i)=>`${i+1}. ${a}`).join('\n')}`;
+      }
+    } catch(e) {}
+
+    document.getElementById(thinkingId)?.remove();
+    chatHistory.push({role:'assistant', content:reply});
+    addMsg('ai', display);
+  } catch(e) {
+    document.getElementById(thinkingId)?.remove();
+    addMsg('ai', '⛔ Connection error — ' + e.message);
+  }
+}
+
+function addMsg(role, text, id) {
+  const win = document.getElementById('chatWindow');
+  const div = document.createElement('div');
+  div.className = 'msg';
+  if(id) div.id = id;
+  div.innerHTML = `<div class="msg-av ${role}">${role==='ai'?'AI':'YOU'}</div><div class="msg-body ${role}">${text}</div>`;
+  win.appendChild(div);
+  win.scrollTop = win.scrollHeight;
+}
+
+function doLogout() {
+  currentToken = '';
+  currentConfig = null;
+  chatHistory = [];
+  document.getElementById('portalBox').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+  document.getElementById('tokenInput').value = '';
+  document.getElementById('chatWindow').innerHTML = '<div class="msg"><div class="msg-av ai">AI</div><div class="msg-body ai">TSM Intelligence online. Ask me anything about your documents, compliance posture, or operational risks.</div></div>';
+}
+
+// Auto-login from URL param
+const urlToken = new URLSearchParams(window.location.search).get('tkn');
+if(urlToken) { document.getElementById('tokenInput').value = urlToken; doLogin(); }
+</script>
+
+<script id="tsm-api-fix">/* TSM API routing fixed */</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"a403a49538b84c30b205b872f0e09c1c","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

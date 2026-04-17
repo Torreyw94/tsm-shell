@@ -1,0 +1,713 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly_config/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell/.fly-build/strategist"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly_config"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG started querying for statuspage incidents
+DEBUG client initialized.
+DEBUG app config loaded from /workspaces/tsm-shell/.fly-build/strategist/fly.toml
+DEBUG started querying for host issues
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG {
+  "query": "query($appName: String!) { apphostissues:app(name: $appName) { hostIssues { nodes { internalId message createdAt updatedAt } } } }",
+  "variables": {
+    "appName": "strategist"
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (218.28ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG app config loaded from /workspaces/tsm-shell/.fly-build/strategist/fly.toml
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist
+
+DEBUG Starting task manager
+DEBUG monitoring tokens at /workspaces/tsm-shell/.fly_config/config.yml
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist (44.21ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist: {"id":"jpon17o6mjdyqdgr","name":"strategist","internal_numeric_id":17087203,"network":"default","status":"deployed","machine_count":2,"volume_count":0,"organization":{"name":"Latorrey Whitehead","slug":"latorrey-whitehead","internal_numeric_id":1592053},"cname_target":"qje6x0d.strategist.fly.dev","app_role":""}
+
+DEBUG <-- 200 https://api.fly.io/graphql (272.58ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"apphostissues":{"hostIssues":{"nodes":[]}}}}
+DEBUG --> GET https://api.fly.io/api/v1/organizations/latorrey-whitehead
+
+DEBUG <-- 200 https://api.fly.io/api/v1/organizations/latorrey-whitehead (164.58ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/organizations/latorrey-whitehead: {"organization":{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","internal_numeric_id":1592053,"slug":"personal","raw_slug":"latorrey-whitehead","paid_plan":true,"personal":true,"billing_status":"CURRENT","provisions_beta_extensions":false,"name":"Latorrey Whitehead","billable":true,"remote_builder_image":"docker-hub-mirror.fly.io/flyio/rchab:sha-8d37d90"}}
+DEBUG trying remote docker daemon
+DEBUG --> POST https://api.fly.io/api/v1/builds
+
+DEBUG {
+  "app_name": "strategist",
+  "builder_type": "depot.dev",
+  "strategies_available": [
+    "depot.dev"
+  ]
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds (234.38ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds: {"id":20794011,"status":"started"}
+DEBUG Trying 'depot.dev' strategy
+
+DEBUG --> POST https://api.fly.io/api/v1/builds/depot_builder
+
+DEBUG {
+  "app_name": "strategist",
+  "builder_scope": "organization",
+  "region": ""
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds/depot_builder (251.77ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds/depot_builder: {"build_id":"cj3pp7pcx0","build_token":"53e9cf47-b8e0-4f94-84bf-f84618f716ea"}
+DEBUG result image:registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND error:<nil>
+
+DEBUG --> POST https://api.fly.io/api/v1/builds/finish
+
+DEBUG {
+  "build_id": 20794011,
+  "app_name": "strategist",
+  "machine_id": "",
+  "status": "completed",
+  "strategies_attempted": [
+    {
+      "error": "",
+      "note": "",
+      "result": "success",
+      "strategy": "depot.dev"
+    }
+  ],
+  "builder_meta": {
+    "builder_type": "depot.dev",
+    "buildkit_enabled": false,
+    "docker_version": "",
+    "platform": "",
+    "remote_app_name": "",
+    "remote_machine_id": "0803192f011738"
+  },
+  "final_image": {
+    "id": "sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478",
+    "size_bytes": 22971720,
+    "tag": "registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND"
+  },
+  "timings": {
+    "build_and_push_ms": 2696,
+    "build_ms": 3890,
+    "builder_init_ms": 882,
+    "context_build_ms": -1,
+    "image_build_ms": 3890,
+    "push_ms": -1
+  },
+  "logs": ""
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds/finish (153.49ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds/finish: {"id":20794011,"status":"completed","wallclock_time_ms":4083}
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines (146.07ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines: [{"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPDWV08S2Q7PSHJJ3JG0X8E7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_59glz5erq614z6k3","fly_release_version":"1"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines: ":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPDWTACX8H6Q00645ZHRQXT9","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPDWTACX8H6Q00645ZHRQXT9","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T14:17:17Z","events":[{"id":"01KPDWV7Z97NMAYMBD3EVX73C0","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435437545},{"id":"01KPDWV0ADPV1645CENZZKP4YZ","type":"launch","status":"created","source":"user","timestamp":1776435429709},{"id":"01KPDWV08S2Q7PSHJJ3KF1PHH8","type"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines: :"launch","status":"pending","source":"flyd","timestamp":1776435429657}],"host_status":"ok"},{"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPDWTNDE5JDDFB2K59AHM4JK","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_59glz5erq614z6k3","fly_release_version":"1"},"services":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPDWTACX8H6Q00645ZHRQXT9","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPDWTACX8H6Q00645ZHRQXT9","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T14:17:04Z","events":[{"id":"01KPDWTTY6QWB5TY16RYXSG0RT","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435424198},{"id":"01KPDWTNEZJNFR9SRWYREVKGJJ","type":"launch","status":"created","source":"user","timestamp":1776435418591},{"id":"01KPDWTNDE5JDDFB2K5C1EYV5R","type":"launch","status":"pending","source":"flyd","timestamp":1776435418542}],"host_status":"ok"}]
+
+DEBUG --> POST https://api.fly.io/api/v1/releases
+
+DEBUG {
+  "app_name": "strategist",
+  "build_id": 20794011,
+  "definition": {
+    "app": "strategist",
+    "primary_region": "iad",
+    "http_service": {
+      "internal_port": 80,
+      "force_https": true,
+      "auto_stop_machines": true,
+      "auto_start_machines": true,
+      "min_machines_running": 0
+    }
+  },
+  "image": "registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND",
+  "strategy": "ROLLING"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases (584.48ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases: {"release":{"id":"rel_6rx0yxl15o8oypjo","version":2,"stable":false,"in_progress":true,"status":"pending","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:31:08.595Z","image_ref":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND"}}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query ($appName: String!) { app(name: $appName) { egressIpAddresses { nodes { id ip version region updatedAt } } } }",
+  "variables": {
+    "appName": "strategist"
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (115.15ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"app":{"egressIpAddresses":{"nodes":[]}}}}
+DEBUG --> PATCH https://api.fly.io/api/v1/releases/rel_6rx0yxl15o8oypjo
+
+DEBUG {
+  "metadata": null,
+  "status": "running"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases/rel_6rx0yxl15o8oypjo (475.68ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases/rel_6rx0yxl15o8oypjo: {"release":{"id":"rel_6rx0yxl15o8oypjo","version":2,"stable":false,"in_progress":true,"status":"running","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:31:08.595Z","image_ref":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND"}}
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines (79.94ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines: [{"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPDWTNDE5JDDFB2K59AHM4JK","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_59glz5erq614z6k3","fly_release_version":"1"},"service
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines: s":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPDWTACX8H6Q00645ZHRQXT9","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPDWTACX8H6Q00645ZHRQXT9","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T14:17:04Z","events":[{"id":"01KPDWTTY6QWB5TY16RYXSG0RT","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435424198},{"id":"01KPDWTNEZJNFR9SRWYREVKGJJ","type":"launch","status":"created","source":"user","timestamp":1776435418591},{"id":"01KPDWTNDE5JDDFB2K5C1EYV5R","type
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines: ":"launch","status":"pending","source":"flyd","timestamp":1776435418542}],"host_status":"ok"},{"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPDWV08S2Q7PSHJJ3JG0X8E7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_59glz5erq614z6k3","fly_release_version":"1"},"services":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPDWTACX8H6Q00645ZHRQXT9","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPDWTACX8H6Q00645ZHRQXT9","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T14:17:17Z","events":[{"id":"01KPDWV7Z97NMAYMBD3EVX73C0","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435437545},{"id":"01KPDWV0ADPV1645CENZZKP4YZ","type":"launch","status":"created","source":"user","timestamp":1776435429709},{"id":"01KPDWV08S2Q7PSHJJ3KF1PHH8","type":"launch","status":"pending","source":"flyd","timestamp":1776435429657}],"host_status":"ok"}]
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (80.52ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447082,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWTNDE5JDDFB2K59AHM4JK"}}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (76.2ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447082,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWV08S2Q7PSHJJ3JG0X8E7"}}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG {
+  "config": {
+    "env": {
+      "FLY_PROCESS_GROUP": "app",
+      "PRIMARY_REGION": "iad"
+    },
+    "init": {},
+    "guest": {
+      "cpu_kind": "shared",
+      "cpus": 1,
+      "memory_mb": 256
+    },
+    "metadata": {
+      "fly_builder_id": "0803192f011738",
+      "fly_flyctl_version": "0.4.35",
+      "fly_platform_version": "v2",
+      "fly_process_group": "app",
+      "fly_release_id": "rel_6rx0yxl15o8oypjo",
+      "fly_release_version": "2"
+    },
+    "services": [
+      {
+        "protocol": "tcp",
+        "internal_port": 80,
+        "autostop": true,
+        "autostart": true,
+        "min_machines_running": 0,
+        "ports": [
+          {
+            "port": 80,
+            "handlers": [
+              "http"
+            ],
+            "force_https": true
+          },
+          {
+            "port": 443,
+            "handlers": [
+              "http",
+              "tls"
+            ]
+          }
+        ],
+        "force_instance_key": null
+      }
+    ],
+    "image": "registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND"
+  },
+  "region": "iad",
+  "skip_secrets": false
+}
+
+DEBUG {0x1b82b0370000}
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (1.99s)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"created","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:11Z","events":[{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":"launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=suspended&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=started&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=stopped&timeout=60
+
+DEBUG <-- 409 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=suspended&timeout=60 (889.3ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=suspended&timeout=60: {"error":"aborted: machine reached stopped state instead of suspended state"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=suspended&timeout=60
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (90.43ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447086,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82afff6040  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (139.18ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447086,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWV08S2Q7PSHJJ3JG0X8E7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82afff61c0  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/wait?state=started&timeout=60 (2.18s)
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps (151.62ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps: [{"pid":1,"stime":0,"rtime":1,"command":"/fly/init","directory":"/","cpu":0,"rss":6410240,"listen_sockets":[]},{"pid":2,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":3,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":4,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":5,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":6,"stime":0,"r
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps: time":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":7,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":8,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":9,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":10,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":11,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":12,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":13,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":14,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":15,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":16,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_socket
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps: s":[]},{"pid":17,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":18,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":19,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":20,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":21,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":22,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":24,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":25,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":26,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":27,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":28,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":29,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":30,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":31,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":32,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":33,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":34,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":35,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":36,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":37,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":38,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":39,"stime":0,"rtim
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps: e":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":52,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":68,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":72,"stime":0,"rtime":1,"co
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps: mmand":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":138,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":139,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":140,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":143,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":148,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":151,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":154,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":157,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":160,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":161,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":164,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":167,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":170,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":173,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":176,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":179,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":184,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":191,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":192,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":199,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":223,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":236,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":238,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":249,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":250,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":257,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":258,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":559,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":627,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":628,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":629,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":630,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":631,"stime":0,"rtime":1,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":635,"stime":0,"rtime":1,"command":"nginx: master process nginx -g daemon off;","directory":"/","cpu":0,"rss":5922816,"listen_sockets":[{"proto":"tcp","address":"0.0.0.0:80"},{"proto":"tcp","address":"[::]:80"}]},{"pid":636,"stime":0,"rtime":1,"command":"/.fly/hallpass","directory":"/","cpu":0,"rss":20000768,"listen_sockets":[{"proto":"tcp","address":"[fdaa:69:f2a1:a7b:6e8:b2d:86fe:2]:22"}]},{"pid":665,"stime":0,"rtime":1,"command":"nginx: worker process","directory":"/","cpu":0,"rss":2801664,"listen_sockets":[{"proto":"tcp"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/ps: ,"address":"0.0.0.0:80"},{"proto":"tcp","address":"[::]:80"}]}]
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (92.44ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (77.33ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (83.4ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (85.3ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (87.89ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447090,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b00297c0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (145.84ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447090,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWV08S2Q7PSHJJ3JG0X8E7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0029ac0  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (81.29ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (83.31ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (83.28ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447094,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b056fc80  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (82.49ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447094,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWV08S2Q7PSHJJ3JG0X8E7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82afff6f00  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (81.78ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48 (80.48ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: {"id":"2879390f340d48","name":"white-morning-2558","state":"started","region":"iad","instance_id":"01KPE7Y9489WG5T8WR51B4G7X2","private_ip":"fdaa:69:f2a1:a7b:6e8:b2d:86fe:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:16:58Z","updated_at":"2026-04-17T17:31:13Z","events":[{"id":"01KPE7YB3B565M3HGKJNZP6182","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447073387},{"id":"01KPE7Y96Z394CB1XQZ2XC1JRM","type":"launch","status":"created","source":"user","timestamp":1776447071455},{"id":"01KPE7Y9489WG5T8WR51CBR4FK","type":
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48: "launch","status":"pending","source":"flyd","timestamp":1776447071368}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG {
+  "config": {
+    "env": {
+      "FLY_PROCESS_GROUP": "app",
+      "PRIMARY_REGION": "iad"
+    },
+    "init": {},
+    "guest": {
+      "cpu_kind": "shared",
+      "cpus": 1,
+      "memory_mb": 256
+    },
+    "metadata": {
+      "fly_builder_id": "0803192f011738",
+      "fly_flyctl_version": "0.4.35",
+      "fly_platform_version": "v2",
+      "fly_process_group": "app",
+      "fly_release_id": "rel_6rx0yxl15o8oypjo",
+      "fly_release_version": "2"
+    },
+    "services": [
+      {
+        "protocol": "tcp",
+        "internal_port": 80,
+        "autostop": true,
+        "autostart": true,
+        "min_machines_running": 0,
+        "ports": [
+          {
+            "port": 80,
+            "handlers": [
+              "http"
+            ],
+            "force_https": true
+          },
+          {
+            "port": 443,
+            "handlers": [
+              "http",
+              "tls"
+            ]
+          }
+        ],
+        "force_instance_key": null
+      }
+    ],
+    "image": "registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND"
+  },
+  "region": "iad",
+  "skip_secrets": false
+}
+
+DEBUG {0x1b82b083f590}
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (84.11ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447098,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b088e940  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (148.5ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447099,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWV08S2Q7PSHJJ3JG0X8E7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82afff7640  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (2.59s)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"created","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:27Z","events":[{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/wait?state=suspended&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/wait?state=started&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/wait?state=stopped&timeout=60
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (75ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447102,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0a64c80  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/wait?state=started&timeout=60 (3.01s)
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (80.14ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447103,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0a64f80  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (90.26ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (81.92ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (88.82ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (83.05ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (80.53ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447106,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0ab4cc0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (79.05ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447107,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0ab4e40  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (84.25ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (80.52ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (88.78ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447111,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0b30400  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (76.81ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447111,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0ab5500  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428 (75.99ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: {"id":"48e7554c1d1428","name":"muddy-sound-9641","state":"started","region":"iad","instance_id":"01KPE7YRA54JGGVX9WCJRPGMH7","private_ip":"fdaa:69:f2a1:a7b:57c:7435:cbd0:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_6rx0yxl15o8oypjo","fly_release_version":"2"},"services"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: :[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"strategist","tag":"deployment-01KPE7Y13SQAJNDD0MK0ZK76ND","digest":"sha256:54625205a2d80905db2c478f1341b2a5afe390a1da6a0c3aec4c3b6b31adb478","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:09Z","updated_at":"2026-04-17T17:31:29Z","events":[{"id":"01KPE7YTTQQ98ADGRCEJWFSTWF","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447089495},{"id":"01KPE7YRDVPC3DWFAQ86SE2Z91","type":"launch","status":"created","source":"user","timestamp":1776447087035},{"id":"01KPE7YRA54JGGVX9WCMPGED5Z","type":"
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428: launch","status":"pending","source":"flyd","timestamp":1776447086917}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (144.16ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447115,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0b317c0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (91.78ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447115,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0b31940  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (81.08ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447119,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0b31ac0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (134.22ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447119,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0b31c40  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (79.56ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447123,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0b90940  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (82.93ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447123,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0b76c40  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (80.3ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447127,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0b76dc0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (78.78ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447127,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0b77000  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13 (133.77ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease?ttl=13: {"status":"success","data":{"nonce":"a458dca1defb","expires_at":1776447131,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7Y9489WG5T8WR51B4G7X2"}}
+
+DEBUG got lease on machine 2879390f340d48: &{success 0x1b82b0b91900  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13 (90.22ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease?ttl=13: {"status":"success","data":{"nonce":"5b687d72811d","expires_at":1776447131,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE7YRA54JGGVX9WCJRPGMH7"}}
+
+DEBUG got lease on machine 48e7554c1d1428: &{success 0x1b82b0b91a80  }
+
+DEBUG --> DELETE https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease
+
+DEBUG --> DELETE https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/2879390f340d48/lease (82.86ms)
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/machines/48e7554c1d1428/lease (88.85ms)
+
+DEBUG --> PATCH https://api.fly.io/api/v1/releases/rel_6rx0yxl15o8oypjo
+
+DEBUG {
+  "metadata": {
+    "post_deployment_info": {
+      "flyctl_version": "0.4.35",
+      "error": ""
+    }
+  },
+  "status": "complete"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases/rel_6rx0yxl15o8oypjo (437.23ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases/rel_6rx0yxl15o8oypjo: {"release":{"id":"rel_6rx0yxl15o8oypjo","version":2,"stable":false,"in_progress":false,"status":"complete","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:31:08.595Z","image_ref":"registry.fly.io/strategist:deployment-01KPE7Y13SQAJNDD0MK0ZK76ND"}}
+DEBUG --> GET https://api.machines.dev/v1/apps/strategist/ip_assignments
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/strategist/ip_assignments (185.42ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/strategist/ip_assignments: {"ips":[{"created_at":"2026-04-17T17:31:03.040Z","ip":"2a09:8280:1::104:bae3:1","region":"global","service_name":null,"shared":false},{"created_at":"2026-04-17T14:16:51.439Z","ip":"2a09:8280:1::104:bae3:0","region":"global","service_name":"","shared":false},{"created_at":null,"ip":"66.241.124.202","region":null,"service_name":null,"shared":true}]}
+DEBUG Task manager done
+DEBUG done monitoring tokens
+DEBUG querying for statuspage incidents resulted to &{[]}
+DEBUG querying for host issues resulted to []

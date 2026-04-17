@@ -1,0 +1,711 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly_config/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell/.fly-build/tsm-honorhealth-dee"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly_config"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG started querying for statuspage incidents
+DEBUG client initialized.
+DEBUG app config loaded from /workspaces/tsm-shell/.fly-build/tsm-honorhealth-dee/fly.toml
+DEBUG started querying for host issues
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($appName: String!) { apphostissues:app(name: $appName) { hostIssues { nodes { internalId message createdAt updatedAt } } } }",
+  "variables": {
+    "appName": "tsm-honorhealth-dee"
+  }
+}
+
+
+DEBUG {}
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (194.79ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG app config loaded from /workspaces/tsm-shell/.fly-build/tsm-honorhealth-dee/fly.toml
+DEBUG Starting task manager
+DEBUG monitoring tokens at /workspaces/tsm-shell/.fly_config/config.yml
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee
+
+DEBUG <-- 200 https://api.fly.io/graphql (407.73ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"apphostissues":{"hostIssues":{"nodes":[]}}}}
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee (346.59ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee: {"id":"4nml160ze5wy1vp2","name":"tsm-honorhealth-dee","internal_numeric_id":17087249,"network":"default","status":"deployed","machine_count":2,"volume_count":0,"organization":{"name":"Latorrey Whitehead","slug":"latorrey-whitehead","internal_numeric_id":1592053},"cname_target":"wl09dw2.tsm-honorhealth-dee.fly.dev","app_role":""}
+
+DEBUG --> GET https://api.fly.io/api/v1/organizations/latorrey-whitehead
+
+DEBUG <-- 200 https://api.fly.io/api/v1/organizations/latorrey-whitehead (125.01ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/organizations/latorrey-whitehead: {"organization":{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","internal_numeric_id":1592053,"slug":"personal","raw_slug":"latorrey-whitehead","paid_plan":true,"personal":true,"billing_status":"CURRENT","provisions_beta_extensions":false,"name":"Latorrey Whitehead","billable":true,"remote_builder_image":"docker-hub-mirror.fly.io/flyio/rchab:sha-8d37d90"}}
+DEBUG trying remote docker daemon
+DEBUG --> POST https://api.fly.io/api/v1/builds
+
+DEBUG {
+  "app_name": "tsm-honorhealth-dee",
+  "builder_type": "depot.dev",
+  "strategies_available": [
+    "depot.dev"
+  ]
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds (166.48ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds: {"id":20794082,"status":"started"}
+DEBUG Trying 'depot.dev' strategy
+
+DEBUG --> POST https://api.fly.io/api/v1/builds/depot_builder
+
+DEBUG {
+  "app_name": "tsm-honorhealth-dee",
+  "builder_scope": "organization",
+  "region": ""
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds/depot_builder (164.09ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds/depot_builder: {"build_id":"jxtngzlv4j","build_token":"7fb98d5c-2765-4072-abfb-80516892dea0"}
+DEBUG result image:registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X error:<nil>
+
+DEBUG --> POST https://api.fly.io/api/v1/builds/finish
+
+DEBUG {
+  "build_id": 20794082,
+  "app_name": "tsm-honorhealth-dee",
+  "machine_id": "",
+  "status": "completed",
+  "strategies_attempted": [
+    {
+      "error": "",
+      "note": "",
+      "result": "success",
+      "strategy": "depot.dev"
+    }
+  ],
+  "builder_meta": {
+    "builder_type": "depot.dev",
+    "buildkit_enabled": false,
+    "docker_version": "",
+    "platform": "",
+    "remote_app_name": "",
+    "remote_machine_id": "0803192f011738"
+  },
+  "final_image": {
+    "id": "sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1",
+    "size_bytes": 22967354,
+    "tag": "registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X"
+  },
+  "timings": {
+    "build_and_push_ms": 2042,
+    "build_ms": 2744,
+    "builder_init_ms": 414,
+    "context_build_ms": -1,
+    "image_build_ms": 2744,
+    "push_ms": -1
+  },
+  "logs": ""
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/builds/finish (137.68ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/builds/finish: {"id":20794082,"status":"completed","wallclock_time_ms":2900}
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines (148.8ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines: [{"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPDWW4D5AH38PAN1MTVXHEB1","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_9v3d2v43n1142gn6","fly_release_version":"1"},"services":[{
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines: "protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPDWVDETCPCQW2EC42S0APSV","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPDWVDETCPCQW2EC42S0APSV","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T14:17:48Z","events":[{"id":"01KPDWW6BBSEZQX3838GR6XYKC","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435468651},{"id":"01KPDWW4ECVDWPNKKHR5X0D515","type":"launch","status":"created","source":"user","timestamp":1776435466700},{"id":"01KPDWW4D5AH38PAN1MY
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines: 1P1D4J","type":"launch","status":"pending","source":"flyd","timestamp":1776435466661}],"host_status":"ok"},{"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPDWVS414YZDASW5FE11M76F","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_9v3d2v43n1142gn6","fly_release_version":"1"},"services":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPDWVDETCPCQW2EC42S0APSV","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPDWVDETCPCQW2EC42S0APSV","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T14:17:38Z","events":[{"id":"01KPDWVW3TQBW1T0ERX9Z6EWTW","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435458170},{"id":"01KPDWVS7KDM70MSHVZ637MP4C","type":"launch","status":"created","source":"user","timestamp":1776435455219},{"id":"01KPDWVS42YTS9C7GYB04K67T4","type":"launch","status":"pending","source":"flyd","timestamp":1776435455106}],"host_status":"ok"}]
+
+DEBUG --> POST https://api.fly.io/api/v1/releases
+
+DEBUG {
+  "app_name": "tsm-honorhealth-dee",
+  "build_id": 20794082,
+  "definition": {
+    "app": "tsm-honorhealth-dee",
+    "primary_region": "iad",
+    "http_service": {
+      "internal_port": 80,
+      "force_https": true,
+      "auto_stop_machines": true,
+      "auto_start_machines": true,
+      "min_machines_running": 0
+    }
+  },
+  "image": "registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X",
+  "strategy": "ROLLING"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases (334.39ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases: {"release":{"id":"rel_xmlp2j85710eyo47","version":2,"stable":false,"in_progress":true,"status":"pending","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:32:07.754Z","image_ref":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X"}}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query ($appName: String!) { app(name: $appName) { egressIpAddresses { nodes { id ip version region updatedAt } } } }",
+  "variables": {
+    "appName": "tsm-honorhealth-dee"
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (151.9ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"app":{"egressIpAddresses":{"nodes":[]}}}}
+DEBUG --> PATCH https://api.fly.io/api/v1/releases/rel_xmlp2j85710eyo47
+
+DEBUG {
+  "metadata": null,
+  "status": "running"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases/rel_xmlp2j85710eyo47 (1.45s)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases/rel_xmlp2j85710eyo47: {"release":{"id":"rel_xmlp2j85710eyo47","version":2,"stable":false,"in_progress":true,"status":"running","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:32:07.754Z","image_ref":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X"}}
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines (141.98ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines: [{"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPDWW4D5AH38PAN1MTVXHEB1","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_9v3d2v43n1142gn6","fly_release_version":"1"},"services":[{
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines: "protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPDWVDETCPCQW2EC42S0APSV","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPDWVDETCPCQW2EC42S0APSV","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T14:17:48Z","events":[{"id":"01KPDWW6BBSEZQX3838GR6XYKC","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435468651},{"id":"01KPDWW4ECVDWPNKKHR5X0D515","type":"launch","status":"created","source":"user","timestamp":1776435466700},{"id":"01KPDWW4D5AH38PAN1MY
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines: 1P1D4J","type":"launch","status":"pending","source":"flyd","timestamp":1776435466661}],"host_status":"ok"},{"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPDWVS414YZDASW5FE11M76F","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"d8d2d64a02d748","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_9v3d2v43n1142gn6","fly_release_version":"1"},"services":[{"protocol":"tcp","internal_port":80,"autostop":false,"autostart":true,"min_machines_running":1,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPDWVDETCPCQW2EC42S0APSV","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPDWVDETCPCQW2EC42S0APSV","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T14:17:38Z","events":[{"id":"01KPDWVW3TQBW1T0ERX9Z6EWTW","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776435458170},{"id":"01KPDWVS7KDM70MSHVZ637MP4C","type":"launch","status":"created","source":"user","timestamp":1776435455219},{"id":"01KPDWVS42YTS9C7GYB04K67T4","type":"launch","status":"pending","source":"flyd","timestamp":1776435455106}],"host_status":"ok"}]
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (80.76ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447142,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWW4D5AH38PAN1MTVXHEB1"}}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (81.18ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447142,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWVS414YZDASW5FE11M76F"}}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG {
+  "config": {
+    "env": {
+      "FLY_PROCESS_GROUP": "app",
+      "PRIMARY_REGION": "iad"
+    },
+    "init": {},
+    "guest": {
+      "cpu_kind": "shared",
+      "cpus": 1,
+      "memory_mb": 256
+    },
+    "metadata": {
+      "fly_builder_id": "0803192f011738",
+      "fly_flyctl_version": "0.4.35",
+      "fly_platform_version": "v2",
+      "fly_process_group": "app",
+      "fly_release_id": "rel_xmlp2j85710eyo47",
+      "fly_release_version": "2"
+    },
+    "services": [
+      {
+        "protocol": "tcp",
+        "internal_port": 80,
+        "autostop": true,
+        "autostart": true,
+        "min_machines_running": 0,
+        "ports": [
+          {
+            "port": 80,
+            "handlers": [
+              "http"
+            ],
+            "force_https": true
+          },
+          {
+            "port": 443,
+            "handlers": [
+              "http",
+              "tls"
+            ]
+          }
+        ],
+        "force_instance_key": null
+      }
+    ],
+    "image": "registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X"
+  },
+  "region": "iad",
+  "skip_secrets": false
+}
+
+DEBUG {0x126f2a430180}
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (1.05s)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"created","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:10Z","events":[{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME910YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/wait?state=suspended&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/wait?state=started&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/wait?state=stopped&timeout=60
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (93.98ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447146,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f29bfbb00  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (89.63ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447146,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWVS414YZDASW5FE11M76F"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2a1ce440  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/wait?state=started&timeout=60 (3.08s)
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/ps
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/ps (94.32ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/ps: [{"pid":1,"stime":0,"rtime":2,"command":"/fly/init","directory":"/","cpu":0,"rss":6406144,"listen_sockets":[]},{"pid":2,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":3,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":4,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":5,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":6,"stime":0,"r
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/ps: time":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":7,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":8,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":9,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":10,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":11,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":12,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":13,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":14,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":15,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":16,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_socket
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/ps: s":[]},{"pid":17,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":18,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":19,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":20,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":21,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":22,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":24,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":25,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":26,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":27,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":28,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":29,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":30,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":31,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":32,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":33,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":34,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":35,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":36,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":37,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":38,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":39,"stime":0,"rtim
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/ps: e":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":52,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":68,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":72,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":124,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":139,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":140,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":143,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":148,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":151,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":152,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":155,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":158,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":163,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":166,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":169,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":170,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":175,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":178,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":179,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":182,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":193,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":198,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":222,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":235,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":237,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":248,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":249,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":256,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":257,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":437,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":626,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":627,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":628,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":629,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":630,"stime":0,"rtime":2,"command":"","directory":"/","cpu":0,"rss":0,"listen_sockets":[]},{"pid":634,"stime":0,"rtime":2,"command":"nginx: master process nginx -g daemon off;","directory":"/","cpu":0,"rss":5885952,"listen_sockets":[{"proto":"tcp","address":"0.0.0.0:80"},{"proto":"tcp","address":"[::]:80"}]},{"pid":635,"stime":0,"rtime":2,"command":"/.fly/hallpass","directory":"/","cpu":0,"rss":19963904,"listen_sockets":[{"proto":"tcp","address":"[fdaa:69:f2a1:a7b:7d0:446b:be0a:2]:22"}]},{"pid":665,"stime":0,"rtime":2,"command":"nginx: worker process","directory":"/","cpu":0,"rss":2703360,"listen_sockets":[{"proto":"tcp","address":"0.0.0.0:80"},{"proto":"tcp","address":"[::]:80"}]}]
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (81.76ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (90.19ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (89.97ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (90.4ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (87.02ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447150,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f29fd2e00  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (83.53ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447150,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWVS414YZDASW5FE11M76F"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f29fd3100  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (92.97ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (93.05ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (86.18ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447154,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2a1cf000  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (146.93ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447155,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWVS414YZDASW5FE11M76F"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2a744080  }
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (153.74ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738 (146.3ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: {"id":"1781e0d2cd7738","name":"empty-dew-90","state":"started","region":"iad","instance_id":"01KPE802SR7AV73611MAAQPN8B","private_ip":"fdaa:69:f2a1:a7b:7d0:446b:be0a:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services":[{"
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:46Z","updated_at":"2026-04-17T17:32:13Z","events":[{"id":"01KPE805D1F9XFBBKKQ14RFD0H","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447133089},{"id":"01KPE8033VMW0FE1NKDK0K4B25","type":"launch","status":"created","source":"user","timestamp":1776447130747},{"id":"01KPE802SR7AV73611ME91
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738: 0YYH","type":"launch","status":"pending","source":"flyd","timestamp":1776447130424}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG {
+  "config": {
+    "env": {
+      "FLY_PROCESS_GROUP": "app",
+      "PRIMARY_REGION": "iad"
+    },
+    "init": {},
+    "guest": {
+      "cpu_kind": "shared",
+      "cpus": 1,
+      "memory_mb": 256
+    },
+    "metadata": {
+      "fly_builder_id": "0803192f011738",
+      "fly_flyctl_version": "0.4.35",
+      "fly_platform_version": "v2",
+      "fly_process_group": "app",
+      "fly_release_id": "rel_xmlp2j85710eyo47",
+      "fly_release_version": "2"
+    },
+    "services": [
+      {
+        "protocol": "tcp",
+        "internal_port": 80,
+        "autostop": true,
+        "autostart": true,
+        "min_machines_running": 0,
+        "ports": [
+          {
+            "port": 80,
+            "handlers": [
+              "http"
+            ],
+            "force_https": true
+          },
+          {
+            "port": 443,
+            "handlers": [
+              "http",
+              "tls"
+            ]
+          }
+        ],
+        "force_instance_key": null
+      }
+    ],
+    "image": "registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X"
+  },
+  "region": "iad",
+  "skip_secrets": false
+}
+
+DEBUG {0x126f2a988180}
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (449.51ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"created","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:24Z","events":[{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJV2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=suspended&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=stopped&timeout=60
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=started&timeout=60
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (81.73ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447159,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2a1cfd00  }
+
+DEBUG <-- 409 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=suspended&timeout=60 (1.27s)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=suspended&timeout=60: {"error":"aborted: machine reached stopped state instead of suspended state"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (93.47ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447159,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPDWVS414YZDASW5FE11M76F"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2a778800  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=suspended&timeout=60
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/wait?state=started&timeout=60 (2.94s)
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (81.81ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (93.2ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (91.04ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (96.72ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447163,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2ab18900  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (100.17ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447163,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2aa4e680  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (225.73ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (89.59ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (85.37ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (91.77ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447167,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2ab190c0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (81.14ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447167,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2ab19300  }
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678 (84.16ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: {"id":"1851d5da2d1678","name":"lively-field-4510","state":"started","region":"iad","instance_id":"01KPE80GJ2AZHER6FJMKS7PTQV","private_ip":"fdaa:69:f2a1:a7b:71d:d7c4:dd69:2","config":{"env":{"FLY_PROCESS_GROUP":"app","PRIMARY_REGION":"iad"},"init":{},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_builder_id":"0803192f011738","fly_flyctl_version":"0.4.35","fly_platform_version":"v2","fly_process_group":"app","fly_release_id":"rel_xmlp2j85710eyo47","fly_release_version":"2"},"services
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: ":[{"protocol":"tcp","internal_port":80,"autostop":true,"autostart":true,"min_machines_running":0,"ports":[{"port":80,"handlers":["http"],"force_https":true},{"port":443,"handlers":["http","tls"]}],"force_instance_key":null}],"image":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","restart":{"policy":"on-failure","max_retries":10}},"incomplete_config":null,"image_ref":{"registry":"registry.fly.io","repository":"tsm-honorhealth-dee","tag":"deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X","digest":"sha256:7dd4304a167a068e6d28d2b3861286017e8f855313af87634b949975b68c08a1","labels":{"maintainer":"NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"}},"created_at":"2026-04-17T14:17:35Z","updated_at":"2026-04-17T17:32:27Z","events":[{"id":"01KPE80KGADXVWAHB84KGBZF79","type":"start","status":"started","request":{},"source":"flyd","timestamp":1776447147530},{"id":"01KPE80GP4B655V5PYSHEW6SN6","type":"launch","status":"created","source":"user","timestamp":1776447144644},{"id":"01KPE80GJ36ER6VWJ
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678: V2R9JN2JA","type":"launch","status":"pending","source":"flyd","timestamp":1776447144515}],"host_status":"ok"}
+
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (87.2ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447171,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2ab19740  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (137.56ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447171,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2ab19900  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (200.97ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447175,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2abaf840  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (149.28ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447175,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2abafa40  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (82.84ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447179,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2ac107c0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (79.74ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447179,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2ac10a00  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (138.13ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447183,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2abc2a00  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (92.74ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447183,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2ac10dc0  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (90.16ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447187,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2ac10f40  }
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (94.1ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447188,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2ac11140  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13 (80.36ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease?ttl=13: {"status":"success","data":{"nonce":"4d365d7ef349","expires_at":1776447192,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE802SR7AV73611MAAQPN8B"}}
+
+DEBUG got lease on machine 1781e0d2cd7738: &{success 0x126f2abc3a40  }
+
+DEBUG --> POST https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13
+
+DEBUG <-- 201 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13 (90.95ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease?ttl=13: {"status":"success","data":{"nonce":"4152a6317e43","expires_at":1776447192,"owner":"f55f8c56-33b0-5160-97fa-31a18cd1854a@tokens.fly.io","description":"","version":"01KPE80GJ2AZHER6FJMKS7PTQV"}}
+
+DEBUG got lease on machine 1851d5da2d1678: &{success 0x126f2abc3c00  }
+
+DEBUG --> DELETE https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease
+
+DEBUG --> DELETE https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1781e0d2cd7738/lease (80.56ms)
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/machines/1851d5da2d1678/lease (140.67ms)
+
+DEBUG --> PATCH https://api.fly.io/api/v1/releases/rel_xmlp2j85710eyo47
+
+DEBUG {
+  "metadata": {
+    "post_deployment_info": {
+      "flyctl_version": "0.4.35",
+      "error": ""
+    }
+  },
+  "status": "complete"
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/api/v1/releases/rel_xmlp2j85710eyo47 (160.89ms)
+
+DEBUG   <-- https://api.fly.io/api/v1/releases/rel_xmlp2j85710eyo47: {"release":{"id":"rel_xmlp2j85710eyo47","version":2,"stable":false,"in_progress":false,"status":"complete","strategy":"ROLLING","user":"latorreyw99@gmail.com","created_at":"2026-04-17T17:32:07.754Z","image_ref":"registry.fly.io/tsm-honorhealth-dee:deployment-01KPE7ZWA5ZJY4Y7XMYNDYHE6X"}}
+DEBUG --> GET https://api.machines.dev/v1/apps/tsm-honorhealth-dee/ip_assignments
+
+DEBUG <-- 200 https://api.machines.dev/v1/apps/tsm-honorhealth-dee/ip_assignments (183.19ms)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/tsm-honorhealth-dee/ip_assignments: {"ips":[{"created_at":"2026-04-17T17:32:03.428Z","ip":"2a09:8280:1::104:bb11:1","region":"global","service_name":null,"shared":false},{"created_at":"2026-04-17T14:17:27.911Z","ip":"2a09:8280:1::104:bb11:0","region":"global","service_name":"","shared":false},{"created_at":null,"ip":"66.241.125.188","region":null,"service_name":null,"shared":true}]}
+DEBUG Task manager done
+DEBUG done monitoring tokens
+DEBUG querying for host issues resulted to []
+DEBUG querying for statuspage incidents resulted to &{[]}

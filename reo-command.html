@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REAL ESTATE COMMAND</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06090d;--s1:#0a0d12;--s2:#0e1118;--border:#1a2030;--border2:#253040;
+  --acc:#f59e0b;--acc2:#f59e0b99;--white:#e2eaf0;--text:#a0b4c8;--muted:#506070;
+  --mono:'Share Tech Mono',monospace;--orb:'Orbitron',monospace;--raj:'Rajdhani',sans-serif;
+  --green:#00ff88;--amber:#f59e0b;--red:#ef4444;--cyan:#00e5cc}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--raj);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,204,.01) 2px,rgba(0,229,204,.01) 4px);
+  pointer-events:none;z-index:9999}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes scanbar{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(90deg,#040608,#080d14,#040608);
+  border-bottom:1px solid var(--acc2);height:44px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 1.2rem;flex-shrink:0;position:relative}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--acc),transparent);
+  animation:scanbar 4s linear infinite}
+.logo{font-family:var(--orb);font-size:.78rem;font-weight:900;color:var(--acc);
+  letter-spacing:.15rem;display:flex;align-items:center;gap:.5rem}
+.logo-sub{color:var(--muted);font-weight:400;font-size:.65rem}
+.tb-right{display:flex;align-items:center;gap:.5rem}
+.tb-btn{background:transparent;border:1px solid var(--border2);color:var(--text);
+  padding:.28rem .7rem;font-family:var(--mono);font-size:.5rem;cursor:pointer;
+  letter-spacing:.08rem;transition:all .15s;text-transform:uppercase;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.3rem}
+.tb-btn:hover,.tb-btn.active{border-color:var(--acc);color:var(--acc)}
+
+/* MAIN */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:200px;flex-shrink:0;background:linear-gradient(180deg,#050810,#040608);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:2px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--acc2)}
+.sb-label{font-family:var(--mono);font-size:.45rem;color:var(--muted);
+  letter-spacing:.15rem;padding:.5rem 1rem .2rem;text-transform:uppercase;
+  border-top:1px solid var(--border);margin-top:.2rem}
+.sb-label:first-child{border-top:none;margin-top:0}
+.node-link{display:flex;align-items:center;gap:.4rem;padding:.4rem 1rem;
+  cursor:pointer;font-size:.62rem;font-weight:600;color:var(--text);
+  transition:all .15s;border-left:2px solid transparent;text-decoration:none;
+  letter-spacing:.03rem}
+.node-link:hover{background:rgba(255,255,255,.04);color:var(--white)}
+.node-link.active{background:rgba(255,255,255,.06);color:var(--white);
+  border-left-color:var(--nc,var(--acc))}
+.nl-dot{width:5px;height:5px;border-radius:50%;background:var(--nc,var(--acc));
+  flex-shrink:0;animation:pulse 2s infinite}
+.sys-row{display:flex;align-items:center;gap:.4rem;padding:.3rem 1rem;
+  font-family:var(--mono);font-size:.5rem}
+.sys-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+
+/* CONTENT */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* TABS */
+.tabbar{background:var(--s1);border-bottom:1px solid var(--border);
+  padding:.35rem .75rem;display:flex;gap:.35rem;flex-shrink:0}
+.tab{font-family:var(--mono);font-size:.5rem;letter-spacing:.1rem;
+  padding:.28rem .7rem;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase}
+.tab:hover{color:var(--text);border-color:var(--border2)}
+.tab.active{color:var(--acc);border-color:var(--acc);background:rgba(0,229,204,.06)}
+
+/* WORKSPACE */
+.workspace{display:grid;grid-template-columns:1fr 290px;flex:1;overflow:hidden}
+
+/* MODULE GRID */
+.mod-area{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
+.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);flex:1;overflow-y:auto;align-content:start}
+.mod-grid::-webkit-scrollbar{width:2px}
+.mod-grid::-webkit-scrollbar-thumb{background:var(--acc2)}
+.mod-card{background:var(--s1);padding:.7rem;cursor:pointer;transition:all .15s;
+  position:relative;display:flex;flex-direction:column;gap:.25rem;min-height:85px}
+.mod-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;
+  background:var(--card-color,var(--acc));opacity:.3}
+.mod-card:hover{background:var(--s2)}
+.mod-card:hover::before{opacity:1}
+.mod-card.running::before{opacity:1;animation:pulse 1.5s infinite}
+.mc-cat{font-family:var(--mono);font-size:.42rem;letter-spacing:.1rem;
+  color:var(--card-color,var(--acc));opacity:.7;text-transform:uppercase}
+.mc-title{font-size:.65rem;font-weight:700;color:var(--white);line-height:1.2}
+.mc-desc{font-size:.52rem;color:var(--muted);line-height:1.4;margin-top:auto}
+
+/* FEED */
+.feed-bar{background:var(--s1);border-top:1px solid var(--border);
+  padding:.35rem .75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.feed-lbl{font-family:var(--mono);font-size:.45rem;color:var(--acc);letter-spacing:.15rem;text-transform:uppercase}
+.feed-out{height:150px;overflow-y:auto;padding:.5rem .75rem;
+  font-family:var(--mono);font-size:.58rem;line-height:1.7;color:var(--text);
+  background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
+.feed-out::-webkit-scrollbar{width:2px}
+.feed-out::-webkit-scrollbar-thumb{background:var(--acc2)}
+
+/* RIGHT PANEL */
+.rpanel{background:var(--s1);display:flex;flex-direction:column;overflow:hidden}
+.rp-sec{border-bottom:1px solid var(--border);padding:.55rem .7rem}
+.rp-title{font-family:var(--mono);font-size:.45rem;color:var(--acc);
+  letter-spacing:.15rem;text-transform:uppercase;margin-bottom:.45rem}
+
+/* NODE IFRAME VIEWER */
+.iframe-viewer{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.iv-bar{padding:.35rem .7rem;background:var(--s2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:.5rem}
+.iv-select{flex:1;background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--mono);font-size:.5rem;padding:.25rem .4rem}
+.iv-frame{flex:1;border:none;width:100%;background:var(--bg)}
+
+/* STATS */
+.stat-row{display:flex;justify-content:space-between;padding:.2rem 0;font-size:.58rem}
+.stat-lbl{color:var(--muted)}
+.stat-val{font-family:var(--mono);color:var(--white)}
+
+/* REPORT */
+.rp-input{width:100%;background:var(--s2);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--mono);font-size:.55rem;padding:.4rem;
+  outline:none;resize:none;height:75px;line-height:1.5}
+.rp-input:focus{border-color:var(--acc2)}
+.rp-btn{width:100%;margin-top:.3rem;background:transparent;
+  border:1px solid var(--acc2);color:var(--acc);font-family:var(--mono);
+  font-size:.5rem;padding:.35rem;cursor:pointer;letter-spacing:.08rem;
+  transition:all .15s;text-transform:uppercase}
+.rp-btn:hover{background:rgba(0,229,204,.08)}
+.rp-btn.g{border-color:var(--green);color:var(--green)}
+.rp-btn.a{border-color:var(--amber);color:var(--amber)}
+.rp-btn.d{border-color:var(--border2);color:var(--muted)}
+.rp-btn.d:hover{border-color:var(--red);color:var(--red)}
+
+/* HIDDEN */
+.view{display:none}
+.view.active{display:flex;flex-direction:column;flex:1;overflow:hidden}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">TSM <span style="color:var(--muted);margin:0 .3rem">//</span>
+    <span class="logo-sub">SOVEREIGN PROPERTY INTELLIGENCE</span>
+  </div>
+  <div class="tb-right">
+    <button class="tb-btn active" onclick="showView('modules',this)">&#9632; MODULES</button>
+    <button class="tb-btn" onclick="showView('nodes',this)">&#9671; NODES</button>
+    <button class="tb-btn" onclick="buildReport()">&#9889; SYNTHESIS</button>
+    <button class="tb-btn" onclick="exportReport()">&#8595; EXPORT</button>
+    <button class="tb-btn" onclick="openCmd()">&#8212; CMD</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sb-label">CONNECTED NODES</div>
+    <a class="node-link" href="https://reo-pro.tsmatter.com" target="_blank" style="--nc:#f59e0b"><span class="nl-dot"></span>REO PRO</a>
+<a class="node-link" href="https://tax.tsmatter.com" target="_blank" style="--nc:#00e5cc"><span class="nl-dot"></span>TAX STRATEGIST</a>
+<a class="node-link" href="https://compliance.tsmatter.com" target="_blank" style="--nc:#3b82f6"><span class="nl-dot"></span>COMPLIANCE</a>
+<a class="node-link" href="https://auditops.tsmatter.com" target="_blank" style="--nc:#a78bfa"><span class="nl-dot"></span>AUDITOPS</a>
+<a class="node-link" href="https://strategist.tsmatter.com" target="_blank" style="--nc:#00ff88"><span class="nl-dot"></span>STRATEGIST</a>
+    <div class="sb-label">SYSTEM</div>
+    <div class="sys-row">
+      <div class="sys-dot" style="background:var(--acc)"></div>
+      <span style="color:var(--muted);font-family:var(--mono);font-size:.5rem">UPLINK</span>
+      <span style="color:var(--acc);margin-left:auto;font-family:var(--mono);font-size:.5rem">ACTIVE</span>
+    </div>
+    <div class="sys-row">
+      <div class="sys-dot" style="background:var(--green)"></div>
+      <span id="sysStatus" style="color:var(--muted);font-family:var(--mono);font-size:.5rem">READY</span>
+    </div>
+    <div class="sb-label">QUICK PROMPTS</div>
+    <div onclick="quickAsk('Give me a full cross-node synthesis: analyze risk, compliance gaps, tax exposure, and top 3 strategic recommendations.')"
+      style="padding:.4rem 1rem;cursor:pointer;font-size:.58rem;color:var(--text);
+      border-left:2px solid transparent;transition:all .15s"
+      onmouseover="this.style.borderLeftColor='var(--acc)';this.style.color='var(--white)'"
+      onmouseout="this.style.borderLeftColor='transparent';this.style.color='var(--text)'">
+      &#9658; Full Synthesis
+    </div>
+    <div onclick="quickAsk('What are the top 5 highest-ROI actions I can take right now based on all nodes?')"
+      style="padding:.4rem 1rem;cursor:pointer;font-size:.58rem;color:var(--text);
+      border-left:2px solid transparent;transition:all .15s"
+      onmouseover="this.style.borderLeftColor='var(--acc)';this.style.color='var(--white)'"
+      onmouseout="this.style.borderLeftColor='transparent';this.style.color='var(--text)'">
+      &#9658; Top 5 Actions
+    </div>
+    <div onclick="quickAsk('What is my biggest risk exposure right now and how do I mitigate it?')"
+      style="padding:.4rem 1rem;cursor:pointer;font-size:.58rem;color:var(--text);
+      border-left:2px solid transparent;transition:all .15s"
+      onmouseover="this.style.borderLeftColor='var(--acc)';this.style.color='var(--white)'"
+      onmouseout="this.style.borderLeftColor='transparent';this.style.color='var(--text)'">
+      &#9658; Risk Exposure
+    </div>
+    <div onclick="quickAsk('Generate an executive briefing document covering financial position, compliance status, tax optimization opportunities, and strategic priorities.')"
+      style="padding:.4rem 1rem;cursor:pointer;font-size:.58rem;color:var(--text);
+      border-left:2px solid transparent;transition:all .15s"
+      onmouseover="this.style.borderLeftColor='var(--acc)';this.style.color='var(--white)'"
+      onmouseout="this.style.borderLeftColor='transparent';this.style.color='var(--text)'">
+      &#9658; Executive Brief
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="tabbar">
+      <button class="tab active" onclick="filterCat('ALL',this)">ALL</button>
+      <button class="tab" onclick="filterCat('STRATEGY',this)">STRATEGY</button>
+      <button class="tab" onclick="filterCat('COMPLIANCE',this)">COMPLIANCE</button>
+      <button class="tab" onclick="filterCat('TAX',this)">TAX</button>
+      <button class="tab" onclick="filterCat('RISK',this)">RISK</button>
+      <button class="tab" onclick="filterCat('FINANCE',this)">FINANCE</button>
+      <button class="tab" onclick="filterCat('OPERATIONS',this)">OPERATIONS</button>
+    </div>
+
+    <div class="workspace">
+      <div class="mod-area">
+        <!-- MODULES VIEW -->
+        <div id="view-modules" class="view active">
+          <div class="mod-grid" id="modGrid">
+            <div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Perform a complete real estate portfolio intelligence synthesis. Analyze: current market conditions for hold vs sell vs 1031 decisions, tax optimization opportunities (cost segregation, depreciation recapture planning, §121 timing), compliance gaps (FinCEN RRE, TRID, Fair Housing), and REO disposition opportunities. Identify the top 5 highest-ROI actions with specific dollar impact. Use ► section markers."
+            data-title="Portfolio Synthesis">
+          <div class="mc-cat" style="color:#00ff88">STRATEGY</div>
+          <div class="mc-title">Portfolio Synthesis</div>
+          <div class="mc-desc">Full cross-node analysis + top actions</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Analyze a §1031 exchange strategy for a real estate investor with a $850K property (basis $200K, $320K mortgage). Cover: 45-day identification window strategy, 180-day exchange timeline, boot calculation and how to eliminate it, up-leg property criteria, Delaware Statutory Trust as backup option, reverse exchange scenarios, and the after-tax return comparison vs straight sale. Include specific dollar amounts for each scenario. Use ► section markers."
+            data-title="1031 Exchange Optimizer">
+          <div class="mc-cat" style="color:#00ff88">STRATEGY</div>
+          <div class="mc-title">1031 Exchange Optimizer</div>
+          <div class="mc-desc">Exchange timing, boot, replacement property</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Analyze cost segregation opportunities for a commercial property purchased for $2.1M with a $420K land value. Break down personal property components (5-year), land improvements (15-year), and structural components (39-year). Calculate the accelerated depreciation benefit, 40% bonus depreciation impact for 2026, present value of tax savings, and the breakeven timeline vs standard depreciation. Include the net tax benefit for an investor in the 37% bracket. Use ► section markers."
+            data-title="Cost Segregation Analysis">
+          <div class="mc-cat" style="color:#00e5cc">TAX</div>
+          <div class="mc-title">Cost Segregation Analysis</div>
+          <div class="mc-desc">Accelerated depreciation + bonus depreciation</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Calculate depreciation recapture exposure for a rental property held 12 years: purchase price $380K, land $60K, total depreciation taken $116K. Cover: §1250 unrecaptured gain taxed at 25%, §1245 recapture on any personal property, net investment income tax (3.8% NIIT), state tax overlay, and strategies to defer or eliminate recapture through §1031, installment sale, or charitable remainder trust. Use ► section markers."
+            data-title="Depreciation Recapture">
+          <div class="mc-cat" style="color:#00e5cc">TAX</div>
+          <div class="mc-title">Depreciation Recapture</div>
+          <div class="mc-desc">§1250 unrecaptured gain + §1245 recapture</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Audit real estate transaction compliance for FinCEN Real Estate Reporting requirements. Cover: current Geographic Targeting Order (GTO) jurisdictions and thresholds, beneficial ownership identification for LLC and trust buyers, the proposed nationwide RRE reporting rule and its impact, Currency Transaction Report thresholds, AML red flags specific to real estate, required policies and SAR filing procedures. Provide a compliance checklist for closings over $300K. Use ► section markers."
+            data-title="FinCEN RRE Audit">
+          <div class="mc-cat" style="color:#3b82f6">COMPLIANCE</div>
+          <div class="mc-title">FinCEN RRE Audit</div>
+          <div class="mc-desc">Beneficial ownership + GTOs + AML</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Perform a TRID compliance audit for a real estate transaction. Cover: Loan Estimate delivery timing (3 business days), Changed Circumstance triggers for revised LEs, Closing Disclosure timing (3 business days before consummation), permissible variance tolerances (zero tolerance, 10% bucket, no tolerance), common TRID violations and cure procedures, liability exposure per violation, and lender vs settlement agent responsibility allocation. Use ► section markers."
+            data-title="TRID Compliance Review">
+          <div class="mc-cat" style="color:#3b82f6">COMPLIANCE</div>
+          <div class="mc-title">TRID Compliance Review</div>
+          <div class="mc-desc">LE vs CD variance + timing violations</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Analyze title risk for an REO property acquisition. Cover: the most common title defects in REO transactions (IRS federal tax liens, HOA super-liens, mechanics liens, lis pendens, chain of title gaps), Arizona HOA super-lien rights under ARS 33-1807 and 6-month priority amount, IRS lien discharge procedures, quiet title action timeline and cost, title insurance endorsements critical for REO resales, and the maximum exposure from unresolved title issues. Use ► section markers."
+            data-title="Title Risk Analysis">
+          <div class="mc-cat" style="color:#ef4444">RISK</div>
+          <div class="mc-title">Title Risk Analysis</div>
+          <div class="mc-desc">Clouds, liens, HOA super-liens, gaps</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Compare REO disposition strategies for a portfolio of 8 properties (avg value $285K each, avg repair need $35K). Analyze: retail MLS listing (timeline, cost, net proceeds), auction (discount to market, buyer premium, seller closing costs), bulk sale to institutional investor (pricing model, speed, tax implications), and investor direct sale. For each strategy calculate: net proceeds after all costs, days to cash, and risk factors. Recommend optimal strategy based on holding cost of $2,800/mo per property. Use ► section markers."
+            data-title="REO Disposition Analysis">
+          <div class="mc-cat" style="color:#ef4444">RISK</div>
+          <div class="mc-title">REO Disposition Analysis</div>
+          <div class="mc-desc">Retail vs auction vs bulk vs investor</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Analyze a BRRRR strategy deal: Purchase $195K, rehab $48K, ARV $340K, rental income $2,100/month, market rent growth 3.5%/yr. Calculate: all-in cost, forced equity created, cash-out refinance proceeds at 75% LTV, cash remaining in deal, monthly cash flow after refi (PITIA), cash-on-cash return, 5-year and 10-year equity accumulation, and the 5-year IRR. Compare to a straight buy-and-hold alternative with 20% down. Identify the top 3 risks and provide mitigation strategies. Use ► section markers."
+            data-title="BRRRR Analysis">
+          <div class="mc-cat" style="color:#a78bfa">FINANCE</div>
+          <div class="mc-title">BRRRR Analysis</div>
+          <div class="mc-desc">Buy-Rehab-Rent-Refi-Repeat ROI</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Build a comprehensive investment property underwriting model for a 12-unit apartment building: asking price $1.85M, gross rents $22,800/mo, vacancy 6%, operating expenses 38% of EGI, NOI analysis. Calculate: cap rate, GRM, DSCR at 70% LTV (6.8% rate, 30yr am), cash-on-cash return, break-even occupancy, price per unit, and the maximum acquisition price at target 6.5% cap and 1.25x DSCR. Flag any risks to underwriting assumptions. Use ► section markers."
+            data-title="Cap Rate vs DSCR">
+          <div class="mc-cat" style="color:#a78bfa">FINANCE</div>
+          <div class="mc-title">Cap Rate vs DSCR</div>
+          <div class="mc-desc">Investment underwriting metrics</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Build a complete REO asset management plan from acquisition to disposition. Cover: Day 1-7 (property inspection, occupancy check, utility activation, HOA contact), Week 2-4 (cash-for-keys negotiation if occupied, BPO ordering, repair bid solicitation), Month 2-3 (listing preparation, marketing launch, offer review), Contract-to-close (buyer qualification, title issues, addenda). Include a cost tracker template and per-day carrying cost calculation. Use ► section markers."
+            data-title="Asset Management Plan">
+          <div class="mc-cat" style="color:#f59e0b">OPERATIONS</div>
+          <div class="mc-title">Asset Management Plan</div>
+          <div class="mc-desc">REO lifecycle from acquisition to close</div>
+        </div>
+<div class="mod-card" onclick="runModule(this)" 
+            data-prompt="Audit a commercial lease portfolio for risk and optimization opportunities. Cover: CAM reconciliation accuracy and common landlord errors, co-tenancy clause exposure, exclusivity clause compliance, option to renew mechanics and notice deadlines, percentage rent threshold analysis, assignment and subletting restrictions, ADA compliance obligations, and the top lease clauses that create hidden landlord liability. Identify the top 3 actions to reduce vacancy risk. Use ► section markers."
+            data-title="Lease Audit">
+          <div class="mc-cat" style="color:#f59e0b">OPERATIONS</div>
+          <div class="mc-title">Lease Audit</div>
+          <div class="mc-desc">Lease compliance, CAM reconciliation, renewals</div>
+        </div>
+          </div>
+        </div>
+        <!-- NODES VIEW -->
+        <div id="view-nodes" class="view">
+          <div class="iframe-viewer">
+            <div class="iv-bar">
+              <select class="iv-select" id="nodeSelect" onchange="loadNode(this.value)">
+                <option value="">— Select Node —</option>
+                <option value="https://reo-pro.tsmatter.com">REO PRO</option>
+<option value="https://tax.tsmatter.com">TAX STRATEGIST</option>
+<option value="https://compliance.tsmatter.com">COMPLIANCE</option>
+<option value="https://auditops.tsmatter.com">AUDITOPS</option>
+<option value="https://strategist.tsmatter.com">STRATEGIST</option>
+              </select>
+              <button class="tb-btn" onclick="openNodeNewTab()">&#8599; NEW TAB</button>
+            </div>
+            <iframe id="nodeFrame" class="iv-frame" src="about:blank"></iframe>
+          </div>
+        </div>
+
+        <div class="feed-bar">
+          <span class="feed-lbl">INTELLIGENCE FEED</span>
+          <span id="feedStatus" style="font-family:var(--mono);font-size:.45rem;color:var(--muted)">SELECT A MODULE</span>
+        </div>
+        <div class="feed-out" id="feedOut">
+          <span style="color:var(--muted);font-style:italic">Select a module to run analysis. Output appears here.</span>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="rpanel">
+        <div class="rp-sec" style="max-height:160px;overflow-y:auto">
+          <div class="rp-title">REPORT HISTORY</div>
+          <div id="rptHistory"><div style="font-size:.5rem;color:var(--muted);font-family:var(--mono)">No reports yet.</div></div>
+          <button class="rp-btn" onclick="saveCurrentFeed()" style="margin-top:.4rem">&#43; SAVE OUTPUT</button>
+        </div>
+        <div class="rp-sec" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.25rem">
+          <div class="rp-title">SYNTHESIS REPORT</div>
+          <input type="text" id="rptTitle" placeholder="Command Center Report"
+            style="width:100%;background:var(--s2);border:1px solid var(--border2);
+            color:var(--white);font-family:var(--mono);font-size:.5rem;
+            padding:.35rem .45rem;outline:none;margin-bottom:.2rem">
+          <textarea class="rp-input" id="rptContent"
+            placeholder="Save outputs then click Synthesis to combine..."></textarea>
+          <button class="rp-btn" onclick="buildReport()">&#9889; SYNTHESIZE ALL</button>
+          <button class="rp-btn g" onclick="exportReport()">&#8595; EXPORT (.TXT)</button>
+          <button class="rp-btn a" onclick="copyReport()">&#8853; COPY</button>
+          <button class="rp-btn d" onclick="clearReport()">&#10005; CLEAR</button>
+        </div>
+        <div class="rp-sec">
+          <div class="rp-title">SESSION</div>
+          <div class="stat-row"><span class="stat-lbl">Modules</span>
+            <span class="stat-val" id="statMods">0</span></div>
+          <div class="stat-row"><span class="stat-lbl">Saved</span>
+            <span class="stat-val" id="statSaved">0</span></div>
+          <div class="stat-row"><span class="stat-lbl">Last run</span>
+            <span class="stat-val" id="statLast" style="font-size:.45rem;color:var(--muted)">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYSTEM = `You are the TSM Real Estate Command Strategist — an elite AI for real estate investors, brokers, REO asset managers, and property portfolio owners. You have expert knowledge of:
+- REO asset management, BPO methodology, disposition strategy, cash-for-keys, property preservation
+- Real estate law: mechanics liens, §1031 exchanges, §121 exclusions, title issues, HOA super-liens
+- Tax strategy: depreciation recapture, cost segregation, BRRRR analysis, estate planning for real property
+- Compliance: FinCEN RRE reporting, TRID, Fair Housing, AML/KYC for real estate transactions
+- Investment analysis: cap rates, GRM, cash-on-cash, 70% rule, DSCR, IRR projections
+- Portfolio strategy: hold/sell/refi/1031 decision matrix, entity structuring, asset protection
+Always use ► section headers. Every response must include specific dollar amounts and actionable next steps.`;
+let saved = []; let running = null;
+
+async function callAI(prompt) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({messages: [
+      {role:'system', content: SYSTEM},
+      {role:'user', content: prompt}
+    ]})
+  });
+  const data = await res.json();
+  return data.answer || data.response || data.content ||
+    (data.choices && data.choices[0]?.message?.content) || 'No response';
+}
+
+async function runModule(card) {
+  const prompt = card.dataset.prompt;
+  const title = card.dataset.title;
+  if (!prompt) return;
+  if (running) running.classList.remove('running');
+  running = card; card.classList.add('running');
+  document.getElementById('feedStatus').textContent = 'Running: ' + title;
+  document.getElementById('statLast').textContent = title;
+  const feed = document.getElementById('feedOut');
+  feed.innerHTML = '<span style="color:var(--acc)">[' + title + ']</span>\n\nAnalyzing...';
+  try {
+    const text = await callAI(prompt);
+    feed.innerHTML = '<span style="color:var(--acc)">[' + title + ']</span>\n\n' +
+      text.replace(/►\s*/g, '<span style="color:var(--amber)">►</span> ')
+          .replace(/\*\*(.*?)\*\*/g, '<span style="color:var(--white);font-weight:700">$1</span>');
+    feed.scrollTop = 0;
+    autoSave(title, text);
+    setStatus('Complete — ' + title);
+  } catch(e) {
+    feed.innerHTML = '<span style="color:var(--red)">[ERROR] ' + e.message + '</span>';
+    setStatus('ERROR');
+  } finally { card.classList.remove('running'); }
+}
+
+async function quickAsk(prompt) {
+  document.getElementById('feedStatus').textContent = 'Running...';
+  const feed = document.getElementById('feedOut');
+  feed.innerHTML = '<span style="color:var(--acc)">[QUICK ANALYSIS]</span>\n\nAnalyzing...';
+  try {
+    const text = await callAI(prompt);
+    feed.innerHTML = '<span style="color:var(--acc)">[SYNTHESIS]</span>\n\n' +
+      text.replace(/►\s*/g, '<span style="color:var(--amber)">►</span> ')
+          .replace(/\*\*(.*?)\*\*/g, '<span style="color:var(--white);font-weight:700">$1</span>');
+    feed.scrollTop = 0;
+    autoSave('Quick Analysis', text);
+    setStatus('Synthesis complete');
+  } catch(e) {
+    feed.innerHTML = '<span style="color:var(--red)">[ERROR] ' + e.message + '</span>';
+  }
+}
+
+function autoSave(title, text) {
+  saved.push({title, text, time: new Date()});
+  document.getElementById('statSaved').textContent = saved.length;
+  renderHistory();
+}
+
+function saveCurrentFeed() {
+  const feed = document.getElementById('feedOut');
+  const text = feed.innerText;
+  if (!text || text.includes('Select a module')) { alert('Run a module first.'); return; }
+  const title = document.getElementById('statLast').textContent || 'Manual Save';
+  autoSave(title, text);
+  setStatus('Saved: ' + title);
+}
+
+function renderHistory() {
+  const h = document.getElementById('rptHistory');
+  h.innerHTML = '';
+  saved.slice().reverse().forEach(o => {
+    const d = document.createElement('div');
+    d.style.cssText = 'padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;font-size:.58rem;color:var(--text)';
+    d.textContent = o.title;
+    d.onmouseenter = () => d.style.color = 'var(--acc)';
+    d.onmouseleave = () => d.style.color = 'var(--text)';
+    d.onclick = () => addToReport(o.title, o.text);
+    h.appendChild(d);
+  });
+}
+
+function addToReport(title, text) {
+  const cur = document.getElementById('rptContent').value;
+  document.getElementById('rptContent').value =
+    (cur ? cur + '\n\n---\n\n' : '') + '## ' + title + '\n\n' + text;
+}
+
+function buildReport() {
+  if (!saved.length) { alert('Run some analyses first.'); return; }
+  document.getElementById('rptContent').value =
+    saved.map(o => '## ' + o.title + '\n\n' + o.text).join('\n\n---\n\n');
+}
+
+function exportReport() {
+  const title = document.getElementById('rptTitle').value || 'Command Center Report';
+  const content = document.getElementById('rptContent').value;
+  if (!content.trim()) { alert('No content to export.'); return; }
+  const blob = new Blob(['# ' + title + '\n\nGenerated: ' +
+    new Date().toLocaleString() + '\n\n' + content], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = title.replace(/\s+/g,'-').toLowerCase() + '.txt';
+  a.click();
+}
+
+function copyReport() {
+  const c = document.getElementById('rptContent').value;
+  if (!c.trim()) { alert('No content.'); return; }
+  navigator.clipboard.writeText(c).then(() => setStatus('Copied to clipboard'));
+}
+
+function clearReport() {
+  document.getElementById('rptContent').value = '';
+  document.getElementById('rptTitle').value = '';
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mod-card').forEach(c => {
+    c.style.display = (cat === 'ALL' || c.querySelector('.mc-cat').textContent === cat) ? '' : 'none';
+  });
+}
+
+function showView(view, btn) {
+  document.querySelectorAll('.tb-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + view)?.classList.add('active');
+}
+
+function loadNode(url) {
+  if (url) document.getElementById('nodeFrame').src = url;
+}
+
+function openNodeNewTab() {
+  const url = document.getElementById('nodeSelect').value;
+  if (url) window.open(url, '_blank');
+}
+
+function openCmd() {
+  const p = prompt('COMMAND — Enter analysis request:');
+  if (p) quickAsk(p);
+}
+
+function setStatus(msg) {
+  document.getElementById('sysStatus').textContent = msg;
+  setTimeout(() => document.getElementById('sysStatus').textContent = 'READY', 5000);
+}
+
+document.getElementById('statMods').textContent =
+  document.querySelectorAll('.mod-card').length;
+</script>
+</body>
+</html>

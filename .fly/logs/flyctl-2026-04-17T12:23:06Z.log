@@ -1,0 +1,66 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG started querying for statuspage incidents
+DEBUG client initialized.
+DEBUG app config loaded from /workspaces/tsm-shell/fly.toml
+DEBUG started querying for host issues
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($appName: String!) { apphostissues:app(name: $appName) { hostIssues { nodes { internalId message createdAt updatedAt } } } }",
+  "variables": {
+    "appName": "tsm-shell"
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (166.9ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($org: ID, $role: String, $after: String) { apps(type: \"container\", first: 200, after: $after, organizationId: $org, role: $role) { pageInfo { hasNextPage endCursor } nodes { id name deployed hostname platformVersion organization { slug name } currentRelease { createdAt status } status } } }",
+  "variables": {
+    "after": ""
+  }
+}
+
+
+DEBUG {}
+DEBUG Starting task manager
+DEBUG monitoring tokens at /workspaces/tsm-shell/.fly/config.yml
+DEBUG <-- 200 https://api.fly.io/graphql (181.94ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"apphostissues":{"hostIssues":{"nodes":[]}}}}
+DEBUG <-- 200 https://api.fly.io/graphql (248.55ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"apps":{"pageInfo":{"hasNextPage":false,"endCursor":"OA"},"nodes":[{"id":"ameris-portal","name":"ameris-portal","deployed":true,"hostname":"ameris-portal.fly.dev","platformVersion":"machines","currentRelease":{"createdAt":"2026-04-17T07:33:43Z","status":"complete"},"status":"deployed","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"case-tech-portal","name":"case-tech-portal","deployed":true,"hostname":"case-tech-portal.fly.dev","platformVersion":"machines","currentRelease":{"
+DEBUG   <-- https://api.fly.io/graphql: createdAt":"2026-04-17T06:48:13Z","status":"complete"},"status":"suspended","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"healthcare-command","name":"healthcare-command","deployed":true,"hostname":"healthcare-command.fly.dev","platformVersion":"machines","currentRelease":{"createdAt":"2026-04-17T07:32:52Z","status":"complete"},"status":"deployed","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"honor-portal","name":"honor-portal","deployed":true,"hostname":"hon
+DEBUG   <-- https://api.fly.io/graphql: or-portal.fly.dev","platformVersion":"machines","currentRelease":{"createdAt":"2026-04-17T07:33:34Z","status":"complete"},"status":"suspended","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"tsm-core","name":"tsm-core","deployed":true,"hostname":"tsm-core.fly.dev","platformVersion":"machines","currentRelease":{"createdAt":"2026-04-17T05:45:32Z","status":"complete"},"status":"deployed","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"tsm-core-db","name":"tsm-core-db","deployed":true,"hostname":"tsm-core-db.fly.dev","platformVersion":"machines","currentRelease":null,"status":"deployed","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"tsm-shell","name":"tsm-shell","deployed":true,"hostname":"tsm-shell.fly.dev","platformVersion":"machines","currentRelease":{"createdAt":"2026-04-17T06:28:14Z","status":"complete"},"status":"suspended","organization":{"slug":"personal","name":"Latorrey Whitehead"}},{"id":"tsm-teambriefings","name":"tsm-teambriefings"
+DEBUG   <-- https://api.fly.io/graphql: ,"deployed":true,"hostname":"tsm-teambriefings.fly.dev","platformVersion":"machines","currentRelease":{"createdAt":"20
+DEBUG   <-- https://api.fly.io/graphql: 26-04-16T16:06:35Z","status":"complete"},"status":"deployed","organization":{"slug":"personal","name":"Latorrey Whitehead"}}]}}}
+DEBUG Task manager done
+DEBUG done monitoring tokens
+DEBUG querying for host issues resulted to []
+DEBUG querying for statuspage incidents resulted to &{[]}

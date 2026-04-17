@@ -1,0 +1,60 @@
+DEBUG Loaded flyctl config from/workspaces/tsm-shell/.fly/config.yml
+DEBUG determined hostname: "codespaces-3243f7"
+DEBUG determined working directory: "/workspaces/tsm-shell"
+DEBUG determined config directory: "/workspaces/tsm-shell/.fly"
+DEBUG ensured config directory exists.
+DEBUG ensured config directory perms.
+DEBUG cache loaded.
+DEBUG config initialized.
+DEBUG skipped querying for new release
+DEBUG checking for updates...
+DEBUG started querying for statuspage incidents
+DEBUG client initialized.
+DEBUG app config loaded from /workspaces/tsm-shell/fly.toml
+DEBUG started querying for host issues
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG --> POST https://api.fly.io/graphql
+
+DEBUG {
+  "query": "query($admin: Boolean!) { organizations(admin: $admin) { nodes { id slug rawSlug name type paidPlan billable viewerRole internalNumericId } } }",
+  "variables": {
+    "admin": false
+  }
+}
+
+
+DEBUG {}
+DEBUG {
+  "query": "query($appName: String!) { apphostissues:app(name: $appName) { hostIssues { nodes { internalId message createdAt updatedAt } } } }",
+  "variables": {
+    "appName": "honor-portal"
+  }
+}
+
+
+DEBUG {}
+DEBUG <-- 200 https://api.fly.io/graphql (324.29ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"apphostissues":{"hostIssues":{"nodes":[]}}}}
+DEBUG <-- 200 https://api.fly.io/graphql (332.07ms)
+
+DEBUG   <-- https://api.fly.io/graphql: {"data":{"organizations":{"nodes":[{"id":"896mQD3oYX6ANTBln3aOD7GN5OcBM4RDl","slug":"personal","rawSlug":"latorrey-whitehead","name":"Latorrey Whitehead","type":"PERSONAL","paidPlan":true,"billable":true,"viewerRole":"admin","internalNumericId":"1592053"}]}}}
+DEBUG app config loaded from /workspaces/tsm-shell/fly.toml
+DEBUG --> POST https://api.machines.dev/v1/apps/honor-portal/certificates/acme
+
+DEBUG Starting task manager
+DEBUG monitoring tokens at /workspaces/tsm-shell/.fly/config.yml
+DEBUG {
+  "hostname": "honorhealth.tsmatter.com"
+}
+
+DEBUG {0x2a050c6850b0}
+DEBUG <-- 201 https://api.machines.dev/v1/apps/honor-portal/certificates/acme (2.36s)
+
+DEBUG   <-- https://api.machines.dev/v1/apps/honor-portal/certificates/acme: {"hostname":"honorhealth.tsmatter.com","configured":false,"acme_requested":true,"status":"Awaiting configuration","dns_provider":"cloudflare","rate_limited_until":null,"certificates":[],"validation":{"dns_configured":false,"alpn_configured":false,"http_configured":false,"ownership_txt_configured":false},"dns_requirements":{"a":["66.241.125.91"],"aaaa":["2a09:8280:1::104:3e73:0"],"cname":"zk3gymx.honor-portal.fly.dev","acme_challenge":{"name":"_acme-challenge.honorhealth.tsmatter.com","target":"honorhealth.t
+DEBUG   <-- https://api.machines.dev/v1/apps/honor-portal/certificates/acme: smatter.com.zk3gymx.flydns.net"},"ownership":{"name":"_fly-ownership.honorhealth.tsmatter.com","app_value":"app-zk3gymx","org_value":"org-8mdw21"}},"validation_errors":[{"code":"DNS_RECORD_MISMATCH","message":"DNS records do not match the expected values","remediation":"Update your existing A, AAAA, or CNAME records to point to your app's IP addresses or hostname","timestamp":"2026-04-17T12:25:08.159Z"}]}
+DEBUG Task manager done
+DEBUG done monitoring tokens
+DEBUG querying for host issues resulted to []
+DEBUG querying for statuspage incidents resulted to &{[]}
