@@ -89,19 +89,7 @@ tr:hover td{background:#0f1f0f}
 
 </head><body>
 
-<script>
-window.onload = function() {
-  console.log("--- TSM DIAGNOSTIC START ---");
-  const dash = document.getElementById('tab-dash');
-  if (dash) {
-    dash.style.setProperty('display', 'block', 'important');
-    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
-    console.log("✔ tab-dash found and forced.");
-  } else {
-    console.error("✖ tab-dash NOT FOUND in DOM");
-  }
-};
-</script>
+
 
 
 
@@ -144,20 +132,34 @@ window.onload = function() {
 
 
 
-<script>
-window.switchTab = function(id, btn) {
-  // Hide all
-  const tabs = document.querySelectorAll('[id^="tab-"]');
-  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
-  
-  // Show target
-  const target = document.getElementById('tab-' + id) || document.getElementById(id);
-  if (target) target.setAttribute('style', 'display: block !important');
-  
-  // UI Cleanup
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
-console.log("TSM Engine Active for hc-legal");
+
+
+<script id="tsm-final-fix">
+(function() {
+  window.switchTab = function(id, btn) {
+    console.log('TSM Manual Switch:', id);
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => { t.style.setProperty('display', 'none', 'important'); });
+    
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) {
+      target.style.setProperty('display', 'block', 'important');
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  function init() {
+    const firstBtn = document.querySelector('.nav-btn');
+    if (firstBtn) {
+      const m = (firstBtn.getAttribute('onclick')||'').match(/'([^']+)'/);
+      window.switchTab(m ? m[1] : 'dash', firstBtn);
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+  setTimeout(init, 100); 
+})();
 </script>
 </body></html>
