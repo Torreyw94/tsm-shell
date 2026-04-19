@@ -1,5 +1,18 @@
 
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HonorHealth | Command Center</title><style>
+<!DOCTYPE html><html lang="en"><head>
+
+<style id="tsm-failsafe-visibility">
+  /* Force all tabs hidden by default to prevent overlap */
+  [id^="tab-"], section[id^="tab-"] { display: none !important; }
+  
+  /* Force the very first tab found in the HTML to show immediately */
+  [id^="tab-"]:first-of-type, 
+  section[id^="tab-"]:first-of-type { 
+    display: block !important; 
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+</style><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HonorHealth | Command Center</title><style>
 <link rel="stylesheet" href="/library-style.css"><script src="/library-core.js"></script>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -77,41 +90,8 @@ function getNodeSystemPrompt() {
 
 
 
-<style id="tsm-final-styles">
-  [id^="tab-"] { display: none !important; }
-  [id^="tab-"].tab-active { display: block !important; }
-</style>
-<script id="tsm-final-logic">
-(function() {
-  // Global Sovereign Handlers
-  window.switchTab = function(id, btn) {
-    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
-    const t = document.getElementById('tab-' + id);
-    if (t) t.classList.add('tab-active');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
 
-  window.loadPreset = function(n, l) {
-    const input = document.querySelector('input[placeholder*="query"], textarea');
-    if (input) { input.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); input.focus(); }
-  };
 
-  window.safeAnalyze = function() {
-    console.log('🚀 Analysis sequence initiated...');
-  };
-
-  function init() {
-    const f = document.querySelector('.nav-btn');
-    if (f) {
-      const oc = f.getAttribute('onclick') || "";
-      const id = oc.match(/['"]([^'"]+)['"]/) ? oc.match(/['"]([^'"]+)['"]/)[1] : 'dash';
-      window.switchTab(id, f);
-    }
-  }
-  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
-})();
-</script>
 </head><body>
 <div id="library-tab"></div>
 <div class="hdr"><div><div class="logo">HONORHEALTH <span>|</span> COMMAND</div><div class="badge">INTELLIGENCE COMMAND CENTER · HEALTHCARE · ENTERPRISE</div></div><div class="powered">POWERED BY TSM MATTER</div></div>
@@ -303,24 +283,5 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
 
 
 
-<script id="tsm-visibility-fix">
-(function() {
-  function forceShowTab() {
-    // 1. Find all sections that look like tabs
-    const tabs = document.querySelectorAll('[id^="tab-"], section, .tab-pane');
-    
-    // 2. Force the first one to be visible
-    if (tabs.length > 0) {
-      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
-      tabs[0].style.setProperty('display', 'block', 'important');
-      tabs[0].classList.add('tab-active');
-      console.log('✔ TSM Engine: Forced visibility on primary node segment.');
-    }
-  }
 
-  // Run immediately and again after a short delay to beat local script crashes
-  forceShowTab();
-  setTimeout(forceShowTab, 500);
-})();
-</script>
 </body></html>

@@ -17,7 +17,20 @@ async function safeFetch(url, options={}) {
   }
 }
 
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC MEDICAL COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
+<!DOCTYPE html><html lang="en"><head>
+
+<style id="tsm-failsafe-visibility">
+  /* Force all tabs hidden by default to prevent overlap */
+  [id^="tab-"], section[id^="tab-"] { display: none !important; }
+  
+  /* Force the very first tab found in the HTML to show immediately */
+  [id^="tab-"]:first-of-type, 
+  section[id^="tab-"]:first-of-type { 
+    display: block !important; 
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+</style><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC MEDICAL COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
 :root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -96,41 +109,8 @@ tr:hover td{background:#0f1f0f}
 
 
 
-<style id="tsm-final-styles">
-  [id^="tab-"] { display: none !important; }
-  [id^="tab-"].tab-active { display: block !important; }
-</style>
-<script id="tsm-final-logic">
-(function() {
-  // Global Sovereign Handlers
-  window.switchTab = function(id, btn) {
-    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
-    const t = document.getElementById('tab-' + id);
-    if (t) t.classList.add('tab-active');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
 
-  window.loadPreset = function(n, l) {
-    const input = document.querySelector('input[placeholder*="query"], textarea');
-    if (input) { input.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); input.focus(); }
-  };
 
-  window.safeAnalyze = function() {
-    console.log('🚀 Analysis sequence initiated...');
-  };
-
-  function init() {
-    const f = document.querySelector('.nav-btn');
-    if (f) {
-      const oc = f.getAttribute('onclick') || "";
-      const id = oc.match(/['"]([^'"]+)['"]/) ? oc.match(/['"]([^'"]+)['"]/)[1] : 'dash';
-      window.switchTab(id, f);
-    }
-  }
-  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
-})();
-</script>
 </head><body><div class="hdr"><div class="hdr-left"><span style="font-size:22px">🏥</span><div><div class="hdr-title">HC MEDICAL COMMAND</div><div class="hdr-sub">Clinical Ops · Revenue Cycle · CPT Audit · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('clinical',this)">🩺 CLINICAL OPS</button><button class="nav-btn" onclick="window.switchTab('billing',this)">💊 BILLING & CPT</button><button class="nav-btn" onclick="window.switchTab('auth',this)">📋 PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">97.4%</div><div class="kpi-lbl">Medical Compliance</div><div class="kpi-sub green">Above 95% target · OIG watch clear</div></div>
 <div class="kpi"><div class="kpi-val amber">38</div><div class="kpi-lbl">Auth Pending</div><div class="kpi-sub amber">14 urgent · avg 2.3 days pending</div></div>
@@ -329,24 +309,5 @@ window.addEventListener('load',function(){
 </script>
 
 
-<script id="tsm-visibility-fix">
-(function() {
-  function forceShowTab() {
-    // 1. Find all sections that look like tabs
-    const tabs = document.querySelectorAll('[id^="tab-"], section, .tab-pane');
-    
-    // 2. Force the first one to be visible
-    if (tabs.length > 0) {
-      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
-      tabs[0].style.setProperty('display', 'block', 'important');
-      tabs[0].classList.add('tab-active');
-      console.log('✔ TSM Engine: Forced visibility on primary node segment.');
-    }
-  }
 
-  // Run immediately and again after a short delay to beat local script crashes
-  forceShowTab();
-  setTimeout(forceShowTab, 500);
-})();
-</script>
 </body></html>
