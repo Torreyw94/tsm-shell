@@ -104,6 +104,35 @@ tr:hover td{background:#0f1f0f}
 
 
 
+
+<style>
+  [id^="tab-"] { display: none !important; }
+  #tab-dash { display: block !important; }
+  #tab-dash.active-tab { display: block !important; }
+</style>
+<script>
+  (function() {
+    window.switchTab = function(id, btn) {
+      const tabs = document.querySelectorAll('[id^="tab-"]');
+      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
+      const target = document.getElementById('tab-' + id) || document.getElementById(id);
+      if (target) target.style.setProperty('display', 'block', 'important');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    };
+
+    // The Hammer: Try to initialize every 50ms until successful
+    let attempts = 0;
+    const interval = setInterval(() => {
+      const dashBtn = document.querySelector('.nav-btn');
+      if (dashBtn || attempts > 20) {
+        window.switchTab('dash', dashBtn);
+        clearInterval(interval);
+      }
+      attempts++;
+    }, 50);
+  })();
+</script>
 </head>
 <body>
 
