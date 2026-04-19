@@ -72,41 +72,40 @@ tr:hover td{background:#0f1f0f}
 
 
 
-<style id="tsm-core-styles">
+
+
+
+<style id="tsm-final-styles">
   [id^="tab-"] { display: none !important; }
   [id^="tab-"].tab-active { display: block !important; }
 </style>
-<script id="tsm-core-logic">
+<script id="tsm-final-core">
 (function() {
-  // 1. Tab System
-  window.switchTab = function(tabId, btn) {
+  window.switchTab = function(id, btn) {
     document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
-    const t = document.getElementById('tab-' + tabId);
+    const t = document.getElementById('tab-' + id);
     if (t) t.classList.add('tab-active');
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  // 2. Preset & Analysis Engine
   window.loadPreset = function(n, l) {
     const i = document.querySelector('input[placeholder*="query"], textarea');
     if (i) { i.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); i.focus(); }
   };
 
   window.safeAnalyze = function() {
-    const i = document.querySelector('input[placeholder*="query"], textarea');
-    if (i && i.value.trim()) { console.log('🚀 Syncing to Strategist...'); }
+    console.log('🚀 Sovereign Engine: Analyzing node data...');
   };
 
   function init() {
     const f = document.querySelector('.nav-btn');
     if (f) {
-      const oc = f.getAttribute('onclick') || '';
-      const tid = oc.includes("'") ? oc.split("'")[1] : oc.split('"')[1];
-      window.switchTab(tid || 'dash', f);
+      const oc = f.getAttribute('onclick') || "";
+      const id = oc.split("'")[1] || oc.split('"')[1] || 'dash';
+      window.switchTab(id, f);
     }
   }
-
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
 </script>
