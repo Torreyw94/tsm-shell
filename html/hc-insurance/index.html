@@ -4,29 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AuditOps | HC-INSURANCE</title>
-  <script>
-    function switchTab(id, btn) {
-      console.log("TSM: Switching to", id);
-      // Hide all divs that look like tabs
-      document.querySelectorAll('div[id]').forEach(div => {
-        if (div.id.includes('tab-') || ['dash','matters','contracts','claims','billing','medical'].includes(div.id)) {
-          div.style.display = 'none';
-        }
-      });
-      // Show target
-      const target = document.getElementById(id) || document.getElementById('tab-' + id);
-      if (target) target.style.display = 'block';
-      
-      // Nav UI
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    }
+  
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const firstBtn = document.querySelector('.nav-btn');
-      if (firstBtn) firstBtn.click();
+<script>
+  window.switchTab = function(id, btn) {
+    console.log("TSM Active:", id);
+    // Hide all tabs
+    document.querySelectorAll('[id^="tab-"], .tab-content, #dash, #matters, #contracts, #claims').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
     });
-  </script>
+    // Show target
+    const target = document.getElementById(id) || document.getElementById('tab-' + id);
+    if (target) target.style.setProperty('display', 'block', 'important');
+    // Nav UI
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+  // Wait for layout to settle, then click first button
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const first = document.querySelector('.nav-btn');
+      if (first) {
+        const id = first.getAttribute('onclick').match(/'([^']+)'/)[1];
+        window.switchTab(id, first);
+      }
+    }, 100);
+  });
+</script>
 </head><body>
 
 

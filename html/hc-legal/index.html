@@ -4,29 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AuditOps | HC-LEGAL</title>
-  <script>
-    function switchTab(id, btn) {
-      console.log("TSM: Switching to", id);
-      // Hide all divs that look like tabs
-      document.querySelectorAll('div[id]').forEach(div => {
-        if (div.id.includes('tab-') || ['dash','matters','contracts','claims','billing','medical'].includes(div.id)) {
-          div.style.display = 'none';
-        }
-      });
-      // Show target
-      const target = document.getElementById(id) || document.getElementById('tab-' + id);
-      if (target) target.style.display = 'block';
-      
-      // Nav UI
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const firstBtn = document.querySelector('.nav-btn');
-      if (firstBtn) firstBtn.click();
-    });
-  </script>
+  
 </head><body>
 
 
