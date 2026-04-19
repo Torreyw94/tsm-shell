@@ -291,7 +291,7 @@ window.onload = function() {
   <div class="kpi-cell">
     <div class="kpi-label">Compliance Score</div>
     <div class="kpi-val" style="color:var(--teal)" id="kpi-comp">84%</div>
-    <div class="kpi-sub">HIPAA + CMS + OIG</div>
+    <div class="kpi-sub">HRSA / BPHC + NIH / RESEARCH + UNIFORM GUIDANCE</div>
   </div>
   <div class="kpi-cell">
     <div class="kpi-label">Denial Rate</div>
@@ -399,7 +399,7 @@ window.onload = function() {
         <div class="action-pill" onclick="safeAnalyze(document.querySelector(`textarea`)?.value || `analysis`, `output`)">UPLOAD DOCUMENT</div>
         <div class="action-pill" onclick="deployToNodes('Run full cross-node analysis: denial trends, compliance posture, revenue cycle health, and recommended actions')">FULL ANALYSIS</div>
         <div class="action-pill" onclick="deployToNodes('Extract all key metrics, KPIs, risk indicators, and financial data across nodes')">EXTRACT</div>
-        <div class="action-pill" onclick="deployToNodes('Scan all nodes for compliance gaps, HIPAA violations, documentation failures, and audit exposure')">COMPLIANCE SCAN</div>
+        <div class="action-pill" onclick="deployToNodes('Scan all nodes for compliance gaps, HRSA / BPHC violations, documentation failures, and audit exposure')">COMPLIANCE SCAN</div>
         <div class="action-pill" onclick="deployToNodes('Extract financial performance data: revenue, collections, AR aging, margin analysis')">FINANCIAL EXTRACT</div>
         <div class="action-pill" onclick="synthesize()">EXEC SUMMARY</div>
       </div>
@@ -479,7 +479,7 @@ window.onload = function() {
           <div class="nc-port">PORT 3014</div>
         </div>
         <div class="nc-title" style="color:var(--legal)">LEGAL</div>
-        <div class="nc-subtitle">HIPAA · Contracts · Regulatory Defense</div>
+        <div class="nc-subtitle">HRSA / BPHC · Contracts · Regulatory Defense</div>
         <div class="nc-progress-bar"><div class="nc-progress-fill" style="background:var(--legal);width:0%" id="prog-legal"></div></div>
         <div class="nc-output" id="out-legal">Waiting for deploy.</div>
         <div class="nc-footer">
@@ -511,7 +511,7 @@ window.onload = function() {
           <div class="nc-port">PORT 3016</div>
         </div>
         <div class="nc-title" style="color:var(--compliance)">COMPLIANCE</div>
-        <div class="nc-subtitle">HIPAA · CMS · Joint Commission · OIG</div>
+        <div class="nc-subtitle">HRSA / BPHC · NIH / RESEARCH · Joint Commission · UNIFORM GUIDANCE</div>
         <div class="nc-progress-bar"><div class="nc-progress-fill" style="background:var(--compliance);width:0%" id="prog-compliance"></div></div>
         <div class="nc-output" id="out-compliance">Waiting for deploy.</div>
         <div class="nc-footer">
@@ -559,7 +559,7 @@ window.onload = function() {
           <div class="nc-port">PORT 3012</div>
         </div>
         <div class="nc-title" style="color:var(--grants)">GRANTS</div>
-        <div class="nc-subtitle">HRSA · NIH · CMS Innovation · Foundation</div>
+        <div class="nc-subtitle">HRSA · NIH · NIH / RESEARCH Innovation · Foundation</div>
         <div class="nc-progress-bar"><div class="nc-progress-fill" style="background:var(--grants);width:0%" id="prog-grants"></div></div>
         <div class="nc-output" id="out-grants">Waiting for deploy.</div>
         <div class="nc-footer">
@@ -681,6 +681,31 @@ console.log("TSM Engine Active for healthcare");
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
+})();
+</script>
+
+<script id="tsm-final-engine">
+(function() {
+    window.switchTab = function(id, btn) {
+        console.log("TSM Global Engine: Switching to", id);
+        document.querySelectorAll('[id^="tab-"]').forEach(el => {
+            el.style.setProperty('display', 'none', 'important');
+        });
+        const target = document.getElementById('tab-' + id);
+        if (target) { target.style.setProperty('display', 'block', 'important'); }
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    };
+
+    function init() {
+        const firstBtn = document.querySelector('.nav-btn');
+        if (firstBtn) {
+            const m = (firstBtn.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
+            window.switchTab(m ? m[1] : 'dash', firstBtn);
+        }
+    }
+    window.addEventListener('DOMContentLoaded', init);
+    setTimeout(init, 150);
 })();
 </script>
 </body>

@@ -638,5 +638,30 @@ console.log("TSM Engine Active for honor-portal");
   };
 })();
 </script>
+
+<script id="tsm-final-engine">
+(function() {
+    window.switchTab = function(id, btn) {
+        console.log("TSM Global Engine: Switching to", id);
+        document.querySelectorAll('[id^="tab-"]').forEach(el => {
+            el.style.setProperty('display', 'none', 'important');
+        });
+        const target = document.getElementById('tab-' + id);
+        if (target) { target.style.setProperty('display', 'block', 'important'); }
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    };
+
+    function init() {
+        const firstBtn = document.querySelector('.nav-btn');
+        if (firstBtn) {
+            const m = (firstBtn.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
+            window.switchTab(m ? m[1] : 'dash', firstBtn);
+        }
+    }
+    window.addEventListener('DOMContentLoaded', init);
+    setTimeout(init, 150);
+})();
+</script>
 </body>
 </html>
