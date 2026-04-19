@@ -277,37 +277,52 @@ window.addEventListener('load',function(){
 
 
 
-<script id="tsm-final-v5">
+
+
+<script id="tsm-final-v6-ultra">
 (function() {
   window.switchTab = function(id, btn) {
-    // Hide all tabs
-    document.querySelectorAll('[id^="tab-"]').forEach(el => {
-      el.style.setProperty('display', 'none', 'important');
-    });
-    // Show target
+    console.log('◆ TSM Forcing Tab:', id);
+    const allTabs = document.querySelectorAll('[id^="tab-"]');
+    allTabs.forEach(t => { t.style.setProperty('display', 'none', 'important'); });
+    
     const target = document.getElementById('tab-' + id) || document.getElementById(id);
     if (target) {
       target.style.setProperty('display', 'block', 'important');
     }
-    // Update buttons
+
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  function forceAutoLoad() {
+  // Keep trying to init until successful or 2 seconds pass
+  let attempts = 0;
+  const initInterval = setInterval(() => {
+    attempts++;
     const firstBtn = document.querySelector('.nav-btn');
-    if (firstBtn) {
-      const oc = firstBtn.getAttribute('onclick') || "";
-      const match = oc.match(/'([^']+)'/);
-      const tabId = match ? match[1] : 'dash';
-      window.switchTab(tabId, firstBtn);
-      console.log('✔ TSM Engine: Auto-loaded ' + tabId);
+    const firstTab = document.querySelector('[id^="tab-"]');
+    
+    if (firstBtn && firstTab) {
+      const m = (firstBtn.getAttribute('onclick')||'').match(/'([^']+)'/);
+      window.switchTab(m ? m[1] : 'dash', firstBtn);
+      clearInterval(initInterval);
+      console.log('✔ TSM Engine: Auto-load Success');
     }
-  }
+    
+    if (attempts > 40) clearInterval(initInterval); // Stop after 2s
+  }, 50);
 
-  // Run on load and as a fallback
-  window.addEventListener('load', forceAutoLoad);
-  setTimeout(forceAutoLoad, 100);
+  // Global click listener to fix broken onclick strings
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.nav-btn');
+    if (btn) {
+      const m = (btn.getAttribute('onclick')||'').match(/'([^']+)'/);
+      if (m) {
+        e.preventDefault();
+        window.switchTab(m[1], btn);
+      }
+    }
+  }, true);
 })();
 </script>
 </body></html>
