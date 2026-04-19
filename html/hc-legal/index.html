@@ -19,7 +19,7 @@
       targets.forEach(el => el.style.setProperty('display', 'none', 'important'));
       
       // Show target
-      const target = document.getElementById(id) || document.getElementById('tab-' + id);
+      const target = document.getElementById(id)||document.getElementById("tab-"+id) || document.getElementById('tab-' + id);
       if (target) {
         target.style.setProperty('display', 'block', 'important');
       }

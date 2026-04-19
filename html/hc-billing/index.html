@@ -302,7 +302,7 @@ window.addEventListener('load',function(){
     });
     
     // 2. Show the target
-    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    const target = document.getElementById('tab-' + id) || document.getElementById(id)||document.getElementById("tab-"+id);
     if (target) {
       target.style.setProperty('display', 'block', 'important');
       target.classList.add('tab-active');
