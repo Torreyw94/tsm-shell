@@ -1,14 +1,6 @@
 <!DOCTYPE html><html lang="en"><head>
 
-<style id="tsm-visibility-fix">
-  /* Force the primary tab to be visible even if scripts crash */
-  [id^="tab-"] { display: none !important; }
-  [id^="tab-"]:first-of-type { 
-    display: block !important; 
-    visibility: visible !important; 
-    opacity: 1 !important; 
-  }
-</style>
+
 
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC COMPLIANCE COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
@@ -91,6 +83,47 @@ tr:hover td{background:#0f1f0f}
 
 
 
+
+<style id="tsm-recovery-styles">
+  [id^="tab-"] { display: none !important; }
+  [id^="tab-"].tab-active { display: block !important; }
+</style>
+<script id="tsm-recovery-logic">
+(function() {
+  // Hardened Global Handlers
+  window.switchTab = function(tabId, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
+    const target = document.getElementById('tab-' + tabId);
+    if (target) target.classList.add('tab-active');
+    
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  window.loadPreset = function(n, l) {
+    const i = document.querySelector('input[placeholder*="query"], textarea');
+    if (i) { i.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); i.focus(); }
+  };
+
+  window.safeAnalyze = function() { console.log('🚀 Analysis sequence online.'); };
+
+  // Initialization: Force Content Visibility
+  function initFleet() {
+    const firstBtn = document.querySelector('.nav-btn');
+    if (firstBtn) {
+       const onclick = firstBtn.getAttribute('onclick') || '';
+       const tabId = onclick.match(/['"]([^'"]+)['"]/) ? onclick.match(/['"]([^'"]+)['"]/)[1] : 'dash';
+       window.switchTab(tabId, firstBtn);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFleet);
+  } else {
+    initFleet();
+  }
+})();
+</script>
 </head><body><div class="hdr"><div class="hdr-left"><span style="font-size:22px">⚖️</span><div><div class="hdr-title">HC COMPLIANCE COMMAND</div><div class="hdr-sub">HIPAA · CMS · Joint Commission · OIG · Regulatory</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('hipaa',this)">🔒 HIPAA</button><button class="nav-btn" onclick="window.switchTab('cms',this)">📋 CMS</button><button class="nav-btn" onclick="window.switchTab('jc',this)">🏥 JOINT COMMISSION</button><button class="nav-btn" onclick="window.switchTab('oig',this)">⚠️ OIG</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">96.8%</div><div class="kpi-lbl">Compliance Score</div><div class="kpi-sub green">Above Joint Commission 95% floor</div></div>
 <div class="kpi"><div class="kpi-val amber">14</div><div class="kpi-lbl">Open Audit Items</div><div class="kpi-sub amber">3 HIPAA · 6 CMS · 5 OIG · deadline watch</div></div>
