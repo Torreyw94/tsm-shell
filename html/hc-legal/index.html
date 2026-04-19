@@ -109,13 +109,7 @@ tr:hover td{background:#0f1f0f}
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Update 5 vendor BAAs — identify 2 expired agreements, draft updated HIPAA Business Associate Agreement language, and build execution timeline"><div class="pr-card-title">BAA Renewal</div><div class="pr-card-desc">HIPAA BAA compliance</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build healthcare legal risk register — map all 23 active matters by exposure, probability, and timeline. Prioritize top 5 for immediate action"><div class="pr-card-title">Legal Risk Register</div><div class="pr-card-desc">Full matter risk map</div></div>
 </div></div></div><div class="footer"><div class="fn">⚖️ LEGAL NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC LEGAL COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><script>
-function switchTab(tabId,btn){
-  document.querySelectorAll('[id^="tab-"]').forEach(function(el){el.style.display="none";});
-  var t=document.getElementById('tab-'+tabId);
-  if(t){t.style.setProperty('display','block','important');}
-  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn){btn.classList.add('active');}
-}
+
 function loadAI(prompt){
   var aiBtn=null;
   document.querySelectorAll('.nav-btn').forEach(function(b){
@@ -272,12 +266,6 @@ setInterval(pollHcLegal, 30000);
     }, 50);
   });
 })();
-</script><script>
-window.addEventListener('load',function(){
-  var first=document.querySelector('.nav-btn');
-  var m=first&&(first.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-  if(typeof switchTab==='function') switchTab(m?m[1]:'dash',first);
-});
 </script>
 
 
