@@ -79,7 +79,8 @@ const HC_NODES = new Set([
 ]);
 
 function appUrl(key, url) {
-  if (url) return url;
+  if (url && url.startsWith('/')) return url;
+  if (url) return url.startsWith('/html/') ? url : url;
   if (key.startsWith('http')) return key;
   if (HC_NODES.has(key)) return '/html/' + key + '/index.html';
   return '/html/' + key + '/';

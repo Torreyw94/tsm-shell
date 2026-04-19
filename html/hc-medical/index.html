@@ -1,3 +1,22 @@
+async function safeFetch(url, options={}) {
+  try {
+    const res = await safeFetch(url, options);
+    const text = await res.text();
+
+    if (!text) throw new Error("Empty response from backend");
+
+    if (!text.trim().startsWith("{")) {
+      console.error("❌ Non-JSON response:", text.slice(0,300));
+      throw new Error("Backend returned HTML instead of JSON");
+    }
+
+    return JSON.parse(text);
+  } catch (err) {
+    console.error("🔥 safeFetch error:", err);
+    return { error: err.message || "Unknown error" };
+  }
+}
+
 <!DOCTYPE html><html lang="en"><head>
 
 
@@ -87,17 +106,14 @@ tr:hover td{background:#0f1f0f}
 
 
 
-<div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 
+<style>
+  [id^="tab-"] { display: none !important; }
+  #tab-dash { display: block !important; }
+  #tab-dash.active-tab { display: block !important; }
+</style>
 
-
-
-
-
-<div id="intakeFeed_medical" style="display:none;position:fixed;top:60px;right:20px;z-index:9999;width:360px;background:#0a140a;border:1px solid rgba(0,255,136,0.25);border-left:3px solid #00ff88;padding:16px 18px;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
-  <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">◆ HC MEDICAL INTAKE</div>
-  <div id="intakeList_medical" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
-</div>
+</head><body>
 
 
 
