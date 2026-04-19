@@ -125,9 +125,6 @@ function loadAI(prompt){
   setTimeout(function(){ Q(prompt,'ai-btn','ai-res'); },50);
 }
 
-  document.getElementById('ai-inp').value=prompt;
-  document.getElementById('ai-inp').focus();
-}
 async function Q(prompt,btnId,resId){
   if(!prompt||!prompt.trim())return;
   var btn=document.getElementById(btnId),res=document.getElementById(resId);
