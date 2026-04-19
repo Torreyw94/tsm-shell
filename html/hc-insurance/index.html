@@ -89,30 +89,10 @@ tr:hover td{background:#0f1f0f}
 
 </head><body>
 
-<script>
-window.switchTab = function(id, btn) {
-  console.log('TSM Manual Switch:', id);
-  const targets = document.querySelectorAll('[id^="tab-"]');
-  targets.forEach(t => t.style.display = 'none');
-  const target = document.getElementById('tab-' + id) || document.getElementById(id);
-  if (target) target.style.display = 'block';
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
 
-// Use an observer to catch the DOM when it is ready
-const observer = new MutationObserver((mutations, obs) => {
-  const dash = document.getElementById('tab-dash');
-  if (dash) {
-    window.switchTab('dash', document.querySelector('.nav-btn'));
-    obs.disconnect(); 
-  }
-});
-observer.observe(document.documentElement, { childList: true, subtree: true });
-</script>
 
-<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🛡️</span><div><div class="hdr-title">HC INSURANCE COMMAND</div><div class="hdr-sub">Claims · Adjudication · Payer Relations · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('payers',this)">🤝 PAYER RELATIONS</button><button class="nav-btn" onclick="window.switchTab('auth',this)">✅ PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash"><div class="kpi-row">
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🛡️</span><div><div class="hdr-title">HC INSURANCE COMMAND</div><div class="hdr-sub">Claims · Adjudication · Payer Relations · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('payers',this)">🤝 PAYER RELATIONS</button><button class="nav-btn" onclick="window.switchTab('auth',this)">✅ PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
+<div id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val amber">2,847</div><div class="kpi-lbl">Pending Claims</div><div class="kpi-sub amber">$3.2M in adjudication · 14 urgent</div></div>
 <div class="kpi"><div class="kpi-val green">96.2</div><div class="kpi-lbl">Node Score</div><div class="kpi-sub green">Payer relation index · above 95 target</div></div>
 <div class="kpi"><div class="kpi-val red">18.4%</div><div class="kpi-lbl">Denial Rate</div><div class="kpi-sub red">Exceeds 15% threshold · 3-payer pattern</div></div>
@@ -138,31 +118,22 @@ observer.observe(document.documentElement, { childList: true, subtree: true });
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design payer relations improvement plan — denial rate reduction from 18.4% to &lt;15%, credentialing pipeline, and contract optimization across top 5 payers"><div class="pr-card-title">Payer Relations Plan</div><div class="pr-card-desc">Multi-payer optimization</div></div>
 </div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 
+
+
 <script>
-(function() {
-  window.switchTab = function(id, btn) {
-    document.querySelectorAll('[id^="tab-"]').forEach(el => {
-      el.style.setProperty('display', 'none', 'important');
-    });
-    const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) target.style.setProperty('display', 'block', 'important');
-    
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
-
-  function init() {
-    const first = document.querySelector('.nav-btn');
-    if (first) {
-      const m = (first.getAttribute('onclick')||'').match(/'([^']+)'/);
-      window.switchTab(m ? m[1] : 'dash', first);
-    }
-  }
-
-  // Double tap to ensure it works
-  window.addEventListener('load', init);
-  setTimeout(init, 50);
-  setTimeout(init, 500);
-})();
+window.switchTab = function(id, btn) {
+  // Hide all
+  const tabs = document.querySelectorAll('[id^="tab-"]');
+  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
+  
+  // Show target
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.setAttribute('style', 'display: block !important');
+  
+  // UI Cleanup
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+console.log("TSM Engine Active for hc-insurance");
 </script>
 </body></html>

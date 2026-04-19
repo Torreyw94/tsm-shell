@@ -87,30 +87,10 @@ tr:hover td{background:#0f1f0f}
 
 </head><body>
 
-<script>
-window.switchTab = function(id, btn) {
-  console.log('TSM Manual Switch:', id);
-  const targets = document.querySelectorAll('[id^="tab-"]');
-  targets.forEach(t => t.style.display = 'none');
-  const target = document.getElementById('tab-' + id) || document.getElementById(id);
-  if (target) target.style.display = 'block';
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
 
-// Use an observer to catch the DOM when it is ready
-const observer = new MutationObserver((mutations, obs) => {
-  const dash = document.getElementById('tab-dash');
-  if (dash) {
-    window.switchTab('dash', document.querySelector('.nav-btn'));
-    obs.disconnect(); 
-  }
-});
-observer.observe(document.documentElement, { childList: true, subtree: true });
-</script>
 
-<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash"><div class="kpi-row">
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
+<div id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">$12.4M</div><div class="kpi-lbl">Annual Vendor Spend</div><div class="kpi-sub green">14 category types · 87 active vendors</div></div>
 <div class="kpi"><div class="kpi-val amber">87</div><div class="kpi-lbl">Active Contracts</div><div class="kpi-sub amber">12 expiring Q2 · 3 not yet renewed</div></div>
 <div class="kpi"><div class="kpi-val red">84%</div><div class="kpi-lbl">BAA Compliance Rate</div><div class="kpi-sub red">14 BAAs expired · HIPAA breach risk</div></div>
@@ -146,31 +126,22 @@ observer.observe(document.documentElement, { childList: true, subtree: true });
   <div id="intakeList_vendors" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
 </div>
 
+
+
 <script>
-(function() {
-  window.switchTab = function(id, btn) {
-    document.querySelectorAll('[id^="tab-"]').forEach(el => {
-      el.style.setProperty('display', 'none', 'important');
-    });
-    const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) target.style.setProperty('display', 'block', 'important');
-    
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
-
-  function init() {
-    const first = document.querySelector('.nav-btn');
-    if (first) {
-      const m = (first.getAttribute('onclick')||'').match(/'([^']+)'/);
-      window.switchTab(m ? m[1] : 'dash', first);
-    }
-  }
-
-  // Double tap to ensure it works
-  window.addEventListener('load', init);
-  setTimeout(init, 50);
-  setTimeout(init, 500);
-})();
+window.switchTab = function(id, btn) {
+  // Hide all
+  const tabs = document.querySelectorAll('[id^="tab-"]');
+  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
+  
+  // Show target
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.setAttribute('style', 'display: block !important');
+  
+  // UI Cleanup
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+console.log("TSM Engine Active for hc-vendors");
 </script>
 </body></html>
