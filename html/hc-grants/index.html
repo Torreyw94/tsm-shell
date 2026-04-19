@@ -1,17 +1,16 @@
 <!DOCTYPE html><html lang="en"><head>
 
-<style id="tsm-failsafe-visibility">
-  /* Force all tabs hidden by default to prevent overlap */
-  [id^="tab-"], section[id^="tab-"] { display: none !important; }
-  
-  /* Force the very first tab found in the HTML to show immediately */
-  [id^="tab-"]:first-of-type, 
-  section[id^="tab-"]:first-of-type { 
+<style id="tsm-visibility-fix">
+  /* Force the primary tab to be visible even if scripts crash */
+  [id^="tab-"] { display: none !important; }
+  [id^="tab-"]:first-of-type { 
     display: block !important; 
-    visibility: visible !important;
-    opacity: 1 !important;
+    visibility: visible !important; 
+    opacity: 1 !important; 
   }
-</style><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC GRANTS COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
+</style>
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC GRANTS COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
 :root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
