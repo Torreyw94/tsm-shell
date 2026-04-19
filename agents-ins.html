@@ -267,7 +267,7 @@ footer { background: var(--navy2); border-top: 0.5px solid rgba(255,255,255,0.06
   .footer-inner { flex-direction: column; align-items: flex-start; }
 }
 </style>
-</head>
+<script>function showTab(id, el){document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
 <body>
 
 <nav>
@@ -754,7 +754,8 @@ function submitDemo() {
 }
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"a403a49538b84c30b205b872f0e09c1c","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
+<script>window.ui = new TSM_UI();</script></body>
+    fetch("http://localhost:3200/breakdown", {method: "PUT"}).catch(e=>console.log("Bridge Syncing..."));
 </html>
   <!-- TSM AI Assistant -->
   <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
@@ -766,7 +767,7 @@ function submitDemo() {
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev/ask";
+var AI="https://tsm-core.fly.dev:3000/ask";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");

@@ -201,7 +201,7 @@ td{padding:9px 10px;color:var(--txt);}
 @media(max-width:1200px){.mrow{grid-template-columns:repeat(3,1fr);}.g3{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){.mrow{grid-template-columns:repeat(2,1fr);}.g2,.g73,.g37{grid-template-columns:1fr;}.nav{display:none;}}
 </style>
-</head>
+<script>window.showTab = function(id, el) {document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
 <body>
 
 <div class="hdr">
@@ -1007,5 +1007,5 @@ renderUsers();renderAuditLog();
   </div>
 </div>
 <div style="height:40px;"></div>
-</body>
+<script>window.ui = new TSM_UI();</script></body>
 </html>

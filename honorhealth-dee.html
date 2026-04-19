@@ -391,7 +391,7 @@ footer em { color: var(--orange); font-style: normal; }
   .flow { flex-direction: column; }
 }
 </style>
-</head>
+<script>function showTab(id, el){document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
 <body>
 
 <!-- ── NAV ── -->
@@ -849,5 +849,5 @@ footer em { color: var(--orange); font-style: normal; }
     document.getElementById(panelId).classList.add('open');
   }
 </script>
-</body>
+<script>window.ui = new TSM_UI();</script></body>
 </html>

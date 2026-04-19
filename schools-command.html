@@ -356,7 +356,7 @@ header { background: linear-gradient(135deg,#080f1c 0%,#0d1e35 50%,#080f1c 100%)
 .section-hdr { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .09em; margin: 14px 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
 .section-hdr:first-child { margin-top: 0; }
 </style>
-</head>
+<script>function showTab(id, el){document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
 <body>
 
 <!-- TSM Cross-links -->
@@ -1794,5 +1794,5 @@ document.addEventListener('DOMContentLoaded',()=>{
   loadPreMonitorChecklist();
 });
 </script>
-</body>
+<script>window.ui = new TSM_UI();</script></body>
 </html>

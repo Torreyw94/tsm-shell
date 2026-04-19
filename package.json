@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Torreyw94/tsm-shell#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "http-proxy": "^1.18.1",
     "path": "^0.12.7"
   }
 }

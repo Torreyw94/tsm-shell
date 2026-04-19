@@ -1,26 +1,15 @@
-source_file,domain,app_name,status,url
-az-ins.tsmatter.html,az-ins.tsmatter.com,az-ins,DEPLOYED,https://az-ins.fly.dev
-bpo-legal.tsmatter.html,bpo-legal.tsmatter.com,bpo-legal,DEPLOYED,https://bpo-legal.fly.dev
-bpo-realty.tsmatter.html,bpo-realty.tsmatter.com,bpo-realty,DEPLOYED,https://bpo-realty.fly.dev
-bpo-tax.tsmatter.html,bpo-tax.tsmatter.com,bpo-tax,DEPLOYED,https://bpo-tax.fly.dev
-case-tech.tsmatter.html,case-tech.tsmatter.com,case-tech,DEPLOYED,https://case-tech.fly.dev
-construction-command.tsmatter.html,construction-command.tsmatter.com,construction-command,DEPLOYED,https://construction-command.fly.dev
-desert-financial.tsmatter.html,desert-financial.tsmatter.com,desert-financial,DEPLOYED,https://desert-financial.fly.dev
-financial-command.tsmatter.html,financial-command.tsmatter.com,financial-command,DEPLOYED,https://financial-command.fly.dev
-hc-billing.tsmatter.html,hc-billing.tsmatter.com,hc-billing,DEPLOYED,https://hc-billing.fly.dev
-hc-command.tsmatter.html,hc-command.tsmatter.com,hc-command,DEPLOYED,https://hc-command.fly.dev
-hc-compliance.tsmatter.html,hc-compliance.tsmatter.com,hc-compliance,DEPLOYED,https://hc-compliance.fly.dev
-hc-financial.tsmatter.html,hc-financial.tsmatter.com,hc-financial,DEPLOYED,https://hc-financial.fly.dev
-hc-grants.tsmatter.html,hc-grants.tsmatter.com,hc-grants,DEPLOYED,https://hc-grants.fly.dev
-hc-insurance.tsmatter.html,hc-insurance.tsmatter.com,hc-insurance,DEPLOYED,https://hc-insurance.fly.dev
-hc-legal.tsmatter.html,hc-legal.tsmatter.com,hc-legal,DEPLOYED,https://hc-legal.fly.dev
-hc-medical.tsmatter.html,hc-medical.tsmatter.com,hc-medical,DEPLOYED,https://hc-medical.fly.dev
-hc-pharmacy.tsmatter.html,hc-pharmacy.tsmatter.com,hc-pharmacy,DEPLOYED,https://hc-pharmacy.fly.dev
-hc-strategist.tsmatter.html,hc-strategist.tsmatter.com,hc-strategist,DEPLOYED,https://hc-strategist.fly.dev
-hc-taxprep.tsmatter.html,hc-taxprep.tsmatter.com,hc-taxprep,DEPLOYED,https://hc-taxprep.fly.dev
-hc-vendors.tsmatter.html,hc-vendors.tsmatter.com,hc-vendors,DEPLOYED,https://hc-vendors.fly.dev
-pc-command.tsmatter.html,pc-command.tsmatter.com,pc-command,DEPLOYED,https://pc-command.fly.dev
-reo-pro.tsmatter.html,reo-pro.tsmatter.com,reo-pro,DEPLOYED,https://reo-pro.fly.dev
-rrd-command.tsmatter.html,rrd-command.tsmatter.com,rrd-command,DEPLOYED,https://rrd-command.fly.dev
-strategist.tsmatter.html,strategist.tsmatter.com,strategist,DEPLOYED,https://strategist.fly.dev
-tsm-honorhealth-dee.tsmatter.html,tsm-honorhealth-dee.tsmatter.com,tsm-honorhealth-dee,DEPLOYED,https://tsm-honorhealth-dee.fly.dev
+id,label,url,type
+healthcare-command,Healthcare Command,/healthcare-command.html,local
+honor-health,Honor Health Portal,https://honor-portal.fly.dev/,external
+ameris-construction,Ameris Construction,https://ameris-portal.fly.dev/,external
+case-tech,Case-Tech Command,https://case-tech.fly.dev/,external
+esd-portal,ESD Portal,https://esd-portal.fly.dev/,external
+dme,DME,/dme.html,local
+bpo-legal,BPO Legal,/bpo-legal.html,local
+bpo-realty,BPO Realty,/bpo-realty.html,local
+bpo-tax,BPO Tax,/bpo-tax.html,local
+client-access,Client Access,/client-access.html,local
+concierge-command,Concierge Command,/concierge-command.html,local
+construction,Construction,/construction.html,local
+construction-command,Construction Command,/construction-command.html,local
+bpo-construction,BPO Construction,/bpo-construction.html,local

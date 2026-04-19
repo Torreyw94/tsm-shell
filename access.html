@@ -70,7 +70,7 @@ body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;
 .spinner{display:inline-block;width:10px;height:10px;border:2px solid var(--dim);border-top-color:var(--teal);border-radius:50%;animation:spin .6s linear infinite;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
-</head>
+<script>function showTab(id, el){document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
 <body>
 <div class="logo">TSM · MATTER</div>
 <div class="title">CLIENT PORTAL</div>
@@ -313,7 +313,6 @@ async function analyzeDoc(id, name, docType) {
   try {
     const r = await fetch(`${INTAKE_API}/api/intake/content/${id}`);
     const d = await r.json();
-    const d = await r.json();
     const txt = (d.text||'').slice(0,3000);
     const prompt = `Analyze this document for compliance exposure, risk, and required actions.\n\nFile: ${name}\nType: ${docType}${txt ? '\n\nContent:\n'+txt : ''}`;
     document.getElementById('chatInp').value = prompt;
@@ -390,5 +389,5 @@ if(urlToken) { document.getElementById('tokenInput').value = urlToken; doLogin()
 
 <script id="tsm-api-fix">/* TSM API routing fixed */</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"a403a49538b84c30b205b872f0e09c1c","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
+<script>window.ui = new TSM_UI();</script></body>
 </html>

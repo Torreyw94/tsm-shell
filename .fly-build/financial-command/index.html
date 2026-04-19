@@ -1,820 +1,1218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CASE-TECH | SOVEREIGN COMMAND · TSM Intelligence Platform</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:      #050c14;
-      --bg2:     #070d18;
-      --surface: #09131f;
-      --card:    #0b1825;
-      --border:  rgba(6,182,212,.13);
-      --border2: rgba(6,182,212,.28);
-      --cyan:    #06b6d4;
-      --cyan2:   #38bdf8;
-      --green:   #00ff88;
-      --amber:   #f59e0b;
-      --purple:  #a855f7;
-      --coral:   #f97316;
-      --red:     #f43f5e;
-      --txt:     #c2d8ec;
-      --txt2:    #607a94;
-      --glow:    0 0 28px rgba(6,182,212,.16);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--txt);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(6,182,212,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(6,182,212,.025) 1px, transparent 1px);
-      background-size: 44px 44px;
-      pointer-events: none; z-index: 0;
-    }
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(5,12,20,.94);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 28px; height: 58px;
-    }
-    .logo-block { display: flex; align-items: center; gap: 14px; }
-    .logo-hex {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #0e7490 0%, var(--cyan) 100%);
-      clip-path: polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 800;
-      color: #fff; letter-spacing: 1px;
-    }
-    .logo-text  { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 600; color: var(--cyan2); letter-spacing: 2px; }
-    .logo-sub   { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt2); letter-spacing: 3px; }
-    .hdr-pills  { display: flex; gap: 12px; align-items: center; }
-    .hdr-pill {
-      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1.5px;
-      padding: 3px 10px; border-radius: 3px; border: 1px solid; cursor: pointer;
-      transition: background .15s;
-    }
-    .hdr-pill.cyan  { color: var(--cyan);  border-color: rgba(6,182,212,.3); }
-    .hdr-pill.cyan:hover { background: rgba(6,182,212,.1); }
-    .hdr-pill.green { color: var(--green); border-color: rgba(0,255,136,.3); }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
-    @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,.5); } 50% { box-shadow: 0 0 0 5px rgba(0,255,136,0); } }
-    .hdr-right { display: flex; align-items: center; gap: 16px; }
-    .hdr-status { display: flex; align-items: center; gap: 6px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--green); letter-spacing: 1px; }
-    main { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 36px 28px 80px; }
-    .hero { text-align: center; margin-bottom: 40px; }
-    .hero-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 4px; color: var(--cyan); margin-bottom: 10px; }
-    .hero-title { font-family: 'Orbitron', monospace; font-size: clamp(20px, 3.5vw, 34px); font-weight: 800; color: #e4f0fc; letter-spacing: 2px; line-height: 1.15; margin-bottom: 6px; }
-    .hero-title span { color: var(--cyan); }
-    .hero-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt2); letter-spacing: 3px; margin-bottom: 20px; }
-    .hero-divider { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); margin: 0 auto 32px; }
-    .model-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
-      color: var(--cyan); border: 1px solid rgba(6,182,212,.3); border-radius: 4px;
-      padding: 5px 14px; background: rgba(6,182,212,.06);
-    }
-    .model-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: pulse-dot 1.8s ease-in-out infinite; }
-    .bridge-banner {
-      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25);
-      border-radius: 6px; padding: 8px 16px; margin-bottom: 20px;
-      font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--amber);
-      letter-spacing: 1px; display: none; align-items: center; gap: 10px;
-    }
-    .bridge-banner.show { display: flex; }
-    .bridge-banner.ok { color: var(--green); background: rgba(0,255,136,.05); border-color: rgba(0,255,136,.2); }
-    .query-wrap { max-width: 820px; margin: 0 auto 36px; }
-    .query-label { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 3px; color: var(--txt2); margin-bottom: 6px; }
-    .query-bar { background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; display: flex; align-items: center; gap: 10px; padding: 10px 16px; box-shadow: var(--glow); }
-    .query-bar input { flex: 1; background: transparent; border: none; outline: none; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--txt); caret-color: var(--cyan); }
-    .query-bar input::placeholder { color: var(--txt2); }
-    .node-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
-    .ntog { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px; padding: 3px 8px; border-radius: 3px; border: 1px solid; cursor: pointer; transition: all .15s; user-select: none; }
-    .ntog.active.tax    { color: var(--amber);  border-color: rgba(245,158,11,.5); background: rgba(245,158,11,.1); }
-    .ntog.active.orders { color: var(--green);  border-color: rgba(0,255,136,.4);  background: rgba(0,255,136,.08); }
-    .ntog.active.ar     { color: var(--cyan);   border-color: rgba(6,182,212,.4);  background: rgba(6,182,212,.08); }
-    .ntog:not(.active)  { color: var(--txt2);   border-color: var(--border); }
-    .deploy-btn { background: var(--cyan); color: #050c14; border: none; border-radius: 4px; padding: 7px 18px; font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background .2s, transform .1s; white-space: nowrap; }
-    .deploy-btn:hover { background: var(--cyan2); }
-    .deploy-btn:active { transform: scale(.97); }
-    .deploy-btn:disabled { opacity: .5; cursor: not-allowed; }
-    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 36px; }
-    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 12px; text-align: center; }
-    .stat-val { font-family: 'Orbitron', monospace; font-size: 19px; font-weight: 800; color: var(--cyan); letter-spacing: 1px; }
-    .stat-lbl { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; color: var(--txt2); margin-top: 4px; }
-    .sec-label { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .sec-label-text { font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 600; letter-spacing: 3px; color: var(--txt2); text-transform: uppercase; white-space: nowrap; }
-    .sec-line { flex: 1; height: 1px; background: var(--border); }
-    .sec-badge { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--cyan); border: 1px solid var(--border2); border-radius: 3px; padding: 2px 8px; letter-spacing: 1px; }
-    .sovereign-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 36px; }
-    @media (max-width: 900px) { .sovereign-grid { grid-template-columns: 1fr; } }
-    .sov-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s, box-shadow .2s; position: relative; }
-    .sov-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity .2s; }
-    .sov-card:hover { box-shadow: 0 4px 36px rgba(6,182,212,.1); }
-    .sov-card:hover::before { opacity: 1; }
-    .sov-card.tax:hover { border-color: rgba(245,158,11,.35); }
-    .sov-card.tax::before { background: linear-gradient(90deg, var(--amber), #f97316); }
-    .sov-card.orders:hover { border-color: rgba(0,255,136,.3); }
-    .sov-card.orders::before { background: linear-gradient(90deg, var(--green), #00cc6a); }
-    .sov-card.ar:hover { border-color: var(--border2); }
-    .sov-card.ar::before { background: linear-gradient(90deg, var(--cyan), var(--cyan2)); }
-    .sov-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
-    .sov-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: #dceeff; line-height: 1.4; }
-    .sov-mod-badge { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px; padding: 2px 7px; border-radius: 2px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
-    .mod-tax    { color: var(--amber);  border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08); }
-    .mod-orders { color: var(--green);  border-color: rgba(0,255,136,.3);   background: rgba(0,255,136,.06); }
-    .mod-ar     { color: var(--cyan);   border-color: rgba(6,182,212,.3);   background: rgba(6,182,212,.06); }
-    .sov-body { padding: 14px 20px; flex: 1; }
-    .sov-desc { font-size: 11px; color: var(--txt2); line-height: 1.7; margin-bottom: 12px; }
-    .quick-prompts { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-    .qp-btn { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .5px; color: var(--txt2); background: rgba(6,182,212,.04); border: 1px solid var(--border); border-radius: 4px; padding: 6px 10px; text-align: left; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px; }
-    .qp-btn:hover { background: rgba(6,182,212,.09); border-color: var(--border2); color: var(--txt); }
-    .qp-arrow { color: var(--cyan); font-size: 10px; }
-    .sov-input-row { display: flex; gap: 6px; }
-    .sov-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 7px 10px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); outline: none; transition: border-color .15s; }
-    .sov-input:focus { border-color: var(--border2); }
-    .sov-input::placeholder { color: var(--txt2); }
-    .sov-run-btn { background: transparent; border: 1px solid; border-radius: 4px; padding: 7px 12px; font-family: 'Orbitron', monospace; font-size: 8px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background .15s; white-space: nowrap; }
-    .sov-run-btn.tax    { color: var(--amber);  border-color: rgba(245,158,11,.4); }
-    .sov-run-btn.tax:hover    { background: rgba(245,158,11,.1); }
-    .sov-run-btn.orders { color: var(--green);  border-color: rgba(0,255,136,.35); }
-    .sov-run-btn.orders:hover { background: rgba(0,255,136,.08); }
-    .sov-run-btn.ar     { color: var(--cyan);   border-color: rgba(6,182,212,.35); }
-    .sov-run-btn.ar:hover     { background: rgba(6,182,212,.08); }
-    .sov-response { margin: 10px 0 0; background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; min-height: 60px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); line-height: 1.8; display: none; white-space: pre-wrap; word-break: break-word; max-height: 340px; overflow-y: auto; }
-    .sov-response.active { display: block; }
-    .thinking-line { font-size: 9px; letter-spacing: 2px; margin-bottom: 8px; animation: blink .8s step-end infinite; }
-    .thinking-line.tax    { color: var(--amber); }
-    .thinking-line.orders { color: var(--green); }
-    .thinking-line.ar     { color: var(--cyan); }
-    .thinking-line.esd    { color: var(--purple); }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .sov-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); }
-    .sov-url { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--txt2); letter-spacing: 1px; }
-    .open-app-lnk { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid; transition: background .15s; }
-    .open-app-lnk.amber  { color: var(--amber);  border-color: rgba(245,158,11,.35); }
-    .open-app-lnk.amber:hover  { background: rgba(245,158,11,.08); }
-    .open-app-lnk.green  { color: var(--green);  border-color: rgba(0,255,136,.3); }
-    .open-app-lnk.green:hover  { background: rgba(0,255,136,.07); }
-    .open-app-lnk.cyan   { color: var(--cyan);   border-color: rgba(6,182,212,.3); }
-    .open-app-lnk.cyan:hover   { background: rgba(6,182,212,.07); }
-    .open-app-lnk.purple { color: var(--purple); border-color: rgba(168,85,247,.3); }
-    .open-app-lnk.purple:hover { background: rgba(168,85,247,.07); }
-    /* ESD NODE GRID */
-    .esd-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 36px; }
-    @media (max-width: 1100px) { .esd-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 700px)  { .esd-grid { grid-template-columns: repeat(2, 1fr); } }
-    .esd-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s, box-shadow .2s; position: relative; }
-    .esd-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--purple), #c084fc); opacity: 0; transition: opacity .2s; }
-    .esd-card:hover { border-color: rgba(168,85,247,.35); box-shadow: 0 4px 24px rgba(168,85,247,.1); }
-    .esd-card:hover::before { opacity: 1; }
-    .esd-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
-    .esd-prefix { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; color: var(--purple); margin-bottom: 3px; }
-    .esd-name { font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #dceeff; line-height: 1.3; }
-    .esd-badge { font-family: 'Share Tech Mono', monospace; font-size: 7px; letter-spacing: 1px; padding: 2px 6px; border-radius: 2px; border: 1px solid rgba(168,85,247,.35); background: rgba(168,85,247,.08); color: var(--purple); white-space: nowrap; flex-shrink: 0; }
-    .esd-body { padding: 12px 16px; flex: 1; }
-    .esd-desc { font-size: 10px; color: var(--txt2); line-height: 1.6; margin-bottom: 10px; }
-    .esd-quick { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-    .esd-qp { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--txt2); background: rgba(168,85,247,.04); border: 1px solid var(--border); border-radius: 3px; padding: 5px 8px; text-align: left; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 5px; }
-    .esd-qp:hover { background: rgba(168,85,247,.09); border-color: rgba(168,85,247,.3); color: var(--txt); }
-    .esd-qp-arrow { color: var(--purple); font-size: 9px; }
-    .esd-input-row { display: flex; gap: 5px; }
-    .esd-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt); outline: none; transition: border-color .15s; }
-    .esd-input:focus { border-color: rgba(168,85,247,.4); }
-    .esd-input::placeholder { color: var(--txt2); }
-    .esd-run-btn { background: transparent; border: 1px solid rgba(168,85,247,.4); border-radius: 4px; padding: 6px 10px; font-family: 'Orbitron', monospace; font-size: 7px; font-weight: 600; letter-spacing: 1px; color: var(--purple); cursor: pointer; transition: background .15s; white-space: nowrap; }
-    .esd-run-btn:hover { background: rgba(168,85,247,.1); }
-    .esd-response { margin: 8px 0 0; background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 5px; padding: 10px 12px; min-height: 48px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); line-height: 1.7; display: none; white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; }
-    .esd-response.active { display: block; }
-    .esd-foot { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--border); }
-    /* SYNTHESIS */
-    .synthesis-panel { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 0; margin-bottom: 36px; overflow: hidden; display: none; }
-    .synthesis-panel.active { display: block; }
-    .synth-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: rgba(6,182,212,.04); }
-    .synth-title { font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 3px; color: var(--cyan); }
-    .synth-close { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt2); cursor: pointer; }
-    .synth-close:hover { color: var(--red); }
-    .synth-body { padding: 20px; }
-    .synth-query { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt2); margin-bottom: 16px; letter-spacing: 1px; }
-    .synth-nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-    @media (max-width: 700px) { .synth-nodes { grid-template-columns: 1fr; } }
-    .synth-node { background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
-    .synth-node-name { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 2px; margin-bottom: 8px; }
-    .synth-node-name.tax    { color: var(--amber); }
-    .synth-node-name.orders { color: var(--green); }
-    .synth-node-name.ar     { color: var(--cyan); }
-    .synth-node-txt { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
-    /* REPORT BUILDER */
-    .report-section { margin-bottom: 36px; }
-    .report-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-    .report-select, .report-state-input { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 7px 12px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); outline: none; transition: border-color .15s; }
-    .report-select:focus, .report-state-input:focus { border-color: var(--border2); }
-    .report-state-input { width: 220px; }
-    .build-btn { background: transparent; border: 1px solid var(--cyan); border-radius: 4px; padding: 7px 18px; font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; color: var(--cyan); cursor: pointer; transition: background .15s; }
-    .build-btn:hover { background: rgba(6,182,212,.1); }
-    .report-output { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); line-height: 1.8; display: none; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
-    .report-output.active { display: block; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,.2); border-radius: 2px; }
-    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .footer-l, .footer-r a { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--txt2); }
-    .footer-r { display: flex; gap: 18px; }
-    .footer-r a { text-decoration: none; transition: color .2s; }
-    .footer-r a:hover { color: var(--cyan); }
-    @media (max-width: 600px) { main { padding: 20px 14px 60px; } header { padding: 0 14px; } .hdr-pills { display: none; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="v" content="1776122040">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM | FINANCIAL COMMAND</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b14;--bg2:#070d1a;--bg3:#040810;--bg4:#0a0d1f;
+  --accent:#06b6d4;--accent2:#0891b2;--accent3:rgba(6,182,212,.08);
+  --red:#ef4444;--yellow:#eab308;--green:#00ff88;--purple:#a855f7;--muted:#4a7a9b;
+  --white:#e8f0f8;--dim:#2a4a6a;--border:rgba(6,182,212,.12);--border2:rgba(6,182,212,.06);
+  --mono:'Share Tech Mono',monospace;--display:'Orbitron',monospace;--body:'Exo 2',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;max-width:100vw;}
+body{font-family:var(--body);background:var(--bg);color:var(--white);display:flex;flex-direction:column;overflow:hidden;max-width:100vw;}
+#topnav{background:var(--bg3);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:10px;height:44px;flex-shrink:0;}
+#logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:.8rem;color:#000;flex-shrink:0;}
+#logo-text{font-family:var(--display);font-size:.75rem;font-weight:900;color:var(--accent);letter-spacing:.15em;}
+#logo-sub{font-family:var(--mono);font-size:.5rem;color:var(--muted);letter-spacing:.1em;}
+.nav-node{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;padding:2px 8px;border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;}
+.nav-node::before{content:'●';font-size:.4rem;color:var(--accent);}
+#sys-status{margin-left:auto;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.5rem;}
+#sys-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(0,255,136,0)}}
+#kpi-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;height:52px;flex-shrink:0;overflow:hidden;max-width:100vw;}
+.kpi{padding:0 16px;border-right:1px solid var(--border2);display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;}
+.kpi-val{font-family:var(--display);font-size:.85rem;font-weight:700;color:var(--accent);line-height:1;white-space:nowrap;}
+.kpi-lbl{font-family:var(--mono);font-size:.45rem;color:var(--muted);letter-spacing:.1em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kpi-delta{font-family:var(--mono);font-size:.45rem;color:var(--green);}
+.kpi-delta.neg{color:var(--red);}
+#ticker{height:20px;background:var(--bg3);border-bottom:1px solid var(--border);overflow:hidden;flex-shrink:0;position:relative;}
+#ticker-inner{white-space:nowrap;font-family:var(--mono);font-size:.45rem;color:var(--accent);letter-spacing:.08em;line-height:20px;position:absolute;animation:tick 80s linear infinite;}
+@keyframes tick{0%{transform:translateX(100vw)}100%{transform:translateX(-200%)}}
+#body{display:flex;flex:1;overflow:hidden;max-width:100vw;}
+#sidebar{width:160px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sb-lbl{font-family:var(--mono);font-size:.45rem;color:var(--dim);letter-spacing:.15em;padding:6px 10px 3px;border-top:1px solid var(--border2);}
+.sb-lbl:first-child{border-top:none;}
+.playbook{padding:7px 10px;cursor:pointer;font-family:var(--mono);font-size:.5rem;letter-spacing:.05em;color:var(--muted);border-left:2px solid transparent;transition:all .15s;line-height:1.4;}
+.playbook:hover{color:var(--white);background:rgba(255,255,255,.03);border-left-color:var(--accent);}
+.playbook.running{color:var(--accent);border-left-color:var(--accent);background:var(--accent3);}
+.playbook-sub{font-size:.4rem;color:var(--dim);margin-top:1px;}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+#query-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;flex-shrink:0;}
+.qb-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;}
+.qb-row{display:flex;gap:8px;align-items:center;}
+.qb-nodes{display:flex;gap:4px;flex-wrap:wrap;}
+.node-toggle{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;padding:4px 10px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:transparent;transition:all .15s;display:flex;align-items:center;gap:4px;}
+.node-toggle input{display:none;}
+.node-toggle.active{border-color:var(--accent);color:var(--accent);background:var(--accent3);}
+.node-toggle::before{content:'☐';font-size:.6rem;}
+.node-toggle.active::before{content:'☑';color:var(--accent);}
+#queryInput{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--white);font-family:var(--mono);font-size:.55rem;padding:6px 10px;outline:none;min-width:200px;}
+#queryInput::placeholder{color:var(--dim);}
+#btnDeploy{font-family:var(--display);font-size:.55rem;font-weight:700;letter-spacing:.1em;padding:6px 18px;background:var(--accent);color:#000;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;}
+#btnDeploy:hover{opacity:.85;}
+#btnSynth{font-family:var(--display);font-size:.55rem;font-weight:700;letter-spacing:.1em;padding:6px 14px;background:transparent;color:var(--purple);border:1px solid var(--purple);cursor:pointer;transition:all .15s;white-space:nowrap;}
+#btnSynth:hover{background:rgba(168,85,247,.1);}
+.upload-zone{border:1px dashed rgba(56,189,248,.3);padding:8px 12px;cursor:pointer;transition:all .2s;background:rgba(56,189,248,.03);display:flex;align-items:center;gap:8px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(56,189,248,.08);}
+.upload-zone input{display:none;}
+.upload-lbl{font-family:var(--mono);font-size:.5rem;color:var(--muted);letter-spacing:.08em;cursor:pointer;white-space:nowrap;}
+.upload-lbl span{color:var(--accent);}
+.upload-status{font-family:var(--mono);font-size:.45rem;color:var(--green);letter-spacing:.08em;}
+
+#nodes-section{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+#nodes-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;color:var(--dim);padding:8px 14px 4px;flex-shrink:0;}
+#nodes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border);flex:1;overflow:hidden;max-width:100vw;}
+.node-panel{background:var(--bg2);display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.node-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.node-hdr{padding:8px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.node-name{font-family:var(--display);font-size:.55rem;font-weight:700;letter-spacing:.1em;display:flex;align-items:center;gap:5px;}
+.dot{width:5px;height:5px;border-radius:50%;animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.node-port{font-family:var(--mono);font-size:.45rem;color:var(--dim);}
+.node-body{flex:1;overflow-y:auto;padding:8px 12px;font-family:var(--mono);font-size:.5rem;line-height:1.8;color:var(--muted);}
+.node-footer{padding:5px 12px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;font-family:var(--mono);font-size:.45rem;}
+.node-footer-status{color:var(--dim);letter-spacing:.08em;}
+.open-app{color:var(--accent);text-decoration:none;border:1px solid var(--border);padding:1px 6px;letter-spacing:.08em;transition:all .15s;}
+.open-app:hover{border-color:var(--accent);background:var(--accent3);}
+.token-count{color:var(--dim);}
+#synth-section{background:var(--bg3);border-top:1px solid var(--border);flex-shrink:0;max-height:200px;display:flex;flex-direction:column;}
+#synth-hdr{padding:6px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid var(--border2);}
+#synth-title{font-family:var(--mono);font-size:.5rem;letter-spacing:.15em;color:var(--purple);display:flex;align-items:center;gap:6px;}
+#synth-title::before{content:'●';font-size:.4rem;animation:blink 2s ease-in-out infinite;}
+#synth-status{font-family:var(--mono);font-size:.45rem;color:var(--dim);}
+#synthBody{flex:1;overflow-y:auto;padding:8px 14px;font-family:var(--mono);font-size:.5rem;line-height:1.8;color:var(--muted);}
+.response-text{color:var(--white);}
+.cursor-blink{animation:blink .8s step-end infinite;}
+.spin{display:inline-block;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:2px;height:2px;}
+::-webkit-scrollbar-thumb{background:var(--border);}
+.upload-bar{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--border);flex-shrink:0;}
+.upload-zone{border:1px dashed rgba(56,189,248,.3);padding:4px 10px;cursor:pointer;transition:all .2s;background:rgba(56,189,248,.03);display:flex;align-items:center;gap:6px;}
+.upload-zone:hover{border-color:var(--accent);background:rgba(56,189,248,.08);}
+.upload-zone input{display:none;}
+.ulbl{font-family:var(--mono);font-size:.45rem;color:var(--muted);cursor:pointer;}
+.ulbl span{color:var(--accent);}
+.ubtn{font-family:var(--mono);font-size:.45rem;padding:4px 8px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.ubtn:hover{border-color:var(--accent);color:var(--accent);}
+body{padding-bottom:52px!important}
+</style>
 </head>
 <body>
 
-<header>
-  <div class="logo-block">
-    <div class="logo-hex">CT</div>
-    <div>
-      <div class="logo-text">CASE-TECH COMMAND</div>
-      <div class="logo-sub">SOVEREIGN INTELLIGENCE · TSM PLATFORM</div>
+<div id="topnav">
+  <div id="logo-mark">FC</div>
+  <div><div id="logo-text">FINANCIAL COMMAND</div><div id="logo-sub">MULTI-NODE FINANCIAL INTELLIGENCE PLATFORM</div></div>
+  <div class="nav-node" style="color:#06b6d4;border-color:#06b6d433;" id="nav-fin">FINANCIAL INTEL</div><div class="nav-node" style="color:#06b6d4;border-color:#06b6d433;" id="nav-tax">TAX INTELLIGENCE</div><div class="nav-node" style="color:#06b6d4;border-color:#06b6d433;" id="nav-comp">COMPLIANCE SHIELD</div><div class="nav-node" style="color:#06b6d4;border-color:#06b6d433;" id="nav-realty">ZERO TRUST</div><div class="nav-node" style="color:#a855f7;border-color:#a855f733;" id="nav-strat">STRATEGIST</div>
+  <div id="sys-status"><div id="sys-dot"></div><span style="color:var(--green);font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;" id="sys-status-text">SYSTEM READY</span></div>
+</div>
+
+<div id="kpi-bar">
+  <div class="kpi"><div class="kpi-val">$4.2M</div><div class="kpi-lbl">PORTFOLIO VALUE</div><div class="kpi-delta">+12% YTD</div></div>
+  <div class="kpi"><div class="kpi-val">18.4%</div><div class="kpi-lbl">GROSS MARGIN</div><div class="kpi-delta neg">Target: 22% — gap $147K</div></div>
+  <div class="kpi"><div class="kpi-val">$284K</div><div class="kpi-lbl">§179 ELIGIBLE</div><div class="kpi-delta">File before year-end</div></div>
+  <div class="kpi"><div class="kpi-val">94%</div><div class="kpi-lbl">COMPLIANCE SCORE</div><div class="kpi-delta neg">3 open flags</div></div>
+  <div class="kpi"><div class="kpi-val">71/100</div><div class="kpi-lbl">ZERO TRUST SCORE</div><div class="kpi-delta neg">4 gaps detected</div></div>
+  <div class="kpi"><div class="kpi-val">$34K</div><div class="kpi-lbl">Q2 TAX DUE</div><div class="kpi-delta neg">Apr 15 deadline</div></div>
+  <div class="kpi"><div class="kpi-val">2.1x</div><div class="kpi-lbl">CURRENT RATIO</div><div class="kpi-delta">Healthy liquidity</div></div>
+  <div class="kpi"><div class="kpi-val">$42K</div><div class="kpi-lbl">AR OVER 60 DAYS</div><div class="kpi-delta neg">Collections needed</div></div>
+</div>
+
+<div id="ticker"><div id="ticker-inner">📄 INVOICE ALERT: $42K AR OVER 60 DAYS — 3 ACCOUNTS — COLLECTIONS PROTOCOL ACTIVE &nbsp;///&nbsp; ⚠️ INVOICE DISPUTES: $18K BACKLOG — 7 OPEN — RESOLUTION NEEDED &nbsp;///&nbsp; 💰 EARLY PAY DISCOUNTS: $3.2K AVAILABLE THIS MONTH — ACT NOW &nbsp;///&nbsp; ⚡ MARGIN ALERT: GROSS MARGIN 18.4% VS 22% TARGET — $147K GAP &nbsp;///&nbsp; 💰 TAX DEADLINE: Q2 ESTIMATED TAX $34K DUE APR 15 &nbsp;///&nbsp; 🔒 ZERO TRUST: 4 SECURITY GAPS — 2 CRITICAL &nbsp;///&nbsp; 📊 §179 OPPORTUNITY: $284K ELIGIBLE — ACT BEFORE YEAR END &nbsp;///&nbsp; ⚠️ COMPLIANCE: SOX ENDPOINT FAILURE · HIPAA BAA GAP · OIG SCREENING OVERDUE &nbsp;///&nbsp; 🏦 AR AGING: $42K OVER 60 DAYS — COLLECTIONS PROTOCOL NEEDED &nbsp;///&nbsp;</div></div>
+
+<div id="body">
+  <div id="sidebar">
+    <div class="sb-lbl">PLAYBOOKS</div>
+    <div class="playbook" onclick="runPlaybook('margin_recovery',this)">
+      <div>Margin Recovery</div><div class="playbook-sub">Close $147K gap fast</div>
+    </div><div class="playbook" onclick="runPlaybook('portfolio_review',this)">
+      <div>Portfolio Review</div><div class="playbook-sub">ROI + yield + risk</div>
+    </div><div class="playbook" onclick="runPlaybook('compliance_sweep',this)">
+      <div>Compliance Sweep</div><div class="playbook-sub">SOX + HIPAA + OIG</div>
+    </div><div class="playbook" onclick="runPlaybook('zero_trust_audit',this)">
+      <div>Zero Trust Audit</div><div class="playbook-sub">4 critical gaps</div>
+    </div><div class="playbook" onclick="runPlaybook('cash_flow',this)">
+      <div>Cash Flow Audit</div><div class="playbook-sub">AR + liquidity + burn</div>
+    </div><div class="playbook" onclick="runPlaybook('BNCA',this)">
+      <div>⚡ BNCA</div><div class="playbook-sub">Best Next Course of Action</div>
+    </div><div class="playbook" onclick="runPlaybook('collections',this)">
+      <div>AR Collections</div><div class="playbook-sub">$42K over 60 days</div>
+    </div><div class="playbook" onclick="runPlaybook('tax_sweep',this)">
+      <div>Tax Sweep</div><div class="playbook-sub">§179 + S-Corp + QBI</div>
     </div>
-  </div>
-  <div class="hdr-right">
-    <div class="hdr-pills">
-      <div class="hdr-pill cyan" onclick="scrollToSection('modules')">MODULES</div>
-      <div class="hdr-pill cyan" onclick="scrollToSection('esd-nodes')">ESD NODES</div>
-      <div class="hdr-pill cyan" onclick="scrollToSection('reports')">REPORTS</div>
-      <div class="hdr-pill green" onclick="window.open('https://financial.tsmatter.com','_blank')">FINANCIAL CMD ↗</div>
-    </div>
-    <div class="hdr-status"><div class="status-dot"></div>SOVEREIGN · ONLINE</div>
-  </div>
-</header>
-
-<main>
-  <div class="hero">
-    <div class="hero-eyebrow">// TSM WHITELABEL · CASE-TECH CLIENT PORTAL · DIRECTOR WHITEHEAD</div>
-    <div class="hero-title">CASE-TECH<br><span>SOVEREIGN COMMAND</span></div>
-    <div class="hero-sub">case-tech.tsmatter.com · AI-NATIVE OPERATIONS · 15-STATE TAX · ORDER PIPELINE · AR/AP ENGINE</div>
-    <div class="hero-divider"></div>
-    <div class="model-badge"><div class="model-dot"></div>TSM NEURAL · SOVEREIGN INTELLIGENCE LAYER · LIVE</div>
-  </div>
-
-  <div class="bridge-banner" id="bridgeBanner">
-    <span id="bridgeBannerText">// Connecting to TSM Neural bridge…</span>
-  </div>
-
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-val" id="st-states">15</div><div class="stat-lbl">NEXUS STATES</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-orders">—</div><div class="stat-lbl">ORDERS/DAY</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-ar">—</div><div class="stat-lbl">AR OPEN ($K)</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-exempt">—</div><div class="stat-lbl">EXEMPT CERTS</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-auto">98%</div><div class="stat-lbl">AUTO-MATCH RATE</div></div>
-  </div>
-
-  <div class="query-wrap">
-    <div class="query-label">// TSM NEURAL — DEPLOY TO ALL SOVEREIGN NODES SIMULTANEOUSLY</div>
-    <div class="query-bar">
-      <div class="node-toggles">
-        <div class="ntog tax active" id="tog-tax" onclick="toggleNode('tax')">TAX</div>
-        <div class="ntog orders active" id="tog-orders" onclick="toggleNode('orders')">ORDERS</div>
-        <div class="ntog ar active" id="tog-ar" onclick="toggleNode('ar')">AR/AP</div>
-      </div>
-      <input id="masterQuery" placeholder="e.g. Export Q1 sales tax for 15 states, flag nexus risk…" onkeydown="if(event.key==='Enter')deployMaster()"/>
-      <button class="deploy-btn" id="masterBtn" onclick="deployMaster()">⚡ DEPLOY</button>
-    </div>
+    <div class="sb-lbl">SYSTEM</div>
+    <div class="playbook"><div>● UPLINK ACTIVE</div></div>
+    <div class="playbook"><div id="uplink-lbl">● NODES ONLINE</div></div>
   </div>
 
-  <div class="synthesis-panel" id="synthPanel">
-    <div class="synth-head">
-      <div class="synth-title">⚡ TSM NEURAL SYNTHESIS — ALL NODES RESPONDED</div>
-      <div class="synth-close" onclick="closeSynth()">✕ CLOSE</div>
-    </div>
-    <div class="synth-body">
-      <div class="synth-query" id="synthQuery"></div>
-      <div class="synth-nodes">
-        <div class="synth-node"><div class="synth-node-name tax">⚖ 15-STATE TAX</div><div class="synth-node-txt" id="synth-tax">…</div></div>
-        <div class="synth-node"><div class="synth-node-name orders">📦 ORDER PIPELINE</div><div class="synth-node-txt" id="synth-orders">…</div></div>
-        <div class="synth-node"><div class="synth-node-name ar">💰 AR/AP ENGINE</div><div class="synth-node-txt" id="synth-ar">…</div></div>
+  <div id="main">
+    <div id="query-bar">
+      <div class="qb-label">// DEPLOY QUERY TO NODES</div>
+      <div class="qb-row">
+        <div class="qb-nodes">
+          <label class="node-toggle active" id="tog-fin"><input type="checkbox" checked value="fin">FINANCIAL</label><label class="node-toggle active" id="tog-tax"><input type="checkbox" checked value="tax">TAX INTELLIGENCE</label><label class="node-toggle active" id="tog-comp"><input type="checkbox" checked value="comp">COMPLIANCE SHIELD</label><label class="node-toggle active" id="tog-zt"><input type="checkbox" checked value="zt">ZERO TRUST</label><label class="node-toggle active" id="tog-strat"><input type="checkbox" checked value="strat">STRATEGIST</label>
+        </div>
+        <input id="queryInput" type="text" placeholder="Enter intelligence query — deploy to all selected nodes simultaneously...">
+        <button id="btnDeploy" onclick="deployQuery()">⚡ DEPLOY</button>
+        <button id="btnSynth" onclick="synthesize()" id="btnSynth">◈ SYNTHESIZE</button>
       </div>
+    </div>
+    <div class="upload-bar">
+      <div class="upload-zone" ondragover="event.preventDefault();this.classList.add('active')" ondragleave="this.classList.remove('active')" ondrop="handleDrop(event)">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.csv,.docx" onchange="handleUpload(this.files[0])">
+        <label class="ulbl" for="fileInput">⬆ <span>Upload Document</span> — PDF · TXT · CSV · DOCX</label>
+        <span style="font-family:var(--mono);font-size:.45rem;color:var(--green);" id="uploadStatus"></span>
+      </div>
+      <button class="ubtn" onclick="runSafeAnalysis()">⚡ FULL ANALYSIS</button>
+      <button class="ubtn" onclick="runSafeAnalysis()">📄 INVOICE EXTRACT</button>
+      <button class="ubtn" onclick="runSafeAnalysis()">💰 FINANCIAL EXTRACT</button>
+      <button class="ubtn" onclick="runSafeAnalysis()">⚖️ COMPLIANCE SCAN</button>
+      <button class="ubtn" onclick="runSafeAnalysis()">📊 EXEC SUMMARY</button>
+      <button class="ubtn" onclick="document.getElementById('howto-modal').style.display='block'" style="margin-left:auto;border-color:rgba(56,189,248,.4);color:#38bdf8;">? HOW TO GUIDE</button>
+    </div>
+
+    <div id="nodes-section">
+      <div id="nodes-label">INTELLIGENCE NODES</div>
+      <div id="nodes-grid">
+        <div class="node-panel" id="panel-fin" style="border-top:2px solid #06b6d4;">
+      <div class="node-hdr">
+        <div class="node-name"><div class="dot" id="dot-fin" style="background:#06b6d4;"></div>FINANCIAL INTEL</div>
+        <div class="node-port">PORT 3016</div>
+      </div>
+      <div class="node-body" id="body-fin"><span style="color:var(--dim)">▸ Awaiting query deployment...</span></div>
+      <div class="node-footer">
+        <a href="https://financial.tsmatter.com" target="_blank" class="open-app" style="color:#06b6d4;border-color:#06b6d444;">OPEN APP ↗</a>
+        <span class="node-footer-status" id="status-fin">STANDBY</span>
+        <span class="token-count" id="tokens-fin"></span>
+      </div>
+    </div><div class="node-panel" id="panel-tax" style="border-top:2px solid #06b6d4;">
+      <div class="node-hdr">
+        <div class="node-name"><div class="dot" id="dot-tax" style="background:#06b6d4;"></div>TAX INTELLIGENCE</div>
+        <div class="node-port">PORT 3021</div>
+      </div>
+      <div class="node-body" id="body-tax"><span style="color:var(--dim)">▸ Awaiting query deployment...</span></div>
+      <div class="node-footer">
+        <a href="https://tax.tsmatter.com" target="_blank" class="open-app" style="color:#06b6d4;border-color:#06b6d444;">OPEN APP ↗</a>
+        <span class="node-footer-status" id="status-tax">STANDBY</span>
+        <span class="token-count" id="tokens-tax"></span>
+      </div>
+    </div><div class="node-panel" id="panel-comp" style="border-top:2px solid #06b6d4;">
+      <div class="node-hdr">
+        <div class="node-name"><div class="dot" id="dot-comp" style="background:#06b6d4;"></div>COMPLIANCE SHIELD</div>
+        <div class="node-port">PORT 3017</div>
+      </div>
+      <div class="node-body" id="body-comp"><span style="color:var(--dim)">▸ Awaiting query deployment...</span></div>
+      <div class="node-footer">
+        <a href="https://compliance.tsmatter.com" target="_blank" class="open-app" style="color:#06b6d4;border-color:#06b6d444;">OPEN APP ↗</a>
+        <span class="node-footer-status" id="status-comp">STANDBY</span>
+        <span class="token-count" id="tokens-comp"></span>
+      </div>
+    </div><div class="node-panel" id="panel-zt" style="border-top:2px solid #06b6d4;">
+      <div class="node-hdr">
+        <div class="node-name"><div class="dot" id="dot-zt" style="background:#06b6d4;"></div>ZERO TRUST</div>
+        <div class="node-port">PORT 3034</div>
+      </div>
+      <div class="node-body" id="body-zt"><span style="color:var(--dim)">▸ Awaiting query deployment...</span></div>
+      <div class="node-footer">
+        <a href="https://zero-trust.tsmatter.com" target="_blank" class="open-app" style="color:#06b6d4;border-color:#06b6d444;">OPEN APP ↗</a>
+        <span class="node-footer-status" id="status-zt">STANDBY</span>
+        <span class="token-count" id="tokens-zt"></span>
+      </div>
+    </div><div class="node-panel" id="panel-strat" style="border-top:2px solid #a855f7;">
+      <div class="node-hdr">
+        <div class="node-name"><div class="dot" id="dot-strat" style="background:#a855f7;"></div>STRATEGIST</div>
+        <div class="node-port">PORT 3011</div>
+      </div>
+      <div class="node-body" id="body-strat"><span style="color:var(--dim)">▸ Awaiting query deployment...</span></div>
+      <div class="node-footer">
+        <a href="https://strategist.tsmatter.com" target="_blank" class="open-app" style="color:#a855f7;border-color:#a855f744;">OPEN APP ↗</a>
+        <span class="node-footer-status" id="status-strat">STANDBY</span>
+        <span class="token-count" id="tokens-strat"></span>
+      </div>
+    </div>
+      </div>
+    </div>
+
+    <div id="synth-section">
+      <div id="synth-hdr">
+        <div id="synth-title">UNIFIED COMMAND RECOMMENDATION</div>
+        <div id="synth-status">READY</div>
+      </div>
+      <div id="synthBody"><span style="color:var(--dim);font-family:var(--mono);font-size:.5rem;">▸ Deploy a query across nodes, then press SYNTHESIZE to generate a unified strategic recommendation...</span></div>
     </div>
   </div>
-
-  <div class="sec-label" id="modules">
-    <span class="sec-label-text">Sovereign Modules</span>
-    <div class="sec-line"></div>
-    <span class="sec-badge">TSM NEURAL · CASE-TECH SPECIFIC</span>
-  </div>
-
-  <div class="sovereign-grid">
-    <!-- TAX -->
-    <div class="sov-card tax">
-      <div class="sov-head">
-        <div><div style="font-size:22px;margin-bottom:4px;">⚖️</div><div class="sov-title">15-STATE TAX<br>NEXUS TRACKER</div></div>
-        <div class="sov-mod-badge mod-tax">AVATAX LAYER</div>
-      </div>
-      <div class="sov-body">
-        <div class="sov-desc">Automated nexus monitoring across all 15 states. Tracks sales volume against economic thresholds ($100K / 200 transactions). Exemption certificates auto-applied. Zero manual filing.</div>
-        <div class="quick-prompts">
-          <button class="qp-btn" onclick="runQuick('tax','Export Q1 sales tax liability breakdown for all 15 nexus states with filing deadlines')"><span class="qp-arrow">›</span> Q1 tax liability export · all 15 states</button>
-          <button class="qp-btn" onclick="runQuick('tax','Which states are at risk of triggering new economic nexus based on current sales velocity?')"><span class="qp-arrow">›</span> New nexus risk by sales velocity</button>
-          <button class="qp-btn" onclick="runQuick('tax','List all pending exemption certificates expiring in the next 60 days')"><span class="qp-arrow">›</span> Exemption certs expiring in 60 days</button>
-          <button class="qp-btn" onclick="runQuick('tax','Generate an audit-ready sales tax reconciliation for the current quarter')"><span class="qp-arrow">›</span> Audit-ready Q reconciliation</button>
-        </div>
-        <div class="sov-input-row">
-          <input class="sov-input" id="input-tax" placeholder="Custom tax / nexus query…" onkeydown="if(event.key==='Enter')runModule('tax')"/>
-          <button class="sov-run-btn tax" onclick="runModule('tax')">ANALYZE</button>
-        </div>
-        <div class="sov-response" id="resp-tax"></div>
-      </div>
-      <div class="sov-foot"><div class="sov-url">tax.tsmatter.com</div><a href="https://tax.tsmatter.com" target="_blank" class="open-app-lnk amber">OPEN APP ↗</a></div>
-    </div>
-
-    <!-- ORDERS -->
-    <div class="sov-card orders">
-      <div class="sov-head">
-        <div><div style="font-size:22px;margin-bottom:4px;">📦</div><div class="sov-title">ORDER-TO-LABEL<br>PIPELINE</div></div>
-        <div class="sov-mod-badge mod-orders">FULFILLMENT ENGINE</div>
-      </div>
-      <div class="sov-body">
-        <div class="sov-desc">PDF hits /intake → system auto-populates tracking pipeline. Zero manual entry. One-click label generation with carrier rate shopping. 98% transaction auto-categorization via TSM Neural inference.</div>
-        <div class="quick-prompts">
-          <button class="qp-btn" onclick="runQuick('orders','Generate a shipping label with cheapest carrier rate for a 5lb package going to New York')"><span class="qp-arrow">›</span> Generate label · carrier rate shop</button>
-          <button class="qp-btn" onclick="runQuick('orders','Show me all orders in the intake queue that have not been labeled in the past 48 hours')"><span class="qp-arrow">›</span> Intake queue · unlabeled 48h</button>
-          <button class="qp-btn" onclick="runQuick('orders','Analyze fulfillment bottlenecks this month and suggest workflow improvements')"><span class="qp-arrow">›</span> Fulfillment bottleneck analysis</button>
-          <button class="qp-btn" onclick="runQuick('orders','Auto-categorize and record all receipts from this week using bank feed matching')"><span class="qp-arrow">›</span> Bank feed auto-match · receipts</button>
-        </div>
-        <div class="sov-input-row">
-          <input class="sov-input" id="input-orders" placeholder="Order / fulfillment / shipping query…" onkeydown="if(event.key==='Enter')runModule('orders')"/>
-          <button class="sov-run-btn orders" onclick="runModule('orders')">PROCESS</button>
-        </div>
-        <div class="sov-response" id="resp-orders"></div>
-      </div>
-      <div class="sov-foot"><div class="sov-url">case-tech.tsmatter.com/orders</div><a href="https://case-tech.tsmatter.com/orders" target="_blank" class="open-app-lnk green">OPEN APP ↗</a></div>
-    </div>
-
-    <!-- AR/AP -->
-    <div class="sov-card ar">
-      <div class="sov-head">
-        <div><div style="font-size:22px;margin-bottom:4px;">💰</div><div class="sov-title">AR/AP RECONCILIATION<br>ENGINE</div></div>
-        <div class="sov-mod-badge mod-ar">PREDICTIVE FINANCE</div>
-      </div>
-      <div class="sov-body">
-        <div class="sov-desc">Predictive AR — flags which customers are trending late before the invoice is due. Auto-matches bank deposits to open invoices. Anomaly detection fires instantly. AP auto-coding with audit trail.</div>
-        <div class="quick-prompts">
-          <button class="qp-btn" onclick="runQuick('ar','Run a risk analysis on all open AR and flag customers trending toward late payment')"><span class="qp-arrow">›</span> Risk analysis · AR late-pay prediction</button>
-          <button class="qp-btn" onclick="runQuick('ar','Auto-match all deposits from the past week against open invoices and flag discrepancies')"><span class="qp-arrow">›</span> Deposit → invoice auto-match</button>
-          <button class="qp-btn" onclick="runQuick('ar','Generate a 30-60-90 aging report with recommended collection actions')"><span class="qp-arrow">›</span> 30-60-90 aging · collection actions</button>
-          <button class="qp-btn" onclick="runQuick('ar','Update all customer records with latest payment status from QuickBooks sync')"><span class="qp-arrow">›</span> QuickBooks sync · customer update</button>
-        </div>
-        <div class="sov-input-row">
-          <input class="sov-input" id="input-ar" placeholder="AR/AP / reconciliation / QuickBooks query…" onkeydown="if(event.key==='Enter')runModule('ar')"/>
-          <button class="sov-run-btn ar" onclick="runModule('ar')">RECONCILE</button>
-        </div>
-        <div class="sov-response" id="resp-ar"></div>
-      </div>
-      <div class="sov-foot"><div class="sov-url">financial.tsmatter.com</div><a href="https://financial.tsmatter.com" target="_blank" class="open-app-lnk cyan">OPEN APP ↗</a></div>
-    </div>
-  </div>
-
-  <!-- ESD NODES -->
-  <div class="sec-label" id="esd-nodes">
-    <span class="sec-label-text">ESD Node Cluster</span>
-    <div class="sec-line"></div>
-    <span class="sec-badge" style="color:var(--purple);border-color:rgba(168,85,247,.3);">EXTENDED SERVICE DEPLOYMENT</span>
-  </div>
-
-  <div class="esd-grid">
-
-    <!-- ESD-AR -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-AR</div><div class="esd-name">ACCOUNTS<br>RECEIVABLE</div></div>
-        <div class="esd-badge">AR NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Invoice aging, customer payment velocity, collections queue prioritization, AR-to-cash forecasting, and dispute resolution pipeline.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('ar','Show me all open invoices aged 60+ days with recommended collection actions')"><span class="esd-qp-arrow">›</span> Open invoices 60d+ · collection queue</button>
-          <button class="esd-qp" onclick="runESD('ar','Generate AR cash flow forecast for next 30 days based on payment velocity')"><span class="esd-qp-arrow">›</span> AR cash flow forecast · 30 days</button>
-          <button class="esd-qp" onclick="runESD('ar','Flag all customers who have disputed an invoice in the past 90 days')"><span class="esd-qp-arrow">›</span> Dispute flags · 90-day review</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-ar" placeholder="AR query…" onkeydown="if(event.key==='Enter')runESDModule('ar')"/>
-          <button class="esd-run-btn" onclick="runESDModule('ar')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-ar"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-ar.tsmatter.com</div><a href="https://esd-ar.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
-
-    <!-- ESD-CASHRECEIPTS -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-CASHRECEIPTS</div><div class="esd-name">CASH<br>RECEIPTS</div></div>
-        <div class="esd-badge">RECEIPTS NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Deposit logging, bank feed ingestion, receipt-to-invoice auto-matching, exception queue, and daily cash position reporting.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('cashreceipts','Match all unmatched bank deposits from today against open invoices')"><span class="esd-qp-arrow">›</span> Match today's deposits · open invoices</button>
-          <button class="esd-qp" onclick="runESD('cashreceipts','Show me all unmatched receipts in the exception queue older than 3 days')"><span class="esd-qp-arrow">›</span> Exception queue · unmatched 3d+</button>
-          <button class="esd-qp" onclick="runESD('cashreceipts','Generate daily cash position report with bank feed reconciliation status')"><span class="esd-qp-arrow">›</span> Daily cash position report</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-cashreceipts" placeholder="Cash receipts query…" onkeydown="if(event.key==='Enter')runESDModule('cashreceipts')"/>
-          <button class="esd-run-btn" onclick="runESDModule('cashreceipts')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-cashreceipts"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-cashreceipts.tsmatter.com</div><a href="https://esd-cashreceipts.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
-
-    <!-- ESD-SETUP -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-SETUP</div><div class="esd-name">SYSTEM<br>SETUP</div></div>
-        <div class="esd-badge">SETUP NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Client onboarding, GL chart-of-accounts mapping, entity config, integration key management, carrier accounts, and tax profiles.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('setup','Run a full integration health check across all connected systems and flag any broken connections')"><span class="esd-qp-arrow">›</span> Integration health check · all systems</button>
-          <button class="esd-qp" onclick="runESD('setup','Show me all GL mappings that do not have a corresponding QuickBooks chart of accounts entry')"><span class="esd-qp-arrow">›</span> GL mapping gaps · QuickBooks alignment</button>
-          <button class="esd-qp" onclick="runESD('setup','List all active carrier accounts with current rate agreements and expiration dates')"><span class="esd-qp-arrow">›</span> Carrier accounts · rate agreements</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-setup" placeholder="Setup / config query…" onkeydown="if(event.key==='Enter')runESDModule('setup')"/>
-          <button class="esd-run-btn" onclick="runESDModule('setup')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-setup"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-setup.tsmatter.com</div><a href="https://esd-setup.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
-
-    <!-- ESD-TIMESHEETS -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-TIMESHEETS</div><div class="esd-name">TIMESHEETS<br>&amp; LABOR</div></div>
-        <div class="esd-badge">TIME NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Staff time entry, project code allocation, multi-tier approval workflows, billable vs. non-billable tracking, and payroll export bridge.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('timesheets','Show me all unapproved timesheets for the current pay period with staff names and hours')"><span class="esd-qp-arrow">›</span> Unapproved timesheets · current period</button>
-          <button class="esd-qp" onclick="runESD('timesheets','Generate billable vs non-billable utilization report for all staff this month')"><span class="esd-qp-arrow">›</span> Billable utilization · monthly report</button>
-          <button class="esd-qp" onclick="runESD('timesheets','Export payroll-ready timesheet data for this pay period in QuickBooks format')"><span class="esd-qp-arrow">›</span> Payroll export · QuickBooks format</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-timesheets" placeholder="Timesheet query…" onkeydown="if(event.key==='Enter')runESDModule('timesheets')"/>
-          <button class="esd-run-btn" onclick="runESDModule('timesheets')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-timesheets"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-timesheets.tsmatter.com</div><a href="https://esd-timesheets.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
-
-    <!-- ESD-PMI -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-PMI</div><div class="esd-name">PROJECT MGMT<br>INTELLIGENCE</div></div>
-        <div class="esd-badge">PMI NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Project profitability, milestone tracking, budget burn-rate analysis, client deliverable status board, and cross-project resource allocation.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('pmi','Show all active projects where budget burn rate exceeds 85% with projected overrun dates')"><span class="esd-qp-arrow">›</span> Budget burn alerts · overrun risk</button>
-          <button class="esd-qp" onclick="runESD('pmi','Generate project profitability report ranked by margin for all active engagements')"><span class="esd-qp-arrow">›</span> Project P&amp;L · margin ranking</button>
-          <button class="esd-qp" onclick="runESD('pmi','List all client deliverables due this week with current status and responsible staff')"><span class="esd-qp-arrow">›</span> Deliverables due this week · status</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-pmi" placeholder="Project intelligence query…" onkeydown="if(event.key==='Enter')runESDModule('pmi')"/>
-          <button class="esd-run-btn" onclick="runESDModule('pmi')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-pmi"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-pmi.tsmatter.com</div><a href="https://esd-pmi.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
-
-  </div>
-
-  <!-- REPORT BUILDER -->
-  <div class="sec-label" id="reports">
-    <span class="sec-label-text">Sovereign Report Builder</span>
-    <div class="sec-line"></div>
-    <span class="sec-badge">TSM NEURAL · EXPORT-READY</span>
-  </div>
-  <div class="report-section">
-    <div class="report-row">
-      <select class="report-select" id="reportType">
-        <option value="">— Select Report Type —</option>
-        <option value="q1-tax">Q1 Multi-State Sales Tax Export</option>
-        <option value="ar-aging">AR Aging Analysis (30/60/90)</option>
-        <option value="ap-reconcile">AP Reconciliation + Audit Trail</option>
-        <option value="nexus-risk">Economic Nexus Risk Assessment</option>
-        <option value="fulfillment">Fulfillment Performance Summary</option>
-        <option value="qb-sync">QuickBooks Migration Readiness</option>
-        <option value="exempt-cert">Exemption Certificate Inventory</option>
-        <option value="cashflow">Cash Flow Forecast (Next 90 Days)</option>
-        <option value="esd-timesheets">ESD Timesheet Utilization Report</option>
-        <option value="esd-pmi">ESD Project P&amp;L Summary</option>
-        <option value="esd-cashreceipts">ESD Cash Receipts Reconciliation</option>
-      </select>
-      <input class="report-state-input" id="reportContext" placeholder="States, client name, date range…"/>
-      <button class="build-btn" onclick="buildReport()">📄 BUILD REPORT</button>
-    </div>
-    <div class="report-output" id="reportOutput"></div>
-  </div>
-</main>
-
-<footer>
-  <div class="footer-l">CASE-TECH SOVEREIGN COMMAND · TSM PLATFORM · DIRECTOR WHITEHEAD</div>
-  <div class="footer-r">
-    <a href="https://financial.tsmatter.com" target="_blank">FINANCIAL CMD</a>
-    <a href="https://tax.tsmatter.com" target="_blank">TAX</a>
-    <a href="https://compliance.tsmatter.com" target="_blank">COMPLIANCE</a>
-    <a href="https://strategist.tsmatter.com" target="_blank">STRATEGIST</a>
-    <a href="https://zero-trust.tsmatter.com" target="_blank">ZERO TRUST</a>
-  </div>
-</footer>
+</div>
 
 <script>
-/*
-  TSM NEURAL ENGINE
-  Routes through: https://tsm-core.fly.dev/v1/chat  (Groq Llama 3.3-70B-Versatile)
-  Underlying model is intentionally not disclosed in the UI.
-
-  Bridge expected request format:
-    POST /v1/chat
-    Content-Type: application/json
-    { "system": "...", "message": "...", "stream": true, "max_tokens": 900 }
-
-  Bridge SSE streaming response (preferred):
-    data: {"delta": "chunk text"}
-    data: [DONE]
-
-  Bridge non-streaming JSON response (fallback):
-    { "response": "full text" }
-    or: { "content": "..." }
-    or OpenAI-shape: { "choices": [{ "message": { "content": "..." } }] }
-
-  Set useFallback: true during development if bridge is not yet running.
-  CORS: bridge must return Access-Control-Allow-Origin: * (or portal domain)
-*/
-const CONFIG = {
-  bridgeUrl: 'https://tsm-core.fly.dev/v1/chat',
-  stream: true,
-  maxTokens: 900,
-  useFallback: false
+const NODES = {
+    fin: { url: '/api/v1/bridge', label: 'Financial Intelligence' },
+  tax: { url: '/api/v1/bridge', label: 'Tax Intelligence' },
+  comp: { url: '/api/v1/bridge', label: 'Compliance Shield' },
+  zt: { url: '/api/v1/bridge', label: 'Zero Trust' },
+  strat: { url: '/api/v1/bridge', label: 'Strategist' }
 };
 
-const SYSTEM_PROMPTS = {
-  tax: `You are the Sovereign Tax Intelligence Engine for Case-Tech, a multi-state sales tax and compliance specialist.
-Specialties: AvaTax/Avalara nexus monitoring across 15+ states, economic nexus thresholds ($100K revenue OR 200 transactions), exemption certificate lifecycle, sales tax filing calendars, product taxability rules, audit-ready reconciliation.
-Rules: Respond with precise, structured, actionable intelligence. Use short labeled sections. Format numbers as currency. Flag risks with ⚠. Give specific operational steps only — no generic advice.`,
-
-  orders: `You are the Sovereign Order-to-Label Pipeline Engine for Case-Tech, a fulfillment and operations specialist.
-Specialties: PDF intake → tracking pipeline (zero manual entry), carrier rate shopping (USPS/UPS/FedEx/DHL), label generation with optimal carrier selection, bank feed ingestion and 98%+ transaction auto-categorization, receipt digitization, fulfillment bottleneck analysis, QuickBooks sync.
-Rules: Respond with precise operational steps. Include example carrier rates and automation triggers. Flag manual-entry elimination with ✓ AUTOMATED. No generic advice.`,
-
-  ar: `You are the Sovereign AR/AP Reconciliation Engine for Case-Tech, a predictive accounts receivable and payable specialist.
-Specialties: Predictive AR (flag late payers before due date), 30-60-90 aging analysis, bank deposit auto-matching, AP auto-coding with GL classification and audit trail, QuickBooks bi-directional sync, cash flow forecasting.
-Rules: Respond with precise structured financial intelligence. Include specific dollar thresholds and timing. Flag at-risk customers with ⚠. Flag automated actions with ✓ AUTO.`,
-
-  'esd-ar': `You are the ESD-AR Node for Case-Tech. Specialties: accounts receivable management, invoice aging, customer payment history and velocity, collections queue prioritization, AR-to-cash forecasting, dispute tracking, and credit risk scoring. Provide structured, actionable AR intelligence. Flag collection risks with ⚠.`,
-
-  'esd-cashreceipts': `You are the ESD-CashReceipts Node for Case-Tech. Specialties: bank deposit logging, bank feed ingestion and parsing, receipt-to-invoice auto-matching, exception queue management, unmatched deposit investigation, daily cash position reporting. Provide structured, actionable cash receipts intelligence.`,
-
-  'esd-setup': `You are the ESD-Setup Node for Case-Tech. Specialties: client entity setup and onboarding, GL chart-of-accounts mapping, integration key management (AvaTax, QuickBooks, carriers), carrier account configuration, tax profile setup, integration health monitoring. Provide structured, step-by-step configuration guidance.`,
-
-  'esd-timesheets': `You are the ESD-Timesheets Node for Case-Tech. Specialties: staff time entry, project code allocation, approval workflows, billable vs. non-billable analysis, overtime alerts, payroll export preparation, labor cost reporting. Provide structured, actionable timesheet and labor intelligence.`,
-
-  'esd-pmi': `You are the ESD-PMI Node for Case-Tech. Specialties: project profitability analysis, milestone and deliverable tracking, budget burn-rate monitoring, resource allocation, client deliverable status, cross-project risk assessment. Provide structured project intelligence. Flag budget risks with ⚠. Include margin data where relevant.`
+const PLAYBOOKS = {
+  margin_recovery: 'Develop a margin recovery plan for a business with 18.4% gross margin vs 22% target — $147K gap. Analyze top cost drivers, identify quick-win reductions in labor (34.2% of revenue), and build a 90-day recovery plan with specific dollar targets per cost category.',
+  portfolio_review: 'Review financial portfolio performance: $4.2M value, +12% YTD. Analyze asset allocation, yield optimization, risk concentration, and rebalancing opportunities. Compare against benchmark and identify top 3 improvement areas with dollar impact.',
+  compliance_sweep: 'Run compliance sweep: SOX endpoint critical failure $240K exposure, HIPAA BAA 2 vendors missing, OIG screening 47 staff overdue $1.9M CMS risk. Prioritize by dollar exposure and provide 30-day remediation timeline with specific action steps.',
+  zero_trust_audit: 'Audit zero trust security posture: score 71/100, unencrypted financial data at rest, 3 over-permissioned accounts, 247 failed auth attempts in 24hrs, 3 critical CVEs unpatched. Provide remediation plan ranked by severity and dollar exposure.',
+  cash_flow: 'Audit cash flow position: current ratio 2.1x, $42K AR over 60 days, 8.4 months cash runway. Develop collections protocol, AR acceleration strategy, and cash flow improvement plan with 30-day targets and specific dollar projections.',
+  BNCA: 'Best Next Course of Action: margin gap $147K, tax savings $52K available, compliance exposure $2.3M, security score 71/100, AR $42K overdue, invoice disputes $18K backlog, Q2 tax $34K due April 15. Prioritize ALL actions by 90-day dollar impact.',
+  collections: 'Develop AR collections strategy for $42K over 60 days across 3 accounts. Identify collection priority by account size and age, draft escalation communications, calculate bad debt provision, and build systematic 30-day follow-up protocol.',
+  tax_sweep: 'Run comprehensive tax optimization: §179 equipment expensing $284K eligible, S-Corp officer compensation below IRS safe harbor, QBI deduction optimization est. $18K savings, bonus depreciation 60% phase-down planning, Q2 estimated tax $34K due April 15.',
+  invoice_audit: 'Run comprehensive invoice management audit: AP aging by vendor (30/60/90 day categories), AR aging by customer ($42K over 60 days — identify top 3 delinquent accounts), invoice dispute backlog $18K, early payment discount opportunities $3.2K this month, duplicate payment risk scan, 3-way match compliance. Calculate cash flow impact of accelerating collections by 15 days.',
 };
 
-const REPORT_PROMPTS = {
-  'q1-tax': 'Generate a detailed Q1 multi-state sales tax export report. Include: per-state liability totals, filing deadlines, nexus status, economic threshold progress, exemption certificate issues, and recommended immediate actions. Make it audit-ready and export-formatted.',
-  'ar-aging': 'Generate a complete AR aging analysis in 30/60/90+ day buckets. For each bucket: typical customer profile, recommended collection action, escalation trigger, estimated recovery rate, and automated follow-up sequence. Include cash flow impact.',
-  'ap-reconcile': 'Generate a full AP reconciliation report with audit trail. Include: vendor payment status, GL coding verification, duplicate detection, unapproved payables, and recommended month-end close steps.',
-  'nexus-risk': 'Generate an economic nexus risk assessment for all 15 states. Include: current threshold progress per state, projected trigger dates based on velocity, recommended proactive registration steps, and penalty risk.',
-  'fulfillment': 'Generate a fulfillment performance summary. Include: order processing time benchmarks, carrier utilization rates, label generation speed, error rates vs. industry standard, and top 3 workflow improvements.',
-  'qb-sync': 'Generate a QuickBooks migration readiness assessment. Include: data fields that auto-map, fields requiring manual review, AR/AP balance verification steps, chart of accounts alignment, and estimated migration timeline.',
-  'exempt-cert': 'Generate an exemption certificate inventory report. Include: certificates by state, expiration timeline, at-risk expirations (60/30/7 days), customers without certificates who should have them, and automated renewal workflow.',
-  'cashflow': 'Generate a 90-day cash flow forecast. Include: expected AR collections by week, AP obligations due, projected ending balance, risk scenarios (high/medium/low collection), and recommended actions to improve cash position.',
-  'esd-timesheets': 'Generate a full timesheet utilization report for the current period. Include: billable vs. non-billable breakdown by staff, project code allocation, overtime flags, approval status, and payroll export readiness.',
-  'esd-pmi': 'Generate a project P&L summary for all active engagements. Include: revenue recognized vs. budgeted, margin by project, burn rate alerts, upcoming milestones at risk, and resource allocation recommendations.',
-  'esd-cashreceipts': 'Generate a cash receipts reconciliation report. Include: matched vs. unmatched deposits, exception queue summary, bank feed sync status, daily cash position trend, and recommended actions for unmatched items.'
-};
+let responses = {};
 
-let bridgeOk = null;
-
-async function checkBridge() {
-  const banner = document.getElementById('bridgeBanner');
-  const txt = document.getElementById('bridgeBannerText');
+let uploadedText = '';
+async function handleUpload(file) {
+  if(!file) return;
+  const st = document.getElementById('uploadStatus');
+  st.textContent = '⟳ Reading...';
   try {
-    const res = await fetch(CONFIG.bridgeUrl.replace('/v1/chat', '/health'), {
-      method: 'GET', signal: AbortSignal.timeout(4000)
-    });
-    if (res.ok) {
-      bridgeOk = true;
-      banner.className = 'bridge-banner show ok';
-      txt.textContent = '✓ TSM Neural bridge online · tsm-core.fly.dev connected';
-      setTimeout(() => banner.classList.remove('show'), 4000);
-    } else { warnBridge(banner, txt); }
-  } catch(e) { warnBridge(banner, txt); }
+    const fd = new FormData(); fd.append('document', file);
+  } catch(e) {
+    await new Promise(r => { const fr = new FileReader(); fr.onload = ev => { uploadedText = ev.target.result.slice(0,8000); r(); }; fr.readAsText(file); });
+  }
+  document.getElementById('uploadStatus').textContent = '✅ ' + file.name;
+}
+function handleDrop(e) { e.preventDefault(); handleUpload(e.dataTransfer.files[0]); }
+async function analyzeDoc(prompt) {
+  if(!uploadedText) { alert('Upload a document first.'); return; }
+  const fp = '[DOCUMENT]\n' + uploadedText + '\n[/DOCUMENT]\n\n' + prompt;
+  document.getElementById('queryInput').value = 'Document Analysis';
+  let delay = 0;
+  document.querySelectorAll('.node-toggle input:checked').forEach(cb => {
+    setTimeout(() => queryNode(cb.value, fp), delay); delay += 1200;
+  });
 }
 
-function warnBridge(banner, txt) {
-  bridgeOk = false;
-  banner.className = 'bridge-banner show';
-  if (CONFIG.useFallback) {
-    txt.textContent = '⚠ Bridge unreachable — running in simulation mode';
-    setTimeout(() => banner.classList.remove('show'), 6000);
-  } else {
-    txt.textContent = '⚠ TSM Neural bridge unreachable — check /var/www/tsm-ai config at tsm-core.fly.dev';
+let querying = false;
+
+const NODE_PREVIEWS = {
+  fin: `<div style="color:#38bdf8;letter-spacing:.5px">► P&L INTELLIGENCE</div>
+<div>• Gross margin: <span style="color:#ef4444">18.4%</span> vs 22% target — gap <span style="color:#ef4444">$147K</span></div>
+<div>• Revenue YTD: <span style="color:#00ff88">$4.2M</span> · +12% vs last year</div>
+<div>• Top cost driver: Labor at <span style="color:#eab308">34.2%</span> of revenue</div>
+<div style="color:#38bdf8;margin-top:6px">► CASH POSITION</div>
+<div>• Current ratio: <span style="color:#00ff88">2.1x</span> — healthy</div>
+<div>• AR aging: <span style="color:#ef4444">$42K over 60 days</span> — 3 accounts</div>
+<div>• Invoice disputes: <span style="color:#eab308">$18K in backlog</span> — 7 open</div>
+<div>• Early pay discounts: <span style="color:#00ff88">$3.2K available</span> this month</div>
+<div>• Cash runway: <span style="color:#00ff88">8.4 months</span></div>`,
+  tax: `<div style="color:#38bdf8;letter-spacing:.5px">► TAX OPPORTUNITIES</div>
+<div>• §179 expensing: <span style="color:#00ff88">$284K eligible</span></div>
+<div>• S-Corp officer comp: <span style="color:#ef4444">Below IRS safe harbor</span></div>
+<div>• QBI deduction: est. <span style="color:#00ff88">$18K savings</span> available</div>
+<div style="color:#38bdf8;margin-top:6px">► DEADLINES</div>
+<div>• Q2 estimated tax: <span style="color:#ef4444">$34K due Apr 15</span></div>
+<div>• Bonus depreciation: <span style="color:#eab308">60% phase-down</span> — act now</div>`,
+  comp: `<div style="color:#eab308;letter-spacing:.5px">► COMPLIANCE ALERTS</div>
+<div>• SOX endpoint: <span style="color:#ef4444">CRITICAL failure</span> — $240K exposure</div>
+<div>• HIPAA BAA: <span style="color:#ef4444">2 vendors missing</span></div>
+<div>• OIG screening: <span style="color:#ef4444">47 staff overdue</span> — $1.9M risk</div>
+<div style="color:#eab308;margin-top:6px">► RISK EXPOSURE</div>
+<div>• Total regulatory exposure: <span style="color:#ef4444">$2.3M</span></div>
+<div>• Compliance score: <span style="color:#eab308">94%</span> — 3 open flags</div>`,
+  zt: `<div style="color:#a855f7;letter-spacing:.5px">► SECURITY POSTURE</div>
+<div>• Zero trust score: <span style="color:#eab308">71/100</span> — 4 gaps</div>
+<div>• CRITICAL: <span style="color:#ef4444">Unencrypted financial data</span> at rest</div>
+<div>• CRITICAL: <span style="color:#ef4444">3 over-permissioned</span> accounts</div>
+<div style="color:#a855f7;margin-top:6px">► THREAT INTEL</div>
+<div>• Failed auth: <span style="color:#ef4444">247 attempts</span> in 24hrs</div>
+<div>• Unpatched CVEs: <span style="color:#ef4444">3 critical</span></div>`,
+  strat: `<div style="color:#a855f7;letter-spacing:.5px">► EXECUTIVE INTELLIGENCE</div>
+<div>• Margin gap: <span style="color:#ef4444">$147K</span> — labor primary driver</div>
+<div>• Tax savings: <span style="color:#00ff88">$52K+ available</span> this year</div>
+<div>• Compliance exposure: <span style="color:#ef4444">$2.3M</span> — 3 critical</div>
+<div style="color:#a855f7;margin-top:6px">► TOP 3 ACTIONS</div>
+<div>• 1. Fix SOX = <span style="color:#00ff88">$240K fine avoided</span></div>
+<div>• 2. File Q2 tax = penalties avoided</div>
+<div>• 3. Collect AR = <span style="color:#00ff88">$42K recovered</span></div>`,
+};
+
+
+function loadPreviews() {
+  Object.keys(NODE_PREVIEWS).forEach(id => {
+    const body = document.getElementById('body-' + id);
+    if(body) body.innerHTML = NODE_PREVIEWS[id];
+  });
+}
+
+function pingNode(id) {
+  fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'user',content:'ping'}]})})
+    .catch(() => { const d=document.getElementById('dot-'+id); const s=document.getElementById('status-'+id); if(d)d.style.background='#ef4444'; if(s)s.textContent='OFFLINE'; });
+}
+
+async function queryNode(id, query) {
+  const body = document.getElementById('body-' + id);
+  const statusEl = document.getElementById('status-' + id);
+  const tokensEl = document.getElementById('tokens-' + id);
+  if(!body || !statusEl) return;
+  body.innerHTML = '<span class="cursor-blink">▌</span>';
+  statusEl.textContent = 'PROCESSING';
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages: [
+        {role:'system', content:'You are a specialized AI intelligence node for FINANCIAL COMMAND. Answer directly and specifically. Include dollar amounts and timelines. Use ► for section headers.'},
+        {role:'user', content: query}
+      ]}),
+      ...(AbortSignal.timeout ? {signal: AbortSignal.timeout(30000)} : {})
+    });
+    const text = d.reply||d.choices?.[0]?.message?.content || d.content || d.answer || d.response || JSON.stringify(d);
+    responses[id] = text;
+    const words = text.split(' ');
+    let i = 0;
+    body.innerHTML = '<span class="response-text" id="rt-' + id + '"></span><span class="cursor-blink"></span>';
+    const rt = document.getElementById('rt-' + id);
+    const stream = setInterval(() => {
+      rt.textContent += (i > 0 ? ' ' : '') + words.slice(i, i+4).join(' ');
+      i += 4;
+      body.scrollTop = body.scrollHeight;
+      if(i >= words.length) {
+        clearInterval(stream);
+        body.querySelector('.cursor-blink')?.remove();
+        statusEl.textContent = '✓ COMPLETE';
+        if(tokensEl) tokensEl.textContent = words.length + ' words';
+      }
+    }, 30);
+  } catch(e) {
+    body.innerHTML = '<span style="color:var(--red)">✗ ' + e.message + '</span>';
+    statusEl.textContent = '✗ ERROR';
   }
 }
 
-window.addEventListener('load', checkBridge);
-
-function animCount(el, target, suffix) {
-  const start = Date.now(), dur = 1200;
-  (function tick() {
-    const p = Math.min((Date.now()-start)/dur, 1);
-    const ease = 1-Math.pow(1-p, 3);
-    el.textContent = Math.round(ease*target) + suffix;
-    if (p<1) requestAnimationFrame(tick);
-  })();
+function deployQuery() {
+  const query = document.getElementById('queryInput').value.trim();
+  if(!query || querying) return;
+  querying = true;
+  responses = {};
+  let delay = 0;
+  document.querySelectorAll('.node-toggle input:checked').forEach(cb => {
+    const id = cb.value;
+    setTimeout(() => queryNode(id, query), delay);
+    delay += 1200;
+  });
+  setTimeout(() => { querying = false; }, delay + 500);
 }
-window.addEventListener('load', () => {
-  setTimeout(()=>animCount(document.getElementById('st-orders'), 148, ''), 300);
-  setTimeout(()=>animCount(document.getElementById('st-ar'), 284, 'K'), 500);
-  setTimeout(()=>animCount(document.getElementById('st-exempt'), 63, ''), 700);
+
+async function runPlaybook(key, el) {
+  document.querySelectorAll('.playbook').forEach(p => p.classList.remove('running'));
+  el.classList.add('running');
+  const prompt = PLAYBOOKS[key];
+  if(!prompt) return;
+  document.getElementById('queryInput').value = prompt.slice(0, 80) + '...';
+  responses = {};
+  let delay = 0;
+  document.querySelectorAll('.node-toggle input:checked').forEach(cb => {
+    const id = cb.value;
+    setTimeout(() => queryNode(id, prompt), delay);
+    delay += 1200;
+  });
+  setTimeout(() => el.classList.remove('running'), delay + 500);
+}
+
+async function synthesize() {
+  const available = Object.entries(responses).filter(([k,v]) => v);
+  if(!available.length) return;
+  document.getElementById('btnSynth').disabled = true;
+  document.getElementById('synth-status').textContent = '● SYNTHESIZING';
+  const sb = document.getElementById('synthBody');
+  sb.innerHTML = '<span class="spin">⟳</span> Processing node intelligence...';
+  const query = document.getElementById('queryInput').value.trim();
+  let context = `You are the Sovereign Strategist for FINANCIAL COMMAND. You have received responses from ${available.length} specialized AI nodes regarding:\n\n"${query}"\n\n`;
+  available.forEach(([id, text]) => { context += `=== ${NODES[id].label.toUpperCase()} ===\n${text}\n\n`; });
+  context += `Provide a unified strategic recommendation:\n1. KEY FINDINGS (from each node)\n2. CRITICAL RISKS (prioritized by dollar impact)\n3. IMMEDIATE ACTIONS (next 30 days with specific steps)\n4. STRATEGIC RECOMMENDATION\n\nBe direct, specific, dollar-focused.`;
+  try {
+    const text = d.reply||d.choices?.[0]?.message?.content || d.content || d.answer || d.response || '';
+    const words = text.split(' ');
+    let i = 0;
+    sb.innerHTML = '<span id="synth-text"></span><span class="cursor-blink"></span>';
+    const st = document.getElementById('synth-text');
+    const stream = setInterval(() => {
+      st.textContent += (i > 0 ? ' ' : '') + words.slice(i, i+5).join(' ');
+      i += 5;
+      sb.scrollTop = sb.scrollHeight;
+      if(i >= words.length) {
+        clearInterval(stream);
+        sb.querySelector('.cursor-blink')?.remove();
+        document.getElementById('synth-status').textContent = '✓ COMPLETE';
+        document.getElementById('btnSynth').disabled = false;
+      }
+    }, 35);
+  } catch(e) {
+    sb.innerHTML = '<span style="color:var(--red)">✗ Synthesis failed: ' + e.message + '</span>';
+    document.getElementById('synth-status').textContent = '✗ ERROR';
+    document.getElementById('btnSynth').disabled = false;
+  }
+}
+
+
+// ── DOCUMENT UPLOAD ────────────────────────────────────────
+
+
+async function handleUpload(file) {
+  if(!file) return;
+  const status = document.getElementById('uploadStatus');
+  status.textContent = '⟳ Reading ' + file.name + '...';
+  const formData = new FormData();
+  formData.append('document', file);
+  try {
+    if(res.ok) {
+      uploadedText = d.text || '';
+      status.textContent = '✅ ' + file.name + ' · ' + uploadedText.length + ' chars';
+    } else { throw new Error('upload failed'); }
+  } catch(e) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      uploadedText = ev.target.result.slice(0, 8000);
+      status.textContent = '✅ ' + file.name + ' loaded';
+    };
+    reader.readAsText(file);
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  handleUpload(e.dataTransfer.files[0]);
+}
+
+async function analyzeDoc(prompt) {
+  if(!uploadedText) { alert('Upload a document first.'); return; }
+  const fullPrompt = '[DOCUMENT]\n' + uploadedText + '\n[/DOCUMENT]\n\n' + prompt;
+  document.getElementById('queryInput').value = 'Document Analysis';
+  let delay = 0;
+  document.querySelectorAll('.node-toggle input:checked').forEach(cb => {
+    setTimeout(() => queryNode(cb.value, fullPrompt), delay);
+    delay += 1200;
+  });
+}
+
+document.getElementById('queryInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') deployQuery();
 });
 
-const activeNodes = { tax: true, orders: true, ar: true };
-function toggleNode(n) {
-  activeNodes[n] = !activeNodes[n];
-  document.getElementById('tog-'+n).classList.toggle('active', activeNodes[n]);
+// Activate node toggles
+document.querySelectorAll('.node-toggle').forEach(tog => {
+  tog.addEventListener('click', () => {
+    const cb = tog.querySelector('input');
+    cb.checked = !cb.checked;
+    tog.classList.toggle('active', cb.checked);
+  });
+});
+
+loadPreviews();
+// ping nodes
+Object.keys(NODES).forEach(id => { if(document.getElementById("body-"+id)) pingNode(id); });
+</script>
+
+<div id="howto-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(4,8,16,.97);overflow-y:auto;">
+  <div style="max-width:1100px;margin:0 auto;padding:24px 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;border-bottom:1px solid rgba(56,189,248,.2);padding-bottom:16px;">
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:9px;color:#38bdf8;letter-spacing:3px;margin-bottom:4px;">TSM FINANCIAL COMMAND CENTER</div>
+        <div style="font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:#e8f0f8;letter-spacing:2px;">HOW TO USE THIS PLATFORM</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;margin-top:4px;letter-spacing:1px;">COMPLETE USER GUIDE — ALL FEATURES DOCUMENTED</div>
+      </div>
+      <button onclick="document.getElementById('howto-modal').style.display='none'" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;padding:8px 20px;border:1px solid rgba(239,68,68,.4);color:#ef4444;background:rgba(239,68,68,.06);cursor:pointer;">✕ CLOSE</button>
+    </div>
+    <div style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);padding:16px;margin-bottom:20px;">
+      <div style="font-family:'Orbitron',monospace;font-size:9px;color:#00ff88;letter-spacing:2px;margin-bottom:10px;">⚡ QUICK START — 60 SECONDS TO FIRST ANALYSIS</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.7;"><span style="color:#00ff88;font-size:11px;">01</span><br>Click a <span style="color:#e8f0f8">PLAYBOOK</span> in the left sidebar to run a pre-built multi-node financial analysis instantly</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.7;"><span style="color:#00ff88;font-size:11px;">02</span><br>Or type any query in the <span style="color:#e8f0f8">DEPLOY bar</span> and click DEPLOY — all 5 nodes answer simultaneously</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.7;"><span style="color:#00ff88;font-size:11px;">03</span><br>Upload a financial document and click <span style="color:#e8f0f8">INVOICE EXTRACT</span> or FULL ANALYSIS to analyze real data</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.7;"><span style="color:#00ff88;font-size:11px;">04</span><br>After nodes respond, click <span style="color:#e8f0f8">SYNTHESIZE</span> for a unified cross-domain financial recommendation</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="border:1px solid rgba(56,189,248,.12);background:#070d1a;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;color:#38bdf8;letter-spacing:2px;padding:10px 14px;border-bottom:1px solid rgba(56,189,248,.12);">◈ LEFT SIDEBAR — PLAYBOOKS</div>
+          <div style="padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.9;">
+            Click any playbook to instantly deploy a pre-built expert analysis across all 5 nodes.<br><br>
+            <span style="color:#38bdf8">● MARGIN RECOVERY</span> — Diagnoses the $147K gross margin gap vs 22% target. Identifies labor cost levers, quick wins, and a 90-day recovery plan with dollar targets.<br><br>
+            <span style="color:#38bdf8">● PORTFOLIO REVIEW</span> — Full $4.2M portfolio analysis: yield, risk concentration, rebalancing opportunities, and benchmark comparison.<br><br>
+            <span style="color:#38bdf8">● COMPLIANCE SWEEP</span> — Audits SOX ($240K exposure), HIPAA BAA gaps, OIG screening ($1.9M CMS risk). Prioritized 30-day remediation plan.<br><br>
+            <span style="color:#38bdf8">● ZERO TRUST AUDIT</span> — Security posture: 71/100 score, unencrypted data, over-permissioned accounts, CVE patch status. Ranked by severity.<br><br>
+            <span style="color:#38bdf8">● CASH FLOW AUDIT</span> — AR acceleration, collections protocol, liquidity optimization, 30-day cash position improvement.<br><br>
+            <span style="color:#a855f7">● ⚡ BNCA</span> — Best Next Course of Action across ALL domains ranked by 90-day dollar impact. The executive priority stack.<br><br>
+            <span style="color:#38bdf8">● AR COLLECTIONS</span> — $42K over 60 days: account prioritization, escalation protocol, bad debt provision, recovery timeline.<br><br>
+            <span style="color:#38bdf8">● TAX SWEEP</span> — §179 ($284K eligible), S-Corp safe harbor, QBI optimization ($18K savings), Q2 deadline April 15.<br><br>
+            <span style="color:#38bdf8">● INVOICE AUDIT</span> — Full AP/AR sweep: aging analysis, $18K dispute backlog, $3.2K early pay discounts, duplicate payment scan.
+          </div>
+        </div>
+        <div style="border:1px solid rgba(56,189,248,.12);background:#070d1a;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;color:#a855f7;letter-spacing:2px;padding:10px 14px;border-bottom:1px solid rgba(56,189,248,.12);">⬆ DOCUMENT UPLOAD</div>
+          <div style="padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.9;">
+            Upload real financial documents for AI analysis against your actual data.<br><br>
+            <span style="color:#38bdf8">● FORMATS:</span> PDF · TXT · CSV · DOCX (drag & drop or click)<br><br>
+            <span style="color:#38bdf8">● ANALYSIS BUTTONS:</span><br>
+            <span style="color:#e8f0f8">⚡ FULL ANALYSIS</span> — Complete document review with risk flags and top 3 actions<br>
+            <span style="color:#e8f0f8">📄 INVOICE EXTRACT</span> — Pulls all invoice data: vendors, amounts, aging, disputes, early pay discounts<br>
+            <span style="color:#e8f0f8">💰 FINANCIAL EXTRACT</span> — Extracts all dollar figures, variances, and overruns<br>
+            <span style="color:#e8f0f8">⚖️ COMPLIANCE SCAN</span> — Flags SOX, HIPAA, OIG, regulatory violations with dollar exposure<br>
+            <span style="color:#e8f0f8">📊 EXEC SUMMARY</span> — Board-ready brief with key findings and actions<br><br>
+            <span style="color:#38bdf8">● BEST DOCUMENTS TO UPLOAD:</span><br>
+            Invoices · AP aging reports · AR aging reports · Bank statements · P&L statements · Budget vs actual · Compliance audit reports · Tax documents · Vendor contracts
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="border:1px solid rgba(56,189,248,.12);background:#070d1a;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;color:#00ff88;letter-spacing:2px;padding:10px 14px;border-bottom:1px solid rgba(56,189,248,.12);">⊞ 5 INTELLIGENCE NODES</div>
+          <div style="padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.9;">
+            Each node is a specialized AI that answers from its domain expertise simultaneously.<br><br>
+            <span style="color:#38bdf8">● FINANCIAL INTEL</span> (Port 3016) — P&L, cash flow, AR/AP, margins, portfolio performance, budget variance. Links to financial.tsmatter.com<br><br>
+            <span style="color:#38bdf8">● TAX INTELLIGENCE</span> (Port 3021) — §179, S-Corp optimization, QBI, estimated taxes, entity structuring. Links to tax.tsmatter.com<br><br>
+            <span style="color:#eab308">● COMPLIANCE SHIELD</span> (Port 3017) — SOX, HIPAA, OIG, GDPR, AML/KYC, penalty exposure. Links to compliance.tsmatter.com<br><br>
+            <span style="color:#a855f7">● ZERO TRUST</span> (Port 3034) — Cybersecurity posture, zero trust architecture, threat detection, access controls. Links to zero-trust.tsmatter.com<br><br>
+            <span style="color:#a855f7">● STRATEGIST</span> (Port 3011) — Cross-domain executive intelligence connecting all node insights into actionable strategy. Links to strategist.tsmatter.com<br><br>
+            <span style="color:#38bdf8">● OPEN APP ↗</span> — Each node card has a link to open the full standalone app for deeper analysis.
+          </div>
+        </div>
+        <div style="border:1px solid rgba(56,189,248,.12);background:#070d1a;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;color:#38bdf8;letter-spacing:2px;padding:10px 14px;border-bottom:1px solid rgba(56,189,248,.12);">⚡ DEPLOY + SYNTHESIZE</div>
+          <div style="padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#4a7a9b;line-height:1.9;">
+            <span style="color:#38bdf8">● NODE TOGGLES</span> — Check/uncheck nodes to control which receive your query. All 5 are active by default.<br><br>
+            <span style="color:#38bdf8">● DEPLOY</span> — Fires your query to all checked nodes simultaneously. Each node answers from its domain. Results stream word-by-word into each card.<br><br>
+            <span style="color:#38bdf8">● SYNTHESIZE</span> — After nodes respond, click SYNTHESIZE to have the Strategist read ALL node responses and generate a unified cross-domain recommendation with: Key Findings · Critical Risks · Immediate Actions · Strategic Recommendation<br><br>
+            <span style="color:#38bdf8">● KPI BAR</span> — 8 live financial metrics across the top: Portfolio Value · Gross Margin · §179 Eligible · Compliance Score · Zero Trust Score · Q2 Tax Due · Current Ratio · AR Over 60 Days<br><br>
+            <span style="color:#38bdf8">● TICKER</span> — Live alert feed with invoice alerts, margin warnings, tax deadlines, security flags, and compliance deadlines
+          </div>
+        </div>
+        <div style="background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.15);padding:14px;">
+          <div style="font-family:'Orbitron',monospace;font-size:9px;color:#38bdf8;letter-spacing:2px;margin-bottom:10px;">⚡ PRO WORKFLOWS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div><div style="font-family:'Orbitron',monospace;font-size:8px;color:#e8f0f8;margin-bottom:5px;">MONTH-END CLOSE</div><div style="font-family:'Share Tech Mono',monospace;font-size:7px;color:#4a7a9b;line-height:1.8;">1. Upload P&L statement<br>2. Run Financial Extract<br>3. Click Cash Flow Audit playbook<br>4. Click AR Collections playbook<br>5. SYNTHESIZE for CFO brief</div></div>
+            <div><div style="font-family:'Orbitron',monospace;font-size:8px;color:#e8f0f8;margin-bottom:5px;">INVOICE MANAGEMENT</div><div style="font-family:'Share Tech Mono',monospace;font-size:7px;color:#4a7a9b;line-height:1.8;">1. Upload AR aging report<br>2. Click Invoice Extract<br>3. Run Invoice Audit playbook<br>4. Run AR Collections playbook<br>5. SYNTHESIZE for collections plan</div></div>
+            <div><div style="font-family:'Orbitron',monospace;font-size:8px;color:#e8f0f8;margin-bottom:5px;">TAX PLANNING</div><div style="font-family:'Share Tech Mono',monospace;font-size:7px;color:#4a7a9b;line-height:1.8;">1. Click Tax Sweep playbook<br>2. Upload last year tax return<br>3. Run Compliance Scan on doc<br>4. Run BNCA for priority order<br>5. SYNTHESIZE for tax strategy</div></div>
+            <div><div style="font-family:'Orbitron',monospace;font-size:8px;color:#e8f0f8;margin-bottom:5px;">SECURITY + COMPLIANCE</div><div style="font-family:'Share Tech Mono',monospace;font-size:7px;color:#4a7a9b;line-height:1.8;">1. Click Zero Trust Audit playbook<br>2. Click Compliance Sweep playbook<br>3. Upload latest audit report<br>4. Run Compliance Scan on doc<br>5. SYNTHESIZE for risk brief</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:16px 0 8px;font-family:'Share Tech Mono',monospace;font-size:7px;color:#2a4a6a;letter-spacing:2px;">TSM AMS IMPACT GROUP · FINANCIAL COMMAND CENTER · AI-GENERATED ANALYSIS FOR INFORMATIONAL PURPOSES ONLY</div>
+  </div>
+</div>
+
+<!-- ══ TSM REPORT BUILDER ══════════════════════════════════════════════════ -->
+<style>
+#tsm-report-rail{height:44px;position:fixed;bottom:0;left:0;right:0;z-index:9000;display:flex;align-items:center;gap:8px;padding:7px 16px;background:rgba(4,8,18,.97);border-top:1px solid rgba(0,255,100,.15);backdrop-filter:blur(12px);}
+.trr-btn{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.12em;padding:5px 12px;border:1px solid;cursor:pointer;text-transform:uppercase;transition:all .15s;background:transparent;}
+.trr-btn.green{border-color:rgba(0,255,100,.4);color:#00ff64;}.trr-btn.green:hover{background:rgba(0,255,100,.1);}
+.trr-btn.gold{border-color:rgba(255,215,0,.4);color:#ffd700;}.trr-btn.gold:hover{background:rgba(255,215,0,.1);}
+.trr-btn.blue{border-color:rgba(0,180,255,.4);color:#00b4ff;}.trr-btn.blue:hover{background:rgba(0,180,255,.1);}
+.trr-btn.purple{border-color:rgba(180,100,255,.4);color:#b464ff;}.trr-btn.purple:hover{background:rgba(180,100,255,.1);}
+.trr-btn.red{border-color:rgba(255,77,100,.4);color:#ff4d64;}.trr-btn.red:hover{background:rgba(255,77,100,.1);}
+.trr-spacer{flex:1;}.trr-status{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#3d6080;letter-spacing:.1em;}
+#tsm-report-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,5,12,.97);overflow-y:auto;padding:24px;}
+.trm-inner{max-width:960px;margin:0 auto;}
+.trm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(0,255,100,.15);}
+.trm-title{font-family:'Share Tech Mono',monospace;font-size:.9rem;letter-spacing:.14em;color:#00ff64;text-transform:uppercase;}
+.trm-close{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.1em;padding:5px 12px;border:1px solid rgba(255,255,255,.15);background:transparent;color:#6b8aaa;cursor:pointer;}
+.trm-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:20px;}
+.trm-tab{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.1em;padding:8px 14px;cursor:pointer;color:#3d6080;border-bottom:2px solid transparent;text-transform:uppercase;transition:all .15s;}
+.trm-tab:hover{color:#eaf3ff;}.trm-tab.active{color:#00ff64;border-bottom-color:#00ff64;}
+.trm-panel{display:none;}.trm-panel.active{display:block;}
+.tr-card{background:rgba(10,18,30,.8);border:1px solid rgba(0,255,100,.12);border-radius:6px;padding:14px;display:flex;align-items:flex-start;gap:12px;}
+.tr-card-body{flex:1;min-width:0;}
+.tr-card-title{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:#00ff64;margin-bottom:4px;letter-spacing:.08em;}
+.tr-card-meta{font-size:.65rem;color:#3d6080;margin-bottom:6px;font-family:'Share Tech Mono',monospace;}
+.tr-card-preview{font-size:.7rem;color:#6b8aaa;line-height:1.6;max-height:60px;overflow:hidden;}
+.tr-card-actions{display:flex;gap:6px;flex-shrink:0;flex-direction:column;}
+.tr-btn-sm{font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.08em;padding:4px 8px;border:1px solid;cursor:pointer;background:transparent;text-transform:uppercase;}
+.tr-editor{display:flex;flex-direction:column;gap:12px;}
+.tr-field label{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:#3d6080;text-transform:uppercase;display:block;margin-bottom:4px;}
+.tr-field input,.tr-field textarea,.tr-field select{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(0,255,100,.15);color:#eaf3ff;padding:8px 10px;font-family:'Share Tech Mono',monospace;font-size:.68rem;outline:none;transition:border-color .15s;resize:vertical;}
+.tr-field input:focus,.tr-field textarea:focus{border-color:rgba(0,255,100,.4);}
+.tr-field textarea{min-height:120px;line-height:1.7;}
+.tr-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.tr-section-hdr{font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:.16em;color:#00b4ff;text-transform:uppercase;border-bottom:1px solid rgba(0,180,255,.15);padding-bottom:6px;margin-bottom:10px;}
+#tr-preview-box{background:#fff;color:#111;padding:32px;border-radius:6px;font-family:Georgia,serif;line-height:1.75;font-size:13px;max-height:500px;overflow-y:auto;}
+#tr-preview-box h1{font-size:18px;margin-bottom:4px;color:#0a1628;}
+#tr-preview-box h2{font-size:14px;color:#1a3a5c;margin:16px 0 6px;border-bottom:1px solid #e0e8f0;padding-bottom:4px;}
+#tr-preview-box .meta{font-size:11px;color:#666;margin-bottom:16px;font-family:monospace;}
+</style>
+
+<div id="tsm-report-rail">
+  <button class="trr-btn green" onclick="tsmCaptureReport()">📋 CAPTURE OUTPUT</button>
+  <button class="trr-btn gold" onclick="tsmBuildReport()">📄 BUILD REPORT</button>
+  <button class="trr-btn blue" onclick="tsmOpenReports()">🗂 SAVED REPORTS (<span id="trr-saved-count">0</span>)</button>
+  <button class="trr-btn purple" onclick="tsmExportLastReport()">⬇ EXPORT PDF-READY</button>
+  <div class="trr-spacer"></div>
+  <div class="trr-status" id="trr-status">REPORT ENGINE READY</div>
+</div>
+
+<div id="tsm-report-modal">
+  <div class="trm-inner">
+    <div class="trm-hdr">
+      <div class="trm-title">📄 TSM Report Builder</div>
+      <button class="trm-close" onclick="tsmCloseReports()">✕ CLOSE</button>
+    </div>
+    <div class="trm-tabs">
+      <div class="trm-tab active" onclick="switchTRTab('builder',this)">BUILD REPORT</div>
+      <div class="trm-tab" onclick="switchTRTab('saved',this)">SAVED REPORTS</div>
+      <div class="trm-tab" onclick="switchTRTab('preview',this)">PREVIEW & EXPORT</div>
+    </div>
+    <div class="trm-panel active" id="trm-builder">
+      <div class="tr-editor">
+        <div class="tr-section-hdr">Report Identity</div>
+        <div class="tr-grid-2">
+          <div class="tr-field"><label>Report Title</label><input id="tr-title" placeholder="e.g. Q2 Financial Intelligence Report"/></div>
+          <div class="tr-field"><label>Client / Entity</label><input id="tr-client" placeholder="e.g. Desert Financial Credit Union"/></div>
+        </div>
+        <div class="tr-grid-2">
+          <div class="tr-field"><label>Prepared By</label><input id="tr-author" value="TSM Intelligence Platform"/></div>
+          <div class="tr-field"><label>Report Type</label>
+            <select id="tr-type">
+              <option>Financial Intelligence Briefing</option>
+              <option>Compliance Gap Assessment</option>
+              <option>Risk Exposure Report</option>
+              <option>Strategic Action Plan</option>
+              <option>Executive Summary</option>
+              <option>Custom Report</option>
+            </select>
+          </div>
+        </div>
+        <div class="tr-section-hdr">Node Intelligence</div>
+        <div class="tr-field"><label>Financial Intel</label><textarea id="tr-node-fin" placeholder="Auto-captured or paste..."></textarea></div>
+        <div class="tr-field"><label>Tax Intelligence</label><textarea id="tr-node-tax" placeholder="Auto-captured or paste..."></textarea></div>
+        <div class="tr-field"><label>Compliance Shield</label><textarea id="tr-node-comp" placeholder="Auto-captured or paste..."></textarea></div>
+        <div class="tr-field"><label>Zero Trust</label><textarea id="tr-node-zt" placeholder="Auto-captured or paste..."></textarea></div>
+        <div class="tr-section-hdr">Synthesis</div>
+        <div class="tr-field"><label>Unified Recommendation</label><textarea id="tr-synth" style="min-height:160px;" placeholder="Auto-captured from Synthesize..."></textarea></div>
+        <div class="tr-section-hdr">Custom Sections</div>
+        <div class="tr-field"><label>Executive Summary</label><textarea id="tr-exec-summary" placeholder="Your own executive summary..."></textarea></div>
+        <div class="tr-field"><label>Next Steps</label><textarea id="tr-next-steps" placeholder="Specific actions, owners, deadlines..."></textarea></div>
+        <div class="tr-field"><label>Footer</label><input id="tr-footer" value="Confidential — prepared by TSM Intelligence Platform."/></div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+          <button class="trr-btn green" onclick="tsmSaveReport()">💾 SAVE</button>
+          <button class="trr-btn blue" onclick="tsmPreviewReport()">👁 PREVIEW</button>
+          <button class="trr-btn gold" onclick="tsmExportTXT()">⬇ TXT</button>
+          <button class="trr-btn purple" onclick="tsmExportHTML()">⬇ HTML</button>
+          <button class="trr-btn red" onclick="tsmClearBuilder()">✕ CLEAR</button>
+        </div>
+      </div>
+    </div>
+    <div class="trm-panel" id="trm-saved">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span id="tr-saved-label" style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#3d6080;">0 saved reports</span>
+        <button class="trr-btn red" onclick="tsmClearAllReports()" style="font-size:.58rem;padding:3px 8px;">CLEAR ALL</button>
+      </div>
+      <div id="tr-saved-list"></div>
+    </div>
+    <div class="trm-panel" id="trm-preview">
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="trr-btn gold" onclick="tsmExportTXT()">⬇ TXT</button>
+        <button class="trr-btn blue" onclick="tsmExportHTML()">⬇ HTML</button>
+        <button class="trr-btn green" onclick="window.print()">🖨 PRINT</button>
+      </div>
+      <div id="tr-preview-box">Build a report to preview it here.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+const SK = 'tsm_fc_reports_v2';
+let reports = [];
+try { reports = JSON.parse(localStorage.getItem(SK)||'[]'); } catch(e){}
+let lastReport = null;
+
+function save(){ try{localStorage.setItem(SK,JSON.stringify(reports.slice(0,50)));}catch(e){} }
+function setStatus(m){ const el=document.getElementById('trr-status'); if(el)el.textContent=m; }
+function updateCount(){
+  const a=document.getElementById('trr-saved-count'), b=document.getElementById('tr-saved-label');
+  if(a)a.textContent=reports.length;
+  if(b)b.textContent=reports.length+' saved report'+(reports.length!==1?'s':'');
 }
 
-async function callAI(systemPrompt, userMessage, onChunk, onDone) {
-  if (CONFIG.useFallback || bridgeOk === false) {
-    await simulateResponse(systemPrompt, userMessage, onChunk, onDone);
-    return;
-  }
-  try {
-    const res = await fetch(CONFIG.bridgeUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: systemPrompt,
-        message: userMessage,
-        stream: CONFIG.stream,
-        max_tokens: CONFIG.maxTokens
-      })
-    });
-    if (!res.ok) {
-      const errText = await res.text().catch(()=>'');
-      if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
-      else { onChunk('[Bridge error ' + res.status + ' — verify tsm-core.fly.dev/v1/chat is live and CORS is open]\n' + errText.slice(0,200)); onDone(); }
-      return;
-    }
-    const ct = res.headers.get('content-type') || '';
-    if (ct.includes('text/event-stream') || CONFIG.stream) {
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const json = line.slice(6).trim();
-          if (json === '[DONE]') continue;
-          try {
-            const p = JSON.parse(json);
-            const t = p.delta || p.text || p.content || p.choices?.[0]?.delta?.content || '';
-            if (t) onChunk(t);
-          } catch(e) {}
-        }
-      }
-    } else {
-      const data = await res.json();
-      const text = data.response || data.content || data.text || data.choices?.[0]?.message?.content || JSON.stringify(data);
-      onChunk(text);
-    }
-    onDone();
-  } catch(err) {
-    if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
-    else { onChunk('[Connection error: ' + err.message + ']\nVerify tsm-core.fly.dev is reachable and CORS headers include your portal domain.'); onDone(); }
-  }
-}
-
-const SIM = {
-  tax: ['Q1 TAX LIABILITY — ALL 15 STATES\n\nTX: $14,220 | CA: $9,810 | FL: $6,340 | NY: $5,880\nOH: $3,120 | IL: $2,940 | WA: $2,610 | PA: $2,480\nNJ: $2,200 | GA: $1,980 | NC: $1,740 | VA: $1,560\nAZ: $1,340 | CO: $1,180 | TN: $980\n\nTOTAL: $58,380\n\n⚠ OH approaching 200-transaction threshold (187 YTD). Breach in ~23 days.\n⚠ 3 exemption certs expiring in 47 days — renewal queue flagged.\n✓ AUTO: Filing profiles staged for all 15 states.'],
-  orders: ['LABEL GENERATED ✓ AUTOMATED\n\n5.0 lb → New York, NY 10001\n\nUPS Ground:   $8.42  (4 days)  ← SELECTED\nFedEx Ground: $9.17  (4 days)\nUSPS Priority: $11.30 (2 days)\nDHL Express:  $24.80 (1 day)\n\nTracking: 1Z999AA10123456784\n✓ AUTOMATED: Filed to pipeline. QB sync queued.'],
-  ar: ['AR PREDICTIVE RISK\n\n⚠ HIGH RISK:\n  Acme Logistics — INV $12,400 due 8 days, 3 prior lates\n  Vertex Supply  — INV $8,200 due 5 days, velocity slowing\n\n✓ AUTO: 3 soft reminders → T-5 days\n✓ AUTO: 2 escalations   → T+3 days\n1 hold flag — awaiting your approval\n\nPROJECTED RECOVERY THIS WEEK: $34,200'],
-  'esd-ar': ['ESD-AR ACTIVE\n\nOPEN 60d+: 8 invoices · $28,400 total\n\nPriority 1: Vertex Inc    $12,100 (87d) — formal demand\nPriority 2: Summit Co     $9,800  (72d) — escalation call\nPriority 3: Redline LLC   $6,500  (63d) — second reminder\n\nAR FORECAST 30d:\n  Expected:  $84,200\n  At-risk:   $22,300\n  Probable:  $71,400\n\n⚠ 2 accounts flagged for credit hold.'],
-  'esd-cashreceipts': ["ESD-CASHRECEIPTS ACTIVE\n\nTODAY'S DEPOSITS: $31,240 · 9 transactions\n  ✓ MATCHED: 7 deposits ($27,040)\n  ⚠ EXCEPTIONS: 2 deposits ($4,200) — no invoice match\n\n  $3,200 — Wire 'VTXS CORP' → possible Vertex Supply?\n  $1,000 — ACH 'ADV PMT' → create prepayment invoice?\n\nCASH POSITION: $142,800 · Bank feed synced 4 min ago"],
-  'esd-setup': ['ESD-SETUP ACTIVE\n\nINTEGRATION HEALTH:\n  ✓ AvaTax API    — connected (v22.6)\n  ✓ QuickBooks    — synced 12 min ago\n  ✓ UPS           — active (expires Dec 2025)\n  ✓ FedEx         — active (expires Mar 2026)\n  ✓ USPS          — active\n  ⚠ DHL           — API key rotation due in 14 days\n\nGL GAPS: 2 unmapped accounts\n  5210 "Freight Expense" — not in QB CoA\n  4320 "Misc Revenue"   — ambiguous, review needed'],
-  'esd-timesheets': ['ESD-TIMESHEETS ACTIVE\n\nPAY PERIOD Apr 1–15:\n  Total: 312 hrs\n  Billable: 274 hrs (87.8%)\n  Non-billable: 38 hrs (12.2%)\n\nAPPROVALS:\n  ✓ Approved: 8 of 11 staff\n  ⚠ Pending: Torres, McKinley, Pham — deadline today\n\n⚠ Torres: 52 hrs logged — OT authorization required\n\nPAYROLL EXPORT: Ready for 8 approved staff · QB format available'],
-  'esd-pmi': ['ESD-PMI ACTIVE\n\nACTIVE PROJECTS (8):\n  ✓ CASE-TECH Fulfillment Ops — 74% budget · on track\n  ✓ Ameris Portal Buildout    — 61% budget · on track\n  ⚠ Honor Portal Integration  — 91% budget · OVERRUN RISK\n  ⚠ HC Command Dashboard      — 88% budget · monitor\n\nDELIVERABLES THIS WEEK:\n  Mon: HC Command v2 API spec — Torres (in progress)\n  Wed: Ameris UAT             — McKinley (on track)\n  Fri: CASE-TECH Q1 report    — Pham ⚠ NOT STARTED\n\nPORTFOLIO MARGIN: 34.2%']
+window.switchTRTab = function(tab,el){
+  document.querySelectorAll('.trm-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.trm-panel').forEach(p=>p.classList.remove('active'));
+  if(el)el.classList.add('active');
+  else{const tabs=document.querySelectorAll('.trm-tab');tabs.forEach((t,i)=>{if(['builder','saved','preview'][i]===tab)t.classList.add('active');});}
+  const p=document.getElementById('trm-'+tab); if(p)p.classList.add('active');
 };
 
-async function simulateResponse(systemPrompt, userMessage, onChunk, onDone) {
-  const key = Object.keys(SIM).find(k => systemPrompt.toLowerCase().includes(k.replace('-',''))) || 'tax';
-  const pool = SIM[key];
-  const full = pool[Math.floor(Math.random() * pool.length)];
-  for (const ch of full) { await new Promise(r => setTimeout(r, 9)); onChunk(ch); }
-  onDone();
+function buildObj(){
+  return {
+    id:Date.now(),
+    title:document.getElementById('tr-title').value||'Intelligence Report',
+    client:document.getElementById('tr-client').value||'TSM Client',
+    author:document.getElementById('tr-author').value||'TSM Intelligence Platform',
+    type:document.getElementById('tr-type').value,
+    date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),
+    nodes:{
+      fin:document.getElementById('tr-node-fin').value,
+      tax:document.getElementById('tr-node-tax').value,
+      comp:document.getElementById('tr-node-comp').value,
+      zt:document.getElementById('tr-node-zt').value
+    },
+    synth:document.getElementById('tr-synth').value,
+    execSummary:document.getElementById('tr-exec-summary').value,
+    nextSteps:document.getElementById('tr-next-steps').value,
+    footer:document.getElementById('tr-footer').value
+  };
 }
 
-async function runModule(mod, query) {
-  const input = query || document.getElementById('input-'+mod).value.trim();
-  if (!input) return;
-  const el = document.getElementById('resp-'+mod);
-  el.className = 'sov-response active';
-  el.innerHTML = '<div class="thinking-line ' + mod + '">' +
-    (mod==='tax' ? '// TSM NEURAL · NEXUS ANALYSIS…' : mod==='orders' ? '// TSM NEURAL · PIPELINE PROCESSING…' : '// TSM NEURAL · AR/AP RECONCILING…') + '</div>';
-  await callAI(SYSTEM_PROMPTS[mod], input, (c) => {
-    const t = el.querySelector('.thinking-line'); if (t) t.remove();
-    el.textContent += c; el.scrollTop = el.scrollHeight;
-  }, () => {});
+function fmtTXT(r){
+  const D='═'.repeat(70), d='─'.repeat(70);
+  let o=D+'\n'+r.title.toUpperCase()+'\n'+D+'\n';
+  o+='Client: '+r.client+'\nType: '+r.type+'\nPrepared by: '+r.author+'\nDate: '+r.date+'\n'+D+'\n\n';
+  if(r.execSummary)o+='EXECUTIVE SUMMARY\n'+d+'\n'+r.execSummary+'\n\n';
+  if(r.nodes.fin)o+='FINANCIAL INTELLIGENCE\n'+d+'\n'+r.nodes.fin+'\n\n';
+  if(r.nodes.tax)o+='TAX INTELLIGENCE\n'+d+'\n'+r.nodes.tax+'\n\n';
+  if(r.nodes.comp)o+='COMPLIANCE SHIELD\n'+d+'\n'+r.nodes.comp+'\n\n';
+  if(r.nodes.zt)o+='ZERO TRUST\n'+d+'\n'+r.nodes.zt+'\n\n';
+  if(r.synth)o+='UNIFIED RECOMMENDATION\n'+d+'\n'+r.synth+'\n\n';
+  if(r.nextSteps)o+='NEXT STEPS\n'+d+'\n'+r.nextSteps+'\n\n';
+  o+=D+'\n'+r.footer+'\n'+D;
+  return o;
 }
 
-function runQuick(mod, query) { document.getElementById('input-'+mod).value = query; runModule(mod, query); }
-
-async function runESDModule(node, query) {
-  const input = query || document.getElementById('input-esd-'+node).value.trim();
-  if (!input) return;
-  const el = document.getElementById('resp-esd-'+node);
-  el.className = 'esd-response active';
-  el.innerHTML = '<div class="thinking-line esd">// TSM NEURAL · ESD-' + node.toUpperCase() + ' PROCESSING…</div>';
-  await callAI(SYSTEM_PROMPTS['esd-'+node], input, (c) => {
-    const t = el.querySelector('.thinking-line'); if (t) t.remove();
-    el.textContent += c; el.scrollTop = el.scrollHeight;
-  }, () => {});
+function fmtHTML(r){
+  function sec(t,b){return b?'<h2>'+t+'</h2><div class="sec"><p>'+b.replace(/\n/g,'<br>')+'</p></div>':'';}
+  // Build HTML as string - all tags escaped to prevent browser parsing
+  const parts = [
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">',
+    '<title>'+r.title+'<'+'\/title>',
+    '<style>body{font-family:Georgia,serif;max-width:860px;margin:40px auto;padding:0 24px;color:#111;line-height:1.75;}',
+    'h1{font-size:22px;color:#0a1628;margin-bottom:4px;}',
+    'h2{font-size:14px;color:#1a3a5c;margin:24px 0 6px;border-bottom:2px solid #e0e8f0;padding-bottom:4px;text-transform:uppercase;letter-spacing:.06em;}',
+    '.meta{font-size:11px;color:#666;margin-bottom:24px;font-family:monospace;border-bottom:1px solid #e0e8f0;padding-bottom:12px;}',
+    '.sec{background:#f9fbfd;border-left:3px solid #1a3a5c;padding:12px 16px;margin-bottom:8px;font-size:13px;}',
+    '.footer{font-size:10px;color:#999;margin-top:32px;border-top:1px solid #e0e8f0;padding-top:12px;text-align:center;}',
+    '@media print{body{margin:20px;}}<'+'\/style><'+'\/head><body>',
+    '<h1>'+r.title+'<\/h1>',
+    '<div class="meta">Client: '+r.client+' &nbsp;·&nbsp; Type: '+r.type+' &nbsp;·&nbsp; Date: '+r.date+'<\/div>',
+    sec('Executive Summary',r.execSummary),
+    sec('Financial Intelligence',r.nodes.fin),
+    sec('Tax Intelligence',r.nodes.tax),
+    sec('Compliance Shield',r.nodes.comp),
+    sec('Zero Trust Security',r.nodes.zt),
+    sec('Unified Recommendation',r.synth),
+    sec('Next Steps',r.nextSteps),
+    '<div class="footer">'+r.footer+'<\/div>',
+    '<'+'\/body><'+'\/html>'
+  ];
+  return parts.join('\n');
 }
 
-function runESD(node, query) { document.getElementById('input-esd-'+node).value = query; runESDModule(node, query); }
-
-async function deployMaster() {
-  const q = document.getElementById('masterQuery').value.trim();
-  if (!q) return;
-  const btn = document.getElementById('masterBtn');
-  btn.disabled = true; btn.textContent = '…';
-  const panel = document.getElementById('synthPanel');
-  document.getElementById('synthQuery').textContent = '// QUERY: ' + q;
-  panel.classList.add('active');
-  const targets = Object.keys(activeNodes).filter(n => activeNodes[n]);
-  ['tax','orders','ar'].forEach(n => {
-    document.getElementById('synth-'+n).textContent = targets.includes(n) ? '// TSM Neural analyzing…' : '// Node disabled';
+window.tsmCaptureReport = function(){
+  const ids={fin:'body-fin',tax:'body-tax',comp:'body-comp',zt:'body-zt'};
+  let captured=0;
+  Object.entries(ids).forEach(([k,id])=>{
+    const el=document.getElementById(id);
+    if(el&&el.innerText.trim()&&!el.innerText.includes('Awaiting')){
+      document.getElementById('tr-node-'+k).value=el.innerText.trim(); captured++;
+    }
   });
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  await Promise.all(targets.map(mod =>
-    callAI(SYSTEM_PROMPTS[mod], 'From your domain (' + mod + '), give targeted intelligence for: ' + q,
-      (c) => { const el = document.getElementById('synth-'+mod); if (el.textContent.includes('analyzing')) el.textContent = ''; el.textContent += c; }, () => {})
-  ));
-  btn.disabled = false; btn.textContent = '⚡ DEPLOY';
+  const synth=document.getElementById('synthBody');
+  if(synth&&synth.innerText.trim()&&!synth.innerText.includes('Deploy'))
+    document.getElementById('tr-synth').value=synth.innerText.trim();
+  const q=document.getElementById('queryInput');
+  if(q&&q.value){const t=document.getElementById('tr-title');if(t&&!t.value)t.value='Intelligence Report — '+q.value.slice(0,60);}
+  setStatus(captured+' nodes captured');
+  window.tsmOpenReports();
+  switchTRTab('builder',document.querySelector('.trm-tab'));
+};
+
+window.tsmSaveReport = function(){
+  const r=buildObj(); reports.unshift(r); save(); updateCount(); lastReport=r;
+  setStatus('✓ Saved: '+r.title.slice(0,40)); renderSaved();
+};
+
+window.tsmPreviewReport = function(){
+  const r=buildObj(); lastReport=r;
+  const box=document.getElementById('tr-preview-box');
+  if(box) box.innerHTML=fmtHTML(r).replace(/<'+'\/body>[\s\S]*/,'').replace(/.*<body>/,'');
+  switchTRTab('preview',document.querySelectorAll('.trm-tab')[2]);
+};
+
+window.tsmExportTXT = function(){
+  const r=lastReport||buildObj();
+  const b=new Blob([fmtTXT(r)],{type:'text/plain'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download=r.title.replace(/[^a-z0-9]/gi,'_').toLowerCase()+'_'+Date.now()+'.txt';
+  a.click(); setStatus('✓ Exported: '+a.download);
+};
+
+window.tsmExportHTML = function(){
+  const r=lastReport||buildObj();
+  const b=new Blob([fmtHTML(r)],{type:'text/html'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download=r.title.replace(/[^a-z0-9]/gi,'_').toLowerCase()+'_'+Date.now()+'.html';
+  a.click(); setStatus('✓ Exported HTML: '+a.download);
+};
+
+window.tsmExportLastReport = function(){
+  if(!reports.length){setStatus('No saved reports yet');return;}
+  lastReport=reports[0]; tsmExportTXT();
+};
+
+window.tsmBuildReport = function(){ window.tsmOpenReports(); switchTRTab('builder',document.querySelector('.trm-tab')); };
+window.tsmOpenReports = function(){ document.getElementById('tsm-report-modal').style.display='block'; document.body.style.overflow='hidden'; renderSaved(); updateCount(); };
+window.tsmCloseReports = function(){ document.getElementById('tsm-report-modal').style.display='none'; document.body.style.overflow=''; };
+
+window.tsmLoadReport = function(i){
+  const r=reports[i]; if(!r)return;
+  ['title','client','author'].forEach(f=>{ const el=document.getElementById('tr-'+f); if(el)el.value=r[f]||''; });
+  document.getElementById('tr-type').value=r.type||'';
+  ['fin','tax','comp','zt'].forEach(k=>{ const el=document.getElementById('tr-node-'+k); if(el)el.value=r.nodes[k]||''; });
+  ['synth','exec-summary','next-steps','footer'].forEach(f=>{ const el=document.getElementById('tr-'+f); if(el)el.value=r[f.replace('-','')]||r[f]||''; });
+  lastReport=r; switchTRTab('builder',document.querySelector('.trm-tab')); setStatus('Loaded: '+r.title.slice(0,40));
+};
+
+window.tsmDeleteReport = function(i){ reports.splice(i,1); save(); updateCount(); renderSaved(); };
+window.tsmClearAllReports = function(){ if(confirm('Delete all saved reports?')){reports=[];save();updateCount();renderSaved();} };
+window.tsmClearBuilder = function(){
+  ['tr-title','tr-client','tr-node-fin','tr-node-tax','tr-node-comp','tr-node-zt','tr-synth','tr-exec-summary','tr-next-steps'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
+};
+
+function renderSaved(){
+  const list=document.getElementById('tr-saved-list'); if(!list)return;
+  if(!reports.length){list.innerHTML='<div style="font-family:\'Share Tech Mono\',monospace;font-size:.65rem;color:#3d6080;padding:20px;text-align:center;">No saved reports yet.</div>';return;}
+  list.innerHTML=reports.map((r,i)=>`
+    <div class="tr-card">
+      <div class="tr-card-body">
+        <div class="tr-card-title">${r.title}</div>
+        <div class="tr-card-meta">${r.type} · ${r.client} · ${r.date}</div>
+        <div class="tr-card-preview">${(r.synth||r.nodes.fin||'').slice(0,180)}...</div>
+      </div>
+      <div class="tr-card-actions">
+        <button class="tr-btn-sm" style="border-color:rgba(0,255,100,.3);color:#00ff64;" onclick="tsmLoadReport(${i})">LOAD</button>
+        <button class="tr-btn-sm" style="border-color:rgba(0,180,255,.3);color:#00b4ff;" onclick="tsmExportReportAt(${i},'txt')">TXT</button>
+        <button class="tr-btn-sm" style="border-color:rgba(180,100,255,.3);color:#b464ff;" onclick="tsmExportReportAt(${i},'html')">HTML</button>
+        <button class="tr-btn-sm" style="border-color:rgba(255,77,100,.3);color:#ff4d64;" onclick="tsmDeleteReport(${i})">DEL</button>
+      </div>
+    </div>`).join('');
 }
 
-function closeSynth() { document.getElementById('synthPanel').classList.remove('active'); }
+window.tsmExportReportAt = function(i,fmt){ lastReport=reports[i]; if(fmt==='txt')tsmExportTXT(); else tsmExportHTML(); };
 
-async function buildReport() {
-  const type = document.getElementById('reportType').value;
-  const ctx = document.getElementById('reportContext').value.trim();
-  if (!type) { alert('Select a report type.'); return; }
-  const out = document.getElementById('reportOutput');
-  out.className = 'report-output active';
-  out.textContent = '// TSM NEURAL REPORT ENGINE GENERATING…\n\n';
-  const prompt = REPORT_PROMPTS[type] + (ctx ? '\n\nContext: ' + ctx : '');
-  const sys = type.includes('tax')||type.includes('nexus')||type.includes('exempt') ? SYSTEM_PROMPTS.tax
-    : type.includes('timesheets') ? SYSTEM_PROMPTS['esd-timesheets']
-    : type.includes('pmi') ? SYSTEM_PROMPTS['esd-pmi']
-    : type.includes('cashreceipts') ? SYSTEM_PROMPTS['esd-cashreceipts']
-    : type.includes('ar')||type.includes('ap')||type.includes('qb')||type.includes('cashflow') ? SYSTEM_PROMPTS.ar
-    : SYSTEM_PROMPTS.orders;
-  await callAI(sys, prompt, (c) => {
-    if (out.textContent.includes('GENERATING')) out.textContent = out.textContent.replace('// TSM NEURAL REPORT ENGINE GENERATING…\n\n','');
-    out.textContent += c; out.scrollTop = out.scrollHeight;
-  }, () => {});
-}
-
-function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
+updateCount();
+})();
 </script>
-</body>
-</html>
+
+<script>
+function runSafeAnalysis() {
+  var ta = document.querySelector('textarea');
+  var val = ta ? ta.value : 'analysis';
+  safeAnalyze(val || 'analysis', 'output');
+}
+</script>
+
+  <!-- TSM AI Assistant -->
+  <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
+    <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
+    <div style="display:flex;gap:4px">
+      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var AI_ENDPOINT = 'https://ai.tsmatter.com/ask';
+    function getSlug(){ return window.location.hostname.replace('.tsmatter.com',''); }
+    var history = [];
+    function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function fmt(t){ return esc(t).replace(/```([\s\S]*?)```/g,function(_,c){ return '<pre style="background:rgba(0,0,0,0.1);padding:6px;border-radius:4px;font-size:11px;overflow-x:auto">'+c.trim()+'</pre>'; }).replace(/
+/g,'<br>'); }
+    function append(role,html){
+      var o=document.getElementById('tsm-widget-output')||document.getElementById('ai-output');
+      if(!o) return null;
+      o.style.display='block';
+      var d=document.createElement('div');
+      d.style.cssText=role==='user'?'text-align:right;margin:4px 0;font-size:12px':'text-align:left;margin:4px 0;font-size:12px';
+      d.innerHTML=role==='user'?'<span style="background:#e8f0fe;padding:4px 8px;border-radius:10px;display:inline-block">'+html+'</span>':'<span style="background:#f4f4f4;padding:4px 8px;border-radius:10px;display:inline-block;max-width:90%;text-align:left">'+html+'</span>';
+      o.appendChild(d);
+      o.scrollTop=o.scrollHeight;
+      return d;
+    }
+    async function send(){
+      var inp=document.getElementById('tsm-widget-input')||document.getElementById('ai-input');
+      var btn=document.getElementById('tsm-widget-btn')||document.getElementById('ai-btn');
+      if(!inp||!btn) return;
+      var text=inp.value.trim();
+      if(!text) return;
+      inp.value=''; btn.disabled=true; btn.textContent='...';
+      append('user',esc(text));
+      var thinking=append('ai','<em style="color:#999">Thinking...</em>');
+      history.push({role:'user',content:text});
+      try{
+        var r=await fetch(AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:getSlug(),messages:history})});
+        var d=await r.json();
+        var reply=d.reply||'No response';
+        history.push({role:'assistant',content:reply});
+        if(thinking) thinking.innerHTML='<span style="background:#f4f4f4;padding:4px 8px;border-radius:10px;display:inline-block;max-width:90%;text-align:left">'+fmt(reply)+'</span>';
+      }catch(e){
+        if(thinking) thinking.innerHTML='<span style="color:#c00;font-size:11px">Error: '+esc(e.message)+'</span>';
+      }
+      btn.disabled=false; btn.textContent='Ask';
+    }
+    document.addEventListener('DOMContentLoaded',function(){
+      var btn=document.getElementById('tsm-widget-btn')||document.getElementById('ai-btn');
+      var inp=document.getElementById('tsm-widget-input')||document.getElementById('ai-input');
+      if(btn) btn.addEventListener('click',send);
+      if(inp) inp.addEventListener('keydown',function(e){ if(e.key==='Enter'&&!e.shiftKey) send(); });
+    });
+  })();
+  </script>
+  <!-- END TSM AI Assistant -->
+
+<script id="tsm-core-fix">
+(function(){
+  // FIX 1: Tab switching — show first tab on load
+  function initTabs(){
+    var tabs = document.querySelectorAll('[id^="tab-"]');
+    if(!tabs.length) return;
+    var btns = document.querySelectorAll('.nav-btn');
+    // Hide all
+    tabs.forEach(function(t){ t.style.setProperty('display','none','important'); });
+    // Show first
+    tabs[0].style.setProperty('display','block','important');
+    if(btns[0]) btns[0].classList.add('active');
+  }
+
+  // FIX 2: Make switchTab globally reliable
+  window.switchTab = function(tabId, btn){
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el){
+      el.style.setProperty('display','none','important');
+    });
+    var t = document.getElementById('tab-'+tabId);
+    if(t) t.style.setProperty('display','block','important');
+    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+  };
+
+  // FIX 3: Repair broken Q() function — route through TSM-AI-3200
+  window.Q = async function(prompt, btnId, resId){
+    if(!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if(!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
+    try {
+      var r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          app: window.location.hostname.replace('.tsmatter.com',''),
+          messages: [{role:'user', content:prompt}]
+        })
+      });
+      var d = await r.json();
+      var reply = d.reply || 'No response';
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']
+
+' +
+        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
+    } catch(e) {
+      res.textContent = '> TSM NEURAL ERROR: ' + e.message;
+    }
+    btn.disabled = false;
+  };
+
+  // FIX 4: loadAI and loadPreset helpers
+  window.loadAI = function(prompt){
+    var inp = document.getElementById('dash-inp') || document.getElementById('ai-inp') ||
+              document.querySelector('.ai-inp');
+    if(inp){ inp.value = prompt; inp.focus(); }
+  };
+
+  window.loadPreset = function(prompt){
+    var aiTab = null;
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      if((b.getAttribute('onclick')||'').indexOf("'ai'") > -1) aiTab = b;
+    });
+    if(aiTab) window.switchTab('ai', aiTab);
+    var inp = document.getElementById('ai-inp') || document.querySelector('.ai-inp');
+    if(inp){ inp.value = prompt; inp.focus(); }
+  };
+
+  // FIX 5: Rename injected widget IDs to avoid conflicts
+  function fixWidgetIds(){
+    var w = document.getElementById('ai-input');
+    var b = document.getElementById('ai-btn');
+    var o = document.getElementById('ai-output');
+    // Only rename if these are the floating widget ones (inside fixed div)
+    if(w && w.closest('[style*="position:fixed"][style*="bottom:20px"]')){
+      w.id = 'tsm-widget-input';
+      if(b) b.id = 'tsm-widget-btn';
+      if(o) o.id = 'tsm-widget-output';
+      // Re-init the widget with new IDs
+      import('/tsm-ai-client.js').then(function(m){
+        m.initAIButton('#tsm-widget-btn','#tsm-widget-input','#tsm-widget-output');
+        document.getElementById('tsm-widget-input').addEventListener('focus', function(){
+          document.getElementById('tsm-widget-output').style.display='block';
+        });
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    initTabs();
+    fixWidgetIds();
+  });
+
+  // Also run immediately if DOM already loaded
+  if(document.readyState !== 'loading'){
+    initTabs();
+    fixWidgetIds();
+  }
+})();
+</script>
+
+
+<script id="tsm-fc-fix">
+(function(){
+
+  // Fix queryNode — d was never assigned from fetch
+  window.queryNode = async function(id, query){
+    var body = document.getElementById('body-' + id);
+    var statusEl = document.getElementById('status-' + id);
+    var tokensEl = document.getElementById('tokens-' + id);
+    if(!body || !statusEl) return;
+    body.innerHTML = '<span class="cursor-blink">▌</span>';
+    statusEl.textContent = 'PROCESSING';
+    try{
+      var r = await fetch('/api/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          app:'financial-command',
+          messages:[
+            {role:'user', content: query}
+          ]
+        })
+      });
+      var d = await r.json();
+      var text = d.reply || 'No response';
+      window.responses = window.responses || {};
+      window.responses[id] = text;
+      var words = text.split(' ');
+      var i = 0;
+      body.innerHTML = '<span class="response-text" id="rt-'+id+'"></span><span class="cursor-blink"></span>';
+      var rt = document.getElementById('rt-'+id);
+      var stream = setInterval(function(){
+        rt.textContent += (i > 0 ? ' ' : '') + words.slice(i, i+4).join(' ');
+        i += 4;
+        body.scrollTop = body.scrollHeight;
+        if(i >= words.length){
+          clearInterval(stream);
+          var cur = body.querySelector('.cursor-blink');
+          if(cur) cur.remove();
+          statusEl.textContent = '✓ COMPLETE';
+          if(tokensEl) tokensEl.textContent = words.length + ' words';
+        }
+      }, 30);
+    }catch(e){
+      body.innerHTML = '<span style="color:var(--red)">✗ '+e.message+'</span>';
+      statusEl.textContent = '✗ ERROR';
+    }
+  };
+
+  // Fix synthesize — d was never assigned from fetch
+  window.synthesize = async function(){
+    var responses = window.responses || {};
+    var available = Object.entries(responses).filter(function(kv){ return kv[1]; });
+    if(!available.length) return;
+    var btnSynth = document.getElementById('btnSynth');
+    var synthStatus = document.getElementById('synth-status');
+    var sb = document.getElementById('synthBody');
+    if(btnSynth) btnSynth.disabled = true;
+    if(synthStatus) synthStatus.textContent = '● SYNTHESIZING';
+    if(sb) sb.innerHTML = '<span class="spin">⟳</span> Processing node intelligence...';
+    var query = (document.getElementById('queryInput')||{}).value || '';
+    var NODES = window.NODES || {};
+    var context = 'You are the Sovereign Strategist for FINANCIAL COMMAND. You have received responses from '+available.length+' specialized AI nodes regarding:\n\n"'+query+'"\n\n
+
+';
+    available.forEach(function(kv){
+      var nodeLabel = (NODES[kv[0]] && NODES[kv[0]].label) ? NODES[kv[0]].label.toUpperCase() : kv[0].toUpperCase();
+      context += '=== '+nodeLabel+' ===
+'+kv[1]+'
+
+';
+    });
+    context += 'Provide a unified strategic recommendation:
+1. KEY FINDINGS
+2. CRITICAL RISKS (by dollar impact)
+3. IMMEDIATE ACTIONS (next 30 days)
+4. STRATEGIC RECOMMENDATION
+
+Be direct, specific, dollar-focused.';
+    try{
+      var r = await fetch('/api/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({app:'financial-command', messages:[{role:'user',content:context}]})
+      });
+      var d = await r.json();
+      var text = d.reply || '';
+      var words = text.split(' ');
+      var i = 0;
+      if(sb){
+        sb.innerHTML = '<span id="synth-text"></span><span class="cursor-blink"></span>';
+        var st = document.getElementById('synth-text');
+        var stream = setInterval(function(){
+          st.textContent += (i > 0 ? ' ' : '') + words.slice(i, i+5).join(' ');
+          i += 5;
+          if(i >= words.length){
+            clearInterval(stream);
+            var cur = sb.querySelector('.cursor-blink');
+            if(cur) cur.remove();
+            if(synthStatus) synthStatus.textContent = '✓ SYNTHESIZED';
+          }
+        }, 25);
+      }
+    }catch(e){
+      if(sb) sb.innerHTML = '<span style="color:red">✗ '+e.message+'</span>';
+      if(synthStatus) synthStatus.textContent = '✗ ERROR';
+    }
+    if(btnSynth) btnSynth.disabled = false;
+  };
+
+  // Fix analyzeDoc — also used /api/chat
+  window.analyzeDoc = async function(prompt){
+    var out = document.getElementById('doc-output') ||
+              document.getElementById('analysis-output') ||
+              document.querySelector('.doc-result,.analysis-result,[id*="doc"],[id*="analysis"]');
+    if(!out) out = document.querySelector('.node-body');
+    if(!out) return;
+    out.innerHTML = '<span class="spin">⟳</span> Analyzing document...';
+    try{
+      var r = await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({app:'financial-command',messages:[{role:'user',content:prompt}]})
+      });
+      var d = await r.json();
+      out.textContent = d.reply || 'No response';
+    }catch(e){
+      out.textContent = '✗ Error: '+e.message;
+    }
+  };
+
+})();
+</script>
+
+
+<script id="tsm-api-fix">/* TSM API routing fixed */</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd841ad308e7d',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
