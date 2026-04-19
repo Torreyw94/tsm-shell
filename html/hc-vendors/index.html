@@ -109,7 +109,7 @@ tr:hover td{background:#0f1f0f}
 </div></div></div><div class="footer"><div class="fn">🤝 VENDOR NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC VENDOR COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><script>
 );
   var t=document.getElementById('tab-'+tabId);
-  if(t){t.style.display='block';}
+  if(t){t.style.setProperty('display','block','important');}
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   if(btn){btn.classList.add('active');}
 }
@@ -321,18 +321,7 @@ window.addEventListener('load',function(){
   }
 
   window.addEventListener('load', () => setTimeout(autoPopulate, 100));
-  // Secondary backup for slow-loading iframes
-  setTimeout(autoPopulate, 500);
 })();
 </script>
 
-<script>
-window.addEventListener('load',function(){
-  var first=document.querySelector('.nav-btn');
-  if(first){
-    var m=(first.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-    if(m && window.switchTab) window.switchTab(m[1], first);
-  }
-});
-</script>
 </body></html>
