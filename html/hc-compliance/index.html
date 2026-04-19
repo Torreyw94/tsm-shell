@@ -35,7 +35,7 @@
       const dashBtn = document.querySelector('.nav-btn');
       if (dashBtn) {
         const idMatch = dashBtn.getAttribute('onclick')?.match(/'([^']+)'/);
-        window.switchTab(idMatch ? idMatch[1] : 'tab-dash', dashBtn);
+        window.switchTab(idMatch ? idMatch[1] : 'dash', dashBtn);
       }
     });
   })();
