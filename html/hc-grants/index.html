@@ -1,35 +1,31 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuditOps | HC-GRANTS</title>
+  <script>
+    function switchTab(id, btn) {
+      console.log("TSM: Switching to", id);
+      // Hide all divs that look like tabs
+      document.querySelectorAll('div[id]').forEach(div => {
+        if (div.id.includes('tab-') || ['dash','matters','contracts','claims','billing','medical'].includes(div.id)) {
+          div.style.display = 'none';
+        }
+      });
+      // Show target
+      const target = document.getElementById(id) || document.getElementById('tab-' + id);
+      if (target) target.style.display = 'block';
+      
+      // Nav UI
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
 
-
-
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC GRANTS COMMAND &middot; TSM Healthcare</title>
-
-
-
-
-
-
-<script>
-  function switchTab(id, btn) {
-    console.log("Switching to:", id);
-    // Hide all
-    document.querySelectorAll('div[id]').forEach(el => {
-      if(el.id.includes('tab-') || ['dash','matters','contracts','claims','ai'].includes(el.id)) {
-        el.style.display = 'none';
-      }
+    window.addEventListener('DOMContentLoaded', () => {
+      const firstBtn = document.querySelector('.nav-btn');
+      if (firstBtn) firstBtn.click();
     });
-    // Show target
-    var t = document.getElementById(id) || document.getElementById('tab-' + id);
-    if(t) t.style.display = 'block';
-    // Active class
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-  }
-  window.onload = function() {
-    var first = document.querySelector('.nav-btn');
-    if(first) first.click();
-  };
-</script>
+  </script>
 </head><body>
 
 
