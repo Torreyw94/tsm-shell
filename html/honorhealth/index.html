@@ -43,301 +43,32 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 .footer{text-align:center;font-size:9px;color:var(--dim);letter-spacing:2px;padding:20px}
 @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.apps{grid-template-columns:1fr}}
 </style>
-<script>document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C','U'].includes(e.key))||(e.ctrlKey&&e.key==='U')){e.preventDefault();return false;}});(function(){const t=160;setInterval(()=>{if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#020c06;color:#00e878;font-family:monospace;font-size:18px;letter-spacing:3px;">⛔ TSM PROTECTED ENVIRONMENT</div>';}  },1000);})();
-// ── TSM NODE-SPECIFIC SYSTEM PROMPTS ────────────────────────────────────────
-const NODE_SYSTEM_PROMPTS = {
-  insurance:  'You are an expert healthcare insurance and claims analyst for TSM Matter. Focus on denial codes (PR-96, CO-4, CO-11, CO-50, CO-B7), payer-specific patterns (UHC, Aetna, BlueCross, Medicaid, Medicare), appeal strategies, prior authorization workflows, and revenue recovery. Quantify dollar impact. Be specific and actionable.',
-  billing:    'You are an expert healthcare billing and RCM analyst for TSM Matter. Focus on clean claim rates, denial root causes, CPT/ICD coding accuracy, charge capture gaps, underpayments, and AR days reduction. Reference specific payers and dollar amounts in your analysis.',
-  compliance: 'You are a healthcare compliance and HIPAA specialist for TSM Matter. Focus on HIPAA Security and Privacy Rule gaps, OIG exclusion screening, BAA coverage requirements, audit exposure areas, and concrete remediation steps with implementation timelines.',
-  pharmacy:   'You are a healthcare pharmacy and DEA compliance analyst for TSM Matter. Focus on DEA registration flags, DIR fee exposure, formulary optimization, specialty drug prior auth requirements, and pharmacy spend reduction strategies.',
-  legal:      'You are a healthcare legal and contracts analyst for TSM Matter. Focus on expiring payer contracts, unfavorable contract clauses, compliance obligations, renegotiation leverage points, and contract performance gaps.',
-  grants:     'You are a healthcare grants and funding specialist for TSM Matter. Focus on HRSA, NIH, CMS Innovation Center grants, eligibility windows, application deadlines, matching fund requirements, and funding optimization strategies.',
-  default:    'You are a senior healthcare operations analyst at TSM Matter. Provide specific, prioritized, actionable recommendations with dollar impact and 30/60/90-day implementation steps. Reference the data shown on screen.'
-};
-function getNodeSystemPrompt() {
-  const url = (window.location.hostname + window.location.pathname).toLowerCase();
-  const title = (document.title || '').toLowerCase();
-  const combined = url + ' ' + title;
-  const keys = ['insurance','billing','compliance','pharmacy','legal','grants'];
-  for (const key of keys) {
-    if (combined.includes(key)) return NODE_SYSTEM_PROMPTS[key];
-  }
-  return NODE_SYSTEM_PROMPTS.default;
-}
-
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</head><body>
-
-<div id="library-tab"></div>
-<div class="hdr"><div><div class="logo">HONORHEALTH <span>|</span> COMMAND</div><div class="badge">INTELLIGENCE COMMAND CENTER · HEALTHCARE · ENTERPRISE</div></div><div class="powered">POWERED BY TSM MATTER</div></div>
-<div class="wrap">
-<div class="welcome"><div class="wt">WELCOME TO YOUR COMMAND CENTER</div><div class="ws">AI-POWERED HEALTHCARE INTELLIGENCE · ENTERPRISE PLAN · 11-NODE HC SUITE ACTIVE</div></div>
-<div class="stats"><div class="stat"><div class="stat-val">11</div><div class="stat-label">HC NODES ACTIVE</div></div><div class="stat"><div class="stat-val">97.4%</div><div class="stat-label">COMPLIANCE SCORE</div></div><div class="stat"><div class="stat-val">$2.8M</div><div class="stat-label">REVENUE AT RISK</div></div><div class="stat"><div class="stat-val">LIVE</div><div class="stat-label">NEURAL SYNC</div></div></div>
-<div class="sh">YOUR ACTIVE INTELLIGENCE APPS</div>
-
-<div id="intakeFeed" style="display:none;background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--g);padding:16px 20px;margin-bottom:28px">
-  <div class="sh">DOCUMENT INTAKE QUEUE</div>
-  <div id="intakeList" style="display:flex;flex-direction:column;gap:8px"></div>
-</div>
-<div class="apps"><div class="app-card" onclick="window.open('https://hc-medical.tsmatter.com','_blank')"><div class="app-icon">🏥</div><div class="app-name">HC Medical Command</div><div class="app-desc">Clinical ops · CPT audit · prior auth</div><a class="app-btn" href="https://hc-medical.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://hc-billing.tsmatter.com','_blank')"><div class="app-icon">🧾</div><div class="app-name">HC Billing Intelligence</div><div class="app-desc">18.4% denial rate watch · $48K stalled</div><a class="app-btn" href="https://hc-billing.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://hc-compliance.tsmatter.com','_blank')"><div class="app-icon">✅</div><div class="app-name">HC Compliance Center</div><div class="app-desc">HIPAA · CMS · OIG · Joint Commission</div><a class="app-btn" href="https://hc-compliance.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://hc-legal.tsmatter.com','_blank')"><div class="app-icon">⚖️</div><div class="app-name">HC Legal Command</div><div class="app-desc">Malpractice · Stark Law · BAA compliance</div><a class="app-btn" href="https://hc-legal.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://hc-pharmacy.tsmatter.com','_blank')"><div class="app-icon">💊</div><div class="app-name">HC Pharmacy Command</div><div class="app-desc">DEA compliance · DIR fees · Star Ratings</div><a class="app-btn" href="https://hc-pharmacy.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')"><div class="app-icon">🎯</div><div class="app-name">HC Strategist</div><div class="app-desc">All-node synthesis · next best action</div><a class="app-btn" href="https://hc-strategist.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://bpo-healthcare.tsmatter.com','_blank')"><div class="app-icon">⚙️</div><div class="app-name">BPO Healthcare</div><div class="app-desc">Claims processing · prior auth · back-office</div><a class="app-btn" href="https://bpo-healthcare.tsmatter.com" target="_blank">OPEN →</a></div><div class="app-card" onclick="window.open('https://hc-financial.tsmatter.com','_blank')"><div class="app-icon">💰</div><div class="app-name">HC Financial</div><div class="app-desc">DSO reduction · payer analytics · P&L</div><a class="app-btn" href="https://hc-financial.tsmatter.com" target="_blank">OPEN →</a></div></div>
-<div class="sh">QUICK ANALYSIS PRESETS</div>
-<div class="presets" id="presets"></div>
-<div class="chat"><div class="ct">YOUR DEDICATED AI INTELLIGENCE ENGINE</div>
-<div class="cw" id="chat"><div class="msg"><div class="av">AI</div><div class="mb"><div class="ml">TSM INTELLIGENCE</div><div class="mt">HonorHealth Command Center initialized. I am your dedicated AI intelligence engine with deep knowledge of your operations, active alerts, and industry context. Ask me anything — compliance posture, revenue optimization, risk assessment, or operational intelligence.</div></div></div></div>
-<div class="ci"><input class="inp" id="inp" placeholder="Ask your AI engine anything..." onkeydown="if(event.key==='Enter')send()"><button class="btn" onclick="send()">ASK →</button></div>
-</div>
-</div>
-<div class="footer">© 2026 HONORHEALTH · POWERED BY TSM MATTER · honorhealth.tsmatter.com</div>
-<script>
-const msgs=[];
-const PRESETS=[
-  {title:'Top Risk Briefing',desc:'Highest priority items now',prompt:'Give me a top 3 risk briefing for HonorHealth right now — what needs immediate attention and why?'},
-  {title:'Revenue Opportunity',desc:'Where to recover money',prompt:'What are the top revenue recovery opportunities for HonorHealth this week? Be specific with dollar amounts.'},
-  {title:'Compliance Status',desc:'Current compliance posture',prompt:'What is the current compliance posture for HonorHealth? List open items by severity.'},
-  {title:'30-Day Action Plan',desc:'Priority actions this month',prompt:'Build a 30-day action plan for HonorHealth — prioritized by impact, with owners and deadlines.'},
-  {title:'Executive Summary',desc:'Board-ready briefing',prompt:'Generate an executive board briefing for HonorHealth — financial performance, compliance, risk, and strategic priorities.'},
-  {title:'Quick Win Scan',desc:'Fast wins available now',prompt:'What are the 3 quickest wins available for HonorHealth right now that could be executed this week?'},
-];
-const pb=document.getElementById('presets');
-PRESETS.forEach(p=>{const d=document.createElement('div');d.className='preset';d.innerHTML=`<div class="preset-title">${p.title}</div><div class="preset-desc">${p.desc}</div>`;d.onclick=()=>{document.getElementById('inp').value=p.prompt;document.getElementById('inp').focus();};pb.appendChild(d);});
-async function send(){
-const inp=document.getElementById('inp');const t=inp.value.trim();if(!t)return;inp.value='';add('user','YOU',t);
-const liveContext=`HONORHEALTH LIVE NODE SNAPSHOT
-Active Nodes: 11 | Compliance: 97.4% | Revenue At Risk: $2.8M | Sync: LIVE
-HC Billing: 18.4% denial rate — $48K stalled (UHC + Medicaid)
-HC Compliance: HIPAA/CMS/OIG/Joint Commission — 2 open items
-HC Legal: Malpractice + Stark Law + BAA review open
-HC Pharmacy: DEA flag + DIR fee exposure + Star Rating impact
-HC Financial: DSO reduction active · payer analytics in progress
-HC Medical: CPT audit + prior auth backlog
-HC Strategist: Cross-node synthesis ready
-Organization: HonorHealth | 6 hospitals | 70+ sites | Phoenix | 14,000 staff | $3.1B revenue`;
-msgs.push({role:'user',content:t});add('ai','TSM INTELLIGENCE','⟳ Analyzing...');
-function add(role,label,text){const c=document.getElementById('chat');const d=document.createElement('div');d.className='msg';d.innerHTML=`<div class="av" style="background:${role==='user'?'#1a1a1a':'var(--g)'};color:${role==='user'?'var(--text)':'#000'}">${role==='user'?'YOU':'AI'}</div><div class="mb"><div class="ml">${label}</div><div class="mt">${text}</div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
-function upd(t){const m=document.querySelectorAll('.mt');if(m.length)m[m.length-1].textContent=t;document.getElementById('chat').scrollTop=99999;}
-</script><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
-
 
 <script>
-window.safeAnalyze = async function(input, targetId="output"){
-  const el = document.getElementById(targetId) || document.querySelector("#output") || document.querySelector(".output");
-  if(!el) return;
-
-  el.innerHTML = "⚡ Running analysis...";
-
-  try {
-    const res = await fetch("https://tsm-core.fly.dev/ask", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({app:'honorhealth',messages:[{role:"user",content:input}]})
-    });
-
-    const text = await res.text();
-
-    if(text.startsWith("<!DOCTYPE") || text.startsWith("<html")){
-      throw new Error("HTML response (routing issue)");
-    }
-
-    const data = JSON.parse(text);
-
-    const output = (data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content) ||
-                   data.response ||
-                   data.analysis ||
-                   data.feed&&data.feed.map(f=>f.message).join("<br>") ||
-                   "No structured output";
-
-    el.innerHTML = "<div style=\"padding:12px;line-height:1.4\">"+output+"</div>";
-
-  } catch(e){
-    console.warn("AI ERROR:", e);
-    el.innerHTML = "⚠️ AI Error — check routing / auth / rate limits";
-  }
-};
-</script>
-
-<div id="output" style="padding:12px;color:#00ffa6;font-family:monospace;"></div>
-
-<script>
-async function pollHonorIntake() {
-  try {
-    const r = await fetch('https://intake.tsmatter.com/api/intake/records', {
-      headers: { 'X-Intake-Token': 'tkn_honorhealth_dd1a87131974e6ec' }
-    });
-    const d = await r.json();
-    const records = (d.records || []).filter(x => x.status === 'received' || x.status === 'processing');
-    const feed = document.getElementById('intakeFeed');
-    const list = document.getElementById('intakeList');
-    if (!feed || !list || !records.length) { if(feed) feed.style.display='none'; return; }
-    feed.style.display = 'block';
-    const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    list.innerHTML = records.map(p =>
-      `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#010a03;border:1px solid var(--border)">
-        <div>
-          <div style="font-size:11px;color:var(--bright);font-weight:700">${p.original_name}</div>
-          <div style="font-size:9px;color:var(--dim);margin-top:2px;letter-spacing:1px">${p.doc_type} · ${p.project_ref||'no ref'} · ${new Date(p.uploaded_at).toLocaleString()}</div>
-        </div>
-        <div style="font-size:9px;padding:4px 10px;background:var(--g);color:#000;font-weight:700;cursor:pointer;letter-spacing:1px"
-          onclick="loadHonorPacket('"+esc(p.id)+"','"+esc(p.original_name)+"','"+esc(p.doc_type)+"')">ANALYZE</div>
-      </div>`
-    ).join('');
-  } catch(e) { console.error('[intake]', e); }
-}
-
-async function loadHonorPacket(id, name, docType) {
-  const inp = document.getElementById('inp');
-  if (!inp) return;
-  try {
-    const r = await fetch('https://intake.tsmatter.com/api/intake/content/' + id);
-    const d = await r.json();
-    
-    const txt = (d.text||'').trim();
-    inp.value = 'Analyze this HonorHealth document for denial risk, compliance exposure, and required actions.
-
-File: ' + name + '\nType: ' + docType + (txt.length > 100 ? '
-
-Content:
-' + txt.slice(0,4000) : '');
-  } catch(e) {
-    inp.value = 'Analyze HonorHealth document: ' + name + ' (Type: ' + docType + ')';
-  }
-  inp.focus();
-}
-
-pollHonorIntake();
-setInterval(pollHonorIntake, 30000);
-</script>
-
-  <!-- TSM AI Assistant -->
-  <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
-    <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
-    <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
-      <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
-    </div>
-  </div>
-  <script>
-(function(){
-var AI="https://tsm-core.fly.dev/ask";
-var H=[];
-async function send(){
-var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
-var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
-var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
-if(!inp||!btn)return;
-var t=inp.value.trim();if(!t)return;
-inp.value="";btn.disabled=true;btn.textContent="...";
-if(out){out.style.display="block";out.innerHTML+='<div style="text-align:right;margin:4px 0"><span style="background:#e8f0fe;padding:4px 8px;border-radius:10px;font-size:12px">'+t+'</span></div>';}
-var thinking=document.createElement("div");
-if(out){thinking.innerHTML='<em style="color:#999;font-size:12px">Thinking...</em>';out.appendChild(thinking);}
-H.push({role:"user",content:t});
-try{
-var r=await fetch(AI,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({app:"honorhealth",messages:H,liveContext:liveContext})});
-var d=await r.json();
-var reply=d.reply||"No response";
-H.push({role:"assistant",content:reply});
-if(thinking)thinking.innerHTML='<div style="text-align:left;margin:4px 0"><span style="background:#f4f4f4;padding:4px 8px;border-radius:10px;font-size:12px;display:inline-block;max-width:90%">'+reply.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</span></div>';
-}catch(e){if(thinking)thinking.textContent="Error: "+e.message;}
-btn.disabled=false;btn.textContent="Ask";
-if(out)out.scrollTop=out.scrollHeight;
-}
-document.addEventListener("DOMContentLoaded",function(){
-var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
-var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
-var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
-if(btn)btn.addEventListener("click",send);
-if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey)send();});
-if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";});
-});
-})();
-</script>
-  <!-- END TSM AI Assistant -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script id="tsm-final-v6-ultra">
 (function() {
   window.switchTab = function(id, btn) {
-    console.log('◆ TSM Forcing Tab:', id);
-    const allTabs = document.querySelectorAll('[id^="tab-"]');
-    allTabs.forEach(t => { t.style.setProperty('display', 'none', 'important'); });
-    
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
     const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) {
-      target.style.setProperty('display', 'block', 'important');
-    }
-
+    if (target) target.style.setProperty('display', 'block', 'important');
+    
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  // Keep trying to init until successful or 2 seconds pass
-  let attempts = 0;
-  const initInterval = setInterval(() => {
-    attempts++;
-    const firstBtn = document.querySelector('.nav-btn');
-    const firstTab = document.querySelector('[id^="tab-"]');
-    
-    if (firstBtn && firstTab) {
-      const m = (firstBtn.getAttribute('onclick')||'').match(/'([^']+)'/);
-      window.switchTab(m ? m[1] : 'dash', firstBtn);
-      clearInterval(initInterval);
-      console.log('✔ TSM Engine: Auto-load Success');
+  function init() {
+    const first = document.querySelector('.nav-btn');
+    if (first) {
+      const m = (first.getAttribute('onclick')||'').match(/'([^']+)'/);
+      window.switchTab(m ? m[1] : 'dash', first);
     }
-    
-    if (attempts > 40) clearInterval(initInterval); // Stop after 2s
-  }, 50);
+  }
 
-  // Global click listener to fix broken onclick strings
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.nav-btn');
-    if (btn) {
-      const m = (btn.getAttribute('onclick')||'').match(/'([^']+)'/);
-      if (m) {
-        e.preventDefault();
-        window.switchTab(m[1], btn);
-      }
-    }
-  }, true);
+  // Double tap to ensure it works
+  window.addEventListener('load', init);
+  setTimeout(init, 50);
+  setTimeout(init, 500);
 })();
 </script>
 </body></html>

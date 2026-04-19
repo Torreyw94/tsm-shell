@@ -279,193 +279,32 @@ tr:hover td{background:#0f1f0f}
   <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">◆ HC FINANCIAL INTAKE</div>
   <div id="intakeList_financial" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
 </div>
+
 <script>
-async function pollHcFinancial() {
-  try {
-    const r = await fetch('https://intake.tsmatter.com/api/intake/records', {
-      headers: { 'X-Intake-Token': 'tkn_hc-financial_38ed49f9af0dffec' }
-    });
-    const d = await r.json();
-    const records = (d.records || []).filter(x => x.status === 'received' || x.status === 'processing');
-    const feed = document.getElementById('intakeFeed_financial');
-    const list = document.getElementById('intakeList_financial');
-    if (!feed || !list || !records.length) { if(feed) feed.style.display='none'; return; }
-    feed.style.display = 'block';
-    const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    list.innerHTML = records.map(p =>
-      `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:#050d05;border:1px solid rgba(0,255,136,0.15);border-radius:2px">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:10px;color:#e0ffe0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.original_name}</div>
-          <div style="font-size:8px;color:#2a5a2a;margin-top:2px">${p.doc_type} · ${p.project_ref||'no ref'} · ${new Date(p.uploaded_at).toLocaleTimeString()}</div>
-        </div>
-        <div style="font-size:8px;padding:3px 8px;background:#00ff88;color:#050d05;font-weight:700;cursor:pointer;letter-spacing:1px;border-radius:2px;white-space:nowrap;margin-left:8px"
-          onclick="loadHcFinancial('"+esc(p.id)+"','"+esc(p.original_name)+"','"+esc(p.doc_type)+"')">ANALYZE</div>
-      </div>`
-    ).join('');
-  } catch(e) { console.error('[intake]', e); }
-}
-async function loadHcFinancial(id, name, docType) {
-  try {
-    const r = await fetch('https://intake.tsmatter.com/api/intake/content/' + id);
-    const d = await r.json();
-    const txt = (d.text||'').trim();
-    const inp = document.querySelector('input[type="text"],textarea,#userInput,#inp,.chat-input');
-    if (inp) {
-      inp.value = 'Analyze this HC financial document for compliance exposure, risk, and required actions.\n\nFile: ' + name + '\nType: ' + docType + (txt.length > 100 ? '\n\nContent:\n' + txt.slice(0,4000) : '');
-      inp.focus();
-    }
-  } catch(e) {}
-}
-pollHcFinancial();
-setInterval(pollHcFinancial, 30000);
-</script>
-
-  <!-- TSM AI Assistant -->
-  <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
-    <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
-    <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
-      <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
-    </div>
-  </div>
-  <script>
-(function(){
-  var KEY = 'GROQ_KEY_REMOVED';
-  var MODEL = 'llama-3.1-8b-instant';
-
-  function doTab(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ el.style.display='none'; });
-    var t = document.getElementById('tab-'+tabId);
-    if(t) t.style.display='block';
-    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-    if(btn) btn.classList.add('active');
-  }
-  
-
-  // Capture phase intercept — fires before any inline onclick
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest ? e.target.closest('.nav-btn') : null;
-    if(!btn) return;
-    var m = (btn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-    if(m){ e.stopPropagation(); doTab(m[1], btn); }
-  }, true);
-
-  window.Q = async function(prompt, btnId, resId){
-    if(!prompt||!prompt.trim()) return;
-    var btn=document.getElementById(btnId), res=document.getElementById(resId);
-    if(!btn||!res) return;
-    btn.disabled=true;
-    res.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
-    try{
-      var r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
-        body:JSON.stringify({model:MODEL,messages:[{role:'user',content:prompt}],max_tokens:1024,temperature:0.4})
-      });
-      var d=await r.json();
-      var reply=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'No response';
-      res.style.whiteSpace='pre-wrap';
-      res.textContent='> TSM NEURAL ['+new Date().toLocaleTimeString()+']
-
-'+
-        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
-    }catch(e){ res.textContent='> TSM NEURAL ERROR: '+e.message; }
-    btn.disabled=false;
-  };
-
-  window.loadAI = function(prompt){
-    var aiBtn = null;
-    document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
-    });
-    doTab('ai', aiBtn);
-    var inp=document.getElementById('ai-inp');
-    if(inp){ inp.value=prompt; }
-    window.Q(prompt,'ai-btn','ai-res');
-  };
-
-  window.loadPreset = function(prompt){
-    window.loadAI(prompt);
-  };
-
-  window.addEventListener('load', function(){
-    setTimeout(function(){
-      
-      var firstBtn=document.querySelector('.nav-btn');
-      var m=firstBtn&&(firstBtn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-      doTab(m?m[1]:'dash', firstBtn);
-    }, 50);
-  });
-})();
-</script><script>
-window.addEventListener('load',function(){
-  var first=document.querySelector('.nav-btn');
-  var m=first&&(first.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-  if(typeof switchTab==='function') switchTab(m?m[1]:'dash',first);
-});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script id="tsm-final-v6-ultra">
 (function() {
   window.switchTab = function(id, btn) {
-    console.log('◆ TSM Forcing Tab:', id);
-    const allTabs = document.querySelectorAll('[id^="tab-"]');
-    allTabs.forEach(t => { t.style.setProperty('display', 'none', 'important'); });
-    
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
     const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) {
-      target.style.setProperty('display', 'block', 'important');
-    }
-
+    if (target) target.style.setProperty('display', 'block', 'important');
+    
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  // Keep trying to init until successful or 2 seconds pass
-  let attempts = 0;
-  const initInterval = setInterval(() => {
-    attempts++;
-    const firstBtn = document.querySelector('.nav-btn');
-    const firstTab = document.querySelector('[id^="tab-"]');
-    
-    if (firstBtn && firstTab) {
-      const m = (firstBtn.getAttribute('onclick')||'').match(/'([^']+)'/);
-      window.switchTab(m ? m[1] : 'dash', firstBtn);
-      clearInterval(initInterval);
-      console.log('✔ TSM Engine: Auto-load Success');
+  function init() {
+    const first = document.querySelector('.nav-btn');
+    if (first) {
+      const m = (first.getAttribute('onclick')||'').match(/'([^']+)'/);
+      window.switchTab(m ? m[1] : 'dash', first);
     }
-    
-    if (attempts > 40) clearInterval(initInterval); // Stop after 2s
-  }, 50);
+  }
 
-  // Global click listener to fix broken onclick strings
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.nav-btn');
-    if (btn) {
-      const m = (btn.getAttribute('onclick')||'').match(/'([^']+)'/);
-      if (m) {
-        e.preventDefault();
-        window.switchTab(m[1], btn);
-      }
-    }
-  }, true);
+  // Double tap to ensure it works
+  window.addEventListener('load', init);
+  setTimeout(init, 50);
+  setTimeout(init, 500);
 })();
 </script>
 </body></html>
