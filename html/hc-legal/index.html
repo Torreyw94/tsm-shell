@@ -3,138 +3,33 @@
 
 
 
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC LEGAL COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
-:root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC LEGAL COMMAND &middot; TSM Healthcare</title>
 
 
-.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid var(--border);background:#0b120b}
-.hdr-left{display:flex;align-items:center;gap:12px}
-.hdr-title{font-size:16px;font-weight:700;letter-spacing:2px}
-.hdr-sub{font-size:10px;color:#556655;letter-spacing:1px}
-.node-pill{padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;border:1px solid var(--g);color:var(--g)}
-.nav{display:flex;border-bottom:1px solid var(--border);background:#0b120b;padding:0 20px;overflow-x:auto}
-.nav-btn{padding:10px 18px;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;border:none;background:none;color:#558855;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
-.nav-btn:hover{color:var(--g)}.nav-btn.active{color:var(--g);border-bottom-color:var(--g)}
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 20px}
-.kpi{background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
-.kpi-val{font-size:28px;font-weight:700;margin-bottom:4px}
-.kpi-lbl{font-size:10px;color:#558855;letter-spacing:1px;text-transform:uppercase}
-.kpi-sub{font-size:10px;margin-top:4px}
-.green{color:var(--g)}.amber{color:var(--a)}.red{color:var(--r)}.blue{color:var(--b)}
-.sec{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
-.sec-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--g);margin-bottom:12px}
-.sec-hdr::before{content:'◆ ';font-size:8px}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:6px 10px;font-size:10px;letter-spacing:1px;color:#558855;border-bottom:1px solid var(--border)}
-td{padding:8px 10px;border-bottom:1px solid #0f1f0f}
-tr:hover td{background:#0f1f0f}
-.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
-.bg{background:#003322;color:var(--g);border:1px solid var(--g)}
-.ba{background:#332200;color:var(--a);border:1px solid var(--a)}
-.br{background:#330000;color:var(--r);border:1px solid var(--r)}
-.bb{background:#001133;color:var(--b);border:1px solid var(--b)}
-.alert-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #0f1f0f}
-.pri{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;min-width:52px;text-align:center}
-.purgent{background:#330000;color:var(--r);border:1px solid var(--r)}
-.pmed{background:#332200;color:var(--a);border:1px solid var(--a)}
-.plow{background:#001133;color:var(--b);border:1px solid var(--b)}
-.pok{background:#003322;color:var(--g);border:1px solid var(--g)}
-.alert-txt{font-size:12px;flex:1}.alert-imp{font-size:11px;color:var(--a);min-width:70px;text-align:right}
-.ai-box{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
-.ai-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--a);margin-bottom:10px}
-.ai-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.ai-btn{padding:5px 12px;background:#1a2000;border:1px solid var(--a);color:var(--a);font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer}
-.ai-inp{flex:1;min-width:200px;background:#0b120b;border:1px solid var(--border);color:var(--g);font-family:inherit;font-size:12px;padding:8px 12px;border-radius:4px;outline:none}
-.ai-inp:focus{border-color:var(--g)}
-.ask-btn{padding:8px 16px;background:var(--g);color:#000;font-family:inherit;font-size:11px;font-weight:700;border:none;border-radius:4px;cursor:pointer}
-.ask-btn:disabled{opacity:.5;cursor:not-allowed}
-.ai-res{margin-top:10px;padding:10px;background:#0b120b;border:1px solid var(--border);border-radius:4px;color:#99cc99;font-size:12px;min-height:40px;white-space:pre-wrap;line-height:1.6}
-.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
-.pr-card{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;transition:border-color .2s}
-.pr-card:hover{border-color:var(--a)}
-.pr-card-title{color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px}
-.pr-card-desc{color:#558855;font-size:10px}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.stat-box{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
-.stat-val{font-size:22px;font-weight:700;margin-bottom:4px}
-.stat-lbl{font-size:10px;color:#558855;letter-spacing:1px}
-.footer{position:fixed;bottom:0;left:0;right:0;background:#0b120b;border-top:1px solid var(--border);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100}
-.fn{font-size:10px;color:#558855;letter-spacing:1px}
-.fbtns{display:flex;gap:8px}
-.fbtn{padding:6px 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
-.fbnca{background:#003322;border:1px solid var(--g);color:var(--g)}
-.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}.hdr-title{color:var(--a)}</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<style>
-  [id^="tab-"] { display: none !important; }
-  #tab-dash { display: block !important; }
-  #tab-dash.active-tab { display: block !important; }
-</style>
 
 
 
 
 <script>
-  window.switchTab = function(id, btn) {
-    console.log("TSM Total Control -> Requesting:", id);
-    
-    // 1. Hide every single div that could possibly be a tab
-    const allPossibleTabs = document.querySelectorAll('div[id], section[id], .tab-content, [class*="tab-"]');
-    allPossibleTabs.forEach(el => {
-      if (el.id !== 'nav-container') { // Don't hide the nav itself
-        el.style.setProperty('display', 'none', 'important');
+  function switchTab(id, btn) {
+    console.log("Switching to:", id);
+    // Hide all
+    document.querySelectorAll('div[id]').forEach(el => {
+      if(el.id.includes('tab-') || ['dash','matters','contracts','claims','ai'].includes(el.id)) {
+        el.style.display = 'none';
       }
     });
-
-    // 2. Unhide the specific target
-    const target = document.getElementById(id) || 
-                   document.getElementById('tab-' + id) || 
-                   document.querySelector('.' + id) ||
-                   document.querySelector('[data-tab="' + id + '"]');
-
-    if (target) {
-      target.style.setProperty('display', 'block', 'important');
-      console.log("TSM: Target Located and Displayed:", id);
-    } else {
-      console.warn("TSM: Target NOT found for ID:", id);
-    }
-
-    // 3. UI Update
+    // Show target
+    var t = document.getElementById(id) || document.getElementById('tab-' + id);
+    if(t) t.style.display = 'block';
+    // Active class
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+    if(btn) btn.classList.add('active');
+  }
+  window.onload = function() {
+    var first = document.querySelector('.nav-btn');
+    if(first) first.click();
   };
-
-  // Immediate Auto-Initialization
-  window.addEventListener('load', () => {
-    const firstBtn = document.querySelector('.nav-btn');
-    if (firstBtn) {
-      const id = firstBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
-      window.switchTab(id, firstBtn);
-    }
-  });
 </script>
 </head><body>
 
@@ -185,16 +80,5 @@ tr:hover td{background:#0f1f0f}
 
 
 
-<script id="tsm-core-engine">
-(function() {
-  window.switchTab = function(id, btn) {
-    const tabs = document.querySelectorAll('[id^="tab-"]');
-    tabs.forEach(t => t.style.display = 'none');
-    const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) target.style.display = 'block';
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
-})();
-</script>
+
 </body></html>
