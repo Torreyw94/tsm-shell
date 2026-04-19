@@ -127,8 +127,10 @@ tr:hover td{background:#0f1f0f}
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Review Modifier -25 usage pattern across 47 claims — identify overcoding risk and provide compliance guidelines for separate E&M billing"><div class="pr-card-title">Modifier -25 Review</div><div class="pr-card-desc">Modifier compliance audit</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build a 90-day clinical revenue cycle improvement plan covering auth, coding accuracy, denial reduction, and documentation compliance"><div class="pr-card-title">90-Day RCM Plan</div><div class="pr-card-desc">Revenue cycle improvement</div></div>
 </div></div></div><div class="footer"><div class="fn">🏥 MEDICAL NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC MEDICAL COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><script>
-);
+function switchTab(tabId,btn){
+  document.querySelectorAll('[id^="tab-"]').forEach(function(el){el.style.display="none";});
   var t=document.getElementById('tab-'+tabId);
+  if(t){t.style.display='block';}
   if(t){t.style.display='block';}
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   if(btn){btn.classList.add('active');}
