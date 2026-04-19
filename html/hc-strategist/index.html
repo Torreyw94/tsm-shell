@@ -310,4 +310,25 @@ window.addEventListener('load',function(){
 });
 </script>
 
+
+<script id="tsm-visibility-fix">
+(function() {
+  function forceShowTab() {
+    // 1. Find all sections that look like tabs
+    const tabs = document.querySelectorAll('[id^="tab-"], section, .tab-pane');
+    
+    // 2. Force the first one to be visible
+    if (tabs.length > 0) {
+      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
+      tabs[0].style.setProperty('display', 'block', 'important');
+      tabs[0].classList.add('tab-active');
+      console.log('✔ TSM Engine: Forced visibility on primary node segment.');
+    }
+  }
+
+  // Run immediately and again after a short delay to beat local script crashes
+  forceShowTab();
+  setTimeout(forceShowTab, 500);
+})();
+</script>
 </body></html>
