@@ -92,103 +92,42 @@ tr:hover td{background:#0f1f0f}
   #tab-dash { display: block !important; }
   #tab-dash.active-tab { display: block !important; }
 </style>
-<script>
-  (function() {
-    window.switchTab = function(id, btn) {
-      const tabs = document.querySelectorAll('[id^="tab-"]');
-      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
-      const target = document.getElementById('tab-' + id) || document.getElementById(id);
-      if (target) target.style.setProperty('display', 'block', 'important');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    };
 
-    // The Hammer: Try to initialize every 50ms until successful
-    let attempts = 0;
-    const interval = setInterval(() => {
-      const dashBtn = document.querySelector('.nav-btn');
-      if (dashBtn || attempts > 20) {
-        window.switchTab('dash', dashBtn);
-        clearInterval(interval);
-      }
-      attempts++;
-    }, 50);
-  })();
+
+<script>
+  window.switchTab = function(id, btn) {
+    console.log("TSM Universal Switch:", id);
+    
+    // Hide everything that looks like a tab
+    const selectors = ['[id^="tab-"]', '.tab-content', '#dash', '#matters', '#contracts', '#claims', '#coding', '#ai', '#presets', '#regulatory'];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.style.setProperty('display', 'none', 'important'));
+    });
+
+    // Show the target (try tab-ID first, then just ID)
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) {
+      target.style.setProperty('display', 'block', 'important');
+    }
+
+    // Update Nav UI
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  // Hammer Auto-Init
+  const initInterval = setInterval(() => {
+    const firstBtn = document.querySelector('.nav-btn');
+    if (firstBtn) {
+      const match = firstBtn.getAttribute('onclick')?.match(/'([^']+)'/);
+      window.switchTab(match ? match[1] : 'dash', firstBtn);
+      clearInterval(initInterval);
+    }
+  }, 100);
 </script>
 </head><body>
 
-<script>
-window.onload = function() {
-  console.log("--- TSM DIAGNOSTIC START ---");
-  const dash = document.getElementById('tab-dash');
-  if (dash) {
-    dash.style.setProperty('display', 'block', 'important');
-    dash.innerHTML = '' + dash.innerHTML;
-    console.log("✔ tab-dash found and forced.");
-  } else {
-    console.error("✖ tab-dash NOT FOUND in DOM");
-  }
-};
-</script>
 
-
-
-
-<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🏆</span><div><div class="hdr-title">HC GRANTS COMMAND</div><div class="hdr-sub">Federal Grants · 340B · HRSA · CMS Innovation · Reporting</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('hipaa',this)">📋 ACTIVE GRANTS</button><button class="nav-btn" onclick="window.switchTab('cms',this)">💊 340B PROGRAM</button><button class="nav-btn" onclick="window.switchTab('jc',this)">📊 REPORTING</button><button class="nav-btn" onclick="window.switchTab('oig',this)">🔍 COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
-<div class="kpi"><div class="kpi-val green">$8.4M</div><div class="kpi-lbl">Active Grant Portfolio</div><div class="kpi-sub green">14 active awards · 3 federal · 11 state</div></div>
-<div class="kpi"><div class="kpi-val red">3</div><div class="kpi-lbl">Reports Overdue</div><div class="kpi-sub red">2 HRSA · 1 CMS Innovation · action required</div></div>
-<div class="kpi"><div class="kpi-val green">$1.2M</div><div class="kpi-lbl">340B Savings YTD</div><div class="kpi-sub green">+14% vs prior year · audit-ready</div></div>
-<div class="kpi"><div class="kpi-val amber">91%</div><div class="kpi-lbl">Grant Compliance Score</div><div class="kpi-sub amber">3 items below threshold — remediation active</div></div>
-</div><div class="sec"><div class="sec-hdr">ACTIVE ALERTS</div>
-<div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">2 HRSA reports overdue — grants.gov submission window closes in 72hrs · $2.1M at risk</div><div class="alert-imp">$2.1M</div></div>
-<div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">CMS Innovation grant progress report 14 days overdue — program officer notified</div><div class="alert-imp">$840K</div></div>
-<div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">340B audit readiness — 3 contract pharmacy records incomplete · HRSA audit window approaching</div><div class="alert-imp">Audit risk</div></div>
-<div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">NIH R01 renewal application due in 45 days — budget justification at 60%</div><div class="alert-imp">$1.4M renewal</div></div>
-<div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">3 grant compliance items below 95% threshold — corrective action plans active</div><div class="alert-imp">91% score</div></div>
-<div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">340B savings $1.2M YTD — +14% growth · duplicate discount controls current</div><div class="alert-imp">✓ Clear</div></div>
-</div><div class="alert-imp">Funding risk</div></div><div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">340B audit — 3 covered entity gaps</div><div class="alert-imp">$280K</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">NIH progress report due in 21 days</div><div class="alert-imp">$840K grant</div></div><div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">SAMHSA data submission — 7 days late</div><div class="alert-imp">Compliance</div></div><div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">CMS Innovation award — on track</div><div class="alert-imp">✓</div></div></div><div class="sec"><div class="sec-hdr">GRANT PORTFOLIO OVERVIEW</div><table><thead><tr><th>GRANT</th><th>AGENCY</th><th>AWARD</th><th>PERIOD</th><th>REPORTS DUE</th><th>COMPLIANCE</th><th>STATUS</th></tr></thead><tbody><tr><td>Health Center</td><td>HRSA</td><td>$1.2M</td><td>2024-2026</td><td>OVERDUE</td><td>88%</td><td><span class="badge br">URGENT</span></td></tr><tr><td>Opioid Response</td><td>SAMHSA</td><td>$840K</td><td>2023-2026</td><td>7 days</td><td>91%</td><td><span class="badge ba">DUE SOON</span></td></tr><tr><td>Care Innovation</td><td>CMS</td><td>$1.4M</td><td>2025-2028</td><td>On track</td><td>97%</td><td><span class="badge bg">COMPLIANT</span></td></tr><tr><td>Research Award</td><td>NIH</td><td>$680K</td><td>2024-2027</td><td>21 days</td><td>94%</td><td><span class="badge ba">DUE SOON</span></td></tr><tr><td>Workforce Dev</td><td>HRSA</td><td>$320K</td><td>2025-2027</td><td>On track</td><td>96%</td><td><span class="badge bg">COMPLIANT</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><input id="dash-inp" class="ai-inp" type="text" placeholder="Grants query..."><button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">&#9654; ASK</button></div><div id="dash-res" class="ai-res">&gt; AI ready.</div></div></div>
-<div id="tab-hipaa"><div class="sec" style="margin-top:16px"><div class="sec-hdr">ACTIVE GRANTS — DETAILED STATUS</div><table><thead><tr><th>GRANT ID</th><th>PROGRAM</th><th>AGENCY</th><th>AWARD AMOUNT</th><th>SPENT YTD</th><th>REMAINING</th><th>NEXT MILESTONE</th><th>STATUS</th></tr></thead><tbody><tr><td>GRT-2024-001</td><td>Health Center Program</td><td>HRSA</td><td>$1,200,000</td><td>$840,000</td><td>$360,000</td><td>Annual report OVERDUE</td><td><span class="badge br">AT RISK</span></td></tr><tr><td>GRT-2023-008</td><td>Opioid Treatment</td><td>SAMHSA</td><td>$840,000</td><td>$620,000</td><td>$220,000</td><td>Quarterly report 7d</td><td><span class="badge ba">DUE SOON</span></td></tr><tr><td>GRT-2025-003</td><td>Innovation Model</td><td>CMS</td><td>$1,400,000</td><td>$280,000</td><td>$1,120,000</td><td>Semi-annual report Q2</td><td><span class="badge bg">ON TRACK</span></td></tr><tr><td>GRT-2024-012</td><td>R01 Research</td><td>NIH</td><td>$680,000</td><td>$340,000</td><td>$340,000</td><td>Progress report 21d</td><td><span class="badge ba">DUE SOON</span></td></tr><tr><td>GRT-2025-007</td><td>Workforce Dev</td><td>HRSA</td><td>$320,000</td><td>$88,000</td><td>$232,000</td><td>Year-end report Dec</td><td><span class="badge bg">ON TRACK</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Create recovery plan for overdue HRSA health center report — data elements and t')">HRSA Report Recovery</button><button class="ai-btn" onclick="loadAI('Analyze $4.2M portfolio for compliance risk and renewal opportunities')">Grant Portfolio Review</button><button class="ai-btn" onclick="loadAI('Review grant expenditure rates and identify underspend or overspend risks')">Budget Monitoring</button></div><div class="ai-row"><input id="hipaa-inp" class="ai-inp" type="text" placeholder="Grant management query..."><button class="ask-btn" id="hipaa-btn" onclick="Q(document.getElementById('hipaa-inp').value,'hipaa-btn','hipaa-res')">&#9654; ASK</button></div><div id="hipaa-res" class="ai-res">&gt; AI ready.</div></div></div>
-<div id="tab-cms"><div class="sec" style="margin-top:16px"><div class="sec-hdr">340B PROGRAM DASHBOARD</div><div class="stat-grid"><div class="stat-box"><div class="stat-val green">$1.8M</div><div class="stat-lbl">340B Savings YTD</div></div><div class="stat-box"><div class="stat-val red">3</div><div class="stat-lbl">Covered Entity Gaps</div></div><div class="stat-box"><div class="stat-val green">94%</div><div class="stat-lbl">Inventory Compliance</div></div></div><table><thead><tr><th>COVERED ENTITY</th><th>ELIGIBLE PATIENTS</th><th>340B RX VOLUME</th><th>SAVINGS</th><th>AUDIT STATUS</th><th>COMPLIANCE</th></tr></thead><tbody><tr><td>Main Hospital</td><td>4,284</td><td>12,847</td><td>$1,240,000</td><td><span class="badge ba">UNDER REVIEW</span></td><td>91%</td></tr><tr><td>FQHC North</td><td>1,892</td><td>4,214</td><td>$380,000</td><td><span class="badge bg">CLEAR</span></td><td>97%</td></tr><tr><td>FQHC South</td><td>1,247</td><td>2,891</td><td>$180,000</td><td><span class="badge br">GAP FOUND</span></td><td>84%</td></tr></tbody></table></div><div class="sec"><div class="sec-hdr">340B AUDIT FINDINGS</div><table><thead><tr><th>FINDING</th><th>ENTITY</th><th>REQUIREMENT</th><th>RISK</th><th>REMEDIATION</th><th>STATUS</th></tr></thead><tbody><tr><td>Patient eligibility gap</td><td>FQHC South</td><td>HRSA OPA guidelines</td><td>HIGH</td><td>Update screening process</td><td><span class="badge br">URGENT</span></td></tr><tr><td>Contract pharmacy docs</td><td>Main Hospital</td><td>340B contract requirements</td><td>MED</td><td>Compile documentation</td><td><span class="badge ba">IN PROGRESS</span></td></tr><tr><td>Duplicate discount check</td><td>FQHC South</td><td>Manufacturer agreement</td><td>HIGH</td><td>Implement split billing</td><td><span class="badge br">URGENT</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Prepare for 340B audit — address 3 covered entity gaps per HRSA OPA requirements')">340B Audit Prep</button><button class="ai-btn" onclick="loadAI('Analyze $1.8M savings and identify optimization while maintaining compliance')">340B Optimization</button><button class="ai-btn" onclick="loadAI('Fix FQHC South patient eligibility screening gap to restore 340B compliance')">Patient Eligibility</button></div><div class="ai-row"><input id="cms-inp" class="ai-inp" type="text" placeholder="340B query..."><button class="ask-btn" id="cms-btn" onclick="Q(document.getElementById('cms-inp').value,'cms-btn','cms-res')">&#9654; ASK</button></div><div id="cms-res" class="ai-res">&gt; AI ready.</div></div></div>
-<div id="tab-jc"><div class="sec" style="margin-top:16px"><div class="sec-hdr">GRANT REPORTING CALENDAR</div><table><thead><tr><th>REPORT</th><th>GRANT</th><th>AGENCY</th><th>DUE DATE</th><th>FREQUENCY</th><th>PAGES</th><th>STATUS</th></tr></thead><tbody><tr><td>Annual Performance</td><td>Health Center</td><td>HRSA</td><td>OVERDUE</td><td>Annual</td><td>45</td><td><span class="badge br">URGENT</span></td></tr><tr><td>Quarterly Data</td><td>Opioid Response</td><td>SAMHSA</td><td>Mar 18</td><td>Quarterly</td><td>12</td><td><span class="badge ba">DUE SOON</span></td></tr><tr><td>Progress Report</td><td>R01 Research</td><td>NIH</td><td>Apr 01</td><td>Annual</td><td>25</td><td><span class="badge ba">DUE SOON</span></td></tr><tr><td>Semi-Annual</td><td>Innovation Model</td><td>CMS</td><td>Jun 30</td><td>Semi-Annual</td><td>30</td><td><span class="badge bb">IN PROGRESS</span></td></tr><tr><td>Year-End</td><td>Workforce Dev</td><td>HRSA</td><td>Dec 31</td><td>Annual</td><td>20</td><td><span class="badge bg">ON TRACK</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Build NIH progress report framework — required sections, milestones, budget just')">NIH Progress Report</button><button class="ai-btn" onclick="loadAI('Structure SAMHSA quarterly data report — required metrics and data elements')">SAMHSA Quarterly</button><button class="ai-btn" onclick="loadAI('Create comprehensive grant reporting calendar with reminders and preparation tim')">Report Calendar</button></div><div class="ai-row"><input id="jc-inp" class="ai-inp" type="text" placeholder="Reporting query..."><button class="ask-btn" id="jc-btn" onclick="Q(document.getElementById('jc-inp').value,'jc-btn','jc-res')">&#9654; ASK</button></div><div id="jc-res" class="ai-res">&gt; AI ready.</div></div></div>
-<div id="tab-oig"><div class="sec" style="margin-top:16px"><div class="sec-hdr">GRANT COMPLIANCE & AUDIT READINESS</div><div class="stat-grid"><div class="stat-box"><div class="stat-val amber">91%</div><div class="stat-lbl">Overall Grant Compliance</div></div><div class="stat-box"><div class="stat-val red">3</div><div class="stat-lbl">Open Audit Findings</div></div><div class="stat-box"><div class="stat-val amber">$4.2M</div><div class="stat-lbl">Portfolio Under Compliance Review</div></div></div><table><thead><tr><th>REQUIREMENT</th><th>REGULATION</th><th>STATUS</th><th>LAST REVIEW</th><th>FINDING</th><th>RISK</th></tr></thead><tbody><tr><td>Financial Reporting</td><td>2 CFR 200</td><td><span class="badge bg">COMPLIANT</span></td><td>Mar 01</td><td>None</td><td>LOW</td></tr><tr><td>Procurement Standards</td><td>2 CFR 200.317</td><td><span class="badge ba">PARTIAL</span></td><td>Feb 15</td><td>1 sole-source</td><td>MED</td></tr><tr><td>Subrecipient Monitoring</td><td>2 CFR 200.331</td><td><span class="badge bg">COMPLIANT</span></td><td>Feb 28</td><td>None</td><td>LOW</td></tr><tr><td>Program Income</td><td>2 CFR 200.307</td><td><span class="badge ba">REVIEW</span></td><td>Jan 30</td><td>Documentation gap</td><td>MED</td></tr><tr><td>340B Compliance</td><td>HRSA OPA</td><td><span class="badge br">GAP</span></td><td>Mar 05</td><td>3 entity gaps</td><td>HIGH</td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Review Uniform Guidance compliance across all federal grants — identify gaps')">2 CFR 200 Audit</button><button class="ai-btn" onclick="loadAI('Prepare for A-133 Single Audit — review expenditures and compliance requirements')">Single Audit Prep</button><button class="ai-btn" onclick="loadAI('Address sole-source procurement finding per 2 CFR 200.317 requirements')">Procurement Review</button></div><div class="ai-row"><input id="oig-inp" class="ai-inp" type="text" placeholder="Grant compliance query..."><button class="ask-btn" id="oig-btn" onclick="Q(document.getElementById('oig-inp').value,'oig-btn','oig-res')">&#9654; ASK</button></div><div id="oig-res" class="ai-res">&gt; AI ready.</div></div></div>
-<div id="tab-ai"><div class="ai-box" style="margin-top:16px"><div class="ai-hdr">&#9889; DEEP AI ANALYSIS</div><div class="ai-row"><input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed query..."><button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">&#9654; ASK</button></div><div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div></div></div>
-<div id="tab-presets"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRESET LIBRARY &mdash; Click any to load into AI</div><div class="pr-grid">
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build emergency HRSA progress report for 2 overdue submissions — identify required data elements, narrative structure, and 48hr completion plan to meet grants.gov deadline"><div class="pr-card-title">HRSA Report Emergency</div><div class="pr-card-desc">72hr deadline response</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Draft CMS Innovation grant progress report response — program officer communication strategy, overdue narrative, and corrective action commitment"><div class="pr-card-title">CMS Innovation Report</div><div class="pr-card-desc">Overdue report recovery</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build 340B HRSA audit readiness package — identify 3 incomplete contract pharmacy records, duplicate discount control documentation, and audit response preparation"><div class="pr-card-title">340B Audit Prep</div><div class="pr-card-desc">HRSA audit readiness</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Complete NIH R01 renewal budget justification — currently at 60%, due in 45 days. Build modular sections for personnel, equipment, direct costs, and F&A rate justification"><div class="pr-card-title">NIH R01 Renewal</div><div class="pr-card-desc">$1.4M renewal application</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design grant compliance improvement plan to raise score from 91% to 95% — identify 3 below-threshold items, build corrective action plans with timelines"><div class="pr-card-title">Compliance Uplift</div><div class="pr-card-desc">91% → 95% target</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build 340B program optimization strategy — maximize $1.2M YTD savings, identify new contract pharmacy opportunities, and expand covered entity eligible spend"><div class="pr-card-title">340B Optimization</div><div class="pr-card-desc">Savings maximization</div></div>
-</div></div></div><div class="footer"><div class="fn">🏆 GRANTS NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC GRANTS COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
-
-
-
-
-
-<div id="intakeFeed_grants" style="display:none;position:fixed;top:60px;right:20px;z-index:9999;width:360px;background:#0a140a;border:1px solid rgba(0,255,136,0.25);border-left:3px solid #00ff88;padding:16px 18px;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
-  <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">◆ HC GRANTS INTAKE</div>
-  <div id="intakeList_grants" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
-</div>
-
-
-
-<script>
-window.switchTab = function(id, btn) {
-  // Hide all
-  const tabs = document.querySelectorAll('[id^="tab-"]');
-  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
-  
-  // Show target
-  const target = document.getElementById('tab-' + id) || document.getElementById(id);
-  if (target) target.setAttribute('style', 'display: block !important');
-  
-  // UI Cleanup
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
-console.log("TSM Engine Active for hc-grants");
-</script>
 
 <script id="tsm-core-engine">
 (function() {

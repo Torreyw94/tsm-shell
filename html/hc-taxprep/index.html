@@ -110,230 +110,43 @@ tr:hover td{background:#0f1f0f}
   #tab-dash { display: block !important; }
   #tab-dash.active-tab { display: block !important; }
 </style>
-<script>
-  (function() {
-    window.switchTab = function(id, btn) {
-      const tabs = document.querySelectorAll('[id^="tab-"]');
-      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
-      const target = document.getElementById('tab-' + id) || document.getElementById(id);
-      if (target) target.style.setProperty('display', 'block', 'important');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    };
 
-    // The Hammer: Try to initialize every 50ms until successful
-    let attempts = 0;
-    const interval = setInterval(() => {
-      const dashBtn = document.querySelector('.nav-btn');
-      if (dashBtn || attempts > 20) {
-        window.switchTab('dash', dashBtn);
-        clearInterval(interval);
-      }
-      attempts++;
-    }, 50);
-  })();
+
+<script>
+  window.switchTab = function(id, btn) {
+    console.log("TSM Universal Switch:", id);
+    
+    // Hide everything that looks like a tab
+    const selectors = ['[id^="tab-"]', '.tab-content', '#dash', '#matters', '#contracts', '#claims', '#coding', '#ai', '#presets', '#regulatory'];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.style.setProperty('display', 'none', 'important'));
+    });
+
+    // Show the target (try tab-ID first, then just ID)
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) {
+      target.style.setProperty('display', 'block', 'important');
+    }
+
+    // Update Nav UI
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  // Hammer Auto-Init
+  const initInterval = setInterval(() => {
+    const firstBtn = document.querySelector('.nav-btn');
+    if (firstBtn) {
+      const match = firstBtn.getAttribute('onclick')?.match(/'([^']+)'/);
+      window.switchTab(match ? match[1] : 'dash', firstBtn);
+      clearInterval(initInterval);
+    }
+  }, 100);
 </script>
 </head>
 <body>
 
-<script>
-window.onload = function() {
-  console.log("--- TSM DIAGNOSTIC START ---");
-  const dash = document.getElementById('tab-dash');
-  if (dash) {
-    dash.style.setProperty('display', 'block', 'important');
-    dash.innerHTML = '' + dash.innerHTML;
-    console.log("✔ tab-dash found and forced.");
-  } else {
-    console.error("✖ tab-dash NOT FOUND in DOM");
-  }
-};
-</script>
 
-
-
-
-
-
-<div class="hdr">
-  <div class="hdr-left">
-    <div class="crown">🧾</div>
-    <div>
-      <div class="hdr-title">HC TAXPREP</div>
-      <div class="hdr-sub">990 Compliance · Cost Reports · IRS Audit · Tax Strategy</div>
-    </div>
-  </div>
-  <div class="node-pill">NODE ACTIVE</div>
-</div>
-
-<nav class="nav">
-  <button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button>
-  <button class="nav-btn active" onclick="window.switchTab('claims',this)">📋 TAX FILINGS</button>
-  <button class="nav-btn" onclick="window.switchTab('coding',this)">⚖️ COST REPORTS</button>
-  <button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button>
-  <button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button>
-</nav>
-
-<!-- DASHBOARD TAB -->
-
-<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;" style="display:block">
-  <div class="kpi-row">
-<div class="kpi"><div class="kpi-val amber">$284K</div><div class="kpi-lbl">Tax Liability YTD</div><div class="kpi-sub amber">UBI exposure · UBIT calculation pending</div></div>
-<div class="kpi"><div class="kpi-val red">3</div><div class="kpi-lbl">Open IRS Items</div><div class="kpi-sub red">1 audit · 2 correspondence · response due</div></div>
-<div class="kpi"><div class="kpi-val amber">$420K</div><div class="kpi-lbl">Cost Report At Risk</div><div class="kpi-sub amber">Fiscal year-end · workpapers at 78%</div></div>
-<div class="kpi"><div class="kpi-val green">97.2%</div><div class="kpi-lbl">990 Compliance Rate</div><div class="kpi-sub green">On track · Schedule H complete</div></div>
-</div>
-
-  <div class="section">
-    <div class="section-hdr">ACTIVE TAX ALERTS</div>
-    <div class="alert-row"><span class="priority p-urgent">URGENT</span><div class="alert-txt">IRS correspondence audit — Form 990 Schedule H community benefit documentation requested · 30-day response window</div><div class="alert-impact">Audit risk</div></div>
-    <div class="alert-row"><span class="priority p-urgent">URGENT</span><div class="alert-txt">Medicare cost report workpapers at 78% — fiscal year-end deadline in 45 days · $420K at risk</div><div class="alert-impact">$420K</div></div>
-    <div class="alert-row"><span class="priority p-med">MED</span><div class="alert-txt">UBIT calculation pending — $284K unrelated business income · parking tax exposure unresolved</div><div class="alert-impact">$284K</div></div>
-    <div class="alert-row"><span class="priority p-med">MED</span><div class="alert-txt">State tax exemption renewals — 2 states due Q2 · documentation package incomplete</div><div class="alert-impact">Exemption risk</div></div>
-    <div class="alert-row"><span class="priority p-low">LOW</span><div class="alert-txt">990 executive compensation disclosure — 3 officers require updated Schedule J documentation</div><div class="alert-impact">Disclosure</div></div>
-    <div class="alert-row"><span class="priority p-ok">OK</span><div class="alert-txt">990 compliance rate 97.2% · Schedule H complete · community benefit documentation current</div><div class="alert-impact">✓ On track</div></div>
-  </div>
-  <div class="section">
-    <div class="section-hdr">TAX FILING STATUS</div>
-    <table>
-      <thead><tr><th>FILING</th><th>PERIOD</th><th>DUE DATE</th><th>STATUS</th><th>AMOUNT</th></tr></thead>
-      <tbody>
-        <tr><td>IRS Form 990</td><td>FY2024</td><td>May 15 2025</td><td><span class="badge badge-g">FILED</span></td><td>—</td></tr>
-        <tr><td>Medicare Cost Report</td><td>FY2024</td><td>Mar 31 2026</td><td><span class="badge badge-r">OVERDUE</span></td><td>$340K</td></tr>
-        <tr><td>State Income Tax</td><td>FY2024</td><td>Apr 15 2026</td><td><span class="badge badge-a">PENDING</span></td><td>$87K</td></tr>
-        <tr><td>Property Tax Exempt</td><td>2026</td><td>Jun 1 2026</td><td><span class="badge badge-b">IN REVIEW</span></td><td>—</td></tr>
-        <tr><td>Payroll Tax Q1</td><td>Q1 2026</td><td>Apr 30 2026</td><td><span class="badge badge-a">PENDING</span></td><td>$124K</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="ai-box">
-    <div class="ai-hdr">⚡ TAXPREP AI</div>
-    <div class="ai-row">
-      <button class="ai-btn" onclick="document.getElementById('tax-inp').value='Analyze our Medicare Cost Report reconciliation gap and provide a remediation plan';document.getElementById('tax-inp').focus()">Cost Report Fix</button>
-      <button class="ai-btn" onclick="document.getElementById('tax-inp').value='Review our 990 Schedule H community benefit documentation for IRS audit readiness';document.getElementById('tax-inp').focus()">990 Audit Prep</button>
-      <button class="ai-btn" onclick="document.getElementById('tax-inp').value='Identify tax exemption risks and recommend optimization strategies for our healthcare org';document.getElementById('tax-inp').focus()">Exemption Strategy</button>
-    </div>
-    <div class="ai-row">
-      <input id="tax-inp" class="ai-inp" type="text" placeholder="Tax compliance query...">
-      <button class="ask-btn" id="tax-ask-btn" onclick="Q(document.getElementById('tax-inp').value,'tax-ask-btn','tax-res')">▶ ASK</button>
-    </div>
-    <div id="tax-res" class="ai-res">> TaxPrep AI ready.</div>
-  </div>
-</div>
-
-<!-- TAX FILINGS TAB -->
-
-<div id="tab-claims" style="display:none">
-  <div class="section" style="margin-top:16px">
-    <div class="section-hdr">IRS & STATE TAX FILINGS</div>
-    <table>
-      <thead><tr><th>FORM</th><th>ENTITY</th><th>JURISDICTION</th><th>PERIOD</th><th>STATUS</th><th>NOTES</th></tr></thead>
-      <tbody>
-        <tr><td>990</td><td>TSM Health System</td><td>Federal</td><td>FY2024</td><td><span class="badge badge-g">FILED</span></td><td>Schedule H complete</td></tr>
-        <tr><td>990-T</td><td>TSM Health System</td><td>Federal</td><td>FY2024</td><td><span class="badge badge-a">PENDING</span></td><td>UBTI review needed</td></tr>
-        <tr><td>1120S</td><td>TSM Physicians LLC</td><td>Federal</td><td>FY2024</td><td><span class="badge badge-a">PENDING</span></td><td>K-1 distributions</td></tr>
-        <tr><td>State Exempt</td><td>TSM Health System</td><td>NY, NJ, CT</td><td>2026</td><td><span class="badge badge-b">IN REVIEW</span></td><td>3 renewals due</td></tr>
-        <tr><td>5500</td><td>TSM Benefits Plan</td><td>Federal/DOL</td><td>FY2024</td><td><span class="badge badge-r">OVERDUE</span></td><td>Extension needed</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- COST REPORTS TAB -->
-
-<div id="tab-coding" style="display:none">
-  <div class="section" style="margin-top:16px">
-    <div class="section-hdr">MEDICARE / MEDICAID COST REPORTS</div>
-    <table>
-      <thead><tr><th>PROVIDER</th><th>PROGRAM</th><th>FY</th><th>SUBMITTED</th><th>STATUS</th><th>VARIANCE</th></tr></thead>
-      <tbody>
-        <tr><td>TSM Main Hospital</td><td>Medicare</td><td>2024</td><td>—</td><td><span class="badge badge-r">OVERDUE</span></td><td>$340K</td></tr>
-        <tr><td>TSM Clinic North</td><td>Medicaid</td><td>2024</td><td>Feb 14</td><td><span class="badge badge-b">IN REVIEW</span></td><td>$28K</td></tr>
-        <tr><td>TSM Surgery Center</td><td>Medicare</td><td>2023</td><td>Sep 30</td><td><span class="badge badge-g">SETTLED</span></td><td>$0</td></tr>
-        <tr><td>TSM Home Health</td><td>Medicare</td><td>2024</td><td>Jan 20</td><td><span class="badge badge-a">PENDING</span></td><td>$61K</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- AI ANALYSIS TAB -->
-
-<div id="tab-ai" style="display:none">
-  <div class="ai-box" style="margin-top:16px">
-    <div class="ai-hdr">⚡ DEEP TAX AI ANALYSIS</div>
-    <div class="ai-row">
-      <input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed tax or cost report query...">
-      <button class="ask-btn" id="ai-ask-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-ask-btn','ai-res')">▶ ASK</button>
-    </div>
-    <div id="ai-res" class="ai-res">> AI Analysis ready.</div>
-  </div>
-</div>
-
-
-<div id="tab-presets" style="display:none">
-  <div class="section" style="margin-top:16px">
-    <div class="section-hdr">PRESET LIBRARY — Click any to load into AI</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px">
-      <div style="background:#0d140d;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer" onclick="window.switchTab('ai',document.querySelector('[onclick*=chr(39)tab-ai'+chr(39)+']'));document.getElementById('ai-inp').value=this.dataset.p;document.getElementById('ai-inp').focus()" data-p="Prepare IRS correspondence audit response for Form 990 Schedule H — build community benefit documentation package, charity care calculation, and 30-day response narrative">
-        <div style="color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px">IRS Audit Response</div>
-        <div style="color:#558855;font-size:10px">Schedule H audit defense · 30-day window</div>
-      </div>
-      <div style="background:#0d140d;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer" onclick="window.switchTab('ai',document.querySelector('[onclick*=chr(39)tab-ai'+chr(39)+']'));document.getElementById('ai-inp').value=this.dataset.p;document.getElementById('ai-inp').focus()" data-p="Complete Medicare cost report workpapers — currently at 78%, $420K at risk, deadline in 45 days. Identify remaining sections and build completion schedule">
-        <div style="color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px">Cost Report Completion</div>
-        <div style="color:#558855;font-size:10px">$420K · 45-day deadline</div>
-      </div>
-      <div style="background:#0d140d;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer" onclick="window.switchTab('ai',document.querySelector('[onclick*=chr(39)tab-ai'+chr(39)+']'));document.getElementById('ai-inp').value=this.dataset.p;document.getElementById('ai-inp').focus()" data-p="Calculate UBIT exposure on $284K unrelated business income — identify applicable deductions, parking tax calculation, and tax minimization strategies for nonprofit status">
-        <div style="color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px">UBIT Analysis</div>
-        <div style="color:#558855;font-size:10px">Unrelated business income · $284K</div>
-      </div>
-      <div style="background:#0d140d;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer" onclick="window.switchTab('ai',document.querySelector('[onclick*=chr(39)tab-ai'+chr(39)+']'));document.getElementById('ai-inp').value=this.dataset.p;document.getElementById('ai-inp').focus()" data-p="Build state tax exemption renewal package for 2 states due Q2 — identify required documentation, narrative structure, and submission timeline">
-        <div style="color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px">State Exemption Renewal</div>
-        <div style="color:#558855;font-size:10px">Q2 exemption filings · 2 states</div>
-      </div>
-      <div style="background:#0d140d;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer" onclick="window.switchTab('ai',document.querySelector('[onclick*=chr(39)tab-ai'+chr(39)+']'));document.getElementById('ai-inp').value=this.dataset.p;document.getElementById('ai-inp').focus()" data-p="Complete Schedule J executive compensation disclosure for 3 officers — reasonable compensation analysis, benefit descriptions, and board approval narrative">
-        <div style="color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px">Schedule J Disclosure</div>
-        <div style="color:#558855;font-size:10px">Executive comp · 3 officers</div>
-      </div>
-      <div style="background:#0d140d;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer" onclick="window.switchTab('ai',document.querySelector('[onclick*=chr(39)tab-ai'+chr(39)+']'));document.getElementById('ai-inp').value=this.dataset.p;document.getElementById('ai-inp').focus()" data-p="Build nonprofit tax optimization strategy — minimize UBIT, maximize community benefit deductions, optimize cost report, and position 990 favorably for IRS scrutiny">
-        <div style="color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px">Tax Strategy</div>
-        <div style="color:#558855;font-size:10px">Nonprofit tax optimization</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
-
-
-
-
-
-
-<div id="intakeFeed_taxprep" style="display:none;position:fixed;top:60px;right:20px;z-index:9999;width:360px;background:#0a140a;border:1px solid rgba(0,255,136,0.25);border-left:3px solid #00ff88;padding:16px 18px;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
-  <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">◆ HC TAXPREP INTAKE</div>
-  <div id="intakeList_taxprep" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
-</div>
-
-
-
-<script>
-window.switchTab = function(id, btn) {
-  // Hide all
-  const tabs = document.querySelectorAll('[id^="tab-"]');
-  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
-  
-  // Show target
-  const target = document.getElementById('tab-' + id) || document.getElementById(id);
-  if (target) target.setAttribute('style', 'display: block !important');
-  
-  // UI Cleanup
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
-console.log("TSM Engine Active for hc-taxprep");
-</script>
 
 <script id="tsm-core-engine">
 (function() {
