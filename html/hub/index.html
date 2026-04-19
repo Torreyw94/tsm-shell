@@ -278,7 +278,7 @@ function loadApp(el) {
   const id = el.dataset.id;
   currentApp = id;
   document.querySelectorAll('.item').forEach(e => e.classList.toggle('active', e.dataset.id === id));
-  const url = id.startsWith('http') ? id : appUrl(id);
+  const url = id.startsWith('http') ? id : appUrl(id, id.url);
   document.getElementById('url').textContent = url;
   document.getElementById('frame').src = url;
   document.getElementById('active-label').textContent = el.querySelector('span:nth-child(2)').textContent;
