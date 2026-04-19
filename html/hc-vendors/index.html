@@ -93,36 +93,46 @@ tr:hover td{background:#0f1f0f}
 </style>
 
 
+
+
 <script>
   window.switchTab = function(id, btn) {
-    console.log("TSM Universal Switch:", id);
+    console.log("TSM Total Control -> Requesting:", id);
     
-    // Hide everything that looks like a tab
-    const selectors = ['[id^="tab-"]', '.tab-content', '#dash', '#matters', '#contracts', '#claims', '#coding', '#ai', '#presets', '#regulatory'];
-    selectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => el.style.setProperty('display', 'none', 'important'));
+    // 1. Hide every single div that could possibly be a tab
+    const allPossibleTabs = document.querySelectorAll('div[id], section[id], .tab-content, [class*="tab-"]');
+    allPossibleTabs.forEach(el => {
+      if (el.id !== 'nav-container') { // Don't hide the nav itself
+        el.style.setProperty('display', 'none', 'important');
+      }
     });
 
-    // Show the target (try tab-ID first, then just ID)
-    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    // 2. Unhide the specific target
+    const target = document.getElementById(id) || 
+                   document.getElementById('tab-' + id) || 
+                   document.querySelector('.' + id) ||
+                   document.querySelector('[data-tab="' + id + '"]');
+
     if (target) {
       target.style.setProperty('display', 'block', 'important');
+      console.log("TSM: Target Located and Displayed:", id);
+    } else {
+      console.warn("TSM: Target NOT found for ID:", id);
     }
 
-    // Update Nav UI
+    // 3. UI Update
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  // Hammer Auto-Init
-  const initInterval = setInterval(() => {
+  // Immediate Auto-Initialization
+  window.addEventListener('load', () => {
     const firstBtn = document.querySelector('.nav-btn');
     if (firstBtn) {
-      const match = firstBtn.getAttribute('onclick')?.match(/'([^']+)'/);
-      window.switchTab(match ? match[1] : 'dash', firstBtn);
-      clearInterval(initInterval);
+      const id = firstBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
+      window.switchTab(id, firstBtn);
     }
-  }, 100);
+  });
 </script>
 </head><body>
 
