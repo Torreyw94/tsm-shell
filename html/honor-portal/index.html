@@ -1120,44 +1120,46 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
 
-<script id="tsm-adaptive-engine">
+
+
+
+
+
+
+<script id="tsm-final-v4">
 (function() {
+  // Define switchTab so it's globally available for onclicks
   window.switchTab = function(id, btn) {
-    // 1. Hide everything that looks like a tab
-    document.querySelectorAll('[id^="tab-"], [id*="section"], .tab-content').forEach(el => {
+    console.log('◆ TSM Activating:', id);
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
       el.style.setProperty('display', 'none', 'important');
-      el.classList.remove('tab-active');
     });
-    
-    // 2. Show the target
     const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) {
-      target.style.setProperty('display', 'block', 'important');
-      target.classList.add('tab-active');
-    }
+    if (target) target.style.setProperty('display', 'block', 'important');
     
-    // 3. Update buttons
-    document.querySelectorAll('.nav-btn, button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  function autoPopulate() {
+  // Immediate Auto-Population
+  function forceInit() {
     const firstBtn = document.querySelector('.nav-btn');
-    const firstTab = document.querySelector('[id^="tab-"]');
-    
-    if (firstBtn && firstTab) {
-      const tabId = firstTab.id.replace('tab-', '');
+    if (firstBtn) {
+      const oc = firstBtn.getAttribute('onclick') || "";
+      const match = oc.match(/'([^']+)'/);
+      const tabId = match ? match[1] : 'dash';
       window.switchTab(tabId, firstBtn);
-      console.log('✔ TSM Adaptive: Auto-populated ' + tabId);
-    } else if (firstBtn) {
-       // Fallback: Just trigger the first button's onclick
-       firstBtn.click();
     }
   }
 
-  window.addEventListener('load', () => setTimeout(autoPopulate, 100));
-  // Secondary backup for slow-loading iframes
-  setTimeout(autoPopulate, 500);
+  // Triple-Trigger
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceInit);
+  } else {
+    forceInit();
+  }
+  window.addEventListener('load', forceInit);
+  setTimeout(forceInit, 150);
 })();
 </script>
 </body>

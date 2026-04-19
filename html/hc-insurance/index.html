@@ -107,29 +107,7 @@ tr:hover td{background:#0f1f0f}
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Prioritize 23 Blue Cross claims approaching 90-day timely filing — oldest at 84 days, $62K at risk. Build emergency submission plan"><div class="pr-card-title">Timely Filing Alert</div><div class="pr-card-desc">$62K write-off prevention</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build appeal strategy to maintain 68% win rate — analyze top appeal categories, Level 2 external review selection criteria, and payer-specific documentation requirements"><div class="pr-card-title">Appeal Strategy</div><div class="pr-card-desc">68% win rate maintenance</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design payer relations improvement plan — denial rate reduction from 18.4% to &lt;15%, credentialing pipeline, and contract optimization across top 5 payers"><div class="pr-card-title">Payer Relations Plan</div><div class="pr-card-desc">Multi-payer optimization</div></div>
-</div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><script>
-);
-  var t=document.getElementById('tab-'+tabId);
-  if(t){t.style.display='block';}
-  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn){btn.classList.add('active');}
-}
-function loadAI(prompt){
-  var aiBtn=null;
-  document.querySelectorAll('.nav-btn').forEach(function(b){
-    if((b.getAttribute('onclick')||'').indexOf("'ai'")\>-1) aiBtn=b;
-  });
-  switchTab('ai',aiBtn);
-  var inp=document.getElementById('ai-inp');
-  if(inp) inp.value=prompt;
-  setTimeout(function(){ Q(prompt,'ai-btn','ai-res'); },50);
-}
-
-});
-  document.getElementById('ai-inp').value=prompt;
-  document.getElementById('ai-inp').focus();
-}
-</script><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
+</div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 <script>
 async function safeNeuralFetch(url, payload) {
     method: "POST",
@@ -563,44 +541,46 @@ window.addEventListener('load',function(){
 
 
 
-<script id="tsm-adaptive-engine">
+
+
+
+
+
+
+<script id="tsm-final-v4">
 (function() {
+  // Define switchTab so it's globally available for onclicks
   window.switchTab = function(id, btn) {
-    // 1. Hide everything that looks like a tab
-    document.querySelectorAll('[id^="tab-"], [id*="section"], .tab-content').forEach(el => {
+    console.log('◆ TSM Activating:', id);
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
       el.style.setProperty('display', 'none', 'important');
-      el.classList.remove('tab-active');
     });
-    
-    // 2. Show the target
     const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) {
-      target.style.setProperty('display', 'block', 'important');
-      target.classList.add('tab-active');
-    }
+    if (target) target.style.setProperty('display', 'block', 'important');
     
-    // 3. Update buttons
-    document.querySelectorAll('.nav-btn, button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  function autoPopulate() {
+  // Immediate Auto-Population
+  function forceInit() {
     const firstBtn = document.querySelector('.nav-btn');
-    const firstTab = document.querySelector('[id^="tab-"]');
-    
-    if (firstBtn && firstTab) {
-      const tabId = firstTab.id.replace('tab-', '');
+    if (firstBtn) {
+      const oc = firstBtn.getAttribute('onclick') || "";
+      const match = oc.match(/'([^']+)'/);
+      const tabId = match ? match[1] : 'dash';
       window.switchTab(tabId, firstBtn);
-      console.log('✔ TSM Adaptive: Auto-populated ' + tabId);
-    } else if (firstBtn) {
-       // Fallback: Just trigger the first button's onclick
-       firstBtn.click();
     }
   }
 
-  window.addEventListener('load', () => setTimeout(autoPopulate, 100));
-  // Secondary backup for slow-loading iframes
-  setTimeout(autoPopulate, 500);
+  // Triple-Trigger
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceInit);
+  } else {
+    forceInit();
+  }
+  window.addEventListener('load', forceInit);
+  setTimeout(forceInit, 150);
 })();
 </script>
 </body></html>
