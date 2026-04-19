@@ -65,53 +65,47 @@ tr:hover td{background:#0f1f0f}
 
 
 
-<style id="tsm-tab-system">
-[id^="tab-"] { display: none !important; }
-[id^="tab-"].tab-active { display: block !important; }
+
+
+
+
+
+<style id="tsm-core-styles">
+  [id^="tab-"] { display: none !important; }
+  [id^="tab-"].tab-active { display: block !important; }
 </style>
-<script id="tsm-tab-script">
+<script id="tsm-core-logic">
 (function() {
+  // 1. Tab System
   window.switchTab = function(tabId, btn) {
     document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
-    const target = document.getElementById('tab-' + tabId);
-    if (target) target.classList.add('tab-active');
-    
+    const t = document.getElementById('tab-' + tabId);
+    if (t) t.classList.add('tab-active');
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
 
-  function initTabs() {
-    const firstBtn = document.querySelector('.nav-btn');
-    if (firstBtn) {
-       // FIXED: Simplified extraction to avoid SyntaxErrors
-       const onclick = firstBtn.getAttribute('onclick') || '';
-       const tabId = onclick.includes("'") ? onclick.split("'")[1] : onclick.split('"')[1];
-       window.switchTab(tabId || 'dash', firstBtn);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTabs);
-  } else {
-    initTabs();
-  }
-})();
-</script>
-
-<script id="tsm-preset-system">
-(function() {
-  window.loadPreset = function(name, logic) {
-    const promptInput = document.querySelector('input[placeholder*="query"], textarea[placeholder*="query"]');
-    const displayMsg = name + " - Factor: " + logic;
-    
-    if (promptInput) {
-      promptInput.value = 'auditops "' + displayMsg + '" --logic=strategist';
-      promptInput.focus();
-      console.log('✔ Preset Loaded:', displayMsg);
-    } else {
-      console.error('Target prompt input not found.');
-    }
+  // 2. Preset & Analysis Engine
+  window.loadPreset = function(n, l) {
+    const i = document.querySelector('input[placeholder*="query"], textarea');
+    if (i) { i.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); i.focus(); }
   };
+
+  window.safeAnalyze = function() {
+    const i = document.querySelector('input[placeholder*="query"], textarea');
+    if (i && i.value.trim()) { console.log('🚀 Syncing to Strategist...'); }
+  };
+
+  function init() {
+    const f = document.querySelector('.nav-btn');
+    if (f) {
+      const oc = f.getAttribute('onclick') || '';
+      const tid = oc.includes("'") ? oc.split("'")[1] : oc.split('"')[1];
+      window.switchTab(tid || 'dash', f);
+    }
+  }
+
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 })();
 </script>
 </head><body><div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
@@ -134,8 +128,7 @@ tr:hover td{background:#0f1f0f}
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build vendor performance review framework for 12 overdue contracts — define KPIs, SLA measurement methodology, scoring criteria, and quarterly review cadence"><div class="pr-card-title">Vendor Performance Review</div><div class="pr-card-desc">12 overdue SLA reviews</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build comprehensive vendor risk register for $12.4M spend — map all 87 vendors by risk tier, BAA status, OIG compliance, contract expiry, and savings opportunity"><div class="pr-card-title">Vendor Risk Register</div><div class="pr-card-desc">$12.4M spend map</div></div>
 </div></div></div><div class="footer"><div class="fn">🤝 VENDOR NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC VENDOR COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><script>
-function switchTab(tabId,btn){
-  document.querySelectorAll('[id^="tab-"]').forEach(function(el){el.style.display='none';});
+);
   var t=document.getElementById('tab-'+tabId);
   if(t){t.style.display='block';}
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
@@ -152,11 +145,7 @@ function loadAI(prompt){
   setTimeout(function(){ Q(prompt,'ai-btn','ai-res'); },50);
 }
 
-function loadPreset(prompt){
-  switchTab('ai',null);
-  document.querySelectorAll('.nav-btn').forEach(function(b){
-    if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1){b.classList.add('active');}
-  });
+});
   document.getElementById('ai-inp').value=prompt;
   document.getElementById('ai-inp').focus();
 }
