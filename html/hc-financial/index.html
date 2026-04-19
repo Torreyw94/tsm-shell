@@ -101,15 +101,291 @@ tr:hover td{background:#0f1f0f}
   #tab-dash { display: block !important; }
   #tab-dash.active-tab { display: block !important; }
 </style>
+<script>
+  (function() {
+    window.switchTab = function(id, btn) {
+      const tabs = document.querySelectorAll('[id^="tab-"]');
+      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
+      const target = document.getElementById('tab-' + id) || document.getElementById(id)||document.getElementById("tab-"+id);
+      if (target) target.style.setProperty('display', 'block', 'important');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    };
 
+    // The Hammer: Try to initialize every 50ms until successful
+    let attempts = 0;
+    const interval = setInterval(() => {
+      const dashBtn = document.querySelector('.nav-btn');
+      if (dashBtn || attempts > 20) {
+        window.switchTab('dash', dashBtn);
+        clearInterval(interval);
+      }
+      attempts++;
+    }, 50);
+  })();
+</script>
 </head>
 <body>
 
+<script>
+window.onload = function() {
+  console.log("--- TSM DIAGNOSTIC START ---");
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    dash.style.setProperty('display', 'block', 'important');
+    dash.innerHTML = '' + dash.innerHTML;
+    console.log("✔ tab-dash found and forced.");
+  } else {
+    console.error("✖ tab-dash NOT FOUND in DOM");
+  }
+};
+</script>
 
 
 
 
 
+
+<div class="hdr">
+  <div class="hdr-left">
+    <span style="font-size:22px">💰</span>
+    <div>
+      <div class="hdr-title">HC FINANCIAL</div>
+      <div class="hdr-sub">Revenue Cycle · Billing · P&L Analysis · Financial Intelligence</div>
+    </div>
+  </div>
+  <div class="node-pill">NODE ACTIVE</div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button>
+  <button class="nav-btn" onclick="window.switchTab('revcycle',this)">💊 REV CYCLE</button>
+  <button class="nav-btn" onclick="window.switchTab('pnl',this)">📊 P&L</button>
+  <button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button>
+  <button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button>
+</nav>
+
+<!-- DASHBOARD -->
+
+<div id="tab-dash" id="tab-dash" style="display: block !important;">
+  <div class="kpi-row">
+<div class="kpi"><div class="kpi-val green">$4.2M</div><div class="kpi-lbl">Monthly Revenue</div><div class="kpi-sub green">+8% vs prior month · on target</div></div>
+<div class="kpi"><div class="kpi-val amber">47</div><div class="kpi-lbl">Days Sales Outstanding</div><div class="kpi-sub amber">Target &lt;40 · 7-day gap to close</div></div>
+<div class="kpi"><div class="kpi-val red">18.4%</div><div class="kpi-lbl">Denial Rate</div><div class="kpi-sub red">Exceeds 15% threshold · $48K stalled</div></div>
+<div class="kpi"><div class="kpi-val green">94.2%</div><div class="kpi-lbl">Collection Rate</div><div class="kpi-sub green">+2.1% vs prior quarter</div></div>
+</div>
+
+  <div class="sec">
+    <div class="sec-hdr">ACTIVE FINANCIAL ALERTS</div>
+    <div class="alert-row"><span class="pri pu">URGENT</span><div class="alert-txt">DSO at 47 days — 7 days above target · AR aging acceleration in Medicare bucket · $380K outstanding</div><div class="alert-imp">$380K AR</div></div>
+    <div class="alert-row"><span class="pri pu">URGENT</span><div class="alert-txt">Denial rate 18.4% exceeds 15% threshold — $48K stalled · top payer: Medicare CO-4 modifier denials</div><div class="alert-imp">$48K</div></div>
+    <div class="alert-row"><span class="pri pm">MED</span><div class="alert-txt">Medicaid managed care contract rate renegotiation window open Q2 — $180K revenue opportunity identified</div><div class="alert-imp">$180K opp</div></div>
+    <div class="alert-row"><span class="pri pm">MED</span><div class="alert-txt">Bad debt write-off trending 2.1% above prior year — collection agency referral threshold approaching</div><div class="alert-imp">Watch</div></div>
+    <div class="alert-row"><span class="pri pl">LOW</span><div class="alert-txt">Cost report reconciliation workpapers at 78% — fiscal year-end deadline in 45 days</div><div class="alert-imp">78% done</div></div>
+    <div class="alert-row"><span class="pri po">OK</span><div class="alert-txt">Monthly revenue $4.2M — +8% growth · collection rate 94.2% above 90% target</div><div class="alert-imp">✓ On track</div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">REVENUE BY SERVICE LINE</div>
+    <table>
+      <thead><tr><th>SERVICE LINE</th><th>VOLUME</th><th>AVG RVU</th><th>NET REVENUE</th><th>COLLECTION</th><th>STATUS</th></tr></thead>
+      <tbody>
+        <tr><td>E&M Visits</td><td>842</td><td>2.1</td><td>$187,440</td><td>91%</td><td><span class="badge bg">GOOD</span></td></tr>
+        <tr><td>Procedures</td><td>312</td><td>4.8</td><td>$224,640</td><td>87%</td><td><span class="badge ba">WATCH</span></td></tr>
+        <tr><td>Diagnostics</td><td>1,204</td><td>1.2</td><td>$128,266</td><td>94%</td><td><span class="badge bg">GOOD</span></td></tr>
+        <tr><td>Surgery</td><td>89</td><td>18.4</td><td>$244,944</td><td>82%</td><td><span class="badge ba">WATCH</span></td></tr>
+        <tr><td>ER Visits</td><td>421</td><td>3.6</td><td>$225,174</td><td>76%</td><td><span class="badge br">POOR</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ FINANCIAL AI</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('Analyze our 18.4% denial rate and provide a root cause analysis with top 5 remediation steps to reduce below 15%')">Denial Analysis</button>
+      <button class="ai-btn" onclick="loadAI('Review our revenue cycle DSO of 34 days and provide specific strategies to reduce to under 25 days')">DSO Reduction</button>
+      <button class="ai-btn" onclick="loadAI('Analyze our collection rate of 82% and identify the top payer and coding issues dragging it below the 95% target')">Collection Review</button>
+    </div>
+    <div class="ai-row">
+      <input id="fin-inp" class="ai-inp" type="text" placeholder="Financial query...">
+      <button class="ask-btn" id="fin-btn" onclick="Q(document.getElementById('fin-inp').value,'fin-btn','fin-res')">▶ ASK</button>
+    </div>
+    <div id="fin-res" class="ai-res">> Financial AI ready.</div>
+  </div>
+</div>
+
+<!-- REV CYCLE -->
+
+<div id="tab-revcycle">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">DENIAL MANAGEMENT QUEUE</div>
+    <table>
+      <thead><tr><th>CLAIM #</th><th>PAYER</th><th>CPT</th><th>AMOUNT</th><th>DENIAL REASON</th><th>ACTION</th></tr></thead>
+      <tbody>
+        <tr><td>CLM-2026-001</td><td>Medicare</td><td>99215</td><td>$248</td><td>Medical necessity</td><td><span class="badge ba">APPEAL</span></td></tr>
+        <tr><td>CLM-2026-002</td><td>Aetna</td><td>27447</td><td>$8,200</td><td>Prior auth missing</td><td><span class="badge br">URGENT</span></td></tr>
+        <tr><td>CLM-2026-003</td><td>BlueCross</td><td>70553</td><td>$1,400</td><td>Bundling issue</td><td><span class="badge ba">RECODE</span></td></tr>
+        <tr><td>CLM-2026-004</td><td>UHC</td><td>93454</td><td>$3,800</td><td>Timely filing</td><td><span class="badge br">WRITE-OFF</span></td></tr>
+        <tr><td>CLM-2026-005</td><td>Medicaid</td><td>97110</td><td>$180</td><td>Coordination of benefits</td><td><span class="badge bb">REVIEW</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ REV CYCLE AI</div>
+    <div class="ai-row">
+      <input id="rc-inp" class="ai-inp" type="text" placeholder="Revenue cycle query...">
+      <button class="ask-btn" id="rc-btn" onclick="Q(document.getElementById('rc-inp').value,'rc-btn','rc-res')">▶ ASK</button>
+    </div>
+    <div id="rc-res" class="ai-res">> Rev Cycle AI ready.</div>
+  </div>
+</div>
+
+<!-- P&L -->
+
+<div id="tab-pnl">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">P&L SUMMARY — YTD 2026</div>
+    <table>
+      <thead><tr><th>CATEGORY</th><th>BUDGET</th><th>ACTUAL</th><th>VARIANCE</th><th>STATUS</th></tr></thead>
+      <tbody>
+        <tr><td>Gross Revenue</td><td>$28.8M</td><td>$28.4M</td><td>-$400K</td><td><span class="badge ba">WATCH</span></td></tr>
+        <tr><td>Contractual Adj.</td><td>-$8.6M</td><td>-$9.1M</td><td>-$500K</td><td><span class="badge br">OVER</span></td></tr>
+        <tr><td>Net Revenue</td><td>$20.2M</td><td>$19.3M</td><td>-$900K</td><td><span class="badge br">UNDER</span></td></tr>
+        <tr><td>Labor Expense</td><td>$11.1M</td><td>$10.8M</td><td>+$300K</td><td><span class="badge bg">GOOD</span></td></tr>
+        <tr><td>Supply Expense</td><td>$2.4M</td><td>$2.6M</td><td>-$200K</td><td><span class="badge ba">WATCH</span></td></tr>
+        <tr><td>EBITDA</td><td>$4.8M</td><td>$4.1M</td><td>-$700K</td><td><span class="badge br">UNDER</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ P&L AI</div>
+    <div class="ai-row">
+      <input id="pnl-inp" class="ai-inp" type="text" placeholder="P&L query...">
+      <button class="ask-btn" id="pnl-btn" onclick="Q(document.getElementById('pnl-inp').value,'pnl-btn','pnl-res')">▶ ASK</button>
+    </div>
+    <div id="pnl-res" class="ai-res">> P&L AI ready.</div>
+  </div>
+</div>
+
+<!-- AI ANALYSIS -->
+
+<div id="tab-ai">
+  <div class="ai-box" style="margin-top:16px">
+    <div class="ai-hdr">⚡ DEEP FINANCIAL AI ANALYSIS</div>
+    <div class="ai-row">
+      <input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed financial analysis query...">
+      <button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">▶ ASK</button>
+    </div>
+    <div id="ai-res" class="ai-res">> AI Analysis ready.</div>
+  </div>
+</div>
+
+<!-- PRESETS -->
+
+<div id="tab-presets">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">PRESET LIBRARY — Click any preset to load into AI</div>
+
+    <div class="pr-sec-hdr">💊 REVENUE CYCLE — 4 PRESETS</div>
+    <div class="pr-grid">
+      <div class="pr-card" onclick="loadPreset('Analyze our revenue cycle denial rate of 18.4% — provide root cause analysis and top 5 remediation steps to reduce below 15%')"><div class="pr-card-title">Revenue Cycle Denial Analysis</div><div class="pr-card-desc">Denial root causes + AR reduction</div></div>
+      <div class="pr-card" onclick="loadPreset('Perform a CPT upcoding risk analysis for our outpatient billing and identify patterns that could trigger a payer audit')"><div class="pr-card-title">CPT Upcoding Risk Audit</div><div class="pr-card-desc">Coding compliance + audit exposure</div></div>
+      <div class="pr-card" onclick="loadPreset('Analyze our DSO of 34 days and provide specific payer-level strategies to reduce to under 25 days within 90 days')"><div class="pr-card-title">DSO Reduction Plan</div><div class="pr-card-desc">Cash flow + AR acceleration</div></div>
+      <div class="pr-card" onclick="loadPreset('Review our payer contract mix and identify renegotiation opportunities for the 3 contracts expiring Q2 2026')"><div class="pr-card-title">Payer Contract Review</div><div class="pr-card-desc">Contract optimization + rate uplift</div></div>
+    </div>
+
+    <div class="pr-sec-hdr" style="margin-top:16px">📊 P&L & COST — 4 PRESETS</div>
+    <div class="pr-grid">
+      <div class="pr-card" onclick="loadPreset('Audit our P&L for FY2026 YTD — identify the top cost variance drivers and EBITDA compression factors with remediation')"><div class="pr-card-title">Healthcare P&L Audit</div><div class="pr-card-desc">Cost variance + EBITDA compression</div></div>
+      <div class="pr-card" onclick="loadPreset('Review our Medicare Cost Report for DSH eligibility, GME allocation, and indirect cost rate optimization')"><div class="pr-card-title">Medicare Cost Report Review</div><div class="pr-card-desc">DSH eligibility + GME allocation</div></div>
+      <div class="pr-card" onclick="loadPreset('Analyze our supply chain spend of $2.6M YTD — identify waste, substitution opportunities, and GPO leverage')"><div class="pr-card-title">Supply Cost Reduction</div><div class="pr-card-desc">GPO leverage + substitution</div></div>
+      <div class="pr-card" onclick="loadPreset('Build a 90-day financial turnaround plan targeting EBITDA improvement from 21% to 25% margin')"><div class="pr-card-title">EBITDA Improvement Plan</div><div class="pr-card-desc">90-day financial turnaround</div></div>
+    </div>
+
+    <div class="pr-sec-hdr" style="margin-top:16px">💳 FINTECH COMPLIANCE — 4 PRESETS</div>
+    <div class="pr-grid">
+      <div class="pr-card" onclick="loadPreset('Analyze transaction patterns for shadow volume, velocity anomalies, and layering detection in our healthcare payment system')"><div class="pr-card-title">Shadow Ledger Velocity Scan</div><div class="pr-card-desc">Velocity anomalies + layering detection</div></div>
+      <div class="pr-card" onclick="loadPreset('Conduct a BSA/AML program audit for our healthcare financial operations including CDD rules and SAR threshold calibration')"><div class="pr-card-title">BSA/AML Program Audit</div><div class="pr-card-desc">CDD rules + SAR calibration</div></div>
+      <div class="pr-card" onclick="loadPreset('Review our healthcare payment processing agreements for interchange optimization and PCI DSS scope reduction')"><div class="pr-card-title">Payment Processing Review</div><div class="pr-card-desc">Interchange optimization + PCI scope</div></div>
+      <div class="pr-card" onclick="loadPreset('Audit our CFPB 1033 data access compliance and healthcare financial data minimization practices')"><div class="pr-card-title">CFPB 1033 Compliance</div><div class="pr-card-desc">Data access + minimization</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="fn">💰 FINANCIAL NODE &nbsp; Ready — run analysis or relay to Strategist</div>
+  <div class="fbtns">
+    <button class="fbtn fbnca" onclick="safeAnalyze(document.querySelector(`textarea`)?.value || `analysis`, `output`)">⚡ RUN BNCA</button>
+    <button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">🔗 RELAY TO STRATEGIST</button>
+  </div>
+</div>
+
+
+<div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
+
+
+
+
+
+
+<div id="intakeFeed_financial" style="display:none;position:fixed;top:60px;right:20px;z-index:9999;width:360px;background:#0a140a;border:1px solid rgba(0,255,136,0.25);border-left:3px solid #00ff88;padding:16px 18px;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
+  <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">◆ HC FINANCIAL INTAKE</div>
+  <div id="intakeList_financial" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
+</div>
+
+
+
+<script>
+window.switchTab = function(id, btn) {
+  // Hide all
+  const tabs = document.querySelectorAll('[id^="tab-"]');
+  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
+  
+  // Show target
+  const target = document.getElementById('tab-' + id) || document.getElementById(id)||document.getElementById("tab-"+id);
+  if (target) target.setAttribute('style', 'display: block !important');
+  
+  // UI Cleanup
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+console.log("TSM Engine Active for hc-financial");
+</script>
+
+<script id="tsm-core-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => t.style.display = 'none');
+    const target = document.getElementById('tab-' + id) || document.getElementById(id)||document.getElementById("tab-"+id);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+})();
+</script>
+
+<script>
+// TSM TAB FIX — definitive override
+(function(){
+  function doSwitch(id, btn){
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el){
+      el.style.setProperty('display','none','important');
+    });
+    var t = document.getElementById('tab-'+id) || document.getElementById(id);
+    if(t) t.style.setProperty('display','block','important');
+    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+  }
+  window.switchTab = doSwitch;
+  window.addEventListener('load', function(){
+    var first = document.querySelector('.nav-btn');
+    if(!first) return;
+    var m = (first.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
+    doSwitch(m ? m[1] : 'dash', first);
+  });
+})();
+</script>
 <script>
 function switchTab(id, btn) {
   document.querySelectorAll('[id^="tab-"]').forEach(function(el) {
