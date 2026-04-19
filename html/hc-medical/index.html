@@ -1,22 +1,3 @@
-async function safeFetch(url, options={}) {
-  try {
-    const res = await safeFetch(url, options);
-    const text = await res.text();
-
-    if (!text) throw new Error("Empty response from backend");
-
-    if (!text.trim().startsWith("{")) {
-      console.error("❌ Non-JSON response:", text.slice(0,300));
-      throw new Error("Backend returned HTML instead of JSON");
-    }
-
-    return JSON.parse(text);
-  } catch (err) {
-    console.error("🔥 safeFetch error:", err);
-    return { error: err.message || "Unknown error" };
-  }
-}
-
 <!DOCTYPE html><html lang="en"><head>
 
 
@@ -106,6 +87,26 @@ tr:hover td{background:#0f1f0f}
 
 
 
+<script>
+async function safeFetch(url, options={}) {
+  try {
+    const res = await safeFetch(url, options);
+    const text = await res.text();
+
+    if (!text) throw new Error("Empty response from backend");
+
+    if (!text.trim().startsWith("{")) {
+      console.error("❌ Non-JSON response:", text.slice(0,300));
+      throw new Error("Backend returned HTML instead of JSON");
+    }
+
+    return JSON.parse(text);
+  } catch (err) {
+    console.error("🔥 safeFetch error:", err);
+    return { error: err.message || "Unknown error" };
+  }
+}
+</script>
 </head><body>
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">🏥</span><div><div class="hdr-title">HC MEDICAL COMMAND</div><div class="hdr-sub">Clinical Ops · Revenue Cycle · CPT Audit · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('clinical',this)">🩺 CLINICAL OPS</button><button class="nav-btn" onclick="window.switchTab('billing',this)">💊 BILLING & CPT</button><button class="nav-btn" onclick="window.switchTab('auth',this)">📋 PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">97.4%</div><div class="kpi-lbl">Medical Compliance</div><div class="kpi-sub green">Above 95% target · OIG watch clear</div></div>
