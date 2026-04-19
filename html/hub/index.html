@@ -78,7 +78,8 @@ const HC_NODES = new Set([
   'healthcare','honor-portal','honorhealth'
 ]);
 
-function appUrl(key) {
+function appUrl(key, url) {
+  if (url) return url;
   if (key.startsWith('http')) return key;
   if (HC_NODES.has(key)) return '/html/' + key + '/index.html';
   return '/html/' + key + '/';
@@ -99,6 +100,7 @@ const LOCAL_APPS = [
   { sector:'Healthcare', name:'HC Strategist',        key:'hc-strategist' },
   { sector:'Healthcare', name:'HC Tax Prep',          key:'hc-taxprep' },
   { sector:'Healthcare', name:'HC Vendors',           key:'hc-vendors' },
+  { sector:'Healthcare', name:'Honor Portal',          key:'honor-portal' },
   { sector:'Healthcare', name:'DME',                  key:'dme' },
   // BPO
   { sector:'BPO', name:'BPO Legal',                   key:'bpo-legal' },
@@ -110,6 +112,8 @@ const LOCAL_APPS = [
   { sector:'Financial', name:'Strategist',            key:'strategist' },
   // Construction
   { sector:'Construction', name:'Construction Command', key:'construction-command' },
+  { sector:'Construction', name:'Ameris Portal',         key:'ameris-portal' },
+  { sector:'Enterprise',    name:'Suite Builder',        key:'suite-builder', url:'/suite-builder.html' },
   // Insurance
   { sector:'Insurance', name:'PC Command',            key:'pc-command' },
   { sector:'Insurance', name:'AZ Insurance',          key:'az-ins' },
@@ -302,7 +306,7 @@ render();
 const first = LOCAL_APPS[0];
 if (first) {
   currentApp = first.key;
-  const url = appUrl(first.key);
+  const url = appUrl(first.key, first.url);
   document.getElementById('url').textContent = url;
   document.getElementById('frame').src = url;
   document.getElementById('active-label').textContent = first.name;
