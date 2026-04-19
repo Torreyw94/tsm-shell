@@ -250,35 +250,7 @@ tr:hover td{background:#0f1f0f}
   </div>
 </div>
 
-<script>
-);
-  var target=document.getElementById('tab-'+tabId);
-  if(target){target.style.display='block';}
-  document.querySelectorAll('.nav-btn,.tab-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn){btn.classList.add('active');}
-}
 
-async function Q(prompt,btnId,resId){
-  if(!prompt||!prompt.trim())return;
-  var btn=document.getElementById(btnId),res=document.getElementById(resId);
-  if(!btn||!res)return;
-  btn.disabled=true;
-  res.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
-  try{
-    var r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer GROQ_KEY_REMOVED'},
-      body:JSON.stringify({model:'llama-3.1-8b-instant',messages:[{role:'user',content:prompt}],max_tokens:1024,temperature:0.4})
-    });
-    if(!r.ok){var e=await r.text();throw new Error('HTTP '+r.status+': '+e);}
-    var d=await r.json();
-    var reply=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content)||'No response';
-    res.style.whiteSpace='pre-wrap';
-    res.textContent='> TSM NEURAL ['+new Date().toLocaleTimeString()+']\n\n'+reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
-  }catch(e){res.textContent='> TSM NEURAL ERROR: '+e.message;}
-  btn.disabled=false;
-}
-</script>
 <div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 
 
@@ -419,45 +391,40 @@ window.addEventListener('load',function(){
 
 
 
+
+
 <script id="tsm-final-hardened-logic">
 (function(){
-  // 1. Robust Tab Function
   function doTab(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ el.style.display='none'; el.classList.remove('tab-active'); });
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ 
+      el.style.setProperty('display', 'none', 'important'); 
+      el.classList.remove('tab-active'); 
+    });
     var t = document.getElementById('tab-'+tabId);
-    if(t) { t.style.display='block'; t.classList.add('tab-active'); }
+    if(t) { 
+      t.style.setProperty('display', 'block', 'important'); 
+      t.classList.add('tab-active'); 
+    }
     document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
     if(btn) btn.classList.add('active');
   }
   window.switchTab = doTab;
 
-  // 2. Global Click Interceptor (Prevents Inline Errors from blocking execution)
   document.addEventListener('click', function(e){
     var btn = e.target.closest ? e.target.closest('.nav-btn') : null;
     if(!btn) return;
-    var m = (btn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-    if(m){ e.stopPropagation(); doTab(m[1], btn); }
+    var oc = btn.getAttribute('onclick') || '';
+    var m = oc.match(/switchTab\('([^']+)'/);
+    if(m){ e.preventDefault(); e.stopPropagation(); doTab(m[1], btn); }
   }, true);
 
-  // 3. Preset & AI Handlers
-  window.loadPreset = function(prompt){
-    var aiBtn = null;
-    document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
-    });
-    doTab('ai', aiBtn);
-    var inp = document.querySelector('input[placeholder*="query"], textarea, .ai-inp');
-    if(inp){ inp.value = prompt; inp.focus(); }
-  };
-
-  window.safeAnalyze = function() { console.log('🚀 Sovereign Engine: Active'); };
-
-  // 4. Force Load Initial State
   window.addEventListener('load', function(){
     setTimeout(function(){
       var firstBtn = document.querySelector('.nav-btn');
-      var m = firstBtn && (firstBtn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-      doTab(m ? m[1] : 'dash', firstBtn);
+      if(firstBtn){
+        var m = firstBtn.getAttribute('onclick').match(/switchTab\('([^']+)'/);
+        doTab(m ? m[1] : 'dash', firstBtn);
+      }
     }, 100);
   });
 })();

@@ -558,45 +558,40 @@ window.addEventListener('load',function(){
 
 
 
+
+
 <script id="tsm-final-hardened-logic">
 (function(){
-  // 1. Robust Tab Function
   function doTab(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ el.style.display='none'; el.classList.remove('tab-active'); });
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ 
+      el.style.setProperty('display', 'none', 'important'); 
+      el.classList.remove('tab-active'); 
+    });
     var t = document.getElementById('tab-'+tabId);
-    if(t) { t.style.display='block'; t.classList.add('tab-active'); }
+    if(t) { 
+      t.style.setProperty('display', 'block', 'important'); 
+      t.classList.add('tab-active'); 
+    }
     document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
     if(btn) btn.classList.add('active');
   }
   window.switchTab = doTab;
 
-  // 2. Global Click Interceptor (Prevents Inline Errors from blocking execution)
   document.addEventListener('click', function(e){
     var btn = e.target.closest ? e.target.closest('.nav-btn') : null;
     if(!btn) return;
-    var m = (btn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-    if(m){ e.stopPropagation(); doTab(m[1], btn); }
+    var oc = btn.getAttribute('onclick') || '';
+    var m = oc.match(/switchTab\('([^']+)'/);
+    if(m){ e.preventDefault(); e.stopPropagation(); doTab(m[1], btn); }
   }, true);
 
-  // 3. Preset & AI Handlers
-  window.loadPreset = function(prompt){
-    var aiBtn = null;
-    document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
-    });
-    doTab('ai', aiBtn);
-    var inp = document.querySelector('input[placeholder*="query"], textarea, .ai-inp');
-    if(inp){ inp.value = prompt; inp.focus(); }
-  };
-
-  window.safeAnalyze = function() { console.log('🚀 Sovereign Engine: Active'); };
-
-  // 4. Force Load Initial State
   window.addEventListener('load', function(){
     setTimeout(function(){
       var firstBtn = document.querySelector('.nav-btn');
-      var m = firstBtn && (firstBtn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-      doTab(m ? m[1] : 'dash', firstBtn);
+      if(firstBtn){
+        var m = firstBtn.getAttribute('onclick').match(/switchTab\('([^']+)'/);
+        doTab(m ? m[1] : 'dash', firstBtn);
+      }
     }, 100);
   });
 })();
