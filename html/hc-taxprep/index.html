@@ -107,6 +107,21 @@ tr:hover td{background:#0f1f0f}
 </head>
 <body>
 
+<script>
+window.onload = function() {
+  console.log("--- TSM DIAGNOSTIC START ---");
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    dash.style.setProperty('display', 'block', 'important');
+    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
+    console.log("✔ tab-dash found and forced.");
+  } else {
+    console.error("✖ tab-dash NOT FOUND in DOM");
+  }
+};
+</script>
+
+
 
 
 
@@ -132,7 +147,7 @@ tr:hover td{background:#0f1f0f}
 
 <!-- DASHBOARD TAB -->
 
-<div id="tab-dash" style="display: block !important;" style="display:block">
+<div id="tab-dash" style="display: block !important; border: 5px solid red !important; min-height: 200px !important;" style="display: block !important;" style="display:block">
   <div class="kpi-row">
 <div class="kpi"><div class="kpi-val amber">$284K</div><div class="kpi-lbl">Tax Liability YTD</div><div class="kpi-sub amber">UBI exposure · UBIT calculation pending</div></div>
 <div class="kpi"><div class="kpi-val red">3</div><div class="kpi-lbl">Open IRS Items</div><div class="kpi-sub red">1 audit · 2 correspondence · response due</div></div>

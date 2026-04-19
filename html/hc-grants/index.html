@@ -88,10 +88,25 @@ tr:hover td{background:#0f1f0f}
 
 </head><body>
 
+<script>
+window.onload = function() {
+  console.log("--- TSM DIAGNOSTIC START ---");
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    dash.style.setProperty('display', 'block', 'important');
+    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
+    console.log("✔ tab-dash found and forced.");
+  } else {
+    console.error("✖ tab-dash NOT FOUND in DOM");
+  }
+};
+</script>
+
+
 
 
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">🏆</span><div><div class="hdr-title">HC GRANTS COMMAND</div><div class="hdr-sub">Federal Grants · 340B · HRSA · CMS Innovation · Reporting</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('hipaa',this)">📋 ACTIVE GRANTS</button><button class="nav-btn" onclick="window.switchTab('cms',this)">💊 340B PROGRAM</button><button class="nav-btn" onclick="window.switchTab('jc',this)">📊 REPORTING</button><button class="nav-btn" onclick="window.switchTab('oig',this)">🔍 COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block !important;"><div class="kpi-row">
+<div id="tab-dash" style="display: block !important; border: 5px solid red !important; min-height: 200px !important;" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">$8.4M</div><div class="kpi-lbl">Active Grant Portfolio</div><div class="kpi-sub green">14 active awards · 3 federal · 11 state</div></div>
 <div class="kpi"><div class="kpi-val red">3</div><div class="kpi-lbl">Reports Overdue</div><div class="kpi-sub red">2 HRSA · 1 CMS Innovation · action required</div></div>
 <div class="kpi"><div class="kpi-val green">$1.2M</div><div class="kpi-lbl">340B Savings YTD</div><div class="kpi-sub green">+14% vs prior year · audit-ready</div></div>

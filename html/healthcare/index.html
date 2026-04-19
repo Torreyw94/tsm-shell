@@ -221,6 +221,21 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 </head>
 <body>
 
+<script>
+window.onload = function() {
+  console.log("--- TSM DIAGNOSTIC START ---");
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    dash.style.setProperty('display', 'block', 'important');
+    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
+    console.log("✔ tab-dash found and forced.");
+  } else {
+    console.error("✖ tab-dash NOT FOUND in DOM");
+  }
+};
+</script>
+
+
 
 
 
