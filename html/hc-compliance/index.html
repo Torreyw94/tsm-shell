@@ -118,7 +118,7 @@ function switchTab(tabId,btn){
 function loadAI(prompt){
   var aiBtn=null;
   document.querySelectorAll('.nav-btn').forEach(function(b){
-    if((b.getAttribute('onclick')||'').indexOf("'ai'")\>-1) aiBtn=b;
+    if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
   });
   switchTab('ai',aiBtn);
   var inp=document.getElementById('ai-inp');
