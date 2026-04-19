@@ -97,6 +97,29 @@ tr:hover td{background:#0f1f0f}
 </head>
 <body>
 
+<script>
+window.switchTab = function(id, btn) {
+  console.log('TSM Manual Switch:', id);
+  const targets = document.querySelectorAll('[id^="tab-"]');
+  targets.forEach(t => t.style.display = 'none');
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+
+// Use an observer to catch the DOM when it is ready
+const observer = new MutationObserver((mutations, obs) => {
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    window.switchTab('dash', document.querySelector('.nav-btn'));
+    obs.disconnect(); 
+  }
+});
+observer.observe(document.documentElement, { childList: true, subtree: true });
+</script>
+
+
 
 <div class="hdr">
   <div class="hdr-left">
@@ -118,6 +141,7 @@ tr:hover td{background:#0f1f0f}
 </nav>
 
 <!-- DASHBOARD -->
+
 <div id="tab-dash">
   <div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">$4.2M</div><div class="kpi-lbl">Monthly Revenue</div><div class="kpi-sub green">+8% vs prior month · on target</div></div>
@@ -166,6 +190,7 @@ tr:hover td{background:#0f1f0f}
 </div>
 
 <!-- REV CYCLE -->
+
 <div id="tab-revcycle">
   <div class="sec" style="margin-top:16px">
     <div class="sec-hdr">DENIAL MANAGEMENT QUEUE</div>
@@ -191,6 +216,7 @@ tr:hover td{background:#0f1f0f}
 </div>
 
 <!-- P&L -->
+
 <div id="tab-pnl">
   <div class="sec" style="margin-top:16px">
     <div class="sec-hdr">P&L SUMMARY — YTD 2026</div>
@@ -217,6 +243,7 @@ tr:hover td{background:#0f1f0f}
 </div>
 
 <!-- AI ANALYSIS -->
+
 <div id="tab-ai">
   <div class="ai-box" style="margin-top:16px">
     <div class="ai-hdr">⚡ DEEP FINANCIAL AI ANALYSIS</div>
@@ -229,6 +256,7 @@ tr:hover td{background:#0f1f0f}
 </div>
 
 <!-- PRESETS -->
+
 <div id="tab-presets">
   <div class="sec" style="margin-top:16px">
     <div class="sec-hdr">PRESET LIBRARY — Click any preset to load into AI</div>

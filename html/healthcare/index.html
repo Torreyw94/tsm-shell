@@ -221,6 +221,29 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 </head>
 <body>
 
+<script>
+window.switchTab = function(id, btn) {
+  console.log('TSM Manual Switch:', id);
+  const targets = document.querySelectorAll('[id^="tab-"]');
+  targets.forEach(t => t.style.display = 'none');
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+
+// Use an observer to catch the DOM when it is ready
+const observer = new MutationObserver((mutations, obs) => {
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    window.switchTab('dash', document.querySelector('.nav-btn'));
+    obs.disconnect(); 
+  }
+});
+observer.observe(document.documentElement, { childList: true, subtree: true });
+</script>
+
+
 
 <!-- TICKER -->
 <div class="ticker">

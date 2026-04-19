@@ -179,6 +179,29 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </head>
 <body>
 
+<script>
+window.switchTab = function(id, btn) {
+  console.log('TSM Manual Switch:', id);
+  const targets = document.querySelectorAll('[id^="tab-"]');
+  targets.forEach(t => t.style.display = 'none');
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+
+// Use an observer to catch the DOM when it is ready
+const observer = new MutationObserver((mutations, obs) => {
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    window.switchTab('dash', document.querySelector('.nav-btn'));
+    obs.disconnect(); 
+  }
+});
+observer.observe(document.documentElement, { childList: true, subtree: true });
+</script>
+
+
 
 <div class="topbar">
   <div class="tb-brand"><div class="tb-logo">TSM</div><div><div class="tb-client"><span>HONOR</span>HEALTH · OPS PORTAL</div></div></div>
@@ -266,7 +289,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     </div>
     <div class="content">
 
-      <div id="tab-dashboard" class="fi">
+      
+<div id="tab-dashboard" class="fi">
         <div class="kpi-row">
           <div class="kpi"><div class="kpi-v vr">1,256</div><div class="kpi-l">Claims this month</div><div class="kpi-s" style="color:var(--red)">231 denied · 18.4% rate</div></div>
           <div class="kpi"><div class="kpi-v va">$48K</div><div class="kpi-l">Revenue at risk</div><div class="kpi-s">14 aging &gt;30 days</div></div>
@@ -319,7 +343,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         </div>
       </div>
 
-      <div id="tab-nodes" class="fi" style="display:none">
+      
+<div id="tab-nodes" class="fi" style="display:none">
         <div class="panel">
           <div class="sh"><span class="st">All Nodes — HonorHealth Suite (15)</span></div>
           <div class="node-grid">
@@ -342,7 +367,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         </div>
       </div>
 
-      <div id="tab-intake" class="fi" style="display:none">
+      
+<div id="tab-intake" class="fi" style="display:none">
         <div class="panel" style="margin-bottom:12px">
           <div class="sh"><span class="st">BPO Document Intake Queue</span></div>
           <table style="width:100%;border-collapse:collapse;font-size:11px">
@@ -370,7 +396,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         </div>
       </div>
 
-      <div id="tab-alerts" class="fi" style="display:none">
+      
+<div id="tab-alerts" class="fi" style="display:none">
         <div class="panel">
           <div class="sh"><span class="st">All Active Alerts (6)</span></div>
           <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — top codes: PR-96 (45%), CO-4 (28%), CO-11 (18%). Payer-specific appeal strategy required immediately.</span><span class="am" style="color:var(--red)">$48K</span></div>
@@ -382,7 +409,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         </div>
       </div>
 
-      <div id="tab-reports" class="fi" style="display:none">
+      
+<div id="tab-reports" class="fi" style="display:none">
         <div class="panel">
           <div class="sh"><span class="st">Executive Summary Builder</span></div>
           <div class="rform">
@@ -403,7 +431,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
           </div>
         </div>
       </div>
-      <div id="tab-staff" class="fi" style="display:none">
+      
+<div id="tab-staff" class="fi" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div class="panel">
             <div class="sh"><span class="st">Log Observation</span></div>
