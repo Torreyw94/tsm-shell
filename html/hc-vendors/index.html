@@ -85,7 +85,39 @@ tr:hover td{background:#0f1f0f}
 
 
 
-</head><body><div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
+</head><body>
+<script id="tsm-engine-v3">
+(function() {
+  window.switchTab = function(id, btn) {
+    console.log('◆ TSM Switching to:', id);
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+      el.classList.remove('tab-active');
+    });
+    const t = document.getElementById('tab-' + id);
+    if (t) {
+      t.style.setProperty('display', 'block', 'important');
+      t.classList.add('tab-active');
+    }
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  function forceInit() {
+    const first = document.querySelector('.nav-btn');
+    if (first) {
+      const oc = first.getAttribute('onclick') || "";
+      const id = oc.match(/['"]([^'"]+)['"]/) ? oc.match(/['"]([^'"]+)['"]/)[1] : 'dash';
+      window.switchTab(id, first);
+    }
+  }
+
+  // Double-tap initialization to beat any race conditions
+  window.addEventListener('load', forceInit);
+  setTimeout(forceInit, 50);
+  setTimeout(forceInit, 500);
+})();
+</script><div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">$12.4M</div><div class="kpi-lbl">Annual Vendor Spend</div><div class="kpi-sub green">14 category types · 87 active vendors</div></div>
 <div class="kpi"><div class="kpi-val amber">87</div><div class="kpi-lbl">Active Contracts</div><div class="kpi-sub amber">12 expiring Q2 · 3 not yet renewed</div></div>
 <div class="kpi"><div class="kpi-val red">84%</div><div class="kpi-lbl">BAA Compliance Rate</div><div class="kpi-sub red">14 BAAs expired · HIPAA breach risk</div></div>
@@ -217,7 +249,7 @@ setInterval(pollHcVendors, 30000);
     document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
     if(btn) btn.classList.add('active');
   }
-  window.switchTab = doTab;
+  
 
   // Capture phase intercept — fires before any inline onclick
   document.addEventListener('click', function(e){
@@ -267,7 +299,7 @@ setInterval(pollHcVendors, 30000);
 
   window.addEventListener('load', function(){
     setTimeout(function(){
-      window.switchTab = doTab;
+      
       var firstBtn=document.querySelector('.nav-btn');
       var m=firstBtn&&(firstBtn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
       doTab(m?m[1]:'dash', firstBtn);
@@ -287,40 +319,5 @@ window.addEventListener('load',function(){
 
 
 
-<script id="tsm-final-hardened-logic">
-(function(){
-  function doTab(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ 
-      el.style.setProperty('display', 'none', 'important'); 
-      el.classList.remove('tab-active'); 
-    });
-    var t = document.getElementById('tab-'+tabId);
-    if(t) { 
-      t.style.setProperty('display', 'block', 'important'); 
-      t.classList.add('tab-active'); 
-    }
-    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-    if(btn) btn.classList.add('active');
-  }
-  window.switchTab = doTab;
 
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest ? e.target.closest('.nav-btn') : null;
-    if(!btn) return;
-    var oc = btn.getAttribute('onclick') || '';
-    var m = oc.match(/switchTab\('([^']+)'/);
-    if(m){ e.preventDefault(); e.stopPropagation(); doTab(m[1], btn); }
-  }, true);
-
-  window.addEventListener('load', function(){
-    setTimeout(function(){
-      var firstBtn = document.querySelector('.nav-btn');
-      if(firstBtn){
-        var m = firstBtn.getAttribute('onclick').match(/switchTab\('([^']+)'/);
-        doTab(m ? m[1] : 'dash', firstBtn);
-      }
-    }, 100);
-  });
-})();
-</script>
 </body></html>

@@ -220,6 +220,38 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 
 </head>
 <body>
+<script id="tsm-engine-v3">
+(function() {
+  window.switchTab = function(id, btn) {
+    console.log('◆ TSM Switching to:', id);
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+      el.classList.remove('tab-active');
+    });
+    const t = document.getElementById('tab-' + id);
+    if (t) {
+      t.style.setProperty('display', 'block', 'important');
+      t.classList.add('tab-active');
+    }
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  function forceInit() {
+    const first = document.querySelector('.nav-btn');
+    if (first) {
+      const oc = first.getAttribute('onclick') || "";
+      const id = oc.match(/['"]([^'"]+)['"]/) ? oc.match(/['"]([^'"]+)['"]/)[1] : 'dash';
+      window.switchTab(id, first);
+    }
+  }
+
+  // Double-tap initialization to beat any race conditions
+  window.addEventListener('load', forceInit);
+  setTimeout(forceInit, 50);
+  setTimeout(forceInit, 500);
+})();
+</script>
 
 <!-- TICKER -->
 <div class="ticker">
@@ -886,41 +918,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
 
-<script id="tsm-final-hardened-logic">
-(function(){
-  function doTab(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){ 
-      el.style.setProperty('display', 'none', 'important'); 
-      el.classList.remove('tab-active'); 
-    });
-    var t = document.getElementById('tab-'+tabId);
-    if(t) { 
-      t.style.setProperty('display', 'block', 'important'); 
-      t.classList.add('tab-active'); 
-    }
-    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-    if(btn) btn.classList.add('active');
-  }
-  window.switchTab = doTab;
 
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest ? e.target.closest('.nav-btn') : null;
-    if(!btn) return;
-    var oc = btn.getAttribute('onclick') || '';
-    var m = oc.match(/switchTab\('([^']+)'/);
-    if(m){ e.preventDefault(); e.stopPropagation(); doTab(m[1], btn); }
-  }, true);
-
-  window.addEventListener('load', function(){
-    setTimeout(function(){
-      var firstBtn = document.querySelector('.nav-btn');
-      if(firstBtn){
-        var m = firstBtn.getAttribute('onclick').match(/switchTab\('([^']+)'/);
-        doTab(m ? m[1] : 'dash', firstBtn);
-      }
-    }, 100);
-  });
-})();
-</script>
 </body>
 </html>
