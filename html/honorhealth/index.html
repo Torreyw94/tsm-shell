@@ -74,12 +74,16 @@ function getNodeSystemPrompt() {
 
 
 
+
+
+
 <style id="tsm-final-styles">
   [id^="tab-"] { display: none !important; }
   [id^="tab-"].tab-active { display: block !important; }
 </style>
-<script id="tsm-final-core">
+<script id="tsm-final-logic">
 (function() {
+  // Global Sovereign Handlers
   window.switchTab = function(id, btn) {
     document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
     const t = document.getElementById('tab-' + id);
@@ -89,19 +93,19 @@ function getNodeSystemPrompt() {
   };
 
   window.loadPreset = function(n, l) {
-    const i = document.querySelector('input[placeholder*="query"], textarea');
-    if (i) { i.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); i.focus(); }
+    const input = document.querySelector('input[placeholder*="query"], textarea');
+    if (input) { input.value = 'auditops "' + n + '" --logic=' + (l || 'strategist'); input.focus(); }
   };
 
   window.safeAnalyze = function() {
-    console.log('🚀 Sovereign Engine: Analyzing node data...');
+    console.log('🚀 Analysis sequence initiated...');
   };
 
   function init() {
     const f = document.querySelector('.nav-btn');
     if (f) {
       const oc = f.getAttribute('onclick') || "";
-      const id = oc.split("'")[1] || oc.split('"')[1] || 'dash';
+      const id = oc.match(/['"]([^'"]+)['"]/) ? oc.match(/['"]([^'"]+)['"]/)[1] : 'dash';
       window.switchTab(id, f);
     }
   }
