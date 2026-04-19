@@ -95,7 +95,7 @@ window.onload = function() {
   const dash = document.getElementById('tab-dash');
   if (dash) {
     dash.style.setProperty('display', 'block', 'important');
-    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
+    dash.innerHTML = '' + dash.innerHTML;
     console.log("✔ tab-dash found and forced.");
   } else {
     console.error("✖ tab-dash NOT FOUND in DOM");
@@ -107,7 +107,7 @@ window.onload = function() {
 
 
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">♟️</span><div><div class="hdr-title">HC STRATEGIST</div><div class="hdr-sub">Beacon of Truth · Next Best Action Engine · Command Authority</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('hipaa',this)">📊 NODE STATUS</button><button class="nav-btn" onclick="window.switchTab('cms',this)">🎯 PRIORITIES</button><button class="nav-btn" onclick="window.switchTab('jc',this)">📈 ANALYTICS</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block !important; border: 5px solid red !important; min-height: 200px !important;" style="display: block !important;"><div class="kpi-row">
+<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">11</div><div class="kpi-lbl">Nodes Online</div><div class="kpi-sub green">All HC suite active · neural sync live</div></div>
 <div class="kpi"><div class="kpi-val red">$2.8M</div><div class="kpi-lbl">Revenue At Risk</div><div class="kpi-sub red">Denial · DSO · DIR · litigation exposure</div></div>
 <div class="kpi"><div class="kpi-val amber">94.1%</div><div class="kpi-lbl">System Compliance</div><div class="kpi-sub amber">2 nodes below threshold · remediation active</div></div>
@@ -160,5 +160,18 @@ window.switchTab = function(id, btn) {
   if (btn) btn.classList.add('active');
 };
 console.log("TSM Engine Active for hc-strategist");
+</script>
+
+<script id="tsm-core-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => t.style.display = 'none');
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+})();
 </script>
 </body></html>

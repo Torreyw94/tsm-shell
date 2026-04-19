@@ -93,7 +93,7 @@ window.onload = function() {
   const dash = document.getElementById('tab-dash');
   if (dash) {
     dash.style.setProperty('display', 'block', 'important');
-    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
+    dash.innerHTML = '' + dash.innerHTML;
     console.log("✔ tab-dash found and forced.");
   } else {
     console.error("✖ tab-dash NOT FOUND in DOM");
@@ -105,7 +105,7 @@ window.onload = function() {
 
 
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block !important; border: 5px solid red !important; min-height: 200px !important;" style="display: block !important;"><div class="kpi-row">
+<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">$12.4M</div><div class="kpi-lbl">Annual Vendor Spend</div><div class="kpi-sub green">14 category types · 87 active vendors</div></div>
 <div class="kpi"><div class="kpi-val amber">87</div><div class="kpi-lbl">Active Contracts</div><div class="kpi-sub amber">12 expiring Q2 · 3 not yet renewed</div></div>
 <div class="kpi"><div class="kpi-val red">84%</div><div class="kpi-lbl">BAA Compliance Rate</div><div class="kpi-sub red">14 BAAs expired · HIPAA breach risk</div></div>
@@ -158,5 +158,18 @@ window.switchTab = function(id, btn) {
   if (btn) btn.classList.add('active');
 };
 console.log("TSM Engine Active for hc-vendors");
+</script>
+
+<script id="tsm-core-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => t.style.display = 'none');
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+})();
 </script>
 </body></html>

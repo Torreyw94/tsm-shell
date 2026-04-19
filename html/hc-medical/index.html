@@ -113,7 +113,7 @@ window.onload = function() {
   const dash = document.getElementById('tab-dash');
   if (dash) {
     dash.style.setProperty('display', 'block', 'important');
-    dash.innerHTML = '<h1 style="color:red; background:yellow; padding:20px; z-index:9999; position:relative;">DIAGNOSTIC: TAB-DASH IS LOADED</h1>' + dash.innerHTML;
+    dash.innerHTML = '' + dash.innerHTML;
     console.log("✔ tab-dash found and forced.");
   } else {
     console.error("✖ tab-dash NOT FOUND in DOM");
@@ -125,7 +125,7 @@ window.onload = function() {
 
 
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">🏥</span><div><div class="hdr-title">HC MEDICAL COMMAND</div><div class="hdr-sub">Clinical Ops · Revenue Cycle · CPT Audit · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('clinical',this)">🩺 CLINICAL OPS</button><button class="nav-btn" onclick="window.switchTab('billing',this)">💊 BILLING & CPT</button><button class="nav-btn" onclick="window.switchTab('auth',this)">📋 PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block !important; border: 5px solid red !important; min-height: 200px !important;" style="display: block !important;"><div class="kpi-row">
+<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">97.4%</div><div class="kpi-lbl">Medical Compliance</div><div class="kpi-sub green">Above 95% target · OIG watch clear</div></div>
 <div class="kpi"><div class="kpi-val amber">38</div><div class="kpi-lbl">Auth Pending</div><div class="kpi-sub amber">14 urgent · avg 2.3 days pending</div></div>
 <div class="kpi"><div class="kpi-val green">1,842</div><div class="kpi-lbl">Active Patients</div><div class="kpi-sub green">+6% vs prior month · census stable</div></div>
@@ -178,5 +178,18 @@ window.switchTab = function(id, btn) {
   if (btn) btn.classList.add('active');
 };
 console.log("TSM Engine Active for hc-medical");
+</script>
+
+<script id="tsm-core-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => t.style.display = 'none');
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+})();
 </script>
 </body></html>

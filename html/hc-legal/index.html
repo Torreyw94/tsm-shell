@@ -95,7 +95,7 @@ tr:hover td{background:#0f1f0f}
 
 
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">⚖️</span><div><div class="hdr-title">HC LEGAL COMMAND</div><div class="hdr-sub">Contracts · Litigation · Regulatory · Compliance</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('matters',this)">📁 MATTERS</button><button class="nav-btn" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('regulatory',this)">⚠️ REGULATORY</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block !important; border: 5px solid red !important; min-height: 200px !important;" style="display: block !important;"><div class="kpi-row">
+<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val amber">23</div><div class="kpi-lbl">Active Matters</div><div class="kpi-sub amber">8 litigation · 11 contracts · 4 regulatory</div></div>
 <div class="kpi"><div class="kpi-val red">$2.4M</div><div class="kpi-lbl">Litigation Exposure</div><div class="kpi-sub red">3 high-risk matters · settlement watch</div></div>
 <div class="kpi"><div class="kpi-val amber">11</div><div class="kpi-lbl">Contracts In Review</div><div class="kpi-sub amber">4 payer · 5 vendor · 2 employment</div></div>
@@ -134,32 +134,18 @@ tr:hover td{background:#0f1f0f}
 
 
 
-<script id="tsm-final-fix">
+
+
+<script id="tsm-core-engine">
 (function() {
   window.switchTab = function(id, btn) {
-    console.log('TSM Manual Switch:', id);
     const tabs = document.querySelectorAll('[id^="tab-"]');
-    tabs.forEach(t => { t.style.setProperty('display', 'none', 'important'); });
-    
+    tabs.forEach(t => t.style.display = 'none');
     const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) {
-      target.style.setProperty('display', 'block', 'important');
-    }
-
+    if (target) target.style.display = 'block';
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
-
-  function init() {
-    const firstBtn = document.querySelector('.nav-btn');
-    if (firstBtn) {
-      const m = (firstBtn.getAttribute('onclick')||'').match(/'([^']+)'/);
-      window.switchTab(m ? m[1] : 'dash', firstBtn);
-    }
-  }
-
-  window.addEventListener('DOMContentLoaded', init);
-  setTimeout(init, 100); 
 })();
 </script>
 </body></html>
