@@ -6,29 +6,29 @@
   <title>AuditOps | HC-INSURANCE</title>
   
 
+
+
+
+
 <script>
   window.switchTab = function(id, btn) {
-    console.log("TSM Active:", id);
-    // Hide all tabs
-    document.querySelectorAll('[id^="tab-"], .tab-content, #dash, #matters, #contracts, #claims').forEach(el => {
-      el.style.setProperty('display', 'none', 'important');
+    console.log("TSM Switch:", id);
+    const tabs = ['tab-dash', 'tab-matters', 'tab-contracts', 'tab-ai', 'tab-presets', 'tab-regulatory', 'tab-claims', 'tab-coding'];
+    tabs.forEach(t => {
+      const el = document.getElementById(t);
+      if (el) el.style.setProperty('display', 'none', 'important');
     });
-    // Show target
     const target = document.getElementById(id) || document.getElementById('tab-' + id);
     if (target) target.style.setProperty('display', 'block', 'important');
-    // Nav UI
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
   };
-  // Wait for layout to settle, then click first button
   window.addEventListener('load', () => {
-    setTimeout(() => {
-      const first = document.querySelector('.nav-btn');
-      if (first) {
-        const id = first.getAttribute('onclick').match(/'([^']+)'/)[1];
-        window.switchTab(id, first);
-      }
-    }, 100);
+    const first = document.querySelector('.nav-btn');
+    if (first) {
+      const id = first.getAttribute('onclick')?.match(/'([^']+)'/)?.[1] || 'tab-dash';
+      window.switchTab(id, first);
+    }
   });
 </script>
 </head><body>
