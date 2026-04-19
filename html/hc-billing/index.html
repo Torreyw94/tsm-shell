@@ -87,38 +87,7 @@ tr:hover td{background:#0f1f0f}
 
 
 </head><body>
-<script id="tsm-engine-v3">
-(function() {
-  window.switchTab = function(id, btn) {
-    console.log('◆ TSM Switching to:', id);
-    document.querySelectorAll('[id^="tab-"]').forEach(el => {
-      el.style.setProperty('display', 'none', 'important');
-      el.classList.remove('tab-active');
-    });
-    const t = document.getElementById('tab-' + id);
-    if (t) {
-      t.style.setProperty('display', 'block', 'important');
-      t.classList.add('tab-active');
-    }
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
-
-  function forceInit() {
-    const first = document.querySelector('.nav-btn');
-    if (first) {
-      const oc = first.getAttribute('onclick') || "";
-      const id = oc.match(/['"]([^'"]+)['"]/) ? oc.match(/['"]([^'"]+)['"]/)[1] : 'dash';
-      window.switchTab(id, first);
-    }
-  }
-
-  // Double-tap initialization to beat any race conditions
-  window.addEventListener('load', forceInit);
-  setTimeout(forceInit, 50);
-  setTimeout(forceInit, 500);
-})();
-</script><div class="hdr"><div class="hdr-left"><span style="font-size:22px">🧾</span><div><div class="hdr-title">HC BILLING COMMAND</div><div class="hdr-sub">CMS-1500 · UB-04 · CPT Audit · Claims Processing · Coding Compliance</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('coding',this)">💻 CODING</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🧾</span><div><div class="hdr-title">HC BILLING COMMAND</div><div class="hdr-sub">CMS-1500 · UB-04 · CPT Audit · Claims Processing · Coding Compliance</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('coding',this)">💻 CODING</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val red">1,256</div><div class="kpi-lbl">Claims This Month</div><div class="kpi-sub red">231 denied · 18.4% denial rate</div></div>
 <div class="kpi"><div class="kpi-val red">231</div><div class="kpi-lbl">Denied / Rejected</div><div class="kpi-sub red">Exceeds 15% threshold · action required</div></div>
 <div class="kpi"><div class="kpi-val amber">$48K</div><div class="kpi-lbl">Stalled Revenue</div><div class="kpi-sub amber">Adjudication queue · 14 aging &gt;30d</div></div>
@@ -321,4 +290,45 @@ window.addEventListener('load',function(){
 
 
 
+
+<script id="tsm-adaptive-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    // 1. Hide everything that looks like a tab
+    document.querySelectorAll('[id^="tab-"], [id*="section"], .tab-content').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+      el.classList.remove('tab-active');
+    });
+    
+    // 2. Show the target
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) {
+      target.style.setProperty('display', 'block', 'important');
+      target.classList.add('tab-active');
+    }
+    
+    // 3. Update buttons
+    document.querySelectorAll('.nav-btn, button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  function autoPopulate() {
+    const firstBtn = document.querySelector('.nav-btn');
+    const firstTab = document.querySelector('[id^="tab-"]');
+    
+    if (firstBtn && firstTab) {
+      const tabId = firstTab.id.replace('tab-', '');
+      window.switchTab(tabId, firstBtn);
+      console.log('✔ TSM Adaptive: Auto-populated ' + tabId);
+    } else if (firstBtn) {
+       // Fallback: Just trigger the first button's onclick
+       firstBtn.click();
+    }
+  }
+
+  window.addEventListener('load', () => setTimeout(autoPopulate, 100));
+  // Secondary backup for slow-loading iframes
+  setTimeout(autoPopulate, 500);
+})();
+</script>
 </body></html>
