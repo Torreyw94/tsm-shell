@@ -199,7 +199,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     const interval = setInterval(() => {
       const dashBtn = document.querySelector('.nav-btn');
       if (dashBtn || attempts > 20) {
-        window.switchTab('dash', dashBtn);
+        window.switchTab('dashboard', dashBtn);
         clearInterval(interval);
       }
       attempts++;
