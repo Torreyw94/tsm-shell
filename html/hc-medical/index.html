@@ -124,10 +124,10 @@ tr:hover td{background:#0f1f0f}
 (function(){
   function switchTab(id,btn){
     document.querySelectorAll('[id^="tab-"]').forEach(function(el){
-      el.setAttribute('style','display:none!important');
+      el.style.setProperty('display','none','important');
     });
     var t=document.getElementById('tab-'+id)||document.getElementById(id);
-    if(t) t.setAttribute('style','display:block!important');
+    if(t) t.style.setProperty('display','block','important');
     document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
     if(btn) btn.classList.add('active');
   }
