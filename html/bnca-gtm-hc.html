@@ -3,213 +3,549 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BNCA Healthcare GTM Study Page</title>
+  <title>BNCA Healthcare GTM Study Page · TSM Command Mode</title>
   <style>
     :root {
-      --bg: #071019;
-      --panel: #0d1824;
-      --panel-2: #101e2d;
-      --line: #1f3347;
-      --text: #e8f1fb;
-      --muted: #8ca2b8;
-      --teal: #15d4a4;
-      --gold: #ffc14d;
-      --blue: #6eb7ff;
+      --bg: #050b12;
+      --bg2: #08121d;
+      --panel: #0a1521;
+      --panel2: #0d1b29;
+      --line: #173047;
+      --line-soft: rgba(23,48,71,.55);
+      --text: #e7f3ff;
+      --muted: #7d99b4;
+      --teal: #19d3a2;
+      --blue: #67b8ff;
+      --gold: #ffbf47;
       --red: #ff6a6a;
-      --purple: #bc9cff;
+      --purple: #b695ff;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --shadow: 0 24px 80px rgba(0,0,0,.38);
+      --radius: 18px;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: var(--sans);
-      background: radial-gradient(circle at top, #0d1c2a 0%, var(--bg) 42%);
       color: var(--text);
-      line-height: 1.5;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(25,211,162,.08), transparent 28%),
+        radial-gradient(circle at 80% 0%, rgba(103,184,255,.08), transparent 30%),
+        linear-gradient(180deg, #07111a 0%, var(--bg) 58%);
+      min-height: 100vh;
     }
-    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+    .ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--line);
+      background: #040910;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 0;
+    }
+    .ticker span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll 34s linear infinite;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
     .topbar {
-      position: sticky; top: 0; z-index: 30;
-      backdrop-filter: blur(12px);
-      background: rgba(7,16,25,.82);
-      border-bottom: 1px solid rgba(31,51,71,.9);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(14px);
+      background: rgba(5,11,18,.9);
+      border-bottom: 1px solid var(--line);
     }
     .topbar-inner {
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      padding: 12px 0;
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
     }
     .brand {
-      display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .04em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .brand-badge {
-      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
-      background: linear-gradient(135deg, rgba(21,212,164,.24), rgba(110,183,255,.18));
-      border: 1px solid rgba(21,212,164,.45);
-      color: var(--teal); font-family: var(--mono); font-size: 12px;
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      background: linear-gradient(135deg, rgba(25,211,162,.18), rgba(103,184,255,.12));
+      border: 1px solid rgba(25,211,162,.45);
+      box-shadow: inset 0 0 24px rgba(25,211,162,.06);
     }
-    .nav { display: flex; gap: 10px; flex-wrap: wrap; }
+    .brand-title { font-size: 15px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .brand-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; }
     .nav a {
-      color: var(--muted); text-decoration: none; font-size: 13px; padding: 7px 10px; border-radius: 999px;
+      text-decoration: none;
+      color: var(--muted);
       border: 1px solid transparent;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
     }
     .nav a:hover { color: var(--text); border-color: var(--line); background: rgba(255,255,255,.03); }
-    .hero { padding: 56px 0 28px; }
+    .kpi-strip {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 0 18px 18px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+    .kpi {
+      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      min-height: 84px;
+    }
+    .kpi-label {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
+    .kpi-val { font-size: 28px; font-weight: 800; line-height: 1; }
+    .kpi-sub { color: var(--muted); font-size: 11px; margin-top: 6px; }
+    .layout {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 0 18px 42px;
+      display: grid;
+      grid-template-columns: 260px minmax(0,1fr) 320px;
+      gap: 14px;
+    }
+    .rail, .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.022), rgba(255,255,255,.008));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .rail { overflow: hidden; align-self: start; position: sticky; top: 84px; }
+    .rail-head, .panel-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    }
+    .rail-title, .panel-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .rail-sub, .panel-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      line-height: 1.45;
+    }
+    .rail-body { padding: 14px; display: grid; gap: 14px; }
+    .section-label {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin: 0 6px 6px 0;
+    }
+    .chip.teal { border-color: rgba(25,211,162,.45); color: var(--teal); }
+    .chip.gold { border-color: rgba(255,191,71,.45); color: var(--gold); }
+    .chip.blue { border-color: rgba(103,184,255,.45); color: var(--blue); }
+    .chip.purple { border-color: rgba(182,149,255,.45); color: var(--purple); }
+    .metric-list { display: grid; gap: 8px; }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+    }
+    .metric-row span:first-child { color: var(--muted); font-size: 12px; }
+    .metric-row span:last-child { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+    .center { display: grid; gap: 14px; }
+    .hero-panel {
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(25,211,162,.08) 0, transparent 25%),
+        linear-gradient(180deg, rgba(103,184,255,.07) 0, transparent 35%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 14px;
+      padding: 16px;
+    }
+    .hero-main, .hero-side {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.02);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
     .eyebrow {
-      display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 999px;
-      border: 1px solid rgba(21,212,164,.35); background: rgba(21,212,164,.08); color: var(--teal);
-      font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid rgba(25,211,162,.34);
+      background: rgba(25,211,162,.08);
+      color: var(--teal);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
     }
     h1 {
-      font-size: clamp(38px, 6vw, 70px); line-height: .98; margin: 18px 0 18px; max-width: 920px;
+      font-size: clamp(40px, 5.5vw, 72px);
+      line-height: .95;
+      margin: 18px 0 16px;
       letter-spacing: -.04em;
+      max-width: 880px;
     }
-    .hero-sub { max-width: 760px; font-size: 20px; color: #d0deed; }
-    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+    .hero-copy { color: #d5e7f7; font-size: 20px; max-width: 760px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
     .btn {
-      border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--text); text-decoration: none;
-      padding: 13px 18px; border-radius: 12px; font-weight: 700; box-shadow: var(--shadow); display: inline-block;
+      text-decoration: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      background: rgba(255,255,255,.03);
+      box-shadow: var(--shadow);
     }
-    .btn.primary {
-      background: linear-gradient(135deg, rgba(21,212,164,.2), rgba(110,183,255,.16)); border-color: rgba(21,212,164,.45);
+    .btn.primary { background: linear-gradient(135deg, rgba(25,211,162,.18), rgba(103,184,255,.14)); border-color: rgba(25,211,162,.42); }
+    .btn.gold { background: linear-gradient(135deg, rgba(255,191,71,.18), rgba(255,106,106,.1)); border-color: rgba(255,191,71,.42); color: #fff0c4; }
+    .signal-box {
+      border: 1px solid rgba(25,211,162,.28);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(25,211,162,.08), rgba(103,184,255,.03));
+      padding: 18px;
     }
-    .btn.gold {
-      background: linear-gradient(135deg, rgba(255,193,77,.2), rgba(255,106,106,.1)); border-color: rgba(255,193,77,.45); color: #fff2cf;
+    .signal-title {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
     }
-    .grid {
-      display: grid; gap: 18px;
+    .signal-head { font-size: 24px; font-weight: 800; line-height: 1.15; }
+    .signal-list { display: grid; gap: 10px; margin-top: 14px; }
+    .signal-item {
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.025);
     }
-    .hero-grid { grid-template-columns: 1.2fr .8fr; align-items: start; margin-top: 30px; }
+    .signal-item b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .module-grid { display: grid; gap: 14px; }
+    .module.two { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .module.three { grid-template-columns: repeat(3, minmax(0,1fr)); }
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,.012));
+      overflow: hidden;
     }
-    .card-pad { padding: 22px; }
-    .mini-label {
-      font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase;
+    .card-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
     }
-    .bnca-output {
-      background: linear-gradient(180deg, rgba(21,212,164,.07), rgba(110,183,255,.04));
-      border: 1px solid rgba(21,212,164,.28); border-radius: 18px; padding: 22px;
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
     }
-    .bnca-output h3 { margin: 0 0 10px; font-size: 22px; }
-    .bnca-list { display: grid; gap: 12px; margin-top: 14px; }
-    .bnca-item { padding: 14px; border-radius: 14px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); }
-    .bnca-item b { display: block; margin-bottom: 4px; color: var(--gold); font-size: 12px; font-family: var(--mono); letter-spacing: .06em; }
-    section { padding: 24px 0; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
-    .section-head h2 { margin: 0; font-size: clamp(28px, 3.7vw, 44px); letter-spacing: -.03em; }
-    .section-head p { margin: 0; color: var(--muted); max-width: 720px; }
-    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .pill {
-      display: inline-block; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-family: var(--mono);
-      border: 1px solid var(--line); color: var(--muted); margin-bottom: 10px;
+    .card-sub {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-top: 4px;
     }
-    .kicker { color: var(--teal); font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
-    .headline-card h3, .copy-block h3, .script-step h3, .objection h3, .funnel-step h3 { margin: 0 0 10px; font-size: 22px; }
-    .copy-block p, .headline-card p, .script-step p, .objection p, .funnel-step p { color: #d9e7f5; }
+    .card-body { padding: 16px; }
     .copy-box {
-      margin-top: 12px; padding: 16px; background: rgba(4,8,13,.55); border: 1px solid var(--line); border-radius: 14px;
-      font-family: var(--mono); font-size: 13px; white-space: pre-wrap;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(3,7,12,.55);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      color: #d5e6f5;
     }
-    .script-step { position: relative; }
-    .num {
-      position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(110,183,255,.12); color: var(--blue); font-family: var(--mono); border: 1px solid rgba(110,183,255,.34);
+    .body-copy { color: #dceafa; font-size: 14px; line-height: 1.65; }
+    .section-headline {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      padding: 0 2px;
     }
-    .objection { border-left: 3px solid var(--gold); }
-    .funnel-step { border-left: 3px solid var(--teal); }
-    .study-panel {
-      display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px;
+    .kicker {
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 6px;
     }
+    .section-title {
+      font-size: clamp(28px, 3.2vw, 42px);
+      margin: 0;
+      letter-spacing: -.03em;
+    }
+    .section-note { max-width: 720px; color: var(--muted); font-size: 14px; }
+    .step {
+      position: relative;
+    }
+    .step-num {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      border: 1px solid rgba(103,184,255,.35);
+      background: rgba(103,184,255,.12);
+      color: var(--blue);
+    }
+    .left-accent-gold { border-left: 3px solid var(--gold); }
+    .left-accent-teal { border-left: 3px solid var(--teal); }
     .speaker-sheet {
-      padding: 18px; background: rgba(188,156,255,.08); border: 1px solid rgba(188,156,255,.25); border-radius: 18px;
+      border: 1px solid rgba(182,149,255,.28);
+      border-radius: 16px;
+      background: rgba(182,149,255,.07);
+      padding: 16px;
     }
-    .speaker-sheet h3 { margin: 0 0 10px; }
-    .speaker-sheet ul { margin: 0; padding-left: 18px; color: #e7dbff; }
-    .speaker-sheet li { margin: 8px 0; }
+    .speaker-sheet ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #eadfff;
+      line-height: 1.7;
+    }
     .footer-note {
-      margin: 28px 0 56px; padding: 18px; border: 1px dashed rgba(140,162,184,.35); border-radius: 16px; color: var(--muted);
+      border: 1px dashed rgba(125,153,180,.34);
+      border-radius: 16px;
+      padding: 16px;
+      color: var(--muted);
       font-size: 14px;
     }
-    @media (max-width: 980px) {
-      .hero-grid, .three, .two, .study-panel { grid-template-columns: 1fr; }
-      .topbar-inner { align-items: flex-start; flex-direction: column; }
+    .route-list { display: grid; gap: 8px; }
+    .route-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.02);
+      font-size: 12px;
+      color: #d7e7f7;
+    }
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 1fr; }
+      .rail { position: static; }
+      .hero-grid, .module.two, .module.three { grid-template-columns: 1fr; }
+      .kpi-strip { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 680px) {
+      .topbar-inner { flex-direction: column; align-items: flex-start; }
+      .kpi-strip { grid-template-columns: 1fr; }
+      h1 { font-size: 38px; }
+      .hero-copy { font-size: 17px; }
     }
   </style>
 </head>
 <body>
+  <div class="ticker"><span>BNCA SIGNAL // CLAIMS BACKLOG // PRIOR AUTH FRICTION // BILLING LAG // COMPLIANCE PRESSURE // OFFICE MANAGER DECISION LAYER // PILOT PATHWAY // DEMO SCRIPT // LEAD MAGNET FUNNEL // TSM COMMAND MODE</span></div>
+
   <div class="topbar">
-    <div class="wrap topbar-inner">
+    <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-badge">BNCA</div>
+        <div class="brand-mark">BNCA</div>
         <div>
-          <div>Healthcare GTM Study Page</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:500;">Landing page + demo script + lead magnet funnel</div>
+          <div class="brand-title">Healthcare GTM Study Page</div>
+          <div class="brand-sub">TSM command mode · landing page · demo script · lead funnel</div>
         </div>
       </div>
       <div class="nav">
         <a href="#hero">Hero</a>
         <a href="#copy">Homepage Copy</a>
         <a href="#demo">Demo Script</a>
-        <a href="#funnel">Lead Magnet Funnel</a>
+        <a href="#funnel">Lead Funnel</a>
         <a href="#present">Presentation Notes</a>
       </div>
     </div>
   </div>
 
-  <div class="wrap">
-    <section class="hero" id="hero">
-      <span class="eyebrow">Healthcare BNCA Engine · Office Manager Focus · Conversion-first</span>
-      <h1>We tell your office what to do next.</h1>
-      <p class="hero-sub">Use this page as a study guide for Thursday. It combines the three things you asked for into one artifact: a high-converting homepage, a live-closing demo script, and a cold-traffic lead magnet funnel for your healthcare suite.</p>
-      <div class="cta-row">
-        <a class="btn primary" href="#copy">Study the homepage copy</a>
-        <a class="btn" href="#demo">Practice the demo script</a>
-        <a class="btn gold" href="#funnel">Map the lead funnel</a>
-      </div>
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-label">Core Promise</div><div class="kpi-val" style="color:var(--teal)">BNCA</div><div class="kpi-sub">best next course of action</div></div>
+    <div class="kpi"><div class="kpi-label">Primary Buyer</div><div class="kpi-val" style="color:var(--blue)">OM</div><div class="kpi-sub">office manager focus</div></div>
+    <div class="kpi"><div class="kpi-label">Sales Use</div><div class="kpi-val" style="color:var(--gold)">THU</div><div class="kpi-sub">presentation study artifact</div></div>
+    <div class="kpi"><div class="kpi-label">Conversion Angle</div><div class="kpi-val" style="color:var(--purple)">CLARITY</div><div class="kpi-sub">not architecture-first</div></div>
+    <div class="kpi"><div class="kpi-label">Offer Model</div><div class="kpi-val" style="color:var(--teal)">PILOT</div><div class="kpi-sub">single office to network path</div></div>
+    <div class="kpi"><div class="kpi-label">Study Goal</div><div class="kpi-val" style="color:var(--blue)">CLOSE</div><div class="kpi-sub">pain → proof → next step</div></div>
+  </div>
 
-      <div class="grid hero-grid">
-        <div class="bnca-output">
-          <div class="mini-label">Core product promise</div>
-          <h3>Your office is losing revenue every day. We tell you exactly what to do next.</h3>
-          <p style="color:#d8f7ee;max-width:700px;">BNCA-powered healthcare intelligence across billing, claims, compliance, staffing, vendors, and operations — built for office managers and healthcare operators who do not have time for guesswork.</p>
-          <div class="bnca-list">
-            <div class="bnca-item"><b>Top issue</b> Prior auth delays are driving denial pressure and reimbursement lag.</div>
-            <div class="bnca-item"><b>Best next action</b> Clear the high-value denial queue, escalate auths over 72 hours, and route documentation exceptions before rebilling.</div>
-            <div class="bnca-item"><b>Owner lanes</b> Billing · Insurance · Compliance · Operations</div>
-            <div class="bnca-item"><b>Impact</b> Recoverable revenue opportunity and less daily chaos for the office.</div>
+  <div class="layout">
+    <aside class="rail">
+      <div class="rail-head">
+        <div class="rail-title">Command Index</div>
+        <div class="rail-sub">Use this rail like a presenter cheat sheet.</div>
+      </div>
+      <div class="rail-body">
+        <div>
+          <div class="section-label">Core frame</div>
+          <div class="chip teal">We tell your office what to do next</div>
+          <div class="chip blue">Decision layer</div>
+          <div class="chip gold">Office manager</div>
+          <div class="chip purple">Healthcare suite</div>
+        </div>
+        <div>
+          <div class="section-label">What to emphasize</div>
+          <div class="metric-list">
+            <div class="metric-row"><span>Lead with</span><span style="color:var(--teal)">Pain + clarity</span></div>
+            <div class="metric-row"><span>Reframe as</span><span style="color:var(--blue)">BNCA engine</span></div>
+            <div class="metric-row"><span>Proof asset</span><span style="color:var(--gold)">Live output</span></div>
+            <div class="metric-row"><span>Close toward</span><span style="color:var(--purple)">Pilot</span></div>
           </div>
         </div>
-
-        <div class="card card-pad headline-card">
-          <div class="pill">Positioning</div>
-          <h3>What you are really selling</h3>
-          <p><b>Not</b> dashboards, generic AI, or another admin tool.</p>
-          <p><b>You are selling</b> a healthcare operating intelligence layer that produces the <b>Best Next Course of Action</b> across revenue, denials, compliance, staffing, and office ops.</p>
-          <div class="copy-box">Simple explanation for prospects:
-"Instead of making your team dig through systems, spreadsheets, and meetings to decide what to do next, BNCA gives your office one clear action path in under a minute."</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="copy">
-      <div class="section-head">
         <div>
-          <div class="kicker">Approach 1</div>
-          <h2>Homepage + conversion copy</h2>
+          <div class="section-label">Presentation flow</div>
+          <div class="route-list">
+            <div class="route-item">1. Pain the office feels daily</div>
+            <div class="route-item">2. BNCA promise</div>
+            <div class="route-item">3. Show output first</div>
+            <div class="route-item">4. Tie to money + ownership</div>
+            <div class="route-item">5. Offer focused pilot</div>
+          </div>
         </div>
-        <p>This section gives you a study-ready homepage structure. Read it top to bottom like a landing page, then use the speaker notes on the page to explain why each block exists.</p>
       </div>
+    </aside>
 
-      <div class="grid two">
-        <div class="card card-pad copy-block">
-          <div class="pill">Above the fold</div>
-          <h3>Hero section</h3>
-          <div class="copy-box">Headline:
+    <main class="center">
+      <section class="panel hero-panel" id="hero">
+        <div class="panel-head">
+          <div class="panel-title">TSM Command Hero</div>
+          <div class="panel-sub">second version · same sales content · command-center aesthetic</div>
+        </div>
+        <div class="hero-grid">
+          <div class="hero-main">
+            <span class="eyebrow">Healthcare BNCA Engine · Office Manager Focus · Conversion-first</span>
+            <h1>We tell your office what to do next.</h1>
+            <div class="hero-copy">Use this page as a study guide for Thursday. It keeps the same sales content, but presents it in a more TSM command-center style so you can practice the message inside a familiar visual system.</div>
+            <div class="cta-row">
+              <a class="btn primary" href="#copy">Study the homepage copy</a>
+              <a class="btn" href="#demo">Practice the demo script</a>
+              <a class="btn gold" href="#funnel">Map the lead funnel</a>
+            </div>
+          </div>
+          <div class="hero-side">
+            <div class="signal-box">
+              <div class="signal-title">Core product promise</div>
+              <div class="signal-head">Your office is losing revenue every day. We tell you exactly what to do next.</div>
+              <div style="margin-top:10px;color:#d8f7ee;line-height:1.65;">BNCA-powered healthcare intelligence across billing, claims, compliance, staffing, vendors, and operations — built for office managers and healthcare operators who do not have time for guesswork.</div>
+              <div class="signal-list">
+                <div class="signal-item"><b>Top issue</b> Prior auth delays are driving denial pressure and reimbursement lag.</div>
+                <div class="signal-item"><b>Best next action</b> Clear the high-value denial queue, escalate auths over 72 hours, and route documentation exceptions before rebilling.</div>
+                <div class="signal-item"><b>Owner lanes</b> Billing · Insurance · Compliance · Operations</div>
+                <div class="signal-item"><b>Impact</b> Recoverable revenue opportunity and less daily chaos for the office.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="copy" class="module-grid">
+        <div class="section-headline">
+          <div>
+            <div class="kicker">Approach 1</div>
+            <h2 class="section-title">Homepage + conversion copy</h2>
+          </div>
+          <div class="section-note">This is the study-ready landing page logic. Read it like a page, but present it like a sequence: pain first, proof second, pilot third.</div>
+        </div>
+
+        <div class="module two">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Above the fold</div><div class="card-sub">hero section</div></div><div class="chip teal">Copy</div></div>
+            <div class="card-body">
+              <div class="body-copy">Lead with the office problem, not your stack. The goal is instant relevance.</div>
+              <div class="copy-box">Headline:
 Your Office Is Losing Revenue Every Day.
 We Tell You Exactly What To Do Next.
 
@@ -221,21 +557,24 @@ Run My Office Analysis
 
 Secondary CTA:
 See a 3-Minute Demo</div>
-        </div>
-        <div class="card card-pad copy-block">
-          <div class="pill">Why this converts</div>
-          <h3>How to explain it in a presentation</h3>
-          <p>This hero works because it leads with the buyer’s pain, not your architecture. It says: revenue is leaking, time is tight, and your system gives the next action. That is faster to understand than “AI command center” or “federated intelligence.”</p>
-          <div class="copy-box">Presentation line:
-"I don't need the prospect to understand the mesh. I need them to feel the cost of delay and immediately see that we reduce guesswork."</div>
-        </div>
-      </div>
+            </div>
+          </div>
 
-      <div class="grid three" style="margin-top:18px;">
-        <div class="card card-pad copy-block">
-          <div class="pill">Section 2</div>
-          <h3>Show the output first</h3>
-          <div class="copy-box">Section headline:
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Why this converts</div><div class="card-sub">presentation explanation</div></div><div class="chip blue">Study</div></div>
+            <div class="card-body">
+              <div class="body-copy">This hero works because it leads with the buyer’s pain, not your architecture. It says revenue is leaking, time is tight, and your system gives the next action.</div>
+              <div class="copy-box">Presentation line:
+"I don't need the prospect to understand the mesh. I need them to feel the cost of delay and immediately see that we reduce guesswork."</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="module three">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Show the output first</div><div class="card-sub">section 2</div></div><div class="chip gold">Proof</div></div>
+            <div class="card-body">
+              <div class="copy-box">Section headline:
 What your office sees in seconds
 
 Sample output:
@@ -250,11 +589,13 @@ Billing + Insurance + Compliance
 
 IMPACT
 Reduce reimbursement lag and recover blocked revenue faster.</div>
-        </div>
-        <div class="card card-pad copy-block">
-          <div class="pill">Section 3</div>
-          <h3>Map to real buyer pain</h3>
-          <div class="copy-box">Section headline:
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Map to real buyer pain</div><div class="card-sub">section 3</div></div><div class="chip teal">Pain</div></div>
+            <div class="card-body">
+              <div class="copy-box">Section headline:
 Built for the pressure your office feels every day
 
 Bullets:
@@ -266,11 +607,13 @@ Bullets:
 
 Bridge line:
 We turn all of that into one clear action plan.</div>
-        </div>
-        <div class="card card-pad copy-block">
-          <div class="pill">Section 4</div>
-          <h3>Reframe modules into outcomes</h3>
-          <div class="copy-box">Clinical Risk Detection
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Reframe modules into outcomes</div><div class="card-sub">section 4</div></div><div class="chip purple">Positioning</div></div>
+            <div class="card-body">
+              <div class="copy-box">Clinical Risk Detection
 Claims + Denial Engine
 Revenue Recovery Engine
 Audit Protection Layer
@@ -279,14 +622,15 @@ Financial Optimization Layer
 
 Presentation line:
 "I never lead with node names. I translate every module into the business outcome it creates."</div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="grid two" style="margin-top:18px;">
-        <div class="card card-pad copy-block">
-          <div class="pill">Section 5</div>
-          <h3>Offer + pricing language</h3>
-          <div class="copy-box">Starter:
+        <div class="module two">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Offer + pricing language</div><div class="card-sub">section 5</div></div><div class="chip gold">Offer</div></div>
+            <div class="card-body">
+              <div class="copy-box">Starter:
 Single Office BNCA Pilot
 90-day conversion sprint
 
@@ -301,11 +645,13 @@ Executive routing + multi-site coordination
 Pricing note:
 Price around impact, not seats.
 Tie value to recovered revenue, reduced denial rate, and less audit exposure.</div>
-        </div>
-        <div class="card card-pad copy-block">
-          <div class="pill">Section 6</div>
-          <h3>CTA block</h3>
-          <div class="copy-box">Headline:
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">CTA block</div><div class="card-sub">section 6</div></div><div class="chip blue">CTA</div></div>
+            <div class="card-body">
+              <div class="copy-box">Headline:
 See what your office should do next.
 
 Body:
@@ -316,112 +662,101 @@ Run My Office Analysis
 
 Secondary CTA:
 Book a Live BNCA Walkthrough</div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="demo">
-      <div class="section-head">
-        <div>
-          <div class="kicker">Approach 2</div>
-          <h2>Demo script for closing deals</h2>
+      <section id="demo" class="module-grid">
+        <div class="section-headline">
+          <div>
+            <div class="kicker">Approach 2</div>
+            <h2 class="section-title">Demo script for closing deals</h2>
+          </div>
+          <div class="section-note">Start with their pain, run BNCA, read the output, tie it to money, and close toward a focused pilot.</div>
         </div>
-        <p>This is the talk track to use in a live demo. The pattern is simple: start with their pain, run BNCA, show the output, then tie the output to money, speed, and confidence.</p>
-      </div>
 
-      <div class="grid three">
-        <div class="card card-pad script-step">
-          <div class="num">1</div>
-          <div class="pill">Open strong</div>
-          <h3>Start with a hard question</h3>
-          <div class="copy-box">Say:
-"What's the biggest issue your office is dealing with right now — claims backlog, prior auth delays, billing lag, compliance pressure, or staffing drag?"</div>
-          <p>This creates relevance immediately. You are not walking them through a product tour first. You are pulling the problem out of them.</p>
-        </div>
-        <div class="card card-pad script-step">
-          <div class="num">2</div>
-          <div class="pill">Frame the system</div>
-          <h3>Explain BNCA in one sentence</h3>
-          <div class="copy-box">Say:
-"Instead of making your team dig through systems and meetings to decide what to do next, BNCA tells your office the best next course of action in under a minute."</div>
-          <p>Do not over-explain the architecture here. Keep it simple and outcome-focused.</p>
-        </div>
-        <div class="card card-pad script-step">
-          <div class="num">3</div>
-          <div class="pill">Run the analysis</div>
-          <h3>Use a live scenario</h3>
-          <div class="copy-box">Example live prompt:
-"Review denial pressure, prior auth delays, compliance drift, staffing throughput, and site-level blockers. Return the Best Next Course of Action for the office manager."</div>
-          <p>This shows operational intelligence, not just AI text generation.</p>
-        </div>
-      </div>
+        <div class="module three">
+          <div class="card step">
+            <div class="step-num">1</div>
+            <div class="card-head"><div><div class="card-title">Open strong</div><div class="card-sub">start with a hard question</div></div><div class="chip teal">Ask</div></div>
+            <div class="card-body"><div class="copy-box">Say:
+"What's the biggest issue your office is dealing with right now — claims backlog, prior auth delays, billing lag, compliance pressure, or staffing drag?"</div><div class="body-copy">This creates relevance immediately. Do not begin with a product tour.</div></div>
+          </div>
 
-      <div class="grid three" style="margin-top:18px;">
-        <div class="card card-pad script-step">
-          <div class="num">4</div>
-          <div class="pill">Show the result</div>
-          <h3>Read the BNCA output out loud</h3>
-          <div class="copy-box">Say:
-"Here is the top issue. Here is why it matters. Here is the best next action. Here are the owner lanes. Here is what should happen in the next 24 to 72 hours."</div>
-          <p>This is where the product becomes real. The output is your proof.</p>
-        </div>
-        <div class="card card-pad script-step">
-          <div class="num">5</div>
-          <div class="pill">Tie to money</div>
-          <h3>Translate action into value</h3>
-          <div class="copy-box">Say:
-"What matters here is not the dashboard. It's that your office now knows where to move first, where money is getting stuck, and which lane is responsible."</div>
-          <p>Buyers care about recovered revenue, fewer delays, and less chaos.</p>
-        </div>
-        <div class="card card-pad script-step">
-          <div class="num">6</div>
-          <div class="pill">Close</div>
-          <h3>Offer the pilot</h3>
-          <div class="copy-box">Say:
-"The easiest next step is a focused BNCA pilot in one office or one operating lane. We can get you live fast and start showing your team what to do next right away."</div>
-          <p>Do not end with “Any questions?” End with a clear next step.</p>
-        </div>
-      </div>
+          <div class="card step">
+            <div class="step-num">2</div>
+            <div class="card-head"><div><div class="card-title">Frame the system</div><div class="card-sub">explain BNCA in one sentence</div></div><div class="chip blue">Frame</div></div>
+            <div class="card-body"><div class="copy-box">Say:
+"Instead of making your team dig through systems and meetings to decide what to do next, BNCA tells your office the best next course of action in under a minute."</div><div class="body-copy">Keep it simple and outcome-focused.</div></div>
+          </div>
 
-      <div class="grid two" style="margin-top:18px;">
-        <div class="card card-pad objection">
-          <div class="pill">Objection handling</div>
-          <h3>"We already have dashboards."</h3>
-          <div class="copy-box">Response:
-"That's fine. We're not replacing visibility. We're adding a decision layer. Dashboards tell you what happened. BNCA tells your office what to do next."</div>
+          <div class="card step">
+            <div class="step-num">3</div>
+            <div class="card-head"><div><div class="card-title">Run the analysis</div><div class="card-sub">use a live scenario</div></div><div class="chip gold">Prompt</div></div>
+            <div class="card-body"><div class="copy-box">Example live prompt:
+"Review denial pressure, prior auth delays, compliance drift, staffing throughput, and site-level blockers. Return the Best Next Course of Action for the office manager."</div><div class="body-copy">This shows operational intelligence, not generic AI output.</div></div>
+          </div>
         </div>
-        <div class="card card-pad objection">
-          <div class="pill">Objection handling</div>
-          <h3>"We don't need another system."</h3>
-          <div class="copy-box">Response:
-"That is exactly why this matters. Your team already has too many tools. BNCA sits above the chaos and turns it into one next action path."</div>
-        </div>
-      </div>
-    </section>
 
-    <section id="funnel">
-      <div class="section-head">
-        <div>
-          <div class="kicker">Approach 3</div>
-          <h2>Lead magnet funnel for cold traffic</h2>
-        </div>
-        <p>The goal is not to make cold traffic understand your entire stack. The goal is to let them taste the value fast enough that they want a live walkthrough.</p>
-      </div>
+        <div class="module three">
+          <div class="card step">
+            <div class="step-num">4</div>
+            <div class="card-head"><div><div class="card-title">Show the result</div><div class="card-sub">read the BNCA output out loud</div></div><div class="chip teal">Proof</div></div>
+            <div class="card-body"><div class="copy-box">Say:
+"Here is the top issue. Here is why it matters. Here is the best next action. Here are the owner lanes. Here is what should happen in the next 24 to 72 hours."</div><div class="body-copy">The output is your proof.</div></div>
+          </div>
 
-      <div class="grid three">
-        <div class="card card-pad funnel-step">
-          <div class="pill">Funnel step 1</div>
-          <h3>Traffic hook</h3>
-          <div class="copy-box">Ad / email / outbound hook:
+          <div class="card step">
+            <div class="step-num">5</div>
+            <div class="card-head"><div><div class="card-title">Tie to money</div><div class="card-sub">translate action into value</div></div><div class="chip gold">Value</div></div>
+            <div class="card-body"><div class="copy-box">Say:
+"What matters here is not the dashboard. It's that your office now knows where to move first, where money is getting stuck, and which lane is responsible."</div><div class="body-copy">Buyers care about recovered revenue, fewer delays, and less chaos.</div></div>
+          </div>
+
+          <div class="card step">
+            <div class="step-num">6</div>
+            <div class="card-head"><div><div class="card-title">Close</div><div class="card-sub">offer the pilot</div></div><div class="chip purple">Next step</div></div>
+            <div class="card-body"><div class="copy-box">Say:
+"The easiest next step is a focused BNCA pilot in one office or one operating lane. We can get you live fast and start showing your team what to do next right away."</div><div class="body-copy">Do not end with “Any questions?” End with a clear next step.</div></div>
+          </div>
+        </div>
+
+        <div class="module two">
+          <div class="card left-accent-gold">
+            <div class="card-head"><div><div class="card-title">Objection handling</div><div class="card-sub">we already have dashboards</div></div><div class="chip gold">Objection</div></div>
+            <div class="card-body"><div class="copy-box">Response:
+"That's fine. We're not replacing visibility. We're adding a decision layer. Dashboards tell you what happened. BNCA tells your office what to do next."</div></div>
+          </div>
+          <div class="card left-accent-gold">
+            <div class="card-head"><div><div class="card-title">Objection handling</div><div class="card-sub">we don't need another system</div></div><div class="chip gold">Objection</div></div>
+            <div class="card-body"><div class="copy-box">Response:
+"That is exactly why this matters. Your team already has too many tools. BNCA sits above the chaos and turns it into one next action path."</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="funnel" class="module-grid">
+        <div class="section-headline">
+          <div>
+            <div class="kicker">Approach 3</div>
+            <h2 class="section-title">Lead magnet funnel for cold traffic</h2>
+          </div>
+          <div class="section-note">Cold traffic does not need your whole stack. It needs a fast taste of value that earns the live walkthrough.</div>
+        </div>
+
+        <div class="module three">
+          <div class="card left-accent-teal">
+            <div class="card-head"><div><div class="card-title">Traffic hook</div><div class="card-sub">funnel step 1</div></div><div class="chip teal">Traffic</div></div>
+            <div class="card-body"><div class="copy-box">Ad / email / outbound hook:
 What is your office losing to denials, auth delays, and billing lag right now?
 
 Alternative:
-See what your office should do next in under 60 seconds.</div>
-        </div>
-        <div class="card card-pad funnel-step">
-          <div class="pill">Funnel step 2</div>
-          <h3>Lead magnet page</h3>
-          <div class="copy-box">Headline:
+See what your office should do next in under 60 seconds.</div></div>
+          </div>
+          <div class="card left-accent-teal">
+            <div class="card-head"><div><div class="card-title">Lead magnet page</div><div class="card-sub">funnel step 2</div></div><div class="chip teal">Capture</div></div>
+            <div class="card-body"><div class="copy-box">Headline:
 Run a Free BNCA Office Analysis
 
 Fields:
@@ -432,26 +767,24 @@ Fields:
 • Biggest operational issue
 
 CTA:
-Generate My BNCA Snapshot</div>
-        </div>
-        <div class="card card-pad funnel-step">
-          <div class="pill">Funnel step 3</div>
-          <h3>Immediate output</h3>
-          <div class="copy-box">What they get:
+Generate My BNCA Snapshot</div></div>
+          </div>
+          <div class="card left-accent-teal">
+            <div class="card-head"><div><div class="card-title">Immediate output</div><div class="card-sub">funnel step 3</div></div><div class="chip teal">Value</div></div>
+            <div class="card-body"><div class="copy-box">What they get:
 • Top issue
 • Why it matters
 • Best next action
 • Owner lanes
 • 24-72 hour follow-up
-• Suggested live walkthrough</div>
+• Suggested live walkthrough</div></div>
+          </div>
         </div>
-      </div>
 
-      <div class="grid three" style="margin-top:18px;">
-        <div class="card card-pad funnel-step">
-          <div class="pill">Funnel step 4</div>
-          <h3>Lead capture</h3>
-          <div class="copy-box">Gate the deeper report behind:
+        <div class="module three">
+          <div class="card left-accent-teal">
+            <div class="card-head"><div><div class="card-title">Lead capture</div><div class="card-sub">funnel step 4</div></div><div class="chip blue">Form</div></div>
+            <div class="card-body"><div class="copy-box">Gate the deeper report behind:
 • Name
 • Title
 • Organization
@@ -459,12 +792,11 @@ Generate My BNCA Snapshot</div>
 • Optional phone
 
 Offer:
-"Get the full BNCA report and a live review of your office scenario."</div>
-        </div>
-        <div class="card card-pad funnel-step">
-          <div class="pill">Funnel step 5</div>
-          <h3>Follow-up sequence</h3>
-          <div class="copy-box">Email 1:
+"Get the full BNCA report and a live review of your office scenario."</div></div>
+          </div>
+          <div class="card left-accent-teal">
+            <div class="card-head"><div><div class="card-title">Follow-up sequence</div><div class="card-sub">funnel step 5</div></div><div class="chip purple">Nurture</div></div>
+            <div class="card-body"><div class="copy-box">Email 1:
 Your BNCA Snapshot
 
 Email 2:
@@ -474,41 +806,40 @@ Email 3:
 See BNCA live on your real issue
 
 Email 4:
-Pilot invitation</div>
+Pilot invitation</div></div>
+          </div>
+          <div class="card left-accent-teal">
+            <div class="card-head"><div><div class="card-title">Sales handoff</div><div class="card-sub">funnel step 6</div></div><div class="chip gold">Handoff</div></div>
+            <div class="card-body"><div class="copy-box">Sales call opener:
+"I reviewed the BNCA snapshot your team generated. Let's walk through the top issue, the owner lane, and where a pilot would create the fastest value."</div></div>
+          </div>
         </div>
-        <div class="card card-pad funnel-step">
-          <div class="pill">Funnel step 6</div>
-          <h3>Sales handoff</h3>
-          <div class="copy-box">Sales call opener:
-"I reviewed the BNCA snapshot your team generated. Let's walk through the top issue, the owner lane, and where a pilot would create the fastest value."</div>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="present">
-      <div class="section-head">
-        <div>
-          <div class="kicker">Study mode</div>
-          <h2>Presentation notes for Thursday</h2>
+      <section id="present" class="module-grid">
+        <div class="section-headline">
+          <div>
+            <div class="kicker">Study mode</div>
+            <h2 class="section-title">Presentation notes for Thursday</h2>
+          </div>
+          <div class="section-note">These are for you, not the prospect. Practice the logic, not every line.</div>
         </div>
-        <p>Use these as reminders while you practice. These are not for the customer. These are for you.</p>
-      </div>
 
-      <div class="study-panel">
-        <div class="speaker-sheet">
-          <h3>What to emphasize</h3>
-          <ul>
-            <li>Lead with pain and clarity, not architecture.</li>
-            <li>Say “Best Next Course of Action” often enough that it becomes the mental frame.</li>
-            <li>Translate every screen into an operational outcome.</li>
-            <li>When showing the suite, tie each app to a lane: claims, denials, compliance, staffing, vendors, tax, grants.</li>
-            <li>Always explain who should act next, not just what the data says.</li>
-          </ul>
-        </div>
-        <div class="card card-pad copy-block">
-          <div class="pill">Your mental model</div>
-          <h3>How to talk about the healthcare suite</h3>
-          <div class="copy-box">Simple story:
+        <div class="module two">
+          <div class="speaker-sheet">
+            <div class="card-title" style="margin-bottom:10px;">What to emphasize</div>
+            <ul>
+              <li>Lead with pain and clarity, not architecture.</li>
+              <li>Say “Best Next Course of Action” often enough that it becomes the mental frame.</li>
+              <li>Translate every screen into an operational outcome.</li>
+              <li>When showing the suite, tie each app to a lane: claims, denials, compliance, staffing, vendors, tax, grants.</li>
+              <li>Always explain who should act next, not just what the data says.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">How to talk about the healthcare suite</div><div class="card-sub">your mental model</div></div><div class="chip purple">Narrative</div></div>
+            <div class="card-body"><div class="copy-box">Simple story:
 1. Offices are overloaded.
 2. Critical issues are spread across billing, claims, compliance, staffing, and vendor workflows.
 3. Teams lose time deciding what matters most.
@@ -519,27 +850,56 @@ Best single sentence:
 "We tell your office what to do next."
 
 Best second sentence:
-"Then we show exactly which lane should move first and why."</div>
+"Then we show exactly which lane should move first and why."</div></div>
+          </div>
+        </div>
+
+        <div class="module two">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">30-second version</div><div class="card-sub">talk track</div></div><div class="chip blue">Short form</div></div>
+            <div class="card-body"><div class="copy-box">"Healthcare teams don't have a visibility problem as much as they have a decision problem. Our BNCA layer sits across billing, claims, compliance, staffing, and operations and tells the office what to do next, which lane owns it, and what should happen in the next 24 to 72 hours."</div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">60-second version</div><div class="card-sub">talk track</div></div><div class="chip gold">Expanded</div></div>
+            <div class="card-body"><div class="copy-box">"Most offices are juggling too many systems and too much noise. Claims get stuck, prior auths drag, billing lag grows, and compliance issues hide in the background until they become expensive. We built BNCA to solve that. Instead of asking teams to figure out what matters most, BNCA gives the office the best next course of action in under a minute. That means faster decisions, cleaner accountability, and a clearer path to recovered revenue and lower operational drag."</div></div>
+          </div>
+        </div>
+
+        <div class="footer-note">Study tip: do not memorize every word. Memorize the structure. Pain → BNCA promise → proof output → business value → pilot next step.</div>
+      </section>
+    </main>
+
+    <aside class="rail">
+      <div class="rail-head">
+        <div class="rail-title">Command Notes</div>
+        <div class="rail-sub">TSM aesthetic overlay while keeping the same sales content.</div>
+      </div>
+      <div class="rail-body">
+        <div>
+          <div class="section-label">Visual translation</div>
+          <div class="metric-list">
+            <div class="metric-row"><span>Old mode</span><span>Study page</span></div>
+            <div class="metric-row"><span>New mode</span><span style="color:var(--teal)">Command center</span></div>
+            <div class="metric-row"><span>Content</span><span style="color:var(--gold)">Same message</span></div>
+            <div class="metric-row"><span>Use case</span><span style="color:var(--blue)">Presentation practice</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">What to say when showing this version</div>
+          <div class="copy-box">"This second version keeps the same conversion story, but places it inside our TSM command aesthetic so the message and the platform feel like one system."</div>
+        </div>
+        <div>
+          <div class="section-label">Best reminder</div>
+          <div class="copy-box">Power does not sell.
+Clarity sells.
+
+The command-center look supports the pitch, but the line that closes attention is still:
+
+"We tell your office what to do next."</div>
         </div>
       </div>
-
-      <div class="grid two" style="margin-top:18px;">
-        <div class="card card-pad copy-block">
-          <div class="pill">Talk track</div>
-          <h3>30-second version</h3>
-          <div class="copy-box">"Healthcare teams don't have a visibility problem as much as they have a decision problem. Our BNCA layer sits across billing, claims, compliance, staffing, and operations and tells the office what to do next, which lane owns it, and what should happen in the next 24 to 72 hours."</div>
-        </div>
-        <div class="card card-pad copy-block">
-          <div class="pill">Talk track</div>
-          <h3>60-second version</h3>
-          <div class="copy-box">"Most offices are juggling too many systems and too much noise. Claims get stuck, prior auths drag, billing lag grows, and compliance issues hide in the background until they become expensive. We built BNCA to solve that. Instead of asking teams to figure out what matters most, BNCA gives the office the best next course of action in under a minute. That means faster decisions, cleaner accountability, and a clearer path to recovered revenue and lower operational drag."</div>
-        </div>
-      </div>
-    </section>
-
-    <div class="footer-note">
-      Study tip: do not memorize every word. Memorize the structure. Pain → BNCA promise → proof output → business value → pilot next step.
-    </div>
+    </aside>
   </div>
 </body>
 </html>
+y
