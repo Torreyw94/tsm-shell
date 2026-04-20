@@ -166,18 +166,9 @@ tr:hover td{background:#0f1f0f}
   window.switchTab=switchTab;
   window.loadAI=loadAI;
   window.loadPreset=loadPreset;
-  switchTab('dash', document.querySelector('.nav-btn'));
-  window.initTabs=function initTabs(){
-    var first=document.querySelector('.nav-btn');
-    if(!first)return;
-    var m=(first.getAttribute('onclick')||'').match(/switchTab\('([^']+)'/);
-    switchTab(m?m[1]:'dash',first);
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',initTabs);
-  } else {
-    initTabs();
-  }
+  document.addEventListener('DOMContentLoaded',function(){
+    switchTab('dash',document.querySelector('.nav-btn'));
+  });
 })();
 </script>
 </body></html>
