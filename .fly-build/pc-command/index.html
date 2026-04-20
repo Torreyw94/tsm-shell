@@ -959,7 +959,7 @@ Specialties:
 - Homeowners (HO-3/5/6/8, DP-3, wildfire, monsoon, flood, pool liability, HOA master policy gaps)
 - Auto (personal, commercial, rideshare/TNC, classic, AZ minimum liability gaps, teen drivers)
 - Commercial Lines (CGL, commercial auto, inland marine, workers comp, products liability, completed operations)
-- Cyber Liability (standalone, BOP endorsement, PCI/HIPAA compliance, ransomware)
+- Cyber Liability (standalone, BOP endorsement, PCI/HRSA / BPHC compliance, ransomware)
 - Umbrella / Excess (personal, commercial, underlying requirements, AZ pool/teen driver exposure)
 - E&O / Professional Liability (agents, realtors, attorneys, CPAs, healthcare, IT, architects)
 - D&O / EPLI (small business, non-profit, AZ employment law)
@@ -1031,7 +1031,7 @@ async function runAI(tool){
     cyber: ()=>{
       const size=document.getElementById('cyber-size').value;
       const data=document.getElementById('cyber-data').value;
-      return `Cyber liability risk assessment: ${size} business handling ${data}. Analyze: 1) Specific breach scenarios and costs for this data type, 2) Regulatory requirements (HIPAA/PCI/AZ data breach law ARS §18-552), 3) Recommended standalone cyber limit, 4) What BOP cyber endorsement typically covers vs. doesn't, 5) Incident response and business interruption exposure. Dollar amounts throughout.`;
+      return `Cyber liability risk assessment: ${size} business handling ${data}. Analyze: 1) Specific breach scenarios and costs for this data type, 2) Regulatory requirements (HRSA / BPHC/PCI/AZ data breach law ARS §18-552), 3) Recommended standalone cyber limit, 4) What BOP cyber endorsement typically covers vs. doesn't, 5) Incident response and business interruption exposure. Dollar amounts throughout.`;
     },
     liability: ()=>{
       const scenario=document.getElementById('liab-scenario').value;

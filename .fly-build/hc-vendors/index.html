@@ -1,4 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC VENDOR COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
+<!DOCTYPE html><html lang="en"><head>
+
+
+
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HC VENDOR COMMAND &middot; TSM Healthcare</title><style>*{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
 :root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -60,345 +64,108 @@ tr:hover td{background:#0f1f0f}
 .fbtns{display:flex;gap:8px}
 .fbtn{padding:6px 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
 .fbnca{background:#003322;border:1px solid var(--g);color:var(--g)}
-.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}.hdr-title{color:var(--a)}[id^="tab-"]{display:none!important}</style>
-</head><body><div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
+.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}.hdr-title{color:var(--a)}[id^="tab-"]{display:none}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head><body>
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🤝</span><div><div class="hdr-title">HC VENDOR COMMAND</div><div class="hdr-sub">Contracts · Spend Analytics · BAA Compliance · Vendor Risk</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('contracts',this)">📄 CONTRACTS</button><button class="nav-btn" onclick="window.switchTab('spend',this)">💰 SPEND</button><button class="nav-btn" onclick="window.switchTab('baa',this)">🔒 BAA COMPLIANCE</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val green">$12.4M</div><div class="kpi-lbl">Annual Vendor Spend</div><div class="kpi-sub green">14 category types · 87 active vendors</div></div>
 <div class="kpi"><div class="kpi-val amber">87</div><div class="kpi-lbl">Active Contracts</div><div class="kpi-sub amber">12 expiring Q2 · 3 not yet renewed</div></div>
-<div class="kpi"><div class="kpi-val red">84%</div><div class="kpi-lbl">BAA Compliance Rate</div><div class="kpi-sub red">14 BAAs expired · HIPAA breach risk</div></div>
+<div class="kpi"><div class="kpi-val red">84%</div><div class="kpi-lbl">BAA Compliance Rate</div><div class="kpi-sub red">14 BAAs expired · HRSA / BPHC breach risk</div></div>
 <div class="kpi"><div class="kpi-val green">$840K</div><div class="kpi-lbl">Savings Identified</div><div class="kpi-sub green">GPO consolidation + rebid opportunities</div></div>
 </div><div class="sec"><div class="sec-hdr">ACTIVE ALERTS</div>
-<div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">14 HIPAA BAAs expired — vendors with PHI access · OCR audit risk · immediate renewal required</div><div class="alert-imp">OCR risk</div></div>
+<div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">14 HRSA / BPHC BAAs expired — vendors with PHI access · OCR audit risk · immediate renewal required</div><div class="alert-imp">OCR risk</div></div>
 <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">3 critical vendor contracts not renewed — IT infrastructure, lab services, biomedical engineering · service continuity at risk</div><div class="alert-imp">Operations</div></div>
 <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">GPO consolidation opportunity — $420K savings identified across 6 supply categories · rebid window open Q2</div><div class="alert-imp">$420K</div></div>
-<div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">OIG exclusion check incomplete for 8 vendors — monthly screening required for Medicare/Medicaid participation</div><div class="alert-imp">8 vendors</div></div>
+<div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">UNIFORM GUIDANCE exclusion check incomplete for 8 vendors — monthly screening required for Medicare/Medicaid participation</div><div class="alert-imp">8 vendors</div></div>
 <div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">Vendor performance reviews overdue for 12 contracts — SLA compliance not measured Q1</div><div class="alert-imp">12 contracts</div></div>
 <div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">$840K savings identified via GPO consolidation and rebid — pipeline active for Q2 execution</div><div class="alert-imp">✓ Pipeline</div></div>
-</div><div class="alert-imp">$1.9M</div></div><div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">3 sole-source contracts — no competitive bid</div><div class="alert-imp">Audit risk</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">12 contracts expiring Q2 — action needed</div><div class="alert-imp">$840K</div></div><div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">GPO contract non-compliance — 4 vendors</div><div class="alert-imp">$120K</div></div><div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Top 10 vendor performance score 88%</div><div class="alert-imp">✓</div></div></div><div class="sec"><div class="sec-hdr">TOP VENDOR OVERVIEW</div><table><thead><tr><th>VENDOR</th><th>CATEGORY</th><th>ANNUAL SPEND</th><th>CONTRACT EXP</th><th>BAA</th><th>PERFORMANCE</th><th>STATUS</th></tr></thead><tbody><tr><td>MedSupply Co</td><td>Medical Supplies</td><td>$480K</td><td>Jun 2026</td><td><span class="badge bg">VALID</span></td><td>94%</td><td><span class="badge bg">ACTIVE</span></td></tr><tr><td>TechHealth Inc</td><td>EHR Support</td><td>$320K</td><td>Mar 2026</td><td><span class="badge br">MISSING</span></td><td>87%</td><td><span class="badge br">URGENT</span></td></tr><tr><td>PharmaDist LLC</td><td>Pharmacy</td><td>$280K</td><td>Sep 2026</td><td><span class="badge bg">VALID</span></td><td>91%</td><td><span class="badge bg">ACTIVE</span></td></tr><tr><td>CleanServ Pro</td><td>Environmental</td><td>$190K</td><td>Apr 2026</td><td><span class="badge br">MISSING</span></td><td>82%</td><td><span class="badge ba">REVIEW</span></td></tr><tr><td>BioWaste Corp</td><td>Waste Mgmt</td><td>$140K</td><td>Dec 2026</td><td><span class="badge bg">VALID</span></td><td>96%</td><td><span class="badge bg">ACTIVE</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><input id="dash-inp" class="ai-inp" type="text" placeholder="Vendor query..."><button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">&#9654; ASK</button></div><div id="dash-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-contracts"><div class="sec" style="margin-top:16px"><div class="sec-hdr">CONTRACT MANAGEMENT — EXPIRING Q2</div><table><thead><tr><th>CONTRACT</th><th>VENDOR</th><th>CATEGORY</th><th>VALUE</th><th>EXPIRES</th><th>RENEWAL TYPE</th><th>ACTION</th></tr></thead><tbody><tr><td>CNT-001</td><td>TechHealth Inc</td><td>EHR License</td><td>$320K</td><td>Mar 2026</td><td>Manual</td><td><span class="badge br">URGENT</span></td></tr><tr><td>CNT-008</td><td>CleanServ Pro</td><td>Facilities</td><td>$190K</td><td>Apr 2026</td><td>Manual</td><td><span class="badge ba">REVIEW</span></td></tr><tr><td>CNT-014</td><td>LabCorp</td><td>Lab Services</td><td>$240K</td><td>May 2026</td><td>Auto-renew</td><td><span class="badge bb">REVIEW TERMS</span></td></tr><tr><td>CNT-021</td><td>Stryker Medical</td><td>Equipment</td><td>$180K</td><td>Jun 2026</td><td>Manual</td><td><span class="badge ba">RENEGOTIATE</span></td></tr><tr><td>CNT-033</td><td>MedSupply Co</td><td>Supplies</td><td>$480K</td><td>Jun 2026</td><td>Auto-renew</td><td><span class="badge bg">ON TRACK</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze 12 Q2 expiring contracts worth $840K — priorities and cost reduction')">Contract Renewals</button><button class="ai-btn" onclick="loadAI('TechHealth EHR expires Mar 2026 — renewal strategy and alternative vendors')">EHR Renewal Urgent</button><button class="ai-btn" onclick="loadAI('Review 3 sole-source contracts for competitive bid compliance')">Sole Source Review</button></div><div class="ai-row"><input id="contracts-inp" class="ai-inp" type="text" placeholder="Contract query..."><button class="ask-btn" id="contracts-btn" onclick="Q(document.getElementById('contracts-inp').value,'contracts-btn','contracts-res')">&#9654; ASK</button></div><div id="contracts-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-spend"><div class="sec" style="margin-top:16px"><div class="sec-hdr">SPEND ANALYTICS BY CATEGORY</div><div class="stat-grid"><div class="stat-box"><div class="stat-val amber">$2.8M</div><div class="stat-lbl">Total Vendor Spend</div></div><div class="stat-box"><div class="stat-val green">$340K</div><div class="stat-lbl">GPO Savings Opportunity</div></div><div class="stat-box"><div class="stat-val amber">68%</div><div class="stat-lbl">GPO Utilization Rate</div></div></div><table><thead><tr><th>CATEGORY</th><th>VENDORS</th><th>ANNUAL SPEND</th><th>GPO CONTRACT</th><th>SAVINGS OPP</th><th>UTILIZATION</th><th>STATUS</th></tr></thead><tbody><tr><td>Medical Supplies</td><td>8</td><td>$840K</td><td>Yes</td><td>$124K</td><td>72%</td><td><span class="badge ba">IMPROVE</span></td></tr><tr><td>IT & Software</td><td>6</td><td>$620K</td><td>Partial</td><td>$88K</td><td>61%</td><td><span class="badge ba">IMPROVE</span></td></tr><tr><td>Pharmacy</td><td>3</td><td>$480K</td><td>Yes</td><td>$42K</td><td>89%</td><td><span class="badge bg">GOOD</span></td></tr><tr><td>Facilities</td><td>5</td><td>$380K</td><td>No</td><td>$68K</td><td>0%</td><td><span class="badge br">ACTION</span></td></tr><tr><td>Lab Services</td><td>4</td><td>$280K</td><td>Yes</td><td>$18K</td><td>94%</td><td><span class="badge bg">GOOD</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze $2.8M vendor spend — GPO gaps, duplicate vendors, consolidation')">Spend Optimization</button><button class="ai-btn" onclick="loadAI('Improve GPO utilization from 68% — identify non-participating vendors')">GPO Utilization</button><button class="ai-btn" onclick="loadAI('Build plan to realize $340K GPO savings through contract consolidation')">Savings Realization</button></div><div class="ai-row"><input id="spend-inp" class="ai-inp" type="text" placeholder="Spend analytics query..."><button class="ask-btn" id="spend-btn" onclick="Q(document.getElementById('spend-inp').value,'spend-btn','spend-res')">&#9654; ASK</button></div><div id="spend-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-baa"><div class="sec" style="margin-top:16px"><div class="sec-hdr">HIPAA BAA COMPLIANCE TRACKER</div><div class="stat-grid"><div class="stat-box"><div class="stat-val red">78%</div><div class="stat-lbl">BAA Compliance Rate</div></div><div class="stat-box"><div class="stat-val red">11</div><div class="stat-lbl">Vendors Missing BAA</div></div><div class="stat-box"><div class="stat-val red">$1.9M</div><div class="stat-lbl">Potential HIPAA Exposure</div></div></div><table><thead><tr><th>VENDOR</th><th>DATA ACCESS TYPE</th><th>BAA STATUS</th><th>PHI RISK</th><th>LAST CONTACT</th><th>ACTION</th></tr></thead><tbody><tr><td>TechHealth Inc</td><td>EHR full access</td><td><span class="badge br">MISSING</span></td><td>HIGH</td><td>Mar 05</td><td><span class="badge br">URGENT</span></td></tr><tr><td>CleanServ Pro</td><td>Limited facility</td><td><span class="badge br">MISSING</span></td><td>LOW</td><td>Feb 28</td><td><span class="badge ba">SEND BAA</span></td></tr><tr><td>BioAnalytics LLC</td><td>Lab data</td><td><span class="badge br">MISSING</span></td><td>HIGH</td><td>Feb 20</td><td><span class="badge br">URGENT</span></td></tr><tr><td>StaffingPro Inc</td><td>HR / payroll</td><td><span class="badge br">MISSING</span></td><td>MED</td><td>Mar 01</td><td><span class="badge ba">SEND BAA</span></td></tr><tr><td>MedSupply Co</td><td>Order data only</td><td><span class="badge bg">VALID</span></td><td>LOW</td><td>Jan 15</td><td><span class="badge bg">COMPLIANT</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Create HIPAA BAA remediation plan for 11 non-compliant vendors by data access ri')">BAA Remediation</button><button class="ai-btn" onclick="loadAI('Draft HIPAA-compliant BAA template for healthcare vendor agreements')">BAA Template</button><button class="ai-btn" onclick="loadAI('Design ongoing BAA monitoring and renewal tracking program')">BAA Monitoring</button></div><div class="ai-row"><input id="baa-inp" class="ai-inp" type="text" placeholder="BAA compliance query..."><button class="ask-btn" id="baa-btn" onclick="Q(document.getElementById('baa-inp').value,'baa-btn','baa-res')">&#9654; ASK</button></div><div id="baa-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-ai"><div class="ai-box" style="margin-top:16px"><div class="ai-hdr">&#9889; DEEP AI ANALYSIS</div><div class="ai-row"><input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed query..."><button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">&#9654; ASK</button></div><div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div></div></div><div id="tab-presets"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRESET LIBRARY &mdash; Click any to load into AI</div><div class="pr-grid">
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build emergency BAA renewal plan for 14 expired HIPAA Business Associate Agreements — prioritize by PHI access level, draft updated BAA language, and create 30-day execution timeline"><div class="pr-card-title">BAA Emergency Renewal</div><div class="pr-card-desc">14 expired BAAs · OCR risk</div></div>
+</div><div class="alert-imp">$1.9M</div></div><div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">3 sole-source contracts — no competitive bid</div><div class="alert-imp">Audit risk</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">12 contracts expiring Q2 — action needed</div><div class="alert-imp">$840K</div></div><div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">GPO contract non-compliance — 4 vendors</div><div class="alert-imp">$120K</div></div><div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Top 10 vendor performance score 88%</div><div class="alert-imp">✓</div></div></div><div class="sec"><div class="sec-hdr">TOP VENDOR OVERVIEW</div><table><thead><tr><th>VENDOR</th><th>CATEGORY</th><th>ANNUAL SPEND</th><th>CONTRACT EXP</th><th>BAA</th><th>PERFORMANCE</th><th>STATUS</th></tr></thead><tbody><tr><td>MedSupply Co</td><td>Medical Supplies</td><td>$480K</td><td>Jun 2026</td><td><span class="badge bg">VALID</span></td><td>94%</td><td><span class="badge bg">ACTIVE</span></td></tr><tr><td>TechHealth Inc</td><td>EHR Support</td><td>$320K</td><td>Mar 2026</td><td><span class="badge br">MISSING</span></td><td>87%</td><td><span class="badge br">URGENT</span></td></tr><tr><td>PharmaDist LLC</td><td>Pharmacy</td><td>$280K</td><td>Sep 2026</td><td><span class="badge bg">VALID</span></td><td>91%</td><td><span class="badge bg">ACTIVE</span></td></tr><tr><td>CleanServ Pro</td><td>Environmental</td><td>$190K</td><td>Apr 2026</td><td><span class="badge br">MISSING</span></td><td>82%</td><td><span class="badge ba">REVIEW</span></td></tr><tr><td>BioWaste Corp</td><td>Waste Mgmt</td><td>$140K</td><td>Dec 2026</td><td><span class="badge bg">VALID</span></td><td>96%</td><td><span class="badge bg">ACTIVE</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><input id="dash-inp" class="ai-inp" type="text" placeholder="Vendor query..."><button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">&#9654; ASK</button></div><div id="dash-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-contracts"><div class="sec" style="margin-top:16px"><div class="sec-hdr">CONTRACT MANAGEMENT — EXPIRING Q2</div><table><thead><tr><th>CONTRACT</th><th>VENDOR</th><th>CATEGORY</th><th>VALUE</th><th>EXPIRES</th><th>RENEWAL TYPE</th><th>ACTION</th></tr></thead><tbody><tr><td>CNT-001</td><td>TechHealth Inc</td><td>EHR License</td><td>$320K</td><td>Mar 2026</td><td>Manual</td><td><span class="badge br">URGENT</span></td></tr><tr><td>CNT-008</td><td>CleanServ Pro</td><td>Facilities</td><td>$190K</td><td>Apr 2026</td><td>Manual</td><td><span class="badge ba">REVIEW</span></td></tr><tr><td>CNT-014</td><td>LabCorp</td><td>Lab Services</td><td>$240K</td><td>May 2026</td><td>Auto-renew</td><td><span class="badge bb">REVIEW TERMS</span></td></tr><tr><td>CNT-021</td><td>Stryker Medical</td><td>Equipment</td><td>$180K</td><td>Jun 2026</td><td>Manual</td><td><span class="badge ba">RENEGOTIATE</span></td></tr><tr><td>CNT-033</td><td>MedSupply Co</td><td>Supplies</td><td>$480K</td><td>Jun 2026</td><td>Auto-renew</td><td><span class="badge bg">ON TRACK</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze 12 Q2 expiring contracts worth $840K — priorities and cost reduction')">Contract Renewals</button><button class="ai-btn" onclick="loadAI('TechHealth EHR expires Mar 2026 — renewal strategy and alternative vendors')">EHR Renewal Urgent</button><button class="ai-btn" onclick="loadAI('Review 3 sole-source contracts for competitive bid compliance')">Sole Source Review</button></div><div class="ai-row"><input id="contracts-inp" class="ai-inp" type="text" placeholder="Contract query..."><button class="ask-btn" id="contracts-btn" onclick="Q(document.getElementById('contracts-inp').value,'contracts-btn','contracts-res')">&#9654; ASK</button></div><div id="contracts-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-spend"><div class="sec" style="margin-top:16px"><div class="sec-hdr">SPEND ANALYTICS BY CATEGORY</div><div class="stat-grid"><div class="stat-box"><div class="stat-val amber">$2.8M</div><div class="stat-lbl">Total Vendor Spend</div></div><div class="stat-box"><div class="stat-val green">$340K</div><div class="stat-lbl">GPO Savings Opportunity</div></div><div class="stat-box"><div class="stat-val amber">68%</div><div class="stat-lbl">GPO Utilization Rate</div></div></div><table><thead><tr><th>CATEGORY</th><th>VENDORS</th><th>ANNUAL SPEND</th><th>GPO CONTRACT</th><th>SAVINGS OPP</th><th>UTILIZATION</th><th>STATUS</th></tr></thead><tbody><tr><td>Medical Supplies</td><td>8</td><td>$840K</td><td>Yes</td><td>$124K</td><td>72%</td><td><span class="badge ba">IMPROVE</span></td></tr><tr><td>IT & Software</td><td>6</td><td>$620K</td><td>Partial</td><td>$88K</td><td>61%</td><td><span class="badge ba">IMPROVE</span></td></tr><tr><td>Pharmacy</td><td>3</td><td>$480K</td><td>Yes</td><td>$42K</td><td>89%</td><td><span class="badge bg">GOOD</span></td></tr><tr><td>Facilities</td><td>5</td><td>$380K</td><td>No</td><td>$68K</td><td>0%</td><td><span class="badge br">ACTION</span></td></tr><tr><td>Lab Services</td><td>4</td><td>$280K</td><td>Yes</td><td>$18K</td><td>94%</td><td><span class="badge bg">GOOD</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze $2.8M vendor spend — GPO gaps, duplicate vendors, consolidation')">Spend Optimization</button><button class="ai-btn" onclick="loadAI('Improve GPO utilization from 68% — identify non-participating vendors')">GPO Utilization</button><button class="ai-btn" onclick="loadAI('Build plan to realize $340K GPO savings through contract consolidation')">Savings Realization</button></div><div class="ai-row"><input id="spend-inp" class="ai-inp" type="text" placeholder="Spend analytics query..."><button class="ask-btn" id="spend-btn" onclick="Q(document.getElementById('spend-inp').value,'spend-btn','spend-res')">&#9654; ASK</button></div><div id="spend-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-baa"><div class="sec" style="margin-top:16px"><div class="sec-hdr">HRSA / BPHC BAA COMPLIANCE TRACKER</div><div class="stat-grid"><div class="stat-box"><div class="stat-val red">78%</div><div class="stat-lbl">BAA Compliance Rate</div></div><div class="stat-box"><div class="stat-val red">11</div><div class="stat-lbl">Vendors Missing BAA</div></div><div class="stat-box"><div class="stat-val red">$1.9M</div><div class="stat-lbl">Potential HRSA / BPHC Exposure</div></div></div><table><thead><tr><th>VENDOR</th><th>DATA ACCESS TYPE</th><th>BAA STATUS</th><th>PHI RISK</th><th>LAST CONTACT</th><th>ACTION</th></tr></thead><tbody><tr><td>TechHealth Inc</td><td>EHR full access</td><td><span class="badge br">MISSING</span></td><td>HIGH</td><td>Mar 05</td><td><span class="badge br">URGENT</span></td></tr><tr><td>CleanServ Pro</td><td>Limited facility</td><td><span class="badge br">MISSING</span></td><td>LOW</td><td>Feb 28</td><td><span class="badge ba">SEND BAA</span></td></tr><tr><td>BioAnalytics LLC</td><td>Lab data</td><td><span class="badge br">MISSING</span></td><td>HIGH</td><td>Feb 20</td><td><span class="badge br">URGENT</span></td></tr><tr><td>StaffingPro Inc</td><td>HR / payroll</td><td><span class="badge br">MISSING</span></td><td>MED</td><td>Mar 01</td><td><span class="badge ba">SEND BAA</span></td></tr><tr><td>MedSupply Co</td><td>Order data only</td><td><span class="badge bg">VALID</span></td><td>LOW</td><td>Jan 15</td><td><span class="badge bg">COMPLIANT</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Create HRSA / BPHC BAA remediation plan for 11 non-compliant vendors by data access ri')">BAA Remediation</button><button class="ai-btn" onclick="loadAI('Draft HRSA / BPHC-compliant BAA template for healthcare vendor agreements')">BAA Template</button><button class="ai-btn" onclick="loadAI('Design ongoing BAA monitoring and renewal tracking program')">BAA Monitoring</button></div><div class="ai-row"><input id="baa-inp" class="ai-inp" type="text" placeholder="BAA compliance query..."><button class="ask-btn" id="baa-btn" onclick="Q(document.getElementById('baa-inp').value,'baa-btn','baa-res')">&#9654; ASK</button></div><div id="baa-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-ai"><div class="ai-box" style="margin-top:16px"><div class="ai-hdr">&#9889; DEEP AI ANALYSIS</div><div class="ai-row"><input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed query..."><button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">&#9654; ASK</button></div><div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div></div></div><div id="tab-presets"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRESET LIBRARY &mdash; Click any to load into AI</div><div class="pr-grid">
+<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build emergency BAA renewal plan for 14 expired HRSA / BPHC Business Associate Agreements — prioritize by PHI access level, draft updated BAA language, and create 30-day execution timeline"><div class="pr-card-title">BAA Emergency Renewal</div><div class="pr-card-desc">14 expired BAAs · OCR risk</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Resolve 3 critical vendor contract gaps — IT infrastructure, lab services, biomedical engineering. Build emergency renewal strategy, identify bridge service options, and draft contract terms"><div class="pr-card-title">Critical Contract Gaps</div><div class="pr-card-desc">Service continuity risk</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build GPO consolidation strategy for $420K Q2 savings opportunity — identify 6 supply categories, benchmark current pricing, and design rebid process with GPO leverage"><div class="pr-card-title">GPO Savings Plan</div><div class="pr-card-desc">$420K consolidation</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design OIG exclusion screening process for 8 unverified vendors — build monthly LEIE database check workflow, retroactive screening for current vendors, and documentation requirements"><div class="pr-card-title">OIG Vendor Screening</div><div class="pr-card-desc">8 vendors · LEIE check</div></div>
+<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design UNIFORM GUIDANCE exclusion screening process for 8 unverified vendors — build monthly LEIE database check workflow, retroactive screening for current vendors, and documentation requirements"><div class="pr-card-title">UNIFORM GUIDANCE Vendor Screening</div><div class="pr-card-desc">8 vendors · LEIE check</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build vendor performance review framework for 12 overdue contracts — define KPIs, SLA measurement methodology, scoring criteria, and quarterly review cadence"><div class="pr-card-title">Vendor Performance Review</div><div class="pr-card-desc">12 overdue SLA reviews</div></div>
-<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build comprehensive vendor risk register for $12.4M spend — map all 87 vendors by risk tier, BAA status, OIG compliance, contract expiry, and savings opportunity"><div class="pr-card-title">Vendor Risk Register</div><div class="pr-card-desc">$12.4M spend map</div></div>
-</div></div></div><div class="footer"><div class="fn">🤝 VENDOR NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC VENDOR COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><script>
-function switchTab(tabId,btn){
-  document.querySelectorAll('[id^="tab-"]').forEach(function(el){el.style.setProperty('display','none','important');});
-  var t=document.getElementById('tab-'+tabId);
-  if(t){t.style.setProperty('display','block','important');}
-  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-  if(btn){btn.classList.add('active');}
-}
-function loadAI(prompt){
-  document.getElementById('dash-inp').value=prompt;
-  document.getElementById('dash-inp').focus();
-}
-function loadPreset(prompt){
-  switchTab('ai',null);
-  document.querySelectorAll('.nav-btn').forEach(function(b){
-    if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1){b.classList.add('active');}
+<div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build comprehensive vendor risk register for $12.4M spend — map all 87 vendors by risk tier, BAA status, UNIFORM GUIDANCE compliance, contract expiry, and savings opportunity"><div class="pr-card-title">Vendor Risk Register</div><div class="pr-card-desc">$12.4M spend map</div></div>
+</div></div></div><div class="footer"><div class="fn">🤝 VENDOR NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC VENDOR COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div>
+
+
+
+
+<script>
+// ── SINGLE TAB CONTROLLER ──
+function switchTab(id, btn) {
+  document.querySelectorAll('[id^="tab-"]').forEach(function(el) {
+    el.style.setProperty('display', 'none', 'important');
   });
-  document.getElementById('ai-inp').value=prompt;
-  document.getElementById('ai-inp').focus();
+  var target = document.getElementById('tab-' + id);
+  if (target) target.style.setProperty('display', 'block', 'important');
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
 }
-async function Q(prompt,btnId,resId){
-  if(!prompt||!prompt.trim())return;
-  var btn=document.getElementById(btnId),res=document.getElementById(resId);
-  if(!btn||!res)return;
-  btn.disabled=true;
-  res.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
-  try{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer GROQ_KEY_REMOVED'},
-      body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),model:'llama-3.3-70b-versatile',messages:[{role:'system',content:'You are a healthcare vendor management expert specializing in HIPAA BAA compliance, GPO strategy, OIG exclusion screening, contract management, vendor risk assessment, and healthcare supply chain optimization. Cite HIPAA regulations, OIG LEIE requirements, and CMS participation rules.'},{role:'user',content:prompt}],max_tokens:1024,temperature:0.4})
-    });
-    if(!r.ok){var e=await r.text();throw new Error('HTTP '+r.status+': '+e);}
-    res.style.whiteSpace='pre-wrap';
-    const _r=d.raw||d.response||d.answer||d.reply||d.choices?.[0]?.message?.content||'No response';res.textContent='> TSM NEURAL ['+new Date().toLocaleTimeString()+']\n\n'+(_r||'').replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
-  }catch(e){res.textContent='> TSM NEURAL ERROR: '+e.message;}
-  btn.disabled=false;
-}</script><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
-<script id="tsm-unified-render">
-function renderTSM(data, target){
-  try {
-    const el = document.querySelector(target) || document.body;
-
-    if (!data) {
-      el.innerHTML = "<div style='color:red'>No data</div>";
-      return;
-    }
-
-    // Normalize fallback
-    if (!data.feed && data.choices) {
-      data = {
-        report_title: "AI Response",
-        kpis: [],
-        feed: [{ message: data.choices[0].message.content }]
-      };
-    }
-
-    if (!data.feed) {
-      el.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-      return;
-    }
-
-    let htmlOut = "<div style='padding:12px;font-family:monospace'>";
-
-    if (data.report_title) {
-      htmlOut += "<h3 style='color:#00ffc3'>" + data.report_title + "</h3>";
-    }
-
-    data.feed.forEach(item => {
-      htmlOut += "<div style='margin-bottom:10px'>";
-      htmlOut += "<div style='color:#d7f7ff'>" + (item.message || "") + "</div>";
-      if (item.detail) {
-        htmlOut += "<div style='opacity:0.6;font-size:12px'>" + item.detail + "</div>";
-      }
-      htmlOut += "</div>";
-    });
-
-    htmlOut += "</div>";
-    el.innerHTML = htmlOut;
-
-  } catch(e) {
-    console.error("Render error", e);
+function loadAI(prompt) {
+  var aiBtn = null;
+  document.querySelectorAll('.nav-btn').forEach(function(b) {
+    if ((b.getAttribute('onclick') || '').indexOf("'ai'") > -1) aiBtn = b;
+  });
+  switchTab('ai', aiBtn);
+  var inp = document.getElementById('ai-inp');
+  if (inp) inp.value = prompt;
+  setTimeout(function() { Q(prompt, 'ai-btn', 'ai-res'); }, 50);
+}
+function loadPreset(p) { loadAI(p); }
+window.switchTab = switchTab;
+window.loadAI = loadAI;
+window.loadPreset = loadPreset;
+window.addEventListener('load', function() {
+  var first = document.querySelector('.nav-btn');
+  if (first) {
+    var m = (first.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
+    switchTab(m ? m[1] : 'dash', first);
   }
-}
-</script>
-
-<script>
-window.safeAnalyze = async function(input, targetId="output"){
-  const el = document.getElementById(targetId) || document.querySelector("#output") || document.querySelector(".output");
-  if(!el) return;
-
-  el.innerHTML = "⚡ Running analysis...";
-
-  try {
-    const res = await fetch("https://ai.tsmatter.com/ask", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
-    });
-
-    const text = await res.text();
-
-    if(text.startsWith("<!DOCTYPE") || text.startsWith("<html")){
-      throw new Error("HTML response (routing issue)");
-    }
-
-    const data = JSON.parse(text);
-
-    const output = data.choices?.[0]?.message?.content ||
-                   data.response ||
-                   data.analysis ||
-                   data.feed?.map(f=>f.message).join("<br>") ||
-                   "No structured output";
-
-    el.innerHTML = "<div style=\"padding:12px;line-height:1.4\">"+output+"</div>";
-
-  } catch(e){
-    console.warn("AI ERROR:", e);
-    el.innerHTML = "⚠️ AI Error — check routing / auth / rate limits";
-  }
-};
-</script>
-
-<div id="output" style="padding:12px;color:#00ffa6;font-family:monospace;"></div>
-
-<div id="intakeFeed_vendors" style="display:none;position:fixed;top:60px;right:20px;z-index:9999;width:360px;background:#0a140a;border:1px solid rgba(0,255,136,0.25);border-left:3px solid #00ff88;padding:16px 18px;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
-  <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">◆ HC VENDORS INTAKE</div>
-  <div id="intakeList_vendors" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
-</div>
-<script>
-async function pollHcVendors() {
-  try {
-    const r = await fetch('https://intake.tsmatter.com/api/intake/records', {
-      headers: { 'X-Intake-Token': 'tkn_hc-vendors_3218f14367756518' }
-    });
-    const d = await r.json();
-    const records = (d.records || []).filter(x => x.status === 'received' || x.status === 'processing');
-    const feed = document.getElementById('intakeFeed_vendors');
-    const list = document.getElementById('intakeList_vendors');
-    if (!feed || !list || !records.length) { if(feed) feed.style.display='none'; return; }
-    feed.style.display = 'block';
-    list.innerHTML = records.map(p =>
-      `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:#050d05;border:1px solid rgba(0,255,136,0.15);border-radius:2px">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:10px;color:#e0ffe0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.original_name}</div>
-          <div style="font-size:8px;color:#2a5a2a;margin-top:2px">${p.doc_type} · ${p.project_ref||'no ref'} · ${new Date(p.uploaded_at).toLocaleTimeString()}</div>
-        </div>
-        <div style="font-size:8px;padding:3px 8px;background:#00ff88;color:#050d05;font-weight:700;cursor:pointer;letter-spacing:1px;border-radius:2px;white-space:nowrap;margin-left:8px"
-          onclick="loadHcVendors('${p.id}','${p.original_name}','${p.doc_type}')">ANALYZE</div>
-      </div>`
-    ).join('');
-  } catch(e) { console.error('[intake]', e); }
-}
-async function loadHcVendors(id, name, docType) {
-  try {
-    const r = await fetch('https://intake.tsmatter.com/api/intake/content/' + id);
-    const d = await r.json();
-    const d = await r.json();
-    const txt = (d.text||'').trim();
-    const inp = document.querySelector('input[type="text"],textarea,#userInput,#inp,.chat-input');
-    if (inp) {
-      inp.value = 'Analyze this HC vendors document for compliance exposure, risk, and required actions.\n\nFile: ' + name + '\nType: ' + docType + (txt.length > 100 ? '\n\nContent:\n' + txt.slice(0,4000) : '');
-      inp.focus();
-    }
-  } catch(e) {}
-}
-pollHcVendors();
-setInterval(pollHcVendors, 30000);
-</script>
-
-  <!-- TSM AI Assistant -->
-  <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
-    <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
-    <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
-      <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
-    </div>
-  </div>
-  <script>
-(function(){
-var AI="https://ai.tsmatter.com/ask";
-var H=[];
-async function send(){
-var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
-var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
-var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
-if(!inp||!btn)return;
-var t=inp.value.trim();if(!t)return;
-inp.value="";btn.disabled=true;btn.textContent="...";
-if(out){out.style.display="block";out.innerHTML+='<div style="text-align:right;margin:4px 0"><span style="background:#e8f0fe;padding:4px 8px;border-radius:10px;font-size:12px">'+t+'</span></div>';}
-var thinking=document.createElement("div");
-if(out){thinking.innerHTML='<em style="color:#999;font-size:12px">Thinking...</em>';out.appendChild(thinking);}
-H.push({role:"user",content:t});
-try{
-var r=await fetch(AI,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({app:window.location.hostname.replace(".tsmatter.com",""),messages:H})});
-var d=await r.json();
-var reply=d.reply||"No response";
-H.push({role:"assistant",content:reply});
-if(thinking)thinking.innerHTML='<div style="text-align:left;margin:4px 0"><span style="background:#f4f4f4;padding:4px 8px;border-radius:10px;font-size:12px;display:inline-block;max-width:90%">'+reply.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</span></div>';
-}catch(e){if(thinking)thinking.textContent="Error: "+e.message;}
-btn.disabled=false;btn.textContent="Ask";
-if(out)out.scrollTop=out.scrollHeight;
-}
-document.addEventListener("DOMContentLoaded",function(){
-var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
-var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
-var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
-if(btn)btn.addEventListener("click",send);
-if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey)send();});
-if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";});
 });
-})();
-</script>
-  <!-- END TSM AI Assistant -->
-
-<script id="tsm-core-fix">
-(function(){
-  // FIX 1: Tab switching — show first tab on load
-  function initTabs(){
-    var tabs = document.querySelectorAll('[id^="tab-"]');
-    if(!tabs.length) return;
-    var btns = document.querySelectorAll('.nav-btn');
-    // Hide all
-    tabs.forEach(function(t){ t.style.setProperty('display','none','important'); });
-    // Show first
-    tabs[0].style.setProperty('display','block','important');
-    if(btns[0]) btns[0].classList.add('active');
-  }
-
-  // FIX 2: Make switchTab globally reliable
-  window.switchTab = function(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){
-      el.style.setProperty('display','none','important');
-    });
-    var t = document.getElementById('tab-'+tabId);
-    if(t) t.style.setProperty('display','block','important');
-    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-    if(btn) btn.classList.add('active');
-  };
-
-  // FIX 3: Repair broken Q() function — route through TSM-AI-3200
-  window.Q = async function(prompt, btnId, resId){
-    if(!prompt || !prompt.trim()) return;
+  // ── GROQ via /api/groq proxy ──
+  window.Q = async function(prompt, btnId, resId) {
+    if (!prompt || !prompt.trim()) return;
     var btn = document.getElementById(btnId);
     var res = document.getElementById(resId);
-    if(!btn || !res) return;
+    if (!btn || !res) return;
     btn.disabled = true;
-    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://ai.tsmatter.com/ask', {
+      var r = await fetch('/api/groq', {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          app: window.location.hostname.replace('.tsmatter.com',''),
-          messages: [{role:'user', content:prompt}]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
       });
+      if (!r.ok) { var e = await r.text(); throw new Error('HTTP ' + r.status + ': ' + e); }
       var d = await r.json();
-      var reply = d.reply || 'No response';
+      if (d.error) throw new Error(d.error);
       res.style.whiteSpace = 'pre-wrap';
-      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']
-
-' +
-        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\n\n' + d.reply.trim();
     } catch(e) {
-      res.textContent = '> TSM NEURAL ERROR: ' + e.message;
+      res.textContent = 'TSM NEURAL ERROR: ' + e.message;
     }
     btn.disabled = false;
   };
-
-  // FIX 4: loadAI and loadPreset helpers
-  window.loadAI = function(prompt){
-    var inp = document.getElementById('dash-inp') || document.getElementById('ai-inp') ||
-              document.querySelector('.ai-inp');
-    if(inp){ inp.value = prompt; inp.focus(); }
-  };
-
-  window.loadPreset = function(prompt){
-    var aiTab = null;
-    document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'") > -1) aiTab = b;
-    });
-    if(aiTab) window.switchTab('ai', aiTab);
-    var inp = document.getElementById('ai-inp') || document.querySelector('.ai-inp');
-    if(inp){ inp.value = prompt; inp.focus(); }
-  };
-
-  // FIX 5: Rename injected widget IDs to avoid conflicts
-  function fixWidgetIds(){
-    var w = document.getElementById('ai-input');
-    var b = document.getElementById('ai-btn');
-    var o = document.getElementById('ai-output');
-    // Only rename if these are the floating widget ones (inside fixed div)
-    if(w && w.closest('[style*="position:fixed"][style*="bottom:20px"]')){
-      w.id = 'tsm-widget-input';
-      if(b) b.id = 'tsm-widget-btn';
-      if(o) o.id = 'tsm-widget-output';
-      // Re-init the widget with new IDs
-      import('/tsm-ai-client.js').then(function(m){
-        m.initAIButton('#tsm-widget-btn','#tsm-widget-input','#tsm-widget-output');
-        document.getElementById('tsm-widget-input').addEventListener('focus', function(){
-          document.getElementById('tsm-widget-output').style.display='block';
-        });
-      });
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    initTabs();
-    fixWidgetIds();
-  });
-
-  // Also run immediately if DOM already loaded
-  if(document.readyState !== 'loading'){
-    initTabs();
-    fixWidgetIds();
-  }
-})();
 </script>
-
-
-<script id="tsm-api-fix">/* TSM API routing fixed */</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9edde3622e2cb1ab',t:'MTc3NjQ1NDY4Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+</body></html>

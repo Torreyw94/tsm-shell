@@ -2238,5 +2238,116 @@ window.safeAnalyze = async function(input, targetId="output"){
 </script>
 
 <div id="output" style="padding:12px;color:#00ffa6;font-family:monospace;"></div>
+
+
+<script>
+(function () {
+
+  // ── SINGLE TAB ENGINE ──────────────────────────────────────
+  // Handles showTab() and switchTab() — both patterns used across nodes
+  // Tab div ids: tab-dash, tab-dashboard, tab-hipaa, tab-cms, etc.
+
+  function switchTab(id, btn) {
+    // Hide ALL tab divs regardless of naming pattern
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+    });
+
+    // Show target — try tab-{id} first, then bare {id}
+    var target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.setProperty('display', 'block', 'important');
+
+    // Update .tab bar buttons (honor portal style)
+    document.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('act'); });
+    var tabBtn = document.getElementById('t-' + id);
+    if (tabBtn) tabBtn.classList.add('act');
+
+    // Update .nav-btn buttons (hc-node style)
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+  }
+
+  // Alias used by honor portal tab-bar and left nav onclick attrs
+  function showTab(id) { switchTab(id, null); }
+
+  // Load prompt into AI tab and fire Q()
+  function loadAI(prompt) {
+    // Try nav-btn with 'ai' in onclick, fallback to tab switch
+    var aiBtn = null;
+    document.querySelectorAll('.nav-btn').forEach(function(b) {
+      if ((b.getAttribute('onclick') || '').indexOf("'ai'") > -1) aiBtn = b;
+    });
+    switchTab('ai', aiBtn);
+    var inp = document.getElementById('ai-inp');
+    if (inp) { inp.value = prompt; inp.focus(); }
+    setTimeout(function() {
+      if (typeof Q === 'function') Q(prompt, 'ai-btn', 'ai-res');
+    }, 50);
+  }
+
+  function loadPreset(prompt) { loadAI(prompt); }
+
+  // ── GROQ via /api/groq server proxy (no key in browser) ────
+  window.Q = async function(prompt, btnId, resId) {
+    if (!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if (!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
+    if (res.classList) res.classList.add('show');
+    try {
+      var r = await fetch('/api/groq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      });
+      if (!r.ok) { var e = await r.text(); throw new Error('HTTP ' + r.status + ': ' + e); }
+      var d = await r.json();
+      if (d.error) throw new Error(d.error);
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\n\n' + d.reply.trim();
+    } catch(e) {
+      if (res.classList) res.classList.remove('show');
+      var errEl = document.getElementById(resId.replace('-out','-err').replace('-res',''));
+      if (errEl) { errEl.textContent = 'TSM NEURAL ERROR: ' + e.message; if (errEl.classList) errEl.classList.add('show'); }
+      else { res.textContent = 'TSM NEURAL ERROR: ' + e.message; }
+    }
+    btn.disabled = false;
+  };
+
+  // ── EXPOSE GLOBALS ─────────────────────────────────────────
+  window.switchTab  = switchTab;
+  window.showTab    = showTab;
+  window.loadAI     = loadAI;
+  window.loadPreset = loadPreset;
+
+  // ── BOOT ───────────────────────────────────────────────────
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      // Find first nav-btn and read its target tab id
+      var firstBtn = document.querySelector('.nav-btn');
+      var firstTab  = document.querySelector('.tab');
+      var tabId = 'dashboard'; // default
+
+      if (firstBtn) {
+        var m = (firstBtn.getAttribute('onclick') || '').match(/(?:switchTab|showTab)\('([^']+)'/);
+        if (m) tabId = m[1];
+        switchTab(tabId, firstBtn);
+      } else if (firstTab) {
+        var m2 = (firstTab.getAttribute('onclick') || '').match(/showTab\('([^']+)'/);
+        if (m2) tabId = m2[1];
+        switchTab(tabId, null);
+        firstTab.classList.add('act');
+      } else {
+        switchTab(tabId, null);
+      }
+
+      console.log('\u2714 TSM Tab Engine booted: ' + tabId);
+    }, 60);
+  });
+
+})();
+</script>
 </body>
 </html>

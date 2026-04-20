@@ -1,853 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>TSM · Honor Health — Executive Briefing for Dee</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSMatter · Operations Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:        #090E19;
-  --bg2:       #0F1726;
-  --bg3:       #16202F;
-  --bg4:       #1C2A3C;
-  --orange:    #F47C20;
-  --orange2:   #FAA35A;
-  --orange-d:  rgba(244,124,32,.14);
-  --orange-dd: rgba(244,124,32,.06);
-  --orange-b:  rgba(244,124,32,.28);
-  --teal:      #1ABFB8;
-  --teal-d:    rgba(26,191,184,.12);
-  --teal-b:    rgba(26,191,184,.25);
-  --purple:    #8B74F5;
-  --purple-d:  rgba(139,116,245,.12);
-  --purple-b:  rgba(139,116,245,.25);
-  --green:     #2ECC71;
-  --green-d:   rgba(46,204,113,.12);
-  --red:       #E74C3C;
-  --red-d:     rgba(231,76,60,.10);
-  --slate:     #7A8BA0;
-  --slate2:    #9DAFC3;
-  --white:     #E8EDF5;
-  --border:    rgba(232,237,245,.07);
-  --border2:   rgba(232,237,245,.13);
-  --r:         10px;
-  --r-sm:      6px;
-}
-
-body {
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  line-height: 1.65;
-  min-height: 100vh;
-}
-
-/* ── NAV ── */
-nav {
-  position: sticky; top: 0; z-index: 200;
-  background: rgba(9,14,25,.96);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border2);
-  display: flex; align-items: center; gap: 0;
-  height: 54px; padding: 0 32px;
-}
-.nav-brand {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px; font-weight: 700;
-  letter-spacing: .03em;
-  color: var(--white);
-  margin-right: 32px;
-  white-space: nowrap;
-}
-.nav-brand em { color: var(--orange); font-style: normal; }
-.nav-tabs { display: flex; gap: 2px; flex: 1; overflow-x: auto; }
-.nav-tab {
-  padding: 6px 16px;
-  font-size: 12px; font-weight: 500;
-  letter-spacing: .05em; text-transform: uppercase;
-  border: none; background: transparent;
-  color: var(--slate); cursor: pointer;
-  border-radius: var(--r-sm);
-  white-space: nowrap;
-  transition: color .18s, background .18s;
-}
-.nav-tab:hover { color: var(--white); background: var(--bg3); }
-.nav-tab.on { color: var(--orange); background: var(--orange-d); }
-.nav-badge {
-  display: inline-block;
-  font-size: 10px; font-weight: 600;
-  background: var(--orange); color: var(--bg);
-  border-radius: 99px; padding: 1px 7px;
-  margin-left: 6px; vertical-align: middle;
-}
-
-/* ── PAGES ── */
-.page { display: none; max-width: 1020px; margin: 0 auto; padding: 48px 32px 72px; }
-.page.on { display: block; animation: up .3s ease both; }
-@keyframes up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ── HERO ── */
-.hero { text-align: center; padding-bottom: 52px; border-bottom: 1px solid var(--border); margin-bottom: 52px; }
-.pill {
-  display: inline-block; font-size: 10px; font-weight: 600;
-  letter-spacing: .12em; text-transform: uppercase;
-  background: var(--orange-d); color: var(--orange);
-  border: 1px solid var(--orange-b); border-radius: 99px;
-  padding: 4px 16px; margin-bottom: 22px;
-}
-.hero h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(30px, 4.5vw, 50px);
-  font-weight: 700; line-height: 1.12;
-  letter-spacing: -.01em; margin-bottom: 18px;
-}
-.hero h1 em { color: var(--orange); font-style: normal; }
-.hero p {
-  font-size: 16px; font-weight: 300;
-  color: var(--slate2); max-width: 640px;
-  margin: 0 auto 28px; line-height: 1.8;
-}
-.hero-meta {
-  display: flex; justify-content: center;
-  flex-wrap: wrap; gap: 6px 24px;
-  font-size: 11px; color: var(--slate);
-  letter-spacing: .04em;
-}
-.hero-meta b { color: var(--orange2); font-weight: 500; }
-
-/* ── SECTION LABEL ── */
-.sec-label {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: var(--orange); margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
-
-/* ── NARRATIVE BLOCK ── */
-.nblock {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-left: 3px solid var(--orange);
-  border-radius: var(--r); padding: 22px 26px;
-  margin-bottom: 16px;
-}
-.nblock h3 { font-size: 12px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--orange2); margin-bottom: 8px; }
-.nblock p { color: var(--slate2); line-height: 1.78; }
-.nblock p + p { margin-top: 10px; }
-
-/* ── ARCH DIAGRAM ── */
-.arch { display: flex; flex-direction: column; gap: 0; margin: 0 0 28px; }
-
-/* DEE TIER */
-.tier-dee {
-  background: linear-gradient(135deg, var(--orange-d), var(--orange-dd));
-  border: 1px solid var(--orange-b);
-  border-radius: var(--r) var(--r) 0 0;
-  padding: 20px 26px;
-  display: flex; align-items: center; gap: 18px;
-}
-.tier-dee-icon {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: var(--orange); color: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 16px; flex-shrink: 0;
-  font-family: 'Cormorant Garamond', serif;
-}
-.tier-dee-main { flex: 1; }
-.tier-dee-main strong { font-size: 16px; font-weight: 600; display: block; }
-.tier-dee-main span { font-size: 12px; color: var(--orange2); }
-.tier-dee-url {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--orange);
-  background: rgba(244,124,32,.08);
-  border: 1px solid var(--orange-b);
-  border-radius: var(--r-sm); padding: 6px 12px;
-  white-space: nowrap;
-}
-
-/* CONNECTOR */
-.conn {
-  display: flex; justify-content: center;
-  padding: 0; height: 32px;
-  position: relative;
-}
-.conn::before {
-  content: '';
-  position: absolute; left: 50%; top: 0; bottom: 0;
-  width: 2px; background: var(--border2);
-  transform: translateX(-50%);
-}
-.conn-label {
-  position: relative; z-index: 1;
-  background: var(--bg); border: 1px solid var(--border2);
-  border-radius: 99px; font-size: 10px; font-weight: 600;
-  letter-spacing: .07em; text-transform: uppercase;
-  color: var(--slate); padding: 2px 12px;
-  align-self: center;
-}
-
-/* OM ROW */
-.om-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px; margin-bottom: 0;
-}
-.om-card {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: var(--r);
-  padding: 16px 18px;
-  cursor: pointer;
-  transition: border-color .2s, background .2s;
-  position: relative;
-}
-.om-card:hover, .om-card.active {
-  border-color: var(--orange-b);
-  background: var(--bg3);
-}
-.om-card.active::after {
-  content: '';
-  position: absolute; bottom: -13px; left: 50%;
-  transform: translateX(-50%);
-  width: 0; height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 8px solid var(--orange);
-}
-.om-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.om-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
-.om-name { font-size: 13px; font-weight: 600; }
-.om-region { font-size: 11px; color: var(--slate); }
-.om-url { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--slate); margin-top: 6px; }
-
-/* OFFICE DETAIL PANEL */
-.office-panel {
-  background: var(--bg2); border: 1px solid var(--border2);
-  border-top: 2px solid var(--orange);
-  border-radius: 0 0 var(--r) var(--r);
-  padding: 24px; margin-top: 12px;
-  display: none;
-}
-.office-panel.open { display: block; animation: up .25s ease both; }
-
-/* HC-STRATEGIST */
-.strategist-block {
-  background: var(--bg3);
-  border: 1px solid var(--purple-b);
-  border-radius: var(--r);
-  padding: 18px 22px;
-  display: flex; gap: 18px; align-items: flex-start;
-  margin-bottom: 20px;
-}
-.strat-icon {
-  width: 42px; height: 42px; border-radius: var(--r-sm);
-  background: var(--purple-d); border: 1px solid var(--purple-b);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
-}
-.strat-body { flex: 1; }
-.strat-body strong { font-size: 14px; font-weight: 600; color: var(--purple); display: block; margin-bottom: 4px; }
-.strat-body p { font-size: 12.5px; color: var(--slate2); line-height: 1.65; }
-.bnca-tag {
-  display: inline-block; font-size: 10px; font-weight: 700;
-  letter-spacing: .09em; text-transform: uppercase;
-  background: var(--purple-d); color: var(--purple);
-  border: 1px solid var(--purple-b); border-radius: 99px;
-  padding: 2px 10px; margin-top: 8px;
-}
-
-/* HC-NODES GRID */
-.nodes-label { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--slate); margin-bottom: 12px; }
-.nodes-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
-.node-tile {
-  background: var(--bg4); border: 1px solid var(--border);
-  border-radius: var(--r-sm); padding: 12px 10px;
-  text-align: center; cursor: pointer;
-  transition: border-color .18s, background .18s;
-}
-.node-tile:hover { border-color: var(--orange-b); background: var(--bg3); }
-.node-tile.assigned { border-color: var(--green-d); }
-.node-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; color: var(--slate); margin-bottom: 5px;
-}
-.node-name { font-size: 11px; font-weight: 600; line-height: 1.3; color: var(--white); }
-.node-worker {
-  font-size: 10px; color: var(--green); margin-top: 5px;
-  display: flex; align-items: center; justify-content: center; gap: 3px;
-}
-.node-worker.unassigned { color: var(--slate); }
-.node-worker .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-
-.delegate-note {
-  background: var(--green-d); border: 1px solid rgba(46,204,113,.2);
-  border-radius: var(--r-sm); padding: 10px 14px;
-  font-size: 12px; color: var(--slate2); display: flex; gap: 8px; align-items: flex-start;
-}
-.delegate-note b { color: var(--green); }
-
-/* ── COMPARE ── */
-.compare {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 14px; margin-bottom: 20px;
-}
-.cmp-col { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
-.cmp-head {
-  padding: 13px 18px;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-.cmp-col.old .cmp-head { color: var(--slate); background: var(--bg3); }
-.cmp-col.new .cmp-head { color: var(--orange); background: var(--orange-d); border-bottom-color: var(--orange-b); }
-.cmp-body { padding: 10px 18px; }
-.cmp-row {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-  font-size: 13px; color: var(--slate2); line-height: 1.5;
-}
-.cmp-row:last-child { border-bottom: none; }
-.ci { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; margin-top: 1px; }
-.ci-bad { background: var(--red-d); color: var(--red); }
-.ci-good { background: var(--green-d); color: var(--green); }
-
-/* ── BPO CARDS ── */
-.bpo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-.bpo-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 20px;
-  transition: border-color .2s;
-}
-.bpo-card:hover { border-color: var(--teal-b); }
-.bpo-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.bpo-ico {
-  width: 34px; height: 34px; border-radius: var(--r-sm);
-  background: var(--teal-d); border: 1px solid var(--teal-b);
-  display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
-}
-.bpo-card h4 { font-size: 13px; font-weight: 600; }
-.bpo-card p { font-size: 12.5px; color: var(--slate); line-height: 1.6; }
-
-/* ── INTAKE ── */
-.intake-answer {
-  background: var(--green-d); border: 1px solid rgba(46,204,113,.25);
-  border-radius: var(--r); padding: 22px 26px; margin-bottom: 20px;
-}
-.intake-answer h3 { font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
-.intake-answer p { color: var(--slate2); font-size: 14px; line-height: 1.75; }
-
-.token-row {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 18px 22px; margin-bottom: 12px;
-  display: flex; align-items: center; gap: 20px;
-}
-.token-label { font-size: 12px; font-weight: 600; min-width: 90px; color: var(--white); }
-.token-val {
-  font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
-  background: var(--bg4); border: 1px solid var(--border2);
-  border-radius: var(--r-sm); padding: 6px 12px;
-  color: var(--slate2); flex: 1; word-break: break-all;
-}
-.token-val em { color: var(--orange); font-style: normal; }
-
-.flow {
-  display: flex; align-items: stretch; gap: 0;
-  margin-bottom: 20px; flex-wrap: wrap;
-}
-.flow-step {
-  flex: 1; min-width: 140px;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 16px 14px;
-  margin: 4px;
-}
-.flow-step.hi { border-color: var(--orange-b); background: var(--orange-dd); }
-.flow-step-n {
-  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--orange); margin-bottom: 6px;
-}
-.flow-step p { font-size: 12px; color: var(--slate2); line-height: 1.6; }
-
-/* ── FOOTER ── */
-footer {
-  text-align: center; padding: 24px 32px;
-  border-top: 1px solid var(--border);
-  font-size: 11px; color: var(--slate); letter-spacing: .04em;
-}
-footer em { color: var(--orange); font-style: normal; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 680px) {
-  .page { padding: 28px 16px 56px; }
-  nav { padding: 0 16px; }
-  .om-row { grid-template-columns: 1fr; }
-  .nodes-grid { grid-template-columns: repeat(2, 1fr); }
-  .compare, .bpo-grid { grid-template-columns: 1fr; }
-  .token-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .flow { flex-direction: column; }
-}
+:root{--bg:#080c0a;--bg2:#0d120f;--bg3:#111810;--bg4:#161e15;--border:rgba(0,255,100,0.08);--border2:rgba(0,255,100,0.15);--border3:rgba(0,255,100,0.25);--g:#00ff64;--g2:#00cc50;--g3:#008f38;--gdim:rgba(0,255,100,0.12);--gold:#f0c040;--golddim:rgba(240,192,64,0.12);--red:#ff4455;--reddim:rgba(255,68,85,0.12);--amber:#ffaa00;--amberdim:rgba(255,170,0,0.12);--blue:#00aaff;--bluedim:rgba(0,170,255,0.1);--text:#c8e8c8;--text2:#6a8a6a;--text3:#3a5a3a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+.topbar{height:44px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0}
+.tb-brand{display:flex;align-items:center;gap:10px;margin-right:24px}
+.tb-logo{width:28px;height:28px;border:1px solid var(--g3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g)}
+.tb-client{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.tb-client span{color:var(--g)}
+.tb-sep{width:1px;height:20px;background:var(--border2);margin:0 16px}
+.tb-stat{display:flex;align-items:center;gap:6px;padding:4px 10px;font-size:10px;letter-spacing:.08em;color:var(--text2);margin-right:4px}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dg{background:var(--g);box-shadow:0 0 6px var(--g)}.dr{background:var(--red);box-shadow:0 0 6px var(--red)}.da{background:var(--amber);box-shadow:0 0 4px var(--amber)}.db{background:var(--blue)}
+.ticker-wrap{flex:1;overflow:hidden;height:100%;display:flex;align-items:center}
+.ticker{white-space:nowrap;font-size:10px;color:var(--text3);letter-spacing:.05em;animation:ticker 55s linear infinite}
+@keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-200%)}}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-time{font-size:11px;color:var(--text2);letter-spacing:.06em}
+.tb-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--border);border-radius:3px}
+.tb-av{width:22px;height:22px;border-radius:50%;background:var(--gdim);border:1px solid var(--g3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--g);font-weight:700}
+.tb-un{font-size:11px;color:var(--text)}.tb-ur{font-size:9px;color:var(--text2);margin-top:1px}
+.ai-bar{height:22px;background:rgba(0,255,100,0.03);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:20px;flex-shrink:0}
+.ai-bar-item{font-size:9px;color:var(--text3);letter-spacing:.08em;display:flex;align-items:center;gap:5px}
+.main{display:flex;flex:1;overflow:hidden}
+.leftnav{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.nav-srch{padding:10px 12px;border-bottom:1px solid var(--border)}
+.nav-srch input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:6px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text);outline:none}
+.nav-srch input::placeholder{color:var(--text3)}
+.nav-srch input:focus{border-color:var(--g3)}
+.nav-scroll{overflow-y:auto;flex:1}
+.nav-scroll::-webkit-scrollbar{width:3px}
+.nav-scroll::-webkit-scrollbar-thumb{background:var(--border2)}
+.nav-gh{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 4px}
+.nav-gl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-weight:500}
+.nav-gc{font-size:9px;color:var(--text3)}
+.ni{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .15s;text-decoration:none}
+.ni:hover{background:var(--bg3);border-left-color:var(--g3)}
+.ni.act{background:var(--gdim);border-left-color:var(--g)}
+.ni-d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ni-n{font-size:11px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ni.act .ni-n{color:var(--g)}
+.ni-b{font-size:9px;padding:1px 5px;border-radius:2px;font-weight:500;flex-shrink:0}
+.bc{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.3)}.bw{background:var(--amberdim);color:var(--amber)}.bo{background:var(--gdim);color:var(--g2)}.bb{background:var(--bluedim);color:var(--blue)}
+.brief-btn{margin:10px 12px;padding:9px;background:var(--gdim);border:1px solid var(--border3);border-radius:3px;color:var(--g);font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase}
+.brief-btn:hover{background:rgba(0,255,100,.2);border-color:var(--g)}
+.center{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.tab-bar{height:36px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 16px;gap:2px;flex-shrink:0}
+.tab{padding:6px 16px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--text)}.tab.act{color:var(--g);border-bottom-color:var(--g)}
+.content{flex:1;overflow-y:auto;padding:16px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--border2)}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:12px 14px}
+.kpi-v{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text2)}
+.kpi-s{font-size:10px;margin-top:4px;color:var(--text3)}
+.vg{color:var(--g)}.vr{color:var(--red)}.va{color:var(--amber)}.vb{color:var(--blue)}.vgo{color:var(--gold)}
+.dg3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:12px 14px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.st{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text2)}
+.st::before{content:'◆ ';font-size:7px;color:var(--g3)}
+.sa{font-size:10px;color:var(--g3);cursor:pointer;letter-spacing:.06em;transition:color .15s}
+.sa:hover{color:var(--g)}
+.ar{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.ar:last-child{border-bottom:none}
+.ap{font-size:8px;font-weight:700;padding:2px 6px;border-radius:2px;letter-spacing:.08em;flex-shrink:0;margin-top:1px}
+.pu{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.3)}.pm{background:var(--amberdim);color:var(--amber)}.pl{background:var(--gdim);color:var(--g2)}
+.at{font-size:11px;flex:1;line-height:1.4;color:var(--text)}.am{font-size:10px;color:var(--text2);flex-shrink:0}
+.ir{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.ir:last-child{border-bottom:none}
+.id{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.in{font-size:11px;flex:1;color:var(--text)}.it{font-size:9px;color:var(--text2);letter-spacing:.06em}.itm{font-size:9px;color:var(--text3)}
+.ib{font-size:9px;padding:2px 8px;border:1px solid var(--border2);border-radius:2px;color:var(--text2);cursor:pointer;transition:all .15s;background:transparent;font-family:'JetBrains Mono',monospace}
+.ib:hover{border-color:var(--g3);color:var(--g)}.ib.rdy{border-color:rgba(0,255,100,.3);color:var(--g2)}.ib:disabled{opacity:.4;cursor:not-allowed}
+.node-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.nc{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px 12px;cursor:pointer;transition:all .15s;text-decoration:none;display:block}
+.nc:hover{background:var(--bg4);border-color:var(--border2);transform:translateY(-1px)}
+.ncc{border-left:3px solid var(--red)}.ncw{border-left:3px solid var(--amber)}.nco{border-left:3px solid var(--g3)}
+.ncn{font-size:11px;font-weight:500;color:var(--text);margin-bottom:2px}.ncu{font-size:9px;color:var(--text3);margin-bottom:6px}.ncs{display:flex;gap:8px}.ncst{font-size:9px;color:var(--text2)}
+.ai-out{background:var(--bg3);border:1px solid var(--border2);border-left:2px solid var(--g3);border-radius:3px;padding:12px;font-size:11px;line-height:1.7;color:var(--text);white-space:pre-wrap;display:none;margin-top:8px}
+.ai-out.show{display:block}
+.ai-err{background:var(--reddim);border:1px solid rgba(255,68,85,.3);border-radius:3px;padding:10px;font-size:11px;color:var(--red);display:none;margin-top:8px}
+.ai-err.show{display:block}
+.retry{font-size:10px;padding:4px 12px;background:transparent;border:1px solid var(--border2);border-radius:2px;color:var(--text2);cursor:pointer;font-family:'JetBrains Mono',monospace;margin-top:6px;display:none;transition:all .15s}
+.retry:hover{border-color:var(--g3);color:var(--g)}
+.rp{width:260px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.rps{padding:12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.rpt{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);margin-bottom:8px}
+.rpt::before{content:'◆ ';font-size:7px;color:var(--g3)}
+.rpc{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.rpc::-webkit-scrollbar{width:3px}
+.rpc::-webkit-scrollbar-thumb{background:var(--border2)}
+.cm{font-size:11px;line-height:1.5;padding:8px 10px;border-radius:3px}
+.ca{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-left:2px solid var(--g3)}
+.cu{background:var(--gdim);border:1px solid var(--border2);color:var(--g);text-align:right}
+.ce{background:var(--reddim);border:1px solid rgba(255,68,85,.3);color:var(--red)}
+.rpi-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0}
+.rpi{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:6px 8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text);outline:none}
+.rpi:focus{border-color:var(--g3)}.rpi::placeholder{color:var(--text3)}
+.rpsb{width:28px;height:28px;background:var(--gdim);border:1px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g);font-size:12px;transition:all .15s;flex-shrink:0}
+.rpsb:hover{background:rgba(0,255,100,.2);border-color:var(--g3)}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:9px;padding:3px 8px;border:1px solid var(--border2);border-radius:2px;color:var(--text2);cursor:pointer;letter-spacing:.04em;transition:all .15s}
+.chip:hover{border-color:var(--g3);color:var(--g);background:var(--gdim)}
+.bo-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1000;align-items:center;justify-content:center}
+.bo-overlay.open{display:flex}
+.bm{width:820px;max-height:88vh;background:var(--bg2);border:1px solid var(--border3);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
+.bh{padding:16px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.bt{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--g);letter-spacing:.04em}
+.bs{font-size:10px;color:var(--text2);margin-top:2px;letter-spacing:.06em}
+.bx{width:28px;height:28px;border:1px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:14px;transition:all .15s;background:transparent}
+.bx:hover{border-color:var(--red);color:var(--red)}
+.bb-body{flex:1;overflow-y:auto;padding:16px 20px}
+.bb-body::-webkit-scrollbar{width:3px}
+.bb-body::-webkit-scrollbar-thumb{background:var(--border2)}
+.bsec{margin-bottom:20px}
+.bsec-t{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--g3);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.bi{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:var(--bg3);border-radius:3px;margin-bottom:4px}
+.bn{width:18px;height:18px;background:var(--gdim);border:1px solid var(--g3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--g);flex-shrink:0;margin-top:1px}
+.bit{font-size:11px;flex:1;line-height:1.5;color:var(--text)}
+.ba-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.ba-l{font-size:9px;color:var(--text2)}
+.ba-row select{font-size:10px;font-family:'JetBrains Mono',monospace;background:var(--bg2);border:1px solid var(--border2);border-radius:2px;color:var(--text);padding:2px 6px}
+.btxt{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:10px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text);resize:vertical;min-height:80px;outline:none;line-height:1.6}
+.btxt:focus{border-color:var(--g3)}
+.bf{padding:12px 20px;border-top:1px solid var(--border2);display:flex;gap:8px;flex-shrink:0;align-items:center}
+.btn{padding:8px 16px;font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;transition:all .15s;border:none}
+.btn-p{background:var(--g);color:var(--bg);font-weight:700}.btn-p:hover{background:var(--g2)}.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-o:hover{border-color:var(--g3);color:var(--g)}.btn-o:disabled{opacity:.4;cursor:not-allowed}
+.btn-g{background:transparent;border:1px solid rgba(240,192,64,.3);color:var(--gold)}.btn-g:hover{background:var(--golddim)}.btn-g:disabled{opacity:.4;cursor:not-allowed}
+.sbar{height:22px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:16px;flex-shrink:0}
+.si{font-size:9px;color:var(--text3);letter-spacing:.06em;display:flex;align-items:center;gap:4px}
+.rform{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fl{font-size:10px;color:var(--text2);margin-bottom:6px;letter-spacing:.06em}
+.fsel{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);outline:none}
+.fsel:focus{border-color:var(--g3)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.pls{animation:pulse 2s ease infinite}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fi .25s ease both}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.sp{display:inline-block;animation:spin 1s linear infinite}
+.fi{display:none!important}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+  [id^="tab-"] { display: none !important; }
+  #tab-dash { display: block !important; }
+  #tab-dash.active-tab { display: block !important; }
+</style>
+<script>
+  (function() {
+    window.switchTab = function(id, btn) {
+      const tabs = document.querySelectorAll('[id^="tab-"]');
+      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
+      const target = document.getElementById('tab-' + id) || document.getElementById(id);
+      if (target) target.style.setProperty('display', 'block', 'important');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    };
+
+    // The Hammer: Try to initialize every 50ms until successful
+    let attempts = 0;
+    const interval = setInterval(() => {
+      const dashBtn = document.querySelector('.nav-btn');
+      if (dashBtn || attempts > 20) {
+        window.switchTab('dashboard', dashBtn);
+        clearInterval(interval);
+      }
+      attempts++;
+    }, 50);
+  })();
+</script>
 </head>
 <body>
 
-<!-- ── NAV ── -->
-<nav>
-  <div class="nav-brand"><em>TSM</em> · Honor Health</div>
-  <div class="nav-tabs">
-    <button class="nav-tab on" onclick="go('overview',this)">Overview</button>
-    <button class="nav-tab" onclick="go('architecture',this)">Architecture</button>
-    <button class="nav-tab" onclick="go('workflow',this)">Workflow Transform</button>
-    <button class="nav-tab" onclick="go('bpo',this)">BPO Services</button>
-    <button class="nav-tab" onclick="go('intake',this)">Intake Portal</button>
+<script>
+window.onload = function() {
+  console.log("--- TSM DIAGNOSTIC START ---");
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    dash.style.setProperty('display', 'block', 'important');
+    dash.innerHTML = '' + dash.innerHTML;
+    console.log("✔ tab-dash found and forced.");
+  } else {
+    console.error("✖ tab-dash NOT FOUND in DOM");
+  }
+};
+</script>
+
+
+
+
+
+
+<div class="topbar">
+  <div class="tb-brand"><div class="tb-logo">TSM</div><div><div class="tb-client"><span>HONOR</span>HEALTH · OPS PORTAL</div></div></div>
+  <div class="tb-sep"></div>
+  <div class="tb-stat"><span class="dot dg pls"></span>15 NODES ACTIVE</div>
+  <div class="tb-stat"><span class="dot dr"></span>2 CRITICAL</div>
+  <div class="tb-stat"><span class="dot da"></span>4 BPO PENDING</div>
+  <div class="tb-stat" id="ai-topstat"><span class="dot db"></span>AI CONNECTING...</div>
+  <div class="tb-sep"></div>
+  <div class="ticker-wrap"><div class="ticker">◆ HC-TAXPREP-3059 · CPU 80% · ACTION REQUIRED &nbsp;&nbsp;&nbsp; ◆ BPO INTAKE · 4 DOCUMENTS IN QUEUE &nbsp;&nbsp;&nbsp; ◆ DENIAL RATE 18.4% · EXCEEDS 15% CMS THRESHOLD &nbsp;&nbsp;&nbsp; ◆ CLM-0334 · CO-29 TIMELY FILING · WRITE-OFF RISK 48HRS &nbsp;&nbsp;&nbsp; ◆ MODIFIER -25 OVERUSE · 47 CLAIMS · $8,460 EXPOSURE &nbsp;&nbsp;&nbsp; ◆ CPT 99215 UPCODING · 23 CLAIMS · $12,040 AUDIT RISK &nbsp;&nbsp;&nbsp;</div></div>
+  <div class="tb-right">
+    <div class="tb-time" id="clk">--:--:--</div>
+    <div class="tb-sep"></div>
+    <div class="tb-user"><div class="tb-av">DM</div><div><div class="tb-un">Dee Montee</div><div class="tb-ur">Revenue Cycle Manager</div></div></div>
   </div>
-</nav>
-
-<!-- ══════════════════════════════════════════
-     PAGE 1 · OVERVIEW
-══════════════════════════════════════════ -->
-<div id="page-overview" class="page on">
-
-  <div class="hero">
-    <div class="pill">TSM System · Honor Health · Confidential Briefing for Dee</div>
-    <h1>One Platform.<br/><em>Total Operational Command</em><br/>Across Every Phoenix Office.</h1>
-    <p>TSM gives Honor Health a structured, real-time intelligence layer across all satellite offices — from Dee's command view at the top, through every office manager, down to each frontline worker responsible for their HC-node.</p>
-    <div class="hero-meta">
-      <span>Portal: <b>honorhealth.tsmatter.com</b></span>
-      <span>Intake: <b>intake.tsmatter.com</b></span>
-      <span>Offices: <b>Multiple · Phoenix Metro</b></span>
-      <span>Nodes per Office: <b>10 HC-Nodes + 1 HC-Strategist</b></span>
-    </div>
-  </div>
-
-  <div class="sec-label">What TSM provides Honor Health</div>
-
-  <div class="nblock">
-    <h3>Dee's command portal</h3>
-    <p>Dee's TSM Honor Portal is the single source of truth across every Honor Health satellite office in the Phoenix metro. Instead of receiving status updates through emails, phone calls, or meetings, Dee sees a live dashboard — every office manager's node activity, every delegation, every BNCA recommendation surfaced by that office's HC-Strategist — all in one view, in real time.</p>
-  </div>
-
-  <div class="nblock">
-    <h3>What office managers gain</h3>
-    <p>Each office manager at a satellite location gets their own TSM portal at <strong style="color:var(--orange2)">health.tsmatter.com</strong>. That portal houses their office's 10 HC-Nodes and their dedicated HC-Strategist — the intelligence engine that ingests their office's operational data and surfaces BNCA (Best Next Course of Action) recommendations. The manager sees exactly what needs attention, acts on it, and delegates each HC-node responsibility to the right frontline worker — all within the portal, all tracked automatically.</p>
-  </div>
-
-  <div class="nblock">
-    <h3>What frontline workers gain</h3>
-    <p>Rather than receiving informal task lists or verbal assignments, each frontline worker is formally delegated responsibility for one or more HC-nodes. Their node is their accountability — they own it in the system. Their activity on that node feeds back into the office's data, which the HC-Strategist continuously analyzes to generate the next round of BNCA recommendations for their manager. The loop is complete, automated, and transparent at every level.</p>
-  </div>
-
-  <div class="nblock">
-    <h3>Why this transforms the current workflow</h3>
-    <p>Honor Health's current workflow depends on individual initiative, informal communication, and manual reporting. TSM replaces that with a structured, role-aware system where accountability is built in — not bolted on. Every change is visible to the level above it. Every recommendation is grounded in real office data. And because the portal scales identically across all Phoenix locations, Dee doesn't manage five different operational styles — she manages one system, applied consistently everywhere.</p>
-  </div>
-
 </div>
 
-<!-- ══════════════════════════════════════════
-     PAGE 2 · ARCHITECTURE
-══════════════════════════════════════════ -->
-<div id="page-architecture" class="page">
-
-  <div class="hero" style="padding-bottom:36px;margin-bottom:36px;">
-    <div class="pill">System Architecture · Honor Health</div>
-    <h1>Three Tiers.<br/><em>One Connected System.</em></h1>
-    <p>Dee → Office Managers → HC-Nodes + HC-Strategist → Frontline Workers. Click an office manager below to see their complete portal structure.</p>
-  </div>
-
-  <div class="sec-label">Live architecture · Honor Health Phoenix network</div>
-
-  <div class="arch">
-    <!-- DEE TIER -->
-    <div class="tier-dee">
-      <div class="tier-dee-icon">D</div>
-      <div class="tier-dee-main">
-        <strong>Dee — TSM Honor Portal (Admin)</strong>
-        <span>Monitors all satellite office managers · Full network visibility · Audit access</span>
-      </div>
-      <div class="tier-dee-url">honorhealth.tsmatter.com</div>
-    </div>
-
-    <div class="conn"><span class="conn-label">Oversees ↓</span></div>
-
-    <!-- OFFICE MANAGER TIER -->
-    <div class="om-row">
-      <div class="om-card active" onclick="toggleOM(this,'panel-om1')">
-        <div class="om-card-top">
-          <div class="om-dot"></div>
-          <div class="om-name">Office Manager 1</div>
-        </div>
-        <div class="om-region">North Phoenix · Deer Valley</div>
-        <div class="om-url">health.tsmatter.com</div>
-      </div>
-      <div class="om-card" onclick="toggleOM(this,'panel-om2')">
-        <div class="om-card-top">
-          <div class="om-dot"></div>
-          <div class="om-name">Office Manager 2</div>
-        </div>
-        <div class="om-region">Central Phoenix · Midtown</div>
-        <div class="om-url">health.tsmatter.com</div>
-      </div>
-      <div class="om-card" onclick="toggleOM(this,'panel-om3')">
-        <div class="om-card-top">
-          <div class="om-dot"></div>
-          <div class="om-name">Office Manager 3</div>
-        </div>
-        <div class="om-region">East Valley · Scottsdale</div>
-        <div class="om-url">health.tsmatter.com</div>
-      </div>
-    </div>
-
-    <!-- OFFICE PANEL (shared, updates per click) -->
-    <div id="panel-om1" class="office-panel open">
-      <div class="strategist-block">
-        <div class="strat-icon">🧠</div>
-        <div class="strat-body">
-          <strong>HC-Strategist · North Phoenix Office</strong>
-          <p>Ingests all operational data from this office's 10 HC-nodes in real time. Analyzes patterns in scheduling loads, billing backlogs, compliance gaps, credential expirations, and staffing throughput. Surfaces actionable BNCA recommendations directly to the office manager's dashboard — what to prioritize, what to delegate, what to escalate to Dee.</p>
-          <span class="bnca-tag">BNCA · Best Next Course of Action</span>
-        </div>
-      </div>
-
-      <div class="nodes-label">10 HC-Nodes · Each delegated to a frontline worker</div>
-      <div class="nodes-grid">
-        <div class="node-tile assigned">
-          <div class="node-num">HC-01</div>
-          <div class="node-name">Patient Scheduling</div>
-          <div class="node-worker"><span class="dot"></span>J. Rivera</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-02</div>
-          <div class="node-name">Insurance Verification</div>
-          <div class="node-worker"><span class="dot"></span>M. Chen</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-03</div>
-          <div class="node-name">Prior Authorization</div>
-          <div class="node-worker"><span class="dot"></span>T. Brooks</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-04</div>
-          <div class="node-name">Billing &amp; Claims</div>
-          <div class="node-worker"><span class="dot"></span>S. Patel</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-05</div>
-          <div class="node-name">Medical Records</div>
-          <div class="node-worker"><span class="dot"></span>A. Torres</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-06</div>
-          <div class="node-name">Credentialing</div>
-          <div class="node-worker"><span class="dot"></span>D. Kim</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-07</div>
-          <div class="node-name">Referral Coordination</div>
-          <div class="node-worker"><span class="dot"></span>L. Morales</div>
-        </div>
-        <div class="node-tile assigned">
-          <div class="node-num">HC-08</div>
-          <div class="node-name">Compliance &amp; Audits</div>
-          <div class="node-worker"><span class="dot"></span>R. Johnson</div>
-        </div>
-        <div class="node-tile">
-          <div class="node-num">HC-09</div>
-          <div class="node-name">HR &amp; Onboarding</div>
-          <div class="node-worker unassigned"><span class="dot"></span>Unassigned</div>
-        </div>
-        <div class="node-tile">
-          <div class="node-num">HC-10</div>
-          <div class="node-name">Patient Intake</div>
-          <div class="node-worker unassigned"><span class="dot"></span>Unassigned</div>
-        </div>
-      </div>
-
-      <div class="delegate-note">
-        <span style="font-size:16px;line-height:1">↗</span>
-        <span><b>Delegation flow:</b> Office Manager sees HC-Strategist BNCA recommendations → reviews node status → assigns or reassigns frontline workers to HC-nodes directly in the portal → all changes log to Dee's view instantly.</span>
-      </div>
-    </div>
-
-    <div id="panel-om2" class="office-panel">
-      <div class="strategist-block">
-        <div class="strat-icon">🧠</div>
-        <div class="strat-body">
-          <strong>HC-Strategist · Central Phoenix Office</strong>
-          <p>Same intelligence engine, scoped to this office's data. Ingests node activity, tracks throughput metrics, identifies where this location's operational pressure is highest, and recommends the next best action for the manager to take — delegation, escalation, or resource reallocation.</p>
-          <span class="bnca-tag">BNCA · Best Next Course of Action</span>
-        </div>
-      </div>
-      <div class="nodes-label">10 HC-Nodes · Delegation pending for several nodes</div>
-      <div class="nodes-grid">
-        <div class="node-tile assigned"><div class="node-num">HC-01</div><div class="node-name">Patient Scheduling</div><div class="node-worker"><span class="dot"></span>C. Nguyen</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-02</div><div class="node-name">Insurance Verification</div><div class="node-worker"><span class="dot"></span>B. Okafor</div></div>
-        <div class="node-tile"><div class="node-num">HC-03</div><div class="node-name">Prior Authorization</div><div class="node-worker unassigned"><span class="dot"></span>Unassigned</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-04</div><div class="node-name">Billing &amp; Claims</div><div class="node-worker"><span class="dot"></span>H. Singh</div></div>
-        <div class="node-tile"><div class="node-num">HC-05</div><div class="node-name">Medical Records</div><div class="node-worker unassigned"><span class="dot"></span>Unassigned</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-06</div><div class="node-name">Credentialing</div><div class="node-worker"><span class="dot"></span>F. Martinez</div></div>
-        <div class="node-tile"><div class="node-num">HC-07</div><div class="node-name">Referral Coordination</div><div class="node-worker unassigned"><span class="dot"></span>Unassigned</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-08</div><div class="node-name">Compliance &amp; Audits</div><div class="node-worker"><span class="dot"></span>P. Williams</div></div>
-        <div class="node-tile"><div class="node-num">HC-09</div><div class="node-name">HR &amp; Onboarding</div><div class="node-worker unassigned"><span class="dot"></span>Unassigned</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-10</div><div class="node-name">Patient Intake</div><div class="node-worker"><span class="dot"></span>Y. Thompson</div></div>
-      </div>
-      <div class="delegate-note">
-        <span style="font-size:16px;line-height:1">↗</span>
-        <span><b>BNCA flag active:</b> HC-Strategist has identified HC-03, HC-05, and HC-07 as unassigned — nodes under load. Recommendation: delegate prior auth to available staff. Manager action required.</span>
-      </div>
-    </div>
-
-    <div id="panel-om3" class="office-panel">
-      <div class="strategist-block">
-        <div class="strat-icon">🧠</div>
-        <div class="strat-body">
-          <strong>HC-Strategist · East Valley Office</strong>
-          <p>Monitors Scottsdale office data across all 10 nodes. This office's HC-Strategist has flagged elevated credentialing expiration risk and a scheduling backlog building in HC-01. BNCA recommendations have been pushed to the OM dashboard for immediate review and delegation.</p>
-          <span class="bnca-tag">BNCA · Best Next Course of Action</span>
-        </div>
-      </div>
-      <div class="nodes-label">10 HC-Nodes · BNCA alert active on 2 nodes</div>
-      <div class="nodes-grid">
-        <div class="node-tile" style="border-color:rgba(231,76,60,.35)"><div class="node-num">HC-01</div><div class="node-name">Patient Scheduling</div><div class="node-worker unassigned"><span class="dot"></span>Overloaded</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-02</div><div class="node-name">Insurance Verification</div><div class="node-worker"><span class="dot"></span>K. Adams</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-03</div><div class="node-name">Prior Authorization</div><div class="node-worker"><span class="dot"></span>N. Clark</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-04</div><div class="node-name">Billing &amp; Claims</div><div class="node-worker"><span class="dot"></span>O. Lewis</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-05</div><div class="node-name">Medical Records</div><div class="node-worker"><span class="dot"></span>G. Hall</div></div>
-        <div class="node-tile" style="border-color:rgba(231,76,60,.35)"><div class="node-num">HC-06</div><div class="node-name">Credentialing</div><div class="node-worker unassigned"><span class="dot"></span>Expiry Risk</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-07</div><div class="node-name">Referral Coordination</div><div class="node-worker"><span class="dot"></span>I. Baker</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-08</div><div class="node-name">Compliance &amp; Audits</div><div class="node-worker"><span class="dot"></span>V. Young</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-09</div><div class="node-name">HR &amp; Onboarding</div><div class="node-worker"><span class="dot"></span>E. Scott</div></div>
-        <div class="node-tile assigned"><div class="node-num">HC-10</div><div class="node-name">Patient Intake</div><div class="node-worker"><span class="dot"></span>Q. Green</div></div>
-      </div>
-      <div class="delegate-note" style="background:var(--red-d);border-color:rgba(231,76,60,.2)">
-        <span style="font-size:16px;line-height:1">⚠</span>
-        <span><b style="color:var(--red)">BNCA alert:</b> HC-01 scheduling node is overloaded — HC-Strategist recommends splitting workload or escalating to Dee for resource reallocation. HC-06 credentialing has two expirations due within 30 days.</span>
-      </div>
-    </div>
-
-  </div><!-- /arch -->
-
-  <div style="margin-top:24px;" class="nblock">
-    <h3>How real-time sync works across all tiers</h3>
-    <p>Every action at the node level — a frontline worker completing a task, an OM delegating a node, the HC-Strategist issuing a new BNCA recommendation — propagates upward to Dee's portal instantly via WebSocket connection. Dee doesn't need to pull reports or wait for status meetings. The system pushes changes the moment they happen. The entire Honor Health Phoenix network is always current in Dee's view.</p>
-  </div>
-
+<div class="ai-bar">
+  <div class="ai-bar-item"><span class="dot" id="ai-dot" style="background:var(--text3)"></span><span id="ai-status-txt">tsm-core.fly.dev · checking...</span></div>
+  <div class="ai-bar-item"><span class="dot dg"></span>TSM NEURAL CORE · ACTIVE</div>
+  <div class="ai-bar-item"><span class="dot dg"></span>TSM-AI-3200 · PORT 3200</div>
+  <div class="ai-bar-item"><span class="dot db"></span>HONORHEALTH CONTEXT LOADED</div>
+  <div style="margin-left:auto;font-size:9px;color:var(--text3);letter-spacing:.06em" id="ai-latency">latency: --ms</div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     PAGE 3 · WORKFLOW TRANSFORM
-══════════════════════════════════════════ -->
-<div id="page-workflow" class="page">
+<div class="main">
+  <div class="leftnav">
+    <div class="nav-srch"><input type="text" placeholder="⌕  search nodes..." oninput="filterNav(this.value)"></div>
+    <div class="nav-scroll">
+      <div class="nav-gh"><span class="nav-gl" style="color:var(--red)">⚠ Critical</span><span class="nav-gc" style="color:var(--red)">2</span></div>
+      <a class="ni" href="https://hc-taxprep.tsmatter.com" target="_blank"><span class="ni-d pls" style="background:var(--red)"></span><span class="ni-n">HC Tax Prep</span><span class="ni-b bc">80% CPU</span></a>
+      <a class="ni" href="https://hc-billing.tsmatter.com" target="_blank"><span class="ni-d" style="background:var(--red)"></span><span class="ni-n">BPO-CON-5013</span><span class="ni-b bc">STOPPED</span></a>
 
-  <div class="hero" style="padding-bottom:36px;margin-bottom:36px;">
-    <div class="pill">Before &amp; After · Workflow Transformation</div>
-    <h1>What Changes.<br/><em>Everything That Matters.</em></h1>
-    <p>A direct comparison of how Honor Health's satellite offices operate today versus how they operate inside the TSM system.</p>
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl" style="color:var(--amber)">◉ Active Today</span><span class="nav-gc">5</span></div>
+      <a class="ni act" href="https://hc-billing.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Billing</span><span class="ni-b bw">231 claims</span></a>
+      <a class="ni" href="https://hc-compliance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Compliance</span><span class="ni-b bb">3 docs</span></a>
+      <a class="ni" href="https://hc-medical.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Medical</span><span class="ni-b bo">online</span></a>
+      <a class="ni" href="https://hc-insurance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Insurance</span><span class="ni-b bw">6 auths</span></a>
+      <a class="ni" href="https://hc-command.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Command</span><span class="ni-b bo">online</span></a>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl">Revenue</span><span class="nav-gc">3</span></div>
+      <a class="ni" href="https://hc-billing.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Billing</span></a>
+      <a class="ni" href="https://hc-financial.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Financial</span></a>
+      <a class="ni" href="https://hc-taxprep.tsmatter.com" target="_blank"><span class="ni-d" style="background:var(--red)"></span><span class="ni-n">HC Tax Prep</span></a>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl">Compliance</span><span class="nav-gc">3</span></div>
+      <a class="ni" href="https://hc-compliance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Compliance</span></a>
+      <a class="ni" href="https://compliance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">Compliance</span></a>
+      <a class="ni" href="https://auditops.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">AuditOps</span></a>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl">Clinical</span><span class="nav-gc">4</span></div>
+      <a class="ni" href="https://hc-medical.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Medical</span></a>
+      <a class="ni" href="https://hc-pharmacy.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Pharmacy</span></a>
+      <a class="ni" href="https://hc-insurance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Insurance</span></a>
+      <a class="ni" href="https://dme.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">DME</span></a>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl">Operations</span><span class="nav-gc">4</span></div>
+      <a class="ni" href="https://hc-vendors.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Vendors</span></a>
+      <a class="ni" href="https://hc-legal.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Legal</span></a>
+      <a class="ni" href="https://hc-grants.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Grants</span></a>
+      <a class="ni" href="https://appointments.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">Appointments</span></a>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl">Strategy</span><span class="nav-gc">2</span></div>
+      <a class="ni" href="https://hc-strategist.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Strategist</span></a>
+      <a class="ni" href="https://strategist.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">Strategist</span></a>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl" style="color:var(--blue)">BPO Intake</span><span class="nav-gc" style="color:var(--blue)">4</span></div>
+      <div class="ni"><span class="ni-d da"></span><span class="ni-n">3 Processing</span><span class="ni-b bw">queue</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">1 Ready</span><span class="ni-b bo">review</span></div>
+
+      <div class="nav-gh" style="margin-top:6px"><span class="nav-gl">Reports</span></div>
+      <div class="ni" onclick="showTab('reports')" style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">Exec Summary</span><span class="ni-b" style="background:var(--golddim);color:var(--gold)">build</span></div>
+    </div>
+    <button class="brief-btn" onclick="openBriefing()">◆ Build Team Briefing</button>
   </div>
 
-  <div class="sec-label">Operational reality · before vs. after TSM</div>
+  <div class="center">
+    <div class="tab-bar">
+      <div class="tab act" id="t-dashboard" onclick="showTab('dashboard')">Dashboard</div>
+      <div class="tab" id="t-nodes" onclick="showTab('nodes')">All Nodes</div>
+      <div class="tab" id="t-intake" onclick="showTab('intake')">BPO Intake</div>
+      <div class="tab" id="t-alerts" onclick="showTab('alerts')">Alerts <span style="color:var(--red);margin-left:4px">6</span></div>
+      <div class="tab" id="t-reports" onclick="showTab('reports')">Reports</div>
+      <div class="tab" id="t-staff" onclick="showTab('staff')">&#9650; Staff Intel</div>
+    </div>
+    <div class="content">
 
-  <div class="compare">
-    <div class="cmp-col old">
-      <div class="cmp-head">⚠ Current Workflow</div>
-      <div class="cmp-body">
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>Dee receives office status via email, calls, or scheduled meetings — always delayed, often incomplete</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>No structured view of what each office manager is responsible for or which tasks are active</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>Node-level responsibilities assigned verbally or through shared docs — no accountability trail</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>Frontline workers receive tasks informally — no system-level ownership of their function</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>No intelligence layer — managers identify problems when they're already problems, not before</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>BPO intake is ad hoc — email, phone, fax with no tracking or confirmation</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>Compliance audit prep is manual — separate documentation effort every cycle</div>
-        <div class="cmp-row"><span class="ci ci-bad">✕</span>No visibility across Phoenix offices simultaneously — each location is operationally siloed</div>
+      
+<div id="tab-dashboard" class="fi">
+        <div class="kpi-row">
+          <div class="kpi"><div class="kpi-v vr">1,256</div><div class="kpi-l">Claims this month</div><div class="kpi-s" style="color:var(--red)">231 denied · 18.4% rate</div></div>
+          <div class="kpi"><div class="kpi-v va">$48K</div><div class="kpi-l">Revenue at risk</div><div class="kpi-s">14 aging &gt;30 days</div></div>
+          <div class="kpi"><div class="kpi-v vg">94.2%</div><div class="kpi-l">Clean claim rate</div><div class="kpi-s" style="color:var(--amber)">target 97% · gap 2.8pt</div></div>
+          <div class="kpi"><div class="kpi-v vb">4</div><div class="kpi-l">BPO docs pending</div><div class="kpi-s">1 ready for review</div></div>
+          <div class="kpi"><div class="kpi-v vgo">15</div><div class="kpi-l">Nodes active</div><div class="kpi-s" style="color:var(--red)">2 need attention</div></div>
+        </div>
+        <div class="dg3">
+          <div class="panel">
+            <div class="sh"><span class="st">Active Alerts</span><span class="sa" onclick="showTab('alerts')">view all →</span></div>
+            <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — PR-96, CO-4, CO-11</span><span class="am" style="color:var(--red)">$48K</span></div>
+            <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (93454) — CO-29 timely filing · write-off risk in 48hrs</span><span class="am" style="color:var(--red)">$3.8K</span></div>
+            <div class="ar"><span class="ap pm">MED</span><span class="at">CPT 99215 upcoding — 23 claims · $12,040 audit exposure</span><span class="am">Audit</span></div>
+            <div class="ar"><span class="ap pm">MED</span><span class="at">Modifier -25 overuse — 47 claims · compliance review required</span><span class="am">$8,460</span></div>
+            <div class="ar"><span class="ap pl">LOW</span><span class="at">ICD-10 specificity gaps on 14 claims</span><span class="am">Docs</span></div>
+          </div>
+          <div class="panel">
+            <div class="sh"><span class="st">BPO Intake</span><span class="sa" onclick="showTab('intake')">view all →</span></div>
+            <div class="ir"><span class="id" style="background:var(--g);box-shadow:0 0 4px var(--g)"></span><div style="flex:1"><div class="in">ERA_20260414_batch.txt</div><div class="it">ERA FILE · $1.00/DOC TIER</div></div><span class="itm">08:14</span><button class="ib rdy" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch with 231 claims, multiple payers, denial codes present')">REVIEW</button></div>
+            <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CLM-denial-batch-231.csv</div><div class="it">DENIAL BATCH · $1.00/DOC</div></div><span class="itm">07:52</span><button class="ib" disabled>PROCESSING</button></div>
+            <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CPT-audit-Q1-2026.pdf</div><div class="it">AUDIT DOC · $2.00/DOC</div></div><span class="itm">07:30</span><button class="ib" disabled>PROCESSING</button></div>
+            <div class="ir"><span class="id" style="background:var(--text3)"></span><div style="flex:1"><div class="in">physician-query-pkg.pdf</div><div class="it">CDI PACKAGE · $2.00/DOC</div></div><span class="itm">06:45</span><button class="ib" disabled>QUEUED</button></div>
+          </div>
+          <div class="panel">
+            <div class="sh"><span class="st">Node Status</span></div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Billing</span><span style="color:var(--amber)">231 claims</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Compliance</span><span style="color:var(--g2)">online</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Medical</span><span style="color:var(--g2)">online</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-TaxPrep</span><span style="color:var(--red)">80% CPU ⚠</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Insurance</span><span style="color:var(--amber)">6 pending auths</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Pharmacy</span><span style="color:var(--g2)">online</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Legal</span><span style="color:var(--g2)">online</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Strategist</span><span style="color:var(--g2)">online</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Vendors</span><span style="color:var(--g2)">online</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Grants</span><span style="color:var(--g2)">online</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="sh"><span class="st">Quick Launch</span><span class="sa" onclick="showTab('nodes')">all nodes →</span></div>
+          <div class="node-grid">
+            <a class="nc ncc" href="https://hc-taxprep.tsmatter.com" target="_blank"><div class="ncn">HC Tax Prep</div><div class="ncu">hc-taxprep.tsmatter.com · :3059</div><div class="ncs"><span class="ncst" style="color:var(--red)">80% CPU · 187 restarts</span></div></a>
+            <a class="nc ncw" href="https://hc-billing.tsmatter.com" target="_blank"><div class="ncn">HC Billing</div><div class="ncu">hc-billing.tsmatter.com · :3050</div><div class="ncs"><span class="ncst" style="color:var(--amber)">231 denied · $48K risk</span></div></a>
+            <a class="nc nco" href="https://hc-compliance.tsmatter.com" target="_blank"><div class="ncn">HC Compliance</div><div class="ncu">hc-compliance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 3 BPO docs</span></div></a>
+            <a class="nc ncw" href="https://hc-insurance.tsmatter.com" target="_blank"><div class="ncn">HC Insurance</div><div class="ncu">hc-insurance.tsmatter.com · :3054</div><div class="ncs"><span class="ncst" style="color:var(--amber)">6 pending authorizations</span></div></a>
+            <a class="nc nco" href="https://hc-strategist.tsmatter.com" target="_blank"><div class="ncn">HC Strategist</div><div class="ncu">hc-strategist.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · AI ready</span></div></a>
+            <a class="nc nco" href="https://hc-command.tsmatter.com" target="_blank"><div class="ncn">HC Command</div><div class="ncu">hc-command.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · command center</span></div></a>
+          </div>
+        </div>
+      </div>
+
+      
+<div id="tab-nodes" class="fi" style="display:none">
+        <div class="panel">
+          <div class="sh"><span class="st">All Nodes — HonorHealth Suite (15)</span></div>
+          <div class="node-grid">
+            <a class="nc ncc" href="https://hc-taxprep.tsmatter.com" target="_blank"><div class="ncn">HC Tax Prep</div><div class="ncu">hc-taxprep.tsmatter.com · :3059</div><div class="ncs"><span class="ncst" style="color:var(--red)">80% CPU · 187 restarts</span></div></a>
+            <a class="nc ncw" href="https://hc-billing.tsmatter.com" target="_blank"><div class="ncn">HC Billing</div><div class="ncu">hc-billing.tsmatter.com · :3050</div><div class="ncs"><span class="ncst" style="color:var(--amber)">231 denied claims</span></div></a>
+            <a class="nc nco" href="https://hc-compliance.tsmatter.com" target="_blank"><div class="ncn">HC Compliance</div><div class="ncu">hc-compliance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 51mb</span></div></a>
+            <a class="nc nco" href="https://hc-medical.tsmatter.com" target="_blank"><div class="ncn">HC Medical</div><div class="ncu">hc-medical.tsmatter.com · :3056</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 54mb</span></div></a>
+            <a class="nc nco" href="https://hc-pharmacy.tsmatter.com" target="_blank"><div class="ncn">HC Pharmacy</div><div class="ncu">hc-pharmacy.tsmatter.com · :3057</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
+            <a class="nc ncw" href="https://hc-insurance.tsmatter.com" target="_blank"><div class="ncn">HC Insurance</div><div class="ncu">hc-insurance.tsmatter.com · :3054</div><div class="ncs"><span class="ncst" style="color:var(--amber)">6 pending auths</span></div></a>
+            <a class="nc nco" href="https://hc-legal.tsmatter.com" target="_blank"><div class="ncn">HC Legal</div><div class="ncu">hc-legal.tsmatter.com · :3055</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
+            <a class="nc nco" href="https://hc-vendors.tsmatter.com" target="_blank"><div class="ncn">HC Vendors</div><div class="ncu">hc-vendors.tsmatter.com · :3060</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
+            <a class="nc nco" href="https://hc-grants.tsmatter.com" target="_blank"><div class="ncn">HC Grants</div><div class="ncu">hc-grants.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 52mb</span></div></a>
+            <a class="nc nco" href="https://hc-financial.tsmatter.com" target="_blank"><div class="ncn">HC Financial</div><div class="ncu">hc-financial.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 52mb</span></div></a>
+            <a class="nc nco" href="https://hc-strategist.tsmatter.com" target="_blank"><div class="ncn">HC Strategist</div><div class="ncu">hc-strategist.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · AI ready</span></div></a>
+            <a class="nc nco" href="https://hc-command.tsmatter.com" target="_blank"><div class="ncn">HC Command</div><div class="ncu">hc-command.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · command center</span></div></a>
+            <a class="nc nco" href="https://honorhealth.tsmatter.com" target="_blank"><div class="ncn">HonorHealth Portal</div><div class="ncu">honorhealth.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · client-facing</span></div></a>
+            <a class="nc nco" href="https://appointments.tsmatter.com" target="_blank"><div class="ncn">Appointments</div><div class="ncu">appointments.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online</span></div></a>
+            <a class="nc nco" href="https://dme.tsmatter.com" target="_blank"><div class="ncn">DME</div><div class="ncu">dme.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online</span></div></a>
+          </div>
+        </div>
+      </div>
+
+      
+<div id="tab-intake" class="fi" style="display:none">
+        <div class="panel" style="margin-bottom:12px">
+          <div class="sh"><span class="st">BPO Document Intake Queue</span></div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <thead><tr style="border-bottom:1px solid var(--border2)">
+              <th style="text-align:left;padding:6px 8px;color:var(--text2);font-weight:400;font-size:9px;letter-spacing:.1em">DOCUMENT</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text2);font-weight:400;font-size:9px;letter-spacing:.1em">TYPE</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text2);font-weight:400;font-size:9px;letter-spacing:.1em">TIER</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text2);font-weight:400;font-size:9px;letter-spacing:.1em">RECEIVED</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text2);font-weight:400;font-size:9px;letter-spacing:.1em">STATUS</th>
+              <th style="text-align:right;padding:6px 8px;color:var(--text2);font-weight:400;font-size:9px;letter-spacing:.1em">ACTION</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">ERA_20260414_batch.txt</td><td style="padding:8px;color:var(--text2)">ERA File</td><td style="padding:8px"><span style="background:var(--amberdim);color:var(--amber);padding:2px 6px;border-radius:2px;font-size:9px">$1.00/doc</span></td><td style="padding:8px;color:var(--text2)">08:14</td><td style="padding:8px"><span style="color:var(--g)">● READY</span></td><td style="padding:8px;text-align:right"><button class="btn btn-o" style="font-size:9px;padding:4px 12px" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch — 231 claims, multiple payers including Medicare and Aetna, denial codes PR-96 and CO-4 present')">Review Report</button></td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">CLM-denial-batch-231.csv</td><td style="padding:8px;color:var(--text2)">Denial Batch</td><td style="padding:8px"><span style="background:var(--amberdim);color:var(--amber);padding:2px 6px;border-radius:2px;font-size:9px">$1.00/doc</span></td><td style="padding:8px;color:var(--text2)">07:52</td><td style="padding:8px"><span style="color:var(--amber)">◎ PROCESSING</span></td><td style="padding:8px;text-align:right"><button class="btn btn-o" style="font-size:9px;padding:4px 12px" disabled>Pending...</button></td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">CPT-audit-Q1-2026.pdf</td><td style="padding:8px;color:var(--text2)">Audit Document</td><td style="padding:8px"><span style="background:var(--reddim);color:var(--red);padding:2px 6px;border-radius:2px;font-size:9px">$2.00/doc</span></td><td style="padding:8px;color:var(--text2)">07:30</td><td style="padding:8px"><span style="color:var(--amber)">◎ PROCESSING</span></td><td style="padding:8px;text-align:right"><button class="btn btn-o" style="font-size:9px;padding:4px 12px" disabled>Pending...</button></td></tr>
+              <tr><td style="padding:8px">physician-query-pkg.pdf</td><td style="padding:8px;color:var(--text2)">CDI Package</td><td style="padding:8px"><span style="background:var(--reddim);color:var(--red);padding:2px 6px;border-radius:2px;font-size:9px">$2.00/doc</span></td><td style="padding:8px;color:var(--text2)">06:45</td><td style="padding:8px"><span style="color:var(--text3)">○ QUEUED</span></td><td style="padding:8px;text-align:right"><button class="btn btn-o" style="font-size:9px;padding:4px 12px" disabled>Queued</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="doc-panel" style="display:none" class="panel fi">
+          <div class="sh"><span class="st" id="doc-ttl">AI Document Analysis</span><button class="btn btn-o" style="font-size:9px;padding:3px 10px" onclick="document.getElementById('doc-panel').style.display='none'">✕</button></div>
+          <div id="doc-out" class="ai-out"></div>
+          <div id="doc-err" class="ai-err"></div>
+          <button id="doc-retry" class="retry" onclick="retryDoc()">↻ Retry Analysis</button>
+        </div>
+      </div>
+
+      
+<div id="tab-alerts" class="fi" style="display:none">
+        <div class="panel">
+          <div class="sh"><span class="st">All Active Alerts (6)</span></div>
+          <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — top codes: PR-96 (45%), CO-4 (28%), CO-11 (18%). Payer-specific appeal strategy required immediately.</span><span class="am" style="color:var(--red)">$48K</span></div>
+          <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (CPT 93454 · $3,800) — CO-29 timely filing denial. Write-off risk in 48 hours. Appeal must be filed today.</span><span class="am" style="color:var(--red)">$3.8K</span></div>
+          <div class="ar"><span class="ap pm">MED</span><span class="at">CPT 99215 upcoding pattern on 23 claims — documentation incomplete. Audit exposure $12,040. Coder education required by Friday.</span><span class="am">$12K</span></div>
+          <div class="ar"><span class="ap pm">MED</span><span class="at">Modifier -25 overuse on 47 claims — compliance review before next submission cycle. $8,460 at risk.</span><span class="am">$8,460</span></div>
+          <div class="ar"><span class="ap pm">MED</span><span class="at">HC-TAXPREP-3059 at 80% CPU with 187 restarts — process instability. Review logs at hc-taxprep.tsmatter.com immediately.</span><span class="am" style="color:var(--red)">NODE</span></div>
+          <div class="ar"><span class="ap pl">LOW</span><span class="at">ICD-10 specificity gaps on 14 claims — documentation incomplete. Recommend physician query on CLM-0290, CLM-0305, CLM-0312.</span><span class="am">Docs</span></div>
+        </div>
+      </div>
+
+      
+<div id="tab-reports" class="fi" style="display:none">
+        <div class="panel">
+          <div class="sh"><span class="st">Executive Summary Builder</span></div>
+          <div class="rform">
+            <div><div class="fl">REPORTING PERIOD</div><select class="fsel" id="rpt-period"><option>Week of April 14, 2026</option><option>Month of April 2026</option><option>Q1 2026</option></select></div>
+            <div><div class="fl">RECIPIENT</div><select class="fsel" id="rpt-recipient"><option>VP Revenue Cycle</option><option>Chief Compliance Officer</option><option>CFO</option><option>All Executives</option></select></div>
+          </div>
+          <div class="rform">
+            <div><div class="fl">FOCUS AREAS</div><select class="fsel" id="rpt-focus"><option>Revenue cycle + compliance</option><option>Denial management only</option><option>Compliance + audit risk</option><option>Full operational summary</option></select></div>
+            <div style="display:flex;align-items:flex-end"><button class="btn btn-g" id="exec-btn" onclick="buildExecSummary()" style="width:100%">◆ Generate Executive Summary</button></div>
+          </div>
+          <div id="exec-out" class="ai-out"></div>
+          <div id="exec-err" class="ai-err"></div>
+          <button id="exec-retry" class="retry" onclick="buildExecSummary()">↻ Retry</button>
+          <div id="exec-actions" style="display:none;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-p" onclick="alert('Executive summary sent.')">Send to Recipient</button>
+            <button class="btn btn-o" onclick="alert('Exporting PDF...')">Export PDF</button>
+            <button class="btn btn-o" onclick="buildExecSummary()">↻ Regenerate</button>
+          </div>
+        </div>
+      </div>
+      
+<div id="tab-staff" class="fi" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="panel">
+            <div class="sh"><span class="st">Log Observation</span></div>
+            <div style="margin-bottom:8px"><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:.06em">STAFF MEMBER</div>
+            <select id="staff-name" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);outline:none">
+              <option value="">— Select staff member —</option>
+              <option>J. Rodriguez · Senior Biller</option>
+              <option>M. Chen · Appeals Specialist</option>
+              <option>T. Williams · AR Coordinator</option>
+              <option>L. Kim · Coding Lead</option>
+              <option>K. Patel · Auth Specialist</option>
+            </select></div>
+            <div style="margin-bottom:8px"><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:.06em">OBSERVATION TYPE</div>
+            <select id="obs-type" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);outline:none">
+              <option value="performance">Performance — SLA / Output</option>
+              <option value="behavior">Behavior — Attitude / Team</option>
+              <option value="positive">Positive — Recognition</option>
+              <option value="concern">Concern — Flag for Review</option>
+              <option value="sla">SLA — Met / Missed / Exceeded</option>
+            </select></div>
+            <div style="margin-bottom:8px"><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:.06em">OBSERVATION</div>
+            <textarea id="obs-text" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:8px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text);resize:vertical;min-height:90px;outline:none;line-height:1.6" placeholder="e.g. Beat SLA by 2hrs on CLM-0334 appeal. Excellent turnaround. Positive attitude with team..."></textarea></div>
+            <button class="btn btn-p" style="width:100%" onclick="logObs()">+ Log Observation</button>
+            <div id="obs-confirm" style="display:none;margin-top:8px;font-size:10px;color:var(--g2)">✓ Observation logged.</div>
+          </div>
+          <div class="panel">
+            <div class="sh"><span class="st">Session Log</span><span class="sa" onclick="clearLog()" style="color:var(--text3)">clear</span></div>
+            <div id="obs-log" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto">
+              <div style="font-size:10px;color:var(--text3);text-align:center;padding:20px 0">No observations this session.</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:12px">
+          <div class="sh"><span class="st">Generate HR Document</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:10px">
+            <div><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:.06em">STAFF MEMBER</div>
+            <select id="hr-name" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);outline:none">
+              <option value="">— Select —</option>
+              <option>J. Rodriguez · Senior Biller</option>
+              <option>M. Chen · Appeals Specialist</option>
+              <option>T. Williams · AR Coordinator</option>
+              <option>L. Kim · Coding Lead</option>
+              <option>K. Patel · Auth Specialist</option>
+            </select></div>
+            <div><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:.06em">DOCUMENT TYPE</div>
+            <select id="hr-type" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);outline:none">
+              <option value="promotion">Promotion Recommendation</option>
+              <option value="commendation">Commendation Letter</option>
+              <option value="salary">Salary Review Justification</option>
+              <option value="pip">Performance Improvement Plan (PIP)</option>
+              <option value="demotion">Demotion Memo</option>
+              <option value="termination">Termination Letter</option>
+            </select></div>
+            <div style="display:flex;align-items:flex-end"><button class="btn btn-g" id="hr-gen-btn" onclick="genHRDoc()" style="width:100%">◆ Generate Document</button></div>
+          </div>
+          <div style="margin-bottom:8px"><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:.06em">ADDITIONAL CONTEXT</div>
+          <textarea id="hr-context" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:8px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text);resize:vertical;min-height:60px;outline:none;line-height:1.6" placeholder="e.g. attitude in the office and cordials with others, dedication to maintaining short times between expected tasks (SLAs are the money makers), are the determining factors in this decision..."></textarea></div>
+          <div id="hr-out" class="ai-out"></div>
+          <div id="hr-err" class="ai-err"></div>
+          <button id="hr-retry" class="retry" onclick="genHRDoc()">&#8635; Retry</button>
+          <div id="hr-actions" style="display:none;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-p" onclick="alert('Copied for HR review.')">Copy for HR Review</button>
+            <button class="btn btn-o" onclick="alert('Exporting PDF...')">Export PDF</button>
+            <button class="btn btn-o" onclick="genHRDoc()">&#8635; Regenerate</button>
+            <span style="font-size:9px;color:var(--text3);align-self:center;margin-left:4px">&#9888; Always have HR review before issuing</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="sh"><span class="st">AI Pattern Analysis</span></div>
+          <button class="btn btn-o" id="pattern-btn" onclick="analyzePatterns()" style="margin-bottom:8px">&#9670; Analyze Session Log Patterns</button>
+          <div id="pattern-out" class="ai-out"></div>
+          <div id="pattern-err" class="ai-err"></div>
+          <button id="pattern-retry" class="retry" onclick="analyzePatterns()">&#8635; Retry</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rp">
+    <div class="rps">
+      <div class="rpt">Portal AI — Dee Montee</div>
+      <div class="chips">
+        <span class="chip" onclick="askAI('What are the top 3 things I need to act on right now?')">Top priorities</span>
+        <span class="chip" onclick="askAI('Root cause of the 18.4% denial rate and action plan')">Denial fix</span>
+        <span class="chip" onclick="askAI('BPO intake status — what needs my review today?')">BPO status</span>
+        <span class="chip" onclick="askAI('Which nodes are showing problems and what should I do?')">Node alerts</span>
+        <span class="chip" onclick="askAI('Draft a 3-bullet standup briefing for my team this morning')">Draft standup</span>
+        <span class="chip" onclick="askAI('What appeal should I file for CLM-0334 CO-29 denial before the 48hr deadline?')">CLM-0334 appeal</span>
       </div>
     </div>
-    <div class="cmp-col new">
-      <div class="cmp-head">✓ TSM System</div>
-      <div class="cmp-body">
-        <div class="cmp-row"><span class="ci ci-good">✓</span>Dee's portal shows live status across every satellite office — node by node, manager by manager</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>Every OM's scope, active delegations, and BNCA flags visible to Dee in real time</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>Each of the 10 HC-nodes is formally delegated in-portal — timestamped, attributed, auditable</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>Frontline workers own their node in the system — activity tracked, accountability built in</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>HC-Strategist ingests office data continuously and surfaces BNCA recommendations before problems escalate</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>BPO intake via tokenized URL — every submission tracked, confirmed, routed to the right team instantly</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>Audit trail is auto-generated from node activity — compliance documentation is always current</div>
-        <div class="cmp-row"><span class="ci ci-good">✓</span>All Phoenix offices unified under one view — same system, same standards, same visibility</div>
+    <div class="rpc" id="chat">
+      <div class="cm ca fi">Portal AI online. Full context loaded — 15 HC nodes, 6 alerts, 4 BPO docs in queue. What do you need first?</div>
+    </div>
+    <div class="rpi-row">
+      <input class="rpi" id="chat-inp" placeholder="Ask the portal AI..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
+      <div class="rpsb" id="chat-send" onclick="sendChat()">↑</div>
+    </div>
+  </div>
+</div>
+
+<div class="sbar">
+  <div class="si"><span class="dot dg pls"></span>TSM-AI-3200 ONLINE</div>
+  <div class="si"><span class="dot dg"></span>TSM NEURAL CORE</div>
+  <div class="si"><span class="dot da"></span>2 CRITICAL NODES</div>
+  <div class="si"><span class="dot db"></span>4 BPO DOCS IN QUEUE</div>
+  <div class="si" style="margin-left:auto">HONORHEALTH · OPS PORTAL v2.1 · TSMatter · <span id="sb-date"></span></div>
+</div>
+
+<!-- BRIEFING MODAL -->
+<div class="bo-overlay" id="bo">
+  <div class="bm">
+    <div class="bh">
+      <div><div class="bt">◆ Team Briefing Builder</div><div class="bs">AI-generated · <span id="brief-date"></span> · HonorHealth Revenue Cycle</div></div>
+      <button class="bx" onclick="closeBriefing()">✕</button>
+    </div>
+    <div class="bb-body">
+      <div class="bsec">
+        <div class="bsec-t">Critical — action required today</div>
+        <div class="bi"><div class="bn">1</div><div style="flex:1"><div class="bit"><span style="color:var(--red)">CLM-0334 write-off risk in 48hrs</span> — CO-29 timely filing on $3,800 cardiac cath claim. Appeal must be filed today or claim is lost.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>J. Rodriguez · Senior Biller</option><option>M. Chen · Appeals</option><option>T. Williams · AR</option><option>Full Team</option></select></div></div></div>
+        <div class="bi"><div class="bn">2</div><div style="flex:1"><div class="bit"><span style="color:var(--red)">18.4% denial rate</span> — exceeds 15% CMS threshold. Pull all PR-96 and CO-4 denials. Target 12% by month end.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>Full Team</option><option>J. Rodriguez · Senior Biller</option><option>M. Chen · Appeals</option></select></div></div></div>
+      </div>
+      <div class="bsec">
+        <div class="bsec-t">Active — in progress this week</div>
+        <div class="bi"><div class="bn">3</div><div style="flex:1"><div class="bit">CPT 99215 upcoding audit — 23 claims under review. Documentation gaps. Coder education session needed by Friday.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>L. Kim · Coding Lead</option><option>Full Team</option></select></div></div></div>
+        <div class="bi"><div class="bn">4</div><div style="flex:1"><div class="bit">BPO intake — ERA batch ready for review in Intake tab. Denial analysis processing (ETA 2hrs). Action flagged items before EOD.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>T. Williams · AR</option><option>J. Rodriguez · Senior Biller</option></select></div></div></div>
+        <div class="bi"><div class="bn">5</div><div style="flex:1"><div class="bit">6 pending prior authorizations in HC-Insurance — follow up with Medicare and Aetna today.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>K. Patel · Auth Specialist</option><option>Full Team</option></select></div></div></div>
+      </div>
+      <div class="bsec">
+        <div class="bsec-t">Manager notes for team</div>
+        <textarea class="btxt" id="brief-notes" placeholder="Add context, reminders, or announcements for today's standup..."></textarea>
+      </div>
+      <div class="bsec">
+        <div class="bsec-t">AI coaching script for standup</div>
+        <button class="btn btn-o" id="script-btn" onclick="genScript()" style="margin-bottom:8px">◆ Generate AI coaching script</button>
+        <div id="script-out" class="ai-out"></div>
+        <div id="script-err" class="ai-err"></div>
+        <button id="script-retry" class="retry" onclick="genScript()">↻ Retry</button>
       </div>
     </div>
+    <div class="bf">
+      <button class="btn btn-p" id="brief-send" onclick="sendBriefing()">Send to Team · Teams</button>
+      <button class="btn btn-g" id="pptx-export-btn" onclick="exportBriefingPPTX()">&#9660; Export PPTX</button>
+      <button class="btn btn-o" onclick="closeBriefing()">Cancel</button>
+      <div style="margin-left:auto;font-size:10px;color:var(--text3)">5 team members · HonorHealth RC</div>
+    </div>
   </div>
-
-  <div class="sec-label" style="margin-top:36px;">The HC-Strategist · intelligence layer explained</div>
-
-  <div class="nblock">
-    <h3>What the HC-Strategist actually does</h3>
-    <p>The HC-Strategist is not a dashboard. It is an analytical engine embedded in each office manager's portal that continuously ingests the live operational data flowing through that office's 10 HC-nodes — volume, velocity, exceptions, backlogs, expiration timelines, and throughput patterns. From that data, it generates BNCA (Best Next Course of Action) recommendations specific to that office's current operational state.</p>
-    <p>For example: if HC-06 (Credentialing) shows three provider licenses expiring within 45 days and no renewal submissions started, the HC-Strategist surfaces a BNCA recommendation to the office manager to delegate credentialing renewal immediately — before it becomes a compliance problem. The manager doesn't need to know to look. The system tells them.</p>
-  </div>
-
-  <div class="nblock">
-    <h3>Why BNCA recommendations change how managers operate</h3>
-    <p>Most office managers today operate reactively — they respond to problems that have already surfaced. The HC-Strategist shifts that to proactive management. Because the system is always analyzing node data, the manager is always looking one step ahead. And because the recommendations are grounded in that office's actual data — not generic best practices — they're actionable immediately. The manager reads the recommendation, reviews their nodes, and delegates. The loop closes in the same session.</p>
-  </div>
-
 </div>
 
-<!-- ══════════════════════════════════════════
-     PAGE 4 · BPO SERVICES
-══════════════════════════════════════════ -->
-<div id="page-bpo" class="page">
 
-  <div class="hero" style="padding-bottom:36px;margin-bottom:36px;">
-    <div class="pill">BPO Services · Honor Health via TSM</div>
-    <h1>TSM Executes.<br/><em>Honor Health Focuses<br/>on Patient Care.</em></h1>
-    <p>Business Process Outsourcing through TSM means Honor Health hands off specific administrative functions — TSM runs them, tracks them, and reports back through the same portal Dee already uses.</p>
-  </div>
 
-  <div class="sec-label">Six BPO service domains · active for Honor Health</div>
-
-  <div class="bpo-grid">
-    <div class="bpo-card">
-      <div class="bpo-hd"><div class="bpo-ico">📋</div><h4>Credentialing Support</h4></div>
-      <p>Provider applications, license tracking, CAQH maintenance, re-credentialing cycles — all managed through HC-06 nodes across offices. TSM runs the process; the OM sees real-time status; Dee sees network-wide credential health.</p>
-    </div>
-    <div class="bpo-card">
-      <div class="bpo-hd"><div class="bpo-ico">💳</div><h4>Billing &amp; Revenue Cycle</h4></div>
-      <p>Claims submission, denial management, ERA reconciliation, and AR follow-up managed through HC-04 nodes. Submissions enter via the intake portal, route to TSM's billing team, and status updates appear in the client dashboard.</p>
-    </div>
-    <div class="bpo-card">
-      <div class="bpo-hd"><div class="bpo-ico">📅</div><h4>Scheduling Operations</h4></div>
-      <p>Overflow scheduling, referral coordination, and appointment management handled via HC-01 nodes. When an office's scheduling node is overloaded — the HC-Strategist flags it — TSM absorbs the overflow through BPO delegation.</p>
-    </div>
-    <div class="bpo-card">
-      <div class="bpo-hd"><div class="bpo-ico">📁</div><h4>Medical Records &amp; HIM</h4></div>
-      <p>Release of information, chart completion, and records request processing via HC-05. Full audit trail in the portal — HIPAA-compliant by design. Every records action attributed, timestamped, and accessible to Dee.</p>
-    </div>
-    <div class="bpo-card">
-      <div class="bpo-hd"><div class="bpo-ico">✅</div><h4>Compliance &amp; Audit Prep</h4></div>
-      <p>HC-08 nodes generate continuous compliance documentation from node activity. TSM handles audit readiness prep, internal review cycles, and HIPAA-aligned log generation — surfaced automatically to Dee's dashboard.</p>
-    </div>
-    <div class="bpo-card">
-      <div class="bpo-hd"><div class="bpo-ico">👤</div><h4>HR &amp; Onboarding Support</h4></div>
-      <p>New hire documentation, background check coordination, and onboarding checklists managed through HC-09. Office managers delegate onboarding tasks in-portal; TSM executes; completion status visible at every level.</p>
-    </div>
-  </div>
-
-  <div class="nblock">
-    <h3>How BPO and the portal connect</h3>
-    <p>BPO services don't operate separately from the portal — they operate through it. When an office manager delegates a node function to TSM rather than an internal frontline worker, that delegation is still tracked the same way: in-portal, timestamped, attributable. The intake portal handles document and request submissions. The client dashboard shows processing status. Dee sees BPO activity the same way she sees internal node activity — as part of the same live view. There is no separate BPO tracking system. TSM is the system.</p>
-  </div>
-
-</div>
-
-<!-- ══════════════════════════════════════════
-     PAGE 5 · INTAKE PORTAL
-══════════════════════════════════════════ -->
-<div id="page-intake" class="page">
-
-  <div class="hero" style="padding-bottom:36px;margin-bottom:36px;">
-    <div class="pill">Intake Portal · Universal BPO Front Door</div>
-    <h1>One Intake System.<br/><em>Every Client. Every Industry.<br/>Every Submission — Tracked.</em></h1>
-    <p>intake.tsmatter.com is the BPO intake layer for Honor Health — and for every other TSM client. Each organization gets a unique token that routes their submissions to their client dashboard automatically.</p>
-  </div>
-
-  <div class="intake-answer">
-    <h3>✓ Yes — intake.tsmatter.com is the right tool for Honor Health BPO services</h3>
-    <p>The intake portal is not healthcare-specific. It is the universal submission layer for all TSM BPO clients — Honor Health, RRD, Ameris Construction, and every future client. Each client has a unique token embedded in their intake URL. That token authenticates the submission, routes it to the correct client dashboard, and confirms receipt — automatically, without manual intervention. Honor Health's office managers submit BPO requests the same way Banner Health would, the same way Ameris would. Same system, different token.</p>
-  </div>
-
-  <div class="sec-label">Honor Health · intake credentials</div>
-
-  <div class="token-row">
-    <div class="token-label">Dashboard</div>
-    <div class="token-val">honorhealth.tsmatter.com</div>
-  </div>
-  <div class="token-row">
-    <div class="token-label">Intake URL</div>
-    <div class="token-val">intake.tsmatter.com/upload<em>?tkn=tkn_honorhealth_dd1a87131974e6ec</em></div>
-  </div>
-
-  <div class="sec-label" style="margin-top:32px;">How a BPO submission flows through the system</div>
-
-  <div class="flow">
-    <div class="flow-step hi">
-      <div class="flow-step-n">Step 1 · Submit</div>
-      <p>Office manager or frontline worker submits documents or a BPO request via the Honor Health intake URL + token</p>
-    </div>
-    <div class="flow-step">
-      <div class="flow-step-n">Step 2 · Validate</div>
-      <p>Token authenticates the submission as Honor Health — no login needed. Portal confirms receipt immediately</p>
-    </div>
-    <div class="flow-step">
-      <div class="flow-step-n">Step 3 · Route</div>
-      <p>Submission appears in the Honor Health client dashboard. Dee's team sees it in real time and assigns it to the right node/team</p>
-    </div>
-    <div class="flow-step hi">
-      <div class="flow-step-n">Step 4 · Execute</div>
-      <p>TSM processes the BPO task — credentialing, billing, records — and updates completion status in the dashboard for Dee to see</p>
-    </div>
-  </div>
-
-  <div class="sec-label" style="margin-top:8px;">Same intake system · all TSM BPO clients</div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;">
-      <div style="font-size:11px;font-weight:600;color:var(--orange2);margin-bottom:6px;">Honor Health</div>
-      <p style="font-size:12px;color:var(--slate);line-height:1.55">Full BPO suite via healthcare stack. Token: tkn_honorhealth</p>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;">
-      <div style="font-size:11px;font-weight:600;color:var(--orange2);margin-bottom:6px;">RRD</div>
-      <p style="font-size:12px;color:var(--slate);line-height:1.55">Document processing, records management, operational support via RRD-specific token</p>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;">
-      <div style="font-size:11px;font-weight:600;color:var(--orange2);margin-bottom:6px;">Ameris Construction</div>
-      <p style="font-size:12px;color:var(--slate);line-height:1.55">Site node reporting, payroll docs, permit tracking via Ameris intake token</p>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;">
-      <div style="font-size:11px;font-weight:600;color:var(--orange2);margin-bottom:6px;">Banner Health <span style="color:var(--slate);font-weight:400">(prospect)</span></div>
-      <p style="font-size:12px;color:var(--slate);line-height:1.55">Identical stack to Honor Health when onboarded. Token pre-provisioned: tkn_banner</p>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;">
-      <div style="font-size:11px;font-weight:600;color:var(--orange2);margin-bottom:6px;">Dignity / ValleyWise / Abrazo <span style="color:var(--slate);font-weight:400">(prospects)</span></div>
-      <p style="font-size:12px;color:var(--slate);line-height:1.55">Each gets a subdomain + unique token upon onboarding. No rebuild — provision and activate</p>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:14px 16px;border-style:dashed;">
-      <div style="font-size:11px;font-weight:600;color:var(--slate);margin-bottom:6px;">Future Clients</div>
-      <p style="font-size:12px;color:var(--slate);line-height:1.55">Any new BPO client. Same architecture — new subdomain + new token. Fully self-contained</p>
-    </div>
-  </div>
-
-  <div class="nblock">
-    <h3>The key message for Dee on intake</h3>
-    <p>The intake portal is already built, already live, and already connected to Honor Health's dashboard. Office managers don't need separate logins or training on a new submission system. They use their intake URL — which can be bookmarked, emailed, or embedded in any workflow — and submissions route correctly every time. The token does the work. Dee sees every submission the moment it arrives. And as TSM grows into Banner, Dignity, ValleyWise, and Abrazo, each new client's intake is isolated by their own token — Honor Health's data never crosses into another organization's view.</p>
-  </div>
-
-</div>
-
-<!-- ── FOOTER ── -->
-<footer>
-  <em>TSM</em> · Honor Health Executive Briefing · Prepared for Dee · honorhealth.tsmatter.com · Confidential
-</footer>
 
 <script>
-  function go(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
-    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('on'));
-    document.getElementById('page-' + id).classList.add('on');
-    btn.classList.add('on');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+window.switchTab = function(id, btn) {
+  // Hide all
+  const tabs = document.querySelectorAll('[id^="tab-"]');
+  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
+  
+  // Show target
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.setAttribute('style', 'display: block !important');
+  
+  // UI Cleanup
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+console.log("TSM Engine Active for honor-portal");
+</script>
+
+<script id="tsm-core-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => t.style.display = 'none');
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+})();
+</script>
+
+<script id="tsm-final-engine">
+(function() {
+    window.switchTab = function(id, btn) {
+        console.log("TSM Global Engine: Switching to", id);
+        document.querySelectorAll('[id^="tab-"]').forEach(el => {
+            el.style.setProperty('display', 'none', 'important');
+        });
+        const target = document.getElementById('tab-' + id);
+        if (target) { target.style.setProperty('display', 'block', 'important'); }
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    };
+
+    function init() {
+        const firstBtn = document.querySelector('.nav-btn');
+        if (firstBtn) {
+            const m = (firstBtn.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
+            window.switchTab(m ? m[1] : 'dash', firstBtn);
+        }
+    }
+    window.addEventListener('DOMContentLoaded', init);
+    setTimeout(init, 150);
+})();
+</script>
+
+
+<script>
+(function () {
+
+  // ── SINGLE TAB ENGINE ──────────────────────────────────────
+  // Handles showTab() and switchTab() — both patterns used across nodes
+  // Tab div ids: tab-dash, tab-dashboard, tab-hipaa, tab-cms, etc.
+
+  function switchTab(id, btn) {
+    // Hide ALL tab divs regardless of naming pattern
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+    });
+
+    // Show target — try tab-{id} first, then bare {id}
+    var target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.setProperty('display', 'block', 'important');
+
+    // Update .tab bar buttons (honor portal style)
+    document.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('act'); });
+    var tabBtn = document.getElementById('t-' + id);
+    if (tabBtn) tabBtn.classList.add('act');
+
+    // Update .nav-btn buttons (hc-node style)
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
   }
 
-  function toggleOM(card, panelId) {
-    // deactivate all cards
-    document.querySelectorAll('.om-card').forEach(c => c.classList.remove('active'));
-    // hide all panels
-    document.querySelectorAll('.office-panel').forEach(p => p.classList.remove('open'));
-    // activate clicked
-    card.classList.add('active');
-    document.getElementById(panelId).classList.add('open');
+  // Alias used by honor portal tab-bar and left nav onclick attrs
+  function showTab(id) { switchTab(id, null); }
+
+  // Load prompt into AI tab and fire Q()
+  function loadAI(prompt) {
+    // Try nav-btn with 'ai' in onclick, fallback to tab switch
+    var aiBtn = null;
+    document.querySelectorAll('.nav-btn').forEach(function(b) {
+      if ((b.getAttribute('onclick') || '').indexOf("'ai'") > -1) aiBtn = b;
+    });
+    switchTab('ai', aiBtn);
+    var inp = document.getElementById('ai-inp');
+    if (inp) { inp.value = prompt; inp.focus(); }
+    setTimeout(function() {
+      if (typeof Q === 'function') Q(prompt, 'ai-btn', 'ai-res');
+    }, 50);
   }
+
+  function loadPreset(prompt) { loadAI(prompt); }
+
+  // ── GROQ via /api/groq server proxy (no key in browser) ────
+  window.Q = async function(prompt, btnId, resId) {
+    if (!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if (!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
+    if (res.classList) res.classList.add('show');
+    try {
+      var r = await fetch('/api/groq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      });
+      if (!r.ok) { var e = await r.text(); throw new Error('HTTP ' + r.status + ': ' + e); }
+      var d = await r.json();
+      if (d.error) throw new Error(d.error);
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\n\n' + d.reply.trim();
+    } catch(e) {
+      if (res.classList) res.classList.remove('show');
+      var errEl = document.getElementById(resId.replace('-out','-err').replace('-res',''));
+      if (errEl) { errEl.textContent = 'TSM NEURAL ERROR: ' + e.message; if (errEl.classList) errEl.classList.add('show'); }
+      else { res.textContent = 'TSM NEURAL ERROR: ' + e.message; }
+    }
+    btn.disabled = false;
+  };
+
+  // ── EXPOSE GLOBALS ─────────────────────────────────────────
+  window.switchTab  = switchTab;
+  window.showTab    = showTab;
+  window.loadAI     = loadAI;
+  window.loadPreset = loadPreset;
+
+  // ── BOOT ───────────────────────────────────────────────────
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      // Find first nav-btn and read its target tab id
+      var firstBtn = document.querySelector('.nav-btn');
+      var firstTab  = document.querySelector('.tab');
+      var tabId = 'dashboard'; // default
+
+      if (firstBtn) {
+        var m = (firstBtn.getAttribute('onclick') || '').match(/(?:switchTab|showTab)\('([^']+)'/);
+        if (m) tabId = m[1];
+        switchTab(tabId, firstBtn);
+      } else if (firstTab) {
+        var m2 = (firstTab.getAttribute('onclick') || '').match(/showTab\('([^']+)'/);
+        if (m2) tabId = m2[1];
+        switchTab(tabId, null);
+        firstTab.classList.add('act');
+      } else {
+        switchTab(tabId, null);
+      }
+
+      console.log('\u2714 TSM Tab Engine booted: ' + tabId);
+    }, 60);
+  });
+
+})();
 </script>
 </body>
 </html>

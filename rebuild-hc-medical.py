@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+import os, shutil
+
+BASE = '/workspaces/tsm-shell'
+PATH = os.path.join(BASE, 'html/hc-medical/index.html')
+
+# ── Clean HEAD (same CSS as other hc-nodes) ──────────────────────────────────
+HEAD = '''<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HC MEDICAL COMMAND &middot; TSM Healthcare</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
+:root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid var(--border);background:#0b120b}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.hdr-title{font-size:16px;font-weight:700;letter-spacing:2px;color:var(--g)}
+.hdr-sub{font-size:10px;color:#556655;letter-spacing:1px}
+.node-pill{padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;border:1px solid var(--g);color:var(--g)}
+.nav{display:flex;border-bottom:1px solid var(--border);background:#0b120b;padding:0 20px;overflow-x:auto}
+.nav-btn{padding:10px 18px;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;border:none;background:none;color:#558855;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:var(--g)}.nav-btn.active{color:var(--g);border-bottom-color:var(--g)}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 20px}
+.kpi{background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.kpi-val{font-size:28px;font-weight:700;margin-bottom:4px}
+.kpi-lbl{font-size:10px;color:#558855;letter-spacing:1px;text-transform:uppercase}
+.kpi-sub{font-size:10px;margin-top:4px}
+.green{color:var(--g)}.amber{color:var(--a)}.red{color:var(--r)}.blue{color:var(--b)}
+.sec{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.sec-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--g);margin-bottom:12px}
+.sec-hdr::before{content:'&#9670; ';font-size:8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:6px 10px;font-size:10px;letter-spacing:1px;color:#558855;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid #0f1f0f}
+tr:hover td{background:#0f1f0f}
+.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.bg{background:#003322;color:var(--g);border:1px solid var(--g)}
+.ba{background:#332200;color:var(--a);border:1px solid var(--a)}
+.br{background:#330000;color:var(--r);border:1px solid var(--r)}
+.bb{background:#001133;color:var(--b);border:1px solid var(--b)}
+.alert-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #0f1f0f}
+.alert-row:last-child{border-bottom:none}
+.pri{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;min-width:52px;text-align:center}
+.purgent{background:#330000;color:var(--r);border:1px solid var(--r)}
+.pmed{background:#332200;color:var(--a);border:1px solid var(--a)}
+.plow{background:#001133;color:var(--b);border:1px solid var(--b)}
+.pok{background:#003322;color:var(--g);border:1px solid var(--g)}
+.alert-txt{font-size:12px;flex:1}.alert-imp{font-size:11px;color:var(--a);min-width:70px;text-align:right}
+.ai-box{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.ai-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--a);margin-bottom:10px}
+.ai-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ai-btn{padding:5px 12px;background:#1a2000;border:1px solid var(--a);color:var(--a);font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer}
+.ai-inp{flex:1;min-width:200px;background:#0b120b;border:1px solid var(--border);color:var(--g);font-family:inherit;font-size:12px;padding:8px 12px;border-radius:4px;outline:none}
+.ai-inp:focus{border-color:var(--g)}
+.ask-btn{padding:8px 16px;background:var(--g);color:#000;font-family:inherit;font-size:11px;font-weight:700;border:none;border-radius:4px;cursor:pointer}
+.ask-btn:disabled{opacity:.5;cursor:not-allowed}
+.ai-res{margin-top:10px;padding:10px;background:#0b120b;border:1px solid var(--border);border-radius:4px;color:#99cc99;font-size:12px;min-height:40px;white-space:pre-wrap;line-height:1.6}
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.pr-card{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;transition:border-color .2s}
+.pr-card:hover{border-color:var(--a)}
+.pr-card-title{color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px}
+.pr-card-desc{color:#558855;font-size:10px}
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
+.stat-val{font-size:22px;font-weight:700;margin-bottom:4px}
+.stat-lbl{font-size:10px;color:#558855;letter-spacing:1px}
+.footer{position:fixed;bottom:0;left:0;right:0;background:#0b120b;border-top:1px solid var(--border);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100}
+.fn{font-size:10px;color:#558855;letter-spacing:1px}
+.fbtns{display:flex;gap:8px}
+.fbtn{padding:6px 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
+.fbnca{background:#003322;border:1px solid var(--g);color:var(--g)}
+.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}
+[id^="tab-"]{display:none}
+</style>
+</head><body>
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">&#127973;</span><div><div class="hdr-title">HC MEDICAL COMMAND</div><div class="hdr-sub">Clinical Ops &middot; Revenue Cycle &middot; CPT Audit &middot; Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div>
+<nav class="nav">
+  <button class="nav-btn" onclick="switchTab('dash',this)">&#8862; DASHBOARD</button>
+  <button class="nav-btn" onclick="switchTab('clinical',this)">&#127973; CLINICAL OPS</button>
+  <button class="nav-btn" onclick="switchTab('billing',this)">&#128203; BILLING &amp; CPT</button>
+  <button class="nav-btn" onclick="switchTab('auth',this)">&#9989; PRIOR AUTH</button>
+  <button class="nav-btn" onclick="switchTab('ai',this)">&#129504; AI ANALYSIS</button>
+  <button class="nav-btn" onclick="switchTab('presets',this)">&#9889; PRESETS</button>
+</nav>'''
+
+# ── Tab content extracted from lines 158-282 ─────────────────────────────────
+with open(PATH, 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+
+# Extract lines 158-282 (0-indexed: 157-281)
+tab_content = ''.join(lines[157:282])
+
+# ── Clean script ──────────────────────────────────────────────────────────────
+SCRIPT = '''
+<script>
+(function () {
+  function switchTab(id, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+    });
+    var target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.setProperty('display', 'block', 'important');
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+  }
+
+  function showTab(id) { switchTab(id, null); }
+
+  function loadAI(prompt) {
+    var aiBtn = null;
+    document.querySelectorAll('.nav-btn').forEach(function(b) {
+      if ((b.getAttribute('onclick') || '').indexOf("'ai'") > -1) aiBtn = b;
+    });
+    switchTab('ai', aiBtn);
+    var inp = document.getElementById('ai-inp');
+    if (inp) { inp.value = prompt; inp.focus(); }
+    setTimeout(function() { Q(prompt, 'ai-btn', 'ai-res'); }, 50);
+  }
+
+  function loadPreset(p) { loadAI(p); }
+
+  window.Q = async function(prompt, btnId, resId) {
+    if (!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if (!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
+    try {
+      var r = await fetch('/api/groq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      });
+      if (!r.ok) { var e = await r.text(); throw new Error('HTTP ' + r.status + ': ' + e); }
+      var d = await r.json();
+      if (d.error) throw new Error(d.error);
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\\n\\n' + d.reply.trim();
+    } catch(e) {
+      res.textContent = 'TSM NEURAL ERROR: ' + e.message;
+    }
+    btn.disabled = false;
+  };
+
+  window.switchTab  = switchTab;
+  window.showTab    = showTab;
+  window.loadAI     = loadAI;
+  window.loadPreset = loadPreset;
+
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var first = document.querySelector('.nav-btn');
+      if (first) {
+        var m = (first.getAttribute('onclick') || '').match(/switchTab\\('([^']+)'/);
+        switchTab(m ? m[1] : 'dash', first);
+        console.log('\\u2714 TSM Tab Engine booted: hc-medical');
+      }
+    }, 60);
+  });
+})();
+</script>
+</body></html>'''
+
+# ── Write rebuilt file ────────────────────────────────────────────────────────
+shutil.copy2(PATH, PATH + '.bak3')
+with open(PATH, 'w', encoding='utf-8') as f:
+    f.write(HEAD + '\n' + tab_content + SCRIPT)
+
+print('✔ hc-medical rebuilt successfully')
+print(f'  Lines: {len(open(PATH).readlines())}')
+print(f'  Tab divs: {open(PATH).read().count("id=\"tab-")}')
+
+# Sync
+for dest in [
+    os.path.join(BASE, '.fly-build/hc-medical/index.html'),
+    os.path.join(BASE, 'tmp_root/tsm-deploy/tsm-hc-medical/public/index.html'),
+]:
+    if os.path.exists(os.path.dirname(dest)):
+        shutil.copy2(PATH, dest)
+        print(f'  SYNC → {dest}')
+
+print('\nRun: fly deploy')
