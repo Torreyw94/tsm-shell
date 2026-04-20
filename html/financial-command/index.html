@@ -977,7 +977,7 @@ function runSafeAnalysis() {
 <script id="tsm-core-fix">
 (function(){
   // FIX 1: Tab switching — show first tab on load
-  function initTabs(){
+  window.initTabs=function initTabs(){
     var tabs = document.querySelectorAll('[id^="tab-"]');
     if(!tabs.length) return;
     var btns = document.querySelectorAll('.nav-btn');
