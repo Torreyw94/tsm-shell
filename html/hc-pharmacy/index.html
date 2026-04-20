@@ -89,40 +89,11 @@ tr:hover td{background:#0f1f0f}
 
 <style>
   [id^="tab-"] { display: none !important; }
-  #tab-dash.active-tab { display: block !important; }
 </style>
-<script>
-  (function() {
-    window.switchTab = function(id, btn) {
-      const tabs = document.querySelectorAll('[id^="tab-"]');
-      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
-      const target = document.getElementById('tab-' + id) || document.getElementById(id);
-      if (target) target.style.setProperty('display', 'block', 'important');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    };
 
-    // The Hammer: Try to initialize every 50ms until successful
-    let attempts = 0;
-    const interval = setInterval(() => {
-      const dashBtn = document.querySelector('.nav-btn');
-      if (dashBtn || attempts > 20) {
-        window.switchTab('dash', dashBtn);
-        clearInterval(interval);
-      }
-      attempts++;
-    }, 50);
-  })();
-</script>
 </head><body>
 
-<script>
-window.onload = function() {
-  console.log("--- TSM DIAGNOSTIC START ---");  } else {
-    console.error("✖ tab-dash NOT FOUND in DOM");
-  }
-};
-</script>
+
 
 
 
@@ -166,35 +137,10 @@ window.onload = function() {
 
 
 
-<script>
-window.switchTab = function(id, btn) {
-  // Hide all
-  const tabs = document.querySelectorAll('[id^="tab-"]');
-  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
-  
-  // Show target
-  const target = document.getElementById('tab-' + id) || document.getElementById(id);
-  if (target) target.setAttribute('style', 'display: block !important');
-  
-  // UI Cleanup
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-};
-console.log("TSM Engine Active for hc-pharmacy");
-</script>
 
-<script id="tsm-core-engine">
-(function() {
-  window.switchTab = function(id, btn) {
-    const tabs = document.querySelectorAll('[id^="tab-"]');
-    tabs.forEach(t => t.style.display = 'none');
-    const target = document.getElementById('tab-' + id) || document.getElementById(id);
-    if (target) target.style.display = 'block';
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-  };
-})();
-</script>
+
+
+
 <script>
 (function(){
   function switchTab(id,btn){
@@ -202,14 +148,14 @@ console.log("TSM Engine Active for hc-pharmacy");
       el.setAttribute('style','display:none!important');
     });
     var t=document.getElementById('tab-'+id)||document.getElementById(id);
-    if(t)t.setAttribute('style','display:block!important');
+    if(t) t.setAttribute('style','display:block!important');
     document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-    if(btn)btn.classList.add('active');
+    if(btn) btn.classList.add('active');
   }
   function loadAI(p){
     var aiBtn=null;
     document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1)aiBtn=b;
+      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
     });
     switchTab('ai',aiBtn);
     var inp=document.getElementById('ai-inp');
