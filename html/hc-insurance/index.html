@@ -65,7 +65,7 @@ tr:hover td{background:#0f1f0f}
 .fbtns{display:flex;gap:8px}
 .fbtn{padding:6px 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
 .fbnca{background:#003322;border:1px solid var(--g);color:var(--g)}
-.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}.hdr-title{color:var(--b)}[id^="tab-"]{display:none}
+.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}.hdr-title{color:var(--b)}[id^="tab-"]{display:none!important}
 </style>
 
 
@@ -88,8 +88,56 @@ tr:hover td{background:#0f1f0f}
 
 
 
+
+<style>
+  [id^="tab-"] { display: none !important; }
+  #tab-dash { display: block !important; }
+  #tab-dash.active-tab { display: block !important; }
+</style>
+<script>
+  (function() {
+    window.switchTab = function(id, btn) {
+      const tabs = document.querySelectorAll('[id^="tab-"]');
+      tabs.forEach(t => t.style.setProperty('display', 'none', 'important'));
+      const target = document.getElementById('tab-' + id) || document.getElementById(id);
+      if (target) target.style.setProperty('display', 'block', 'important');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    };
+
+    // The Hammer: Try to initialize every 50ms until successful
+    let attempts = 0;
+    const interval = setInterval(() => {
+      const dashBtn = document.querySelector('.nav-btn');
+      if (dashBtn || attempts > 20) {
+        window.switchTab('dash', dashBtn);
+        clearInterval(interval);
+      }
+      attempts++;
+    }, 50);
+  })();
+</script>
 </head><body>
-<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🛡️</span><div><div class="hdr-title">HC INSURANCE COMMAND</div><div class="hdr-sub">Claims · Adjudication · Payer Relations · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('payers',this)">🤝 PAYER RELATIONS</button><button class="nav-btn" onclick="window.switchTab('auth',this)">✅ PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav><div id="tab-dash"><div class="kpi-row">
+
+<script>
+window.onload = function() {
+  console.log("--- TSM DIAGNOSTIC START ---");
+  const dash = document.getElementById('tab-dash');
+  if (dash) {
+    dash.style.setProperty('display', 'block', 'important');
+    dash.innerHTML = '' + dash.innerHTML;
+    console.log("✔ tab-dash found and forced.");
+  } else {
+    console.error("✖ tab-dash NOT FOUND in DOM");
+  }
+};
+</script>
+
+
+
+
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🛡️</span><div><div class="hdr-title">HC INSURANCE COMMAND</div><div class="hdr-sub">Claims · Adjudication · Payer Relations · Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('payers',this)">🤝 PAYER RELATIONS</button><button class="nav-btn" onclick="window.switchTab('auth',this)">✅ PRIOR AUTH</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
+<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val amber">2,847</div><div class="kpi-lbl">Pending Claims</div><div class="kpi-sub amber">$3.2M in adjudication · 14 urgent</div></div>
 <div class="kpi"><div class="kpi-val green">96.2</div><div class="kpi-lbl">Node Score</div><div class="kpi-sub green">Payer relation index · above 95 target</div></div>
 <div class="kpi"><div class="kpi-val red">18.4%</div><div class="kpi-lbl">Denial Rate</div><div class="kpi-sub red">Exceeds 15% threshold · 3-payer pattern</div></div>
@@ -101,34 +149,66 @@ tr:hover td{background:#0f1f0f}
 <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">Blue Cross timely filing risk — 23 claims approaching 90-day limit · oldest at 84 days</div><div class="alert-imp">$62K at risk</div></div>
 <div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">Credentialing renewals due next 60 days — 4 providers not yet submitted</div><div class="alert-imp">4 providers</div></div>
 <div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Appeal win rate 68% — above 60% benchmark · Level 2 external review success rate strong</div><div class="alert-imp">✓</div></div>
-</div><div class="alert-imp">Escalate</div></div><div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">Medicaid denial rate 11.3%</div><div class="alert-imp">Review</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">UHC contract renegotiation due</div><div class="alert-imp">Negotiate</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">Self-pay collection 61% below target</div><div class="alert-imp">Program</div></div><div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Medicare rate at 91% — maintain</div><div class="alert-imp">Monitor</div></div></div><div class="sec"><div class="sec-hdr">DENIAL BREAKDOWN BY CODE</div><table><thead><tr><th>CODE</th><th>REASON</th><th>COUNT</th><th>$</th><th>TOP PAYER</th><th>ACTION</th></tr></thead><tbody><tr><td>PR-96</td><td>Non-covered charge</td><td>67</td><td>$186K</td><td>Medicare</td><td>Appeal</td></tr><tr><td>CO-4</td><td>Modifier inconsistent</td><td>42</td><td>$38K</td><td>Aetna</td><td>Recode</td></tr><tr><td>CO-11</td><td>Dx inconsistent</td><td>38</td><td>$44K</td><td>BlueCross</td><td>Review</td></tr><tr><td>CO-50</td><td>Non-covered service</td><td>31</td><td>$22K</td><td>UHC</td><td>Appeal</td></tr><tr><td>CO-B7</td><td>Not certified</td><td>12</td><td>$18K</td><td>Medicaid</td><td>Authorize</td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><input id="dash-inp" class="ai-inp" type="text" placeholder="Insurance query..."><button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">&#9654; ASK</button></div><div id="dash-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-claims"><div class="sec" style="margin-top:16px"><div class="sec-hdr">CLAIMS ADJUDICATION QUEUE</div><table><thead><tr><th>CLAIM #</th><th>PATIENT</th><th>CPT</th><th>PAYER</th><th>AMOUNT</th><th>DAYS</th><th>DENIAL REASON</th><th>STATUS</th></tr></thead><tbody><tr><td>CLM-001</td><td>J. Martinez</td><td>99215</td><td>Medicare</td><td>$248</td><td>14</td><td>PR-96 non-covered</td><td><span class="badge br">DENIED</span></td></tr><tr><td>CLM-002</td><td>S. Thompson</td><td>27447</td><td>Aetna</td><td>$8,200</td><td>7</td><td>Prior auth missing</td><td><span class="badge br">DENIED</span></td></tr><tr><td>CLM-003</td><td>R. Johnson</td><td>70553</td><td>BlueCross</td><td>$1,400</td><td>3</td><td>Bundling issue</td><td><span class="badge ba">REVIEW</span></td></tr><tr><td>CLM-004</td><td>L. Williams</td><td>93454</td><td>UHC</td><td>$3,800</td><td>21</td><td>Timely filing</td><td><span class="badge br">WRITE-OFF</span></td></tr><tr><td>CLM-005</td><td>M. Davis</td><td>97110</td><td>Medicaid</td><td>$180</td><td>5</td><td>COB needed</td><td><span class="badge bb">PENDING</span></td></tr><tr><td>CLM-006</td><td>A. Garcia</td><td>99214</td><td>Aetna</td><td>$218</td><td>2</td><td>None</td><td><span class="badge bg">APPROVED</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze 8.3% denial rate vs 5.1% industry — root cause and top 5 remediation ste')">Denial Reduction</button><button class="ai-btn" onclick="safeAnalyze(document.querySelector(`textarea`)?.value || `analysis`, `output`)">Appeal Strategy</button><button class="ai-btn" onclick="loadAI('Review timely filing denial exposure and implement preventive tracking system')">Timely Filing</button></div><div class="ai-row"><input id="claims-inp" class="ai-inp" type="text" placeholder="Claims query..."><button class="ask-btn" id="claims-btn" onclick="Q(document.getElementById('claims-inp').value,'claims-btn','claims-res')">&#9654; ASK</button></div><div id="claims-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-payers"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PAYER PERFORMANCE MATRIX</div><table><thead><tr><th>PAYER</th><th>CLAIMS VOL</th><th>DAYS AR</th><th>CLEAN RATE</th><th>DENIAL RATE</th><th>NET COLLECTION</th><th>CONTRACT EXP</th><th>STATUS</th></tr></thead><tbody><tr><td>Medicare</td><td>312</td><td>28.4</td><td>91%</td><td>4.2%</td><td>97.1%</td><td>N/A</td><td><span class="badge bg">GOOD</span></td></tr><tr><td>Medicaid</td><td>287</td><td>41.2</td><td>79%</td><td>11.3%</td><td>91.4%</td><td>N/A</td><td><span class="badge br">CRITICAL</span></td></tr><tr><td>BlueCross</td><td>198</td><td>32.1</td><td>87%</td><td>6.8%</td><td>94.8%</td><td>Sep 2026</td><td><span class="badge ba">WATCH</span></td></tr><tr><td>Aetna</td><td>156</td><td>29.8</td><td>89%</td><td>5.1%</td><td>96.2%</td><td>Dec 2026</td><td><span class="badge bg">GOOD</span></td></tr><tr><td>UHC</td><td>143</td><td>38.4</td><td>84%</td><td>8.9%</td><td>93.1%</td><td>Mar 2026</td><td><span class="badge ba">WATCH</span></td></tr><tr><td>Self-Pay</td><td>89</td><td>67.2</td><td>N/A</td><td>N/A</td><td>61.0%</td><td>N/A</td><td><span class="badge br">POOR</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Review UHC contract for renegotiation — performance data and rate improvement le')">UHC Contract Review</button><button class="ai-btn" onclick="loadAI('Address 11.3% Medicaid denial rate — top denial codes and 60-day improvement pla')">Medicaid Strategy</button><button class="ai-btn" onclick="loadAI('Design self-pay collection improvement program to increase 61% collection rate')">Self-Pay Program</button></div><div class="ai-row"><input id="payers-inp" class="ai-inp" type="text" placeholder="Payer relations query..."><button class="ask-btn" id="payers-btn" onclick="Q(document.getElementById('payers-inp').value,'payers-btn','payers-res')">&#9654; ASK</button></div><div id="payers-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-auth"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRIOR AUTHORIZATION TRACKING</div><div class="stat-grid"><div class="stat-box"><div class="stat-val red">247</div><div class="stat-lbl">Total Pending Auths</div></div><div class="stat-box"><div class="stat-val amber">31%</div><div class="stat-lbl">Auto-Auth Rate</div></div><div class="stat-box"><div class="stat-val amber">8.4 days</div><div class="stat-lbl">Avg Days Pending</div></div></div><table><thead><tr><th>PROCEDURE</th><th>PAYER</th><th>QTY</th><th>DAYS PENDING</th><th>AMOUNT</th><th>APPEAL WIN</th><th>STATUS</th></tr></thead><tbody><tr><td>Total Knee (27447)</td><td>BlueCross</td><td>18</td><td>12.3</td><td>$333,000</td><td>72%</td><td><span class="badge br">URGENT</span></td></tr><tr><td>Shoulder Scope (29826)</td><td>Aetna</td><td>24</td><td>7.1</td><td>$196,800</td><td>68%</td><td><span class="badge ba">PENDING</span></td></tr><tr><td>MRI Brain (70553)</td><td>Medicare</td><td>41</td><td>4.2</td><td>$98,400</td><td>81%</td><td><span class="badge bb">IN REVIEW</span></td></tr><tr><td>Cardiac Cath (93454)</td><td>UHC</td><td>12</td><td>9.8</td><td>$216,000</td><td>61%</td><td><span class="badge br">DELAYED</span></td></tr><tr><td>PT 12-Visit (97110)</td><td>Medicaid</td><td>152</td><td>3.1</td><td>$91,200</td><td>88%</td><td><span class="badge bg">PROCESSING</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze 247 pending prior auths worth $186K — prioritization and automation stra')">Auth Backlog</button><button class="ai-btn" onclick="loadAI('Identify procedures eligible for auto-authorization to reduce manual queue')">Auto-Auth Expansion</button><button class="ai-btn" onclick="loadAI('Create prior auth appeal templates for top 5 denial reasons by payer')">Appeal Templates</button></div><div class="ai-row"><input id="auth-inp" class="ai-inp" type="text" placeholder="Prior auth query..."><button class="ask-btn" id="auth-btn" onclick="Q(document.getElementById('auth-inp').value,'auth-btn','auth-res')">&#9654; ASK</button></div><div id="auth-res" class="ai-res">&gt; AI ready.</div></div></div><div id="tab-ai"><div class="ai-box" style="margin-top:16px"><div class="ai-hdr">&#9889; DEEP AI ANALYSIS</div><div class="ai-row"><input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed query..."><button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">&#9654; ASK</button></div><div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div></div></div><div id="tab-presets"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRESET LIBRARY &mdash; Click any to load into AI</div><div class="pr-grid">
+</div><div class="alert-imp">Escalate</div></div><div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">Medicaid denial rate 11.3%</div><div class="alert-imp">Review</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">UHC contract renegotiation due</div><div class="alert-imp">Negotiate</div></div><div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">Self-pay collection 61% below target</div><div class="alert-imp">Program</div></div><div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Medicare rate at 91% — maintain</div><div class="alert-imp">Monitor</div></div></div><div class="sec"><div class="sec-hdr">DENIAL BREAKDOWN BY CODE</div><table><thead><tr><th>CODE</th><th>REASON</th><th>COUNT</th><th>$</th><th>TOP PAYER</th><th>ACTION</th></tr></thead><tbody><tr><td>PR-96</td><td>Non-covered charge</td><td>67</td><td>$186K</td><td>Medicare</td><td>Appeal</td></tr><tr><td>CO-4</td><td>Modifier inconsistent</td><td>42</td><td>$38K</td><td>Aetna</td><td>Recode</td></tr><tr><td>CO-11</td><td>Dx inconsistent</td><td>38</td><td>$44K</td><td>BlueCross</td><td>Review</td></tr><tr><td>CO-50</td><td>Non-covered service</td><td>31</td><td>$22K</td><td>UHC</td><td>Appeal</td></tr><tr><td>CO-B7</td><td>Not certified</td><td>12</td><td>$18K</td><td>Medicaid</td><td>Authorize</td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><input id="dash-inp" class="ai-inp" type="text" placeholder="Insurance query..."><button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">&#9654; ASK</button></div><div id="dash-res" class="ai-res">&gt; AI ready.</div></div></div>
+<div id="tab-claims"><div class="sec" style="margin-top:16px"><div class="sec-hdr">CLAIMS ADJUDICATION QUEUE</div><table><thead><tr><th>CLAIM #</th><th>PATIENT</th><th>CPT</th><th>PAYER</th><th>AMOUNT</th><th>DAYS</th><th>DENIAL REASON</th><th>STATUS</th></tr></thead><tbody><tr><td>CLM-001</td><td>J. Martinez</td><td>99215</td><td>Medicare</td><td>$248</td><td>14</td><td>PR-96 non-covered</td><td><span class="badge br">DENIED</span></td></tr><tr><td>CLM-002</td><td>S. Thompson</td><td>27447</td><td>Aetna</td><td>$8,200</td><td>7</td><td>Prior auth missing</td><td><span class="badge br">DENIED</span></td></tr><tr><td>CLM-003</td><td>R. Johnson</td><td>70553</td><td>BlueCross</td><td>$1,400</td><td>3</td><td>Bundling issue</td><td><span class="badge ba">REVIEW</span></td></tr><tr><td>CLM-004</td><td>L. Williams</td><td>93454</td><td>UHC</td><td>$3,800</td><td>21</td><td>Timely filing</td><td><span class="badge br">WRITE-OFF</span></td></tr><tr><td>CLM-005</td><td>M. Davis</td><td>97110</td><td>Medicaid</td><td>$180</td><td>5</td><td>COB needed</td><td><span class="badge bb">PENDING</span></td></tr><tr><td>CLM-006</td><td>A. Garcia</td><td>99214</td><td>Aetna</td><td>$218</td><td>2</td><td>None</td><td><span class="badge bg">APPROVED</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze 8.3% denial rate vs 5.1% industry — root cause and top 5 remediation ste')">Denial Reduction</button><button class="ai-btn" onclick="safeAnalyze(document.querySelector(`textarea`)?.value || `analysis`, `output`)">Appeal Strategy</button><button class="ai-btn" onclick="loadAI('Review timely filing denial exposure and implement preventive tracking system')">Timely Filing</button></div><div class="ai-row"><input id="claims-inp" class="ai-inp" type="text" placeholder="Claims query..."><button class="ask-btn" id="claims-btn" onclick="Q(document.getElementById('claims-inp').value,'claims-btn','claims-res')">&#9654; ASK</button></div><div id="claims-res" class="ai-res">&gt; AI ready.</div></div></div>
+<div id="tab-payers"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PAYER PERFORMANCE MATRIX</div><table><thead><tr><th>PAYER</th><th>CLAIMS VOL</th><th>DAYS AR</th><th>CLEAN RATE</th><th>DENIAL RATE</th><th>NET COLLECTION</th><th>CONTRACT EXP</th><th>STATUS</th></tr></thead><tbody><tr><td>Medicare</td><td>312</td><td>28.4</td><td>91%</td><td>4.2%</td><td>97.1%</td><td>N/A</td><td><span class="badge bg">GOOD</span></td></tr><tr><td>Medicaid</td><td>287</td><td>41.2</td><td>79%</td><td>11.3%</td><td>91.4%</td><td>N/A</td><td><span class="badge br">CRITICAL</span></td></tr><tr><td>BlueCross</td><td>198</td><td>32.1</td><td>87%</td><td>6.8%</td><td>94.8%</td><td>Sep 2026</td><td><span class="badge ba">WATCH</span></td></tr><tr><td>Aetna</td><td>156</td><td>29.8</td><td>89%</td><td>5.1%</td><td>96.2%</td><td>Dec 2026</td><td><span class="badge bg">GOOD</span></td></tr><tr><td>UHC</td><td>143</td><td>38.4</td><td>84%</td><td>8.9%</td><td>93.1%</td><td>Mar 2026</td><td><span class="badge ba">WATCH</span></td></tr><tr><td>Self-Pay</td><td>89</td><td>67.2</td><td>N/A</td><td>N/A</td><td>61.0%</td><td>N/A</td><td><span class="badge br">POOR</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Review UHC contract for renegotiation — performance data and rate improvement le')">UHC Contract Review</button><button class="ai-btn" onclick="loadAI('Address 11.3% Medicaid denial rate — top denial codes and 60-day improvement pla')">Medicaid Strategy</button><button class="ai-btn" onclick="loadAI('Design self-pay collection improvement program to increase 61% collection rate')">Self-Pay Program</button></div><div class="ai-row"><input id="payers-inp" class="ai-inp" type="text" placeholder="Payer relations query..."><button class="ask-btn" id="payers-btn" onclick="Q(document.getElementById('payers-inp').value,'payers-btn','payers-res')">&#9654; ASK</button></div><div id="payers-res" class="ai-res">&gt; AI ready.</div></div></div>
+<div id="tab-auth"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRIOR AUTHORIZATION TRACKING</div><div class="stat-grid"><div class="stat-box"><div class="stat-val red">247</div><div class="stat-lbl">Total Pending Auths</div></div><div class="stat-box"><div class="stat-val amber">31%</div><div class="stat-lbl">Auto-Auth Rate</div></div><div class="stat-box"><div class="stat-val amber">8.4 days</div><div class="stat-lbl">Avg Days Pending</div></div></div><table><thead><tr><th>PROCEDURE</th><th>PAYER</th><th>QTY</th><th>DAYS PENDING</th><th>AMOUNT</th><th>APPEAL WIN</th><th>STATUS</th></tr></thead><tbody><tr><td>Total Knee (27447)</td><td>BlueCross</td><td>18</td><td>12.3</td><td>$333,000</td><td>72%</td><td><span class="badge br">URGENT</span></td></tr><tr><td>Shoulder Scope (29826)</td><td>Aetna</td><td>24</td><td>7.1</td><td>$196,800</td><td>68%</td><td><span class="badge ba">PENDING</span></td></tr><tr><td>MRI Brain (70553)</td><td>Medicare</td><td>41</td><td>4.2</td><td>$98,400</td><td>81%</td><td><span class="badge bb">IN REVIEW</span></td></tr><tr><td>Cardiac Cath (93454)</td><td>UHC</td><td>12</td><td>9.8</td><td>$216,000</td><td>61%</td><td><span class="badge br">DELAYED</span></td></tr><tr><td>PT 12-Visit (97110)</td><td>Medicaid</td><td>152</td><td>3.1</td><td>$91,200</td><td>88%</td><td><span class="badge bg">PROCESSING</span></td></tr></tbody></table></div><div class="ai-box"><div class="ai-hdr">&#9889; AI ANALYSIS</div><div class="ai-row"><button class="ai-btn" onclick="loadAI('Analyze 247 pending prior auths worth $186K — prioritization and automation stra')">Auth Backlog</button><button class="ai-btn" onclick="loadAI('Identify procedures eligible for auto-authorization to reduce manual queue')">Auto-Auth Expansion</button><button class="ai-btn" onclick="loadAI('Create prior auth appeal templates for top 5 denial reasons by payer')">Appeal Templates</button></div><div class="ai-row"><input id="auth-inp" class="ai-inp" type="text" placeholder="Prior auth query..."><button class="ask-btn" id="auth-btn" onclick="Q(document.getElementById('auth-inp').value,'auth-btn','auth-res')">&#9654; ASK</button></div><div id="auth-res" class="ai-res">&gt; AI ready.</div></div></div>
+<div id="tab-ai"><div class="ai-box" style="margin-top:16px"><div class="ai-hdr">&#9889; DEEP AI ANALYSIS</div><div class="ai-row"><input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed query..."><button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">&#9654; ASK</button></div><div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div></div></div>
+<div id="tab-presets"><div class="sec" style="margin-top:16px"><div class="sec-hdr">PRESET LIBRARY &mdash; Click any to load into AI</div><div class="pr-grid">
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Analyze Medicare CO-4 denial spike — 89 claims, 22% rate increase, $184K impact. Identify modifier pattern, root cause, and 2-week resolution plan"><div class="pr-card-title">Medicare Denial Spike</div><div class="pr-card-desc">CO-4 modifier crisis</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build Aetna prior auth escalation plan for 14 backlogged requests — prioritize 3 approaching medical necessity deadline and create payer escalation communication"><div class="pr-card-title">Prior Auth Escalation</div><div class="pr-card-desc">Aetna 72hr backlog</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Prepare UHC contract renegotiation strategy for Q2 window — benchmark current rates vs market, identify $340K opportunity, and build negotiation framework"><div class="pr-card-title">UHC Renegotiation</div><div class="pr-card-desc">$340K rate opportunity</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Prioritize 23 Blue Cross claims approaching 90-day timely filing — oldest at 84 days, $62K at risk. Build emergency submission plan"><div class="pr-card-title">Timely Filing Alert</div><div class="pr-card-desc">$62K write-off prevention</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build appeal strategy to maintain 68% win rate — analyze top appeal categories, Level 2 external review selection criteria, and payer-specific documentation requirements"><div class="pr-card-title">Appeal Strategy</div><div class="pr-card-desc">68% win rate maintenance</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design payer relations improvement plan — denial rate reduction from 18.4% to &lt;15%, credentialing pipeline, and contract optimization across top 5 payers"><div class="pr-card-title">Payer Relations Plan</div><div class="pr-card-desc">Multi-payer optimization</div></div>
-</div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div>
-
-
+</div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 
 
 
 <script>
+window.switchTab = function(id, btn) {
+  // Hide all
+  const tabs = document.querySelectorAll('[id^="tab-"]');
+  for(let t of tabs) { t.setAttribute('style', 'display: none !important'); }
+  
+  // Show target
+  const target = document.getElementById('tab-' + id) || document.getElementById(id);
+  if (target) target.setAttribute('style', 'display: block !important');
+  
+  // UI Cleanup
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+console.log("TSM Engine Active for hc-insurance");
+</script>
+
+<script id="tsm-core-engine">
+(function() {
+  window.switchTab = function(id, btn) {
+    const tabs = document.querySelectorAll('[id^="tab-"]');
+    tabs.forEach(t => t.style.display = 'none');
+    const target = document.getElementById('tab-' + id) || document.getElementById(id);
+    if (target) target.style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+})();
+</script>
+<script>
 (function(){
-  function switchTab(id, btn){
+  function switchTab(id,btn){
     document.querySelectorAll('[id^="tab-"]').forEach(function(el){
       el.setAttribute('style','display:none!important');
     });
     var t=document.getElementById('tab-'+id)||document.getElementById(id);
-    if(t) t.setAttribute('style','display:block!important');
+    if(t)t.setAttribute('style','display:block!important');
     document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-    if(btn) btn.classList.add('active');
+    if(btn)btn.classList.add('active');
   }
   function loadAI(p){
     var aiBtn=null;
     document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
+      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1)aiBtn=b;
     });
     switchTab('ai',aiBtn);
     var inp=document.getElementById('ai-inp');
