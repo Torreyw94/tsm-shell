@@ -90,7 +90,6 @@ tr:hover td{background:#0f1f0f}
 
 <style>
   [id^="tab-"] { display: none !important; }
-  #tab-dash { display: block !important; }
   #tab-dash.active-tab { display: block !important; }
 </style>
 <script>
@@ -135,8 +134,8 @@ window.onload = function() {
 
 
 
-<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🧾</span><div><div class="hdr-title">HC BILLING COMMAND</div><div class="hdr-sub">CMS-1500 · UB-04 · CPT Audit · Claims Processing · Coding Compliance</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn active" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn active" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('coding',this)">💻 CODING</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
-<div id="tab-dash" style="display: block;" id="tab-dash" style="display: block !important;"><div class="kpi-row">
+<div class="hdr"><div class="hdr-left"><span style="font-size:22px">🧾</span><div><div class="hdr-title">HC BILLING COMMAND</div><div class="hdr-sub">CMS-1500 · UB-04 · CPT Audit · Claims Processing · Coding Compliance</div></div></div><div class="node-pill">NODE ACTIVE</div></div><nav class="nav"><button class="nav-btn" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button><button class="nav-btn" onclick="window.switchTab('claims',this)">📋 CLAIMS</button><button class="nav-btn" onclick="window.switchTab('coding',this)">💻 CODING</button><button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button><button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button></nav>
+<div id="tab-dash" style="display: block !important;"><div class="kpi-row">
 <div class="kpi"><div class="kpi-val red">1,256</div><div class="kpi-lbl">Claims This Month</div><div class="kpi-sub red">231 denied · 18.4% denial rate</div></div>
 <div class="kpi"><div class="kpi-val red">231</div><div class="kpi-lbl">Denied / Rejected</div><div class="kpi-sub red">Exceeds 15% threshold · action required</div></div>
 <div class="kpi"><div class="kpi-val amber">$48K</div><div class="kpi-lbl">Stalled Revenue</div><div class="kpi-sub amber">Adjudication queue · 14 aging &gt;30d</div></div>
