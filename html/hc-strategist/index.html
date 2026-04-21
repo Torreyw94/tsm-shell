@@ -636,6 +636,88 @@ function copyLeadershipBrief() {
   navigator.clipboard.writeText(text).catch(() => {});
 }
 
+
+// ================= AUTO SYNC NODES =================
+
+let AUTO_SYNC_INTERVAL = null;
+
+function startAutoSync(intervalMs = 10000) {
+  if (AUTO_SYNC_INTERVAL) clearInterval(AUTO_SYNC_INTERVAL);
+
+  AUTO_SYNC_INTERVAL = setInterval(async () => {
+    try {
+      const system =
+        document.getElementById('system-filter')?.value ||
+        'HonorHealth';
+
+      const location =
+        document.getElementById('location-filter')?.value ||
+        'Scottsdale - Shea';
+
+      const res = await fetch(
+        `/api/hc/nodes/filter?system=${encodeURIComponent(system)}&location=${encodeURIComponent(location)}`
+      );
+
+      const data = await res.json();
+      if (!data.ok) return;
+
+      updateNodeUI(data.state);
+
+      // OPTIONAL: auto-run Layer 2 quietly
+      autoRunLayer2(system, location);
+
+    } catch (e) {
+      console.warn('Auto-sync failed', e);
+    }
+  }, intervalMs);
+}
+
+function stopAutoSync() {
+  if (AUTO_SYNC_INTERVAL) {
+    clearInterval(AUTO_SYNC_INTERVAL);
+    AUTO_SYNC_INTERVAL = null;
+  }
+}
+
+function autoRunLayer2(system, location) {
+  fetch('/api/hc/layer2', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ system, location })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (!data.ok) return;
+
+    const el = document.getElementById('layer2-live');
+    if (el) {
+      el.innerHTML = data.output.replace(/\n/g, '<br>');
+    }
+  })
+  .catch(()=>{});
+}
+
+// Update node cards (simple version)
+function updateNodeUI(state) {
+  Object.entries(state || {}).forEach(([key, node]) => {
+    const el = document.querySelector(`[data-node="${key}"]`);
+    if (!el) return;
+
+    el.classList.add('live');
+    el.setAttribute('title', node.findings || 'Live');
+
+    // optional: inject mini metrics
+    if (node.queueDepth !== undefined) {
+      el.innerText = `${key.toUpperCase()}\nQ:${node.queueDepth}`;
+    }
+  });
+}
+
+// Auto-start on load
+window.addEventListener('load', () => {
+  startAutoSync(10000); // every 10s
+});
+
 </script>
 
 <div class="ai-box" style="margin-top:16px">
