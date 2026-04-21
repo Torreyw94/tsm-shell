@@ -8,6 +8,10 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
+app.use(express.static(__dirname, {
+  extensions: ['html']
+}));
+
 // ── DATA STORE ────────────────────────────────────────────────────────────────
 const HC_DATA_ROOT = process.env.TSM_DATA_ROOT || '/data';
 const HC_DATA_DIR = path.join(HC_DATA_ROOT, 'hc-strategist');
@@ -629,7 +633,11 @@ app.use('/', express.static(path.join(__dirname, 'html')));
 
 // catch-all LAST
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'index.html'));
+  res.sendFile(path.join(__dirname, req.path), (err) => {
+    if (err) {
+      res.sendFile(path.join(__dirname, 'html', 'index.html'));
+    }
+  });
 });
 
 app.listen(PORT, () => {
