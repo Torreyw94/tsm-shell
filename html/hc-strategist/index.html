@@ -550,7 +550,7 @@ async function runEnterpriseBnca() {
     document.getElementById('location-filter')?.value ||
     'Scottsdale - Shea';
 
-  out.textContent = '> Running enterprise BNCA...';
+  out.innerHTML = '⏳ Running enterprise BNCA...';
 
   try {
     const res = await fetch('/api/hc/layer2', {
@@ -565,9 +565,9 @@ async function runEnterpriseBnca() {
       throw new Error(data.error || 'Layer 2 request failed');
     }
 
-    out.textContent = data.output || 'No enterprise BNCA output returned.';
+    out.innerHTML = (data.output || 'No enterprise BNCA output returned.').replace(/\n/g, '<br>');
   } catch (err) {
-    out.textContent = '> Enterprise BNCA error: ' + err.message;
+    out.innerHTML = '&gt; Enterprise BNCA error: ' + err.message;
   }
 }
 
