@@ -1,31 +1,33 @@
-
 FROM node:20-alpine
 
 # Install nginx
-RUN apk add --no-cache nginx
+RUN apk add --no-cache nginx bash
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Install dependencies first (layer caching)
 COPY package*.json ./
 RUN npm install --production
 
-# Copy all app files
-COPY . .
+# Copy app source
+COPY server.js ./
+COPY html ./html
 
-# Copy static html files to nginx root
-RUN mkdir -p /usr/share/nginx/html && \
-    cp -r html/. /usr/share/nginx/html/ && \
-    mkdir -p /usr/share/nginx/html/suite
+# Set up nginx static root
+RUN mkdir -p /usr/share/nginx/html/suite && \
+    cp -r html/. /usr/share/nginx/html/
 
-# Copy nginx config
+# nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Create startup script that runs both nginx and node
-RUN printf '#!/bin/sh\nnginx\nexec node /app/server.js\n' > /start.sh && \
+# Startup script — nginx in background, node in foreground
+RUN echo '#!/bin/bash' > /start.sh && \
+    echo 'set -e' >> /start.sh && \
+    echo 'nginx' >> /start.sh && \
+    echo 'echo "nginx started"' >> /start.sh && \
+    echo 'exec node /app/server.js' >> /start.sh && \
     chmod +x /start.sh
 
 EXPOSE 8080
 
-CMD ["/start.sh"]
+CMD ["/bin/bash", "/start.sh"]
