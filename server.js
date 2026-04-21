@@ -224,6 +224,128 @@ function aggregateLayer2(nodesMap) {
 
 
 
+
+function buildAudienceBrief({ system, location, audience='om', format='brief', question='', filtered={}, result={} }) {
+  const top = result.top || [];
+  const topLane = result.highestYieldLane || (top[0]?.nodeKey ? top[0].nodeKey.charAt(0).toUpperCase() + top[0].nodeKey.slice(1) : 'Unassigned');
+  const rev = Number(result.revenueAtRisk || 0);
+  const rec72 = Number(result.recoverable72h || 0);
+  const rec30 = Number(result.recoverable30d || 0);
+  const cash14 = Number(result.cashAcceleration14d || 0);
+
+  const ops = filtered.operations || {};
+  const billing = filtered.billing || {};
+  const insurance = filtered.insurance || {};
+  const compliance = filtered.compliance || {};
+
+  const rootCause = [
+    billing.denialRate != null || billing.claimLagDays != null
+      ? `Billing is showing denial pressure at ${billing.denialRate ?? 'N/A'}% with claim lag at ${billing.claimLagDays ?? 'N/A'} days.`
+      : null,
+    insurance.authBacklog != null || insurance.authDelayHours != null
+      ? `Insurance is carrying ${insurance.authBacklog ?? 'N/A'} pending auth items with an average delay of ${insurance.authDelayHours ?? 'N/A'} hours.`
+      : null,
+    ops.queueDepth != null || ops.intakeBacklog != null || ops.staffingCoverage != null
+      ? `Operations is reporting queue depth ${ops.queueDepth ?? 'N/A'}, intake backlog ${ops.intakeBacklog ?? 'N/A'}, and staffing coverage ${ops.staffingCoverage ?? 'N/A'}%.`
+      : null,
+    compliance.openFindings != null || compliance.auditExposure != null
+      ? `Compliance is carrying ${compliance.openFindings ?? 'N/A'} open findings with audit exposure of $${compliance.auditExposure ?? 'N/A'}.`
+      : null
+  ].filter(Boolean).join(' ');
+
+  const actions = [
+    'Clear the highest-value backlog first.',
+    'Escalate aged auth and documentation blockers older than 24–72 hours.',
+    'Align intake, billing, and scheduling handoffs for the next shift.'
+  ];
+
+  const summaryLine = `Current cross-lane pressure is concentrated in ${top.map(t => t.nodeKey).join(', ') || 'the active operating lanes'}, with $${rev.toLocaleString()} at risk and $${cash14.toLocaleString()} in projected 14-day cash acceleration opportunity.`;
+
+  const audiencePrefix = {
+    om: 'Operational summary for office management:',
+    director: 'Cross-functional leadership summary:',
+    cfo: 'Financial impact summary:',
+    ceo: 'Executive summary:'
+  }[audience] || 'Leadership summary:';
+
+  if (format === 'status_update') {
+    return `${audiencePrefix}
+
+System: ${system || 'General Healthcare'}
+Location: ${location || 'All'}
+
+Top issue: ${top.map(t => t.nodeKey).join(' + ') || 'No qualifying node pressure found'}
+Highest-yield lane: ${topLane}
+Revenue at risk: $${rev.toLocaleString()}
+Recoverable in 72 hours: $${rec72.toLocaleString()}
+Projected 14-day cash acceleration: $${cash14.toLocaleString()}
+
+Root cause:
+${rootCause || 'No live telemetry available.'}
+
+Immediate actions:
+1. ${actions[0]}
+2. ${actions[1]}
+3. ${actions[2]}`;
+  }
+
+  if (format === 'talking_points') {
+    return `TALKING POINTS
+
+• ${summaryLine}
+• Highest-yield lane right now is ${topLane}.
+• Recoverable value is $${rec72.toLocaleString()} in 72 hours and $${rec30.toLocaleString()} in 30 days.
+• Root cause is cross-functional: ${rootCause || 'no live telemetry available.'}
+• Immediate response is to ${actions[0].toLowerCase()} ${actions[1].toLowerCase()} ${actions[2].toLowerCase()}`;
+  }
+
+  if (format === 'email') {
+    return `Subject: ${location || 'Site'} Revenue Pressure Update
+
+Team,
+
+This is a current update for ${system || 'General Healthcare'}${location ? ' — ' + location : ''}.
+
+${summaryLine}
+
+Highest-yield lane at this time is ${topLane}. Estimated recoverable value is $${rec72.toLocaleString()} in the next 72 hours and $${rec30.toLocaleString()} over 30 days.
+
+Root cause:
+${rootCause || 'No live telemetry available.'}
+
+Current response plan:
+1. ${actions[0]}
+2. ${actions[1]}
+3. ${actions[2]}
+
+Please let me know if you would like this converted into a more detailed operating brief.
+
+Thanks,`;
+  }
+
+  return `${audiencePrefix}
+
+${summaryLine}
+
+Highest-yield lane: ${topLane}
+Revenue at risk: $${rev.toLocaleString()}
+Recoverable value:
+- 72 hours: $${rec72.toLocaleString()}
+- 30 days: $${rec30.toLocaleString()}
+
+Root cause:
+${rootCause || 'No live telemetry available.'}
+
+Recommended next actions:
+1. ${actions[0]}
+2. ${actions[1]}
+3. ${actions[2]}
+
+Question context:
+${question || 'No additional question provided.'}`;
+}
+
+
 app.post('/api/hc/layer2', (req, res) => {
   try {
     const { system = '', location = '' } = req.body || {};
@@ -313,6 +435,64 @@ CONFIDENCE
       cashAcceleration14d,
       highestYieldLane,
       top: result.top
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+
+
+app.post('/api/hc/brief', (req, res) => {
+  try {
+    const {
+      system = '',
+      location = '',
+      audience = 'om',
+      format = 'brief',
+      question = ''
+    } = req.body || {};
+
+    const state = readJson(HC_NODE_STATE_FILE, {});
+    const filtered = Object.fromEntries(
+      Object.entries(state).filter(([_, n]) =>
+        (!system || (n.system || '') === system) &&
+        (!location || location === 'All' || (n.location || '') === location)
+      )
+    );
+
+    const result = aggregateLayer2(filtered);
+
+    const highestYieldLane =
+      result.top?.[0]?.nodeKey
+        ? result.top[0].nodeKey.charAt(0).toUpperCase() + result.top[0].nodeKey.slice(1)
+        : 'Unassigned';
+
+    result.highestYieldLane = highestYieldLane;
+    result.cashAcceleration14d = result.cashAcceleration14d || Math.round((result.recoverable30d || 0) * 0.7);
+
+    const brief = buildAudienceBrief({
+      system,
+      location,
+      audience,
+      format,
+      question,
+      filtered,
+      result
+    });
+
+    res.json({
+      ok: true,
+      brief,
+      audience,
+      format,
+      system,
+      location,
+      revenueAtRisk: result.revenueAtRisk || 0,
+      recoverable72h: result.recoverable72h || 0,
+      recoverable30d: result.recoverable30d || 0,
+      cashAcceleration14d: result.cashAcceleration14d || 0,
+      highestYieldLane
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });

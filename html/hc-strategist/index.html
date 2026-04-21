@@ -274,6 +274,8 @@ tr:hover td{background:#0f1f0f}
 
 <div class="ai-row" style="margin-top:10px;">
   <button class="ai-btn" onclick="runEnterpriseBnca()">
+
+<button class="nav-btn" onclick="switchTab('exec', this)">📨 EXEC CORRESPONDENCE</button>
 <button class="nav-btn" onclick="switchTab('presentation', this)">🎤 PRESENTATION MODE</button>
 RUN ENTERPRISE BNCA</button>
 </div>
@@ -584,6 +586,56 @@ function copyPresentationScript() {
   }).catch(() => {});
 }
 
+
+async function generateLeadershipBrief() {
+  const out = document.getElementById('brief-res');
+  if (!out) return;
+
+  const system =
+    document.getElementById('system-filter')?.value ||
+    'HonorHealth';
+
+  const location =
+    document.getElementById('location-filter')?.value ||
+    'Scottsdale - Shea';
+
+  const audience =
+    document.getElementById('brief-audience')?.value ||
+    'om';
+
+  const format =
+    document.getElementById('brief-format')?.value ||
+    'brief';
+
+  const question =
+    document.getElementById('brief-question')?.value ||
+    '';
+
+  out.innerHTML = '⏳ Generating leadership brief...';
+
+  try {
+    const res = await fetch('/api/hc/brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system, location, audience, format, question })
+    });
+
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Brief generation failed');
+
+    out.innerHTML = (data.brief || 'No brief returned.').replace(/\n/g, '<br>');
+  } catch (err) {
+    out.innerHTML = '&gt; Leadership brief error: ' + err.message;
+  }
+}
+
+function copyLeadershipBrief() {
+  const el = document.getElementById('brief-res');
+  if (!el) return;
+  const text = el.innerText || el.textContent || '';
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
 </script>
 
 <div class="ai-box" style="margin-top:16px">
@@ -698,6 +750,33 @@ Say: “Office managers, revenue cycle leaders, and operations — the people wh
 FINAL LINE
 
 “We’re not replacing your systems — we’re making them actionable.”</div>
+  </div>
+</div>
+
+
+<div id="tab-exec">
+  <div class="ai-box" style="margin-top:16px">
+    <div class="ai-hdr">📨 EXEC CORRESPONDENCE</div>
+    <div class="ai-row" style="gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+      <select id="brief-audience" class="ai-inp" style="max-width:180px">
+        <option value="om">OM</option>
+        <option value="director">Director</option>
+        <option value="cfo">CFO</option>
+        <option value="ceo">CEO</option>
+      </select>
+      <select id="brief-format" class="ai-inp" style="max-width:200px">
+        <option value="brief">Brief</option>
+        <option value="email">Email</option>
+        <option value="status_update">Status Update</option>
+        <option value="talking_points">Talking Points</option>
+      </select>
+    </div>
+    <div class="ai-row" style="margin-bottom:10px;">
+      <input id="brief-question" class="ai-inp" type="text" placeholder="What are you being asked about?" />
+      <button class="ai-btn" onclick="generateLeadershipBrief()">GENERATE LEADERSHIP BRIEF</button>
+      <button class="ai-btn" onclick="copyLeadershipBrief()">COPY</button>
+    </div>
+    <div id="brief-res" class="ai-res">> Leadership brief ready.</div>
   </div>
 </div>
 
