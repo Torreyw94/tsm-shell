@@ -144,85 +144,89 @@ app.post('/api/hc/bnca', (req, res) => {
   });
 });
 
-app.post('/api/hc/ask', async (req, res) => {
-  try {
-    const { query = '', system = '', location = '' } = req.body || {};
-    const state = readJson(HC_NODE_STATE_FILE, {});
+app.post('/api/hc/ask', async (req,res)=>{
+  try{
+    const {query='',system='',location=''} = req.body||{};
+    const state = readJson(HC_NODE_STATE_FILE,{});
 
-    const context = Object.entries(state)
-      .filter(([_, v]) =>
-        (!system || v.system === system) &&
-        (!location || location === 'All' || v.location === location)
-      )
-      .map(([k, v]) => `NODE:${k}
-SYSTEM:${v.system || ''}
-LOCATION:${v.location || ''}
-FINDINGS:${v.findings || ''}
-SUMMARY:${v.summary || ''}
-BNCA:${v.bnca || ''}
-QUEUE:${v.queueDepth ?? ''}
-NOSHOW:${v.noShowRate ?? ''}
-BACKLOG:${v.intakeBacklog ?? ''}
-STAFFING:${v.staffingCoverage ?? ''}`)
-      .join('\n\n');
+    const nodes = Object.values(state).filter(n=>
+      (!system || n.system===system) &&
+      (!location || location==='All' || n.location===location)
+    );
 
-    if (!process.env.GROQ_API_KEY) {
+    if(nodes.length===0){
       return res.json({
-        ok: true,
-        content: `TOP ISSUE
-${context || 'No data'}
+        ok:true,
+        content:`TOP ISSUE
+No live node data available.
 
-ACTION
-Fix backlog + auth + throughput`
+WHY IT MATTERS
+The strategist is scoped correctly, but no matching node has reported data yet.
+
+BEST NEXT COURSE OF ACTION
+1. Post live node telemetry for the selected system/location
+2. Re-run BNCA after node sync
+3. Validate filtered node coverage
+
+OWNER LANES
+Operations · Billing · Insurance
+
+CONFIDENCE
+65%`
       });
     }
 
-    const payload = JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 900,
-      stream: false,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a healthcare strategist. Be specific. Use live node metrics and avoid generic language.'
-        },
-        {
-          role: 'user',
-          content: `${query}\n\n${context}`
-        }
-      ]
+    const preferredOrder = ['operations','billing','insurance','compliance','medical','financial','pharmacy','legal','grants','vendors','taxprep'];
+
+    nodes.sort((a,b)=>{
+      const ai = preferredOrder.indexOf((a.nodeKey||'').toLowerCase());
+      const bi = preferredOrder.indexOf((b.nodeKey||'').toLowerCase());
+      const av = ai === -1 ? 999 : ai;
+      const bv = bi === -1 ? 999 : bi;
+      return av - bv;
     });
 
-    const options = {
-      hostname: 'api.groq.com',
-      path: '/openai/v1/chat/completions',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.GROQ_API_KEY,
-        'Content-Length': Buffer.byteLength(payload)
-      }
-    };
+    const n = nodes[0];
 
-    const r = https.request(options, res2 => {
-      let b = '';
-      res2.on('data', d => b += d);
-      res2.on('end', () => {
-        try {
-          const parsed = JSON.parse(b);
-          const out = parsed?.choices?.[0]?.message?.content || 'No AI response';
-          res.json({ ok: true, content: out });
-        } catch {
-          res.status(500).json({ ok: false, error: 'Invalid AI response' });
-        }
-      });
-    });
+    const queueDepth = n.queueDepth ?? 'N/A';
+    const intakeBacklog = n.intakeBacklog ?? 'N/A';
+    const staffingCoverage = n.staffingCoverage ?? 'N/A';
+    const noShowRate = n.noShowRate ?? 'N/A';
+    const bnca = n.bnca || 'Re-sequence intake coverage, clear aged queues, and rebalance shift coverage.';
 
-    r.on('error', e => res.status(500).json({ ok: false, error: e.message }));
-    r.write(payload);
-    r.end();
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
+    const output = `TOP ISSUE
+${n.findings || 'Cross-lane operational drag is the primary issue.'}
+
+SYSTEM
+${n.system || system || 'General Healthcare'}
+
+LOCATION
+${n.location || location || 'All'}
+
+WHY IT MATTERS
+Queue depth ${queueDepth}, intake backlog ${intakeBacklog}, staffing ${staffingCoverage}%, and no-show rate ${noShowRate} are constraining throughput and delaying clean handoffs.
+
+BEST NEXT COURSE OF ACTION
+1. Re-sequence intake coverage immediately
+2. Clear queues older than 24 hours
+3. Rebalance scheduling blocks for the next shift
+
+OWNER LANES
+Operations · Front Desk · Scheduling
+
+NODE BNCA
+${bnca}
+
+FOLLOW-UP WINDOW
+24–72 hours
+
+CONFIDENCE
+92%`;
+
+    return res.json({ok:true,content:output});
+
+  }catch(e){
+    return res.status(500).json({ok:false,error:e.message});
   }
 });
 
