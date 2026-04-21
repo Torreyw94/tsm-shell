@@ -256,8 +256,7 @@ app.post('/api/hc/layer2', (req, res) => {
         return `- Medical: chart defects ${t.node.chartDefects ?? 'N/A'}`;
       }
       return `- ${t.nodeKey}: active pressure`;
-    }).join('
-');
+    }).join('\\n');
 
     const topIssue = top.length
       ? `${top.map(t => t.nodeKey).join(' + ')} are compounding into reimbursement and throughput drag.`
