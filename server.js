@@ -240,17 +240,34 @@ app.post('/api/hc/layer2', (req, res) => {
     const top = result.top;
 
     const rootCauseLines = top.map(t => {
-      if (t.nodeKey === 'operations') return `- Operations: queue ${t.node.queueDepth ?? 'N/A'}, backlog ${t.node.intakeBacklog ?? 'N/A'}, staffing ${t.node.staffingCoverage ?? 'N/A'}%`;
-      if (t.nodeKey === 'billing') return `- Billing: denial ${t.node.denialRate ?? 'N/A'}%, lag ${t.node.claimLagDays ?? 'N/A'}d`;
-      if (t.nodeKey === 'insurance') return `- Insurance: auth backlog ${t.node.authBacklog ?? 'N/A'}, delay ${t.node.authDelayHours ?? 'N/A'}h`;
-      if (t.nodeKey === 'compliance') return `- Compliance: open findings ${t.node.openFindings ?? 'N/A'}, exposure $${t.node.auditExposure ?? 'N/A'}`;
-      if (t.nodeKey === 'medical') return `- Medical: chart defects ${t.node.chartDefects ?? 'N/A'}`;
+      if (t.nodeKey === 'operations') {
+        return `- Operations: queue ${t.node.queueDepth ?? 'N/A'}, backlog ${t.node.intakeBacklog ?? 'N/A'}, staffing ${t.node.staffingCoverage ?? 'N/A'}%`;
+      }
+      if (t.nodeKey === 'billing') {
+        return `- Billing: denial ${t.node.denialRate ?? 'N/A'}%, lag ${t.node.claimLagDays ?? 'N/A'}d`;
+      }
+      if (t.nodeKey === 'insurance') {
+        return `- Insurance: auth backlog ${t.node.authBacklog ?? 'N/A'}, delay ${t.node.authDelayHours ?? 'N/A'}h`;
+      }
+      if (t.nodeKey === 'compliance') {
+        return `- Compliance: open findings ${t.node.openFindings ?? 'N/A'}, exposure $${t.node.auditExposure ?? 'N/A'}`;
+      }
+      if (t.nodeKey === 'medical') {
+        return `- Medical: chart defects ${t.node.chartDefects ?? 'N/A'}`;
+      }
       return `- ${t.nodeKey}: active pressure`;
-    }).join('\\n');
+    }).join('
+');
 
     const topIssue = top.length
       ? `${top.map(t => t.nodeKey).join(' + ')} are compounding into reimbursement and throughput drag.`
       : 'No qualifying node pressure found.';
+
+    const highestYieldLane = top[0]?.nodeKey
+      ? top[0].nodeKey.charAt(0).toUpperCase() + top[0].nodeKey.slice(1)
+      : 'Unassigned';
+
+    const cashAcceleration14d = Math.round(result.recoverable30d * 0.7);
 
     const output = `TOP ISSUE
 ${topIssue}
@@ -267,6 +284,12 @@ $${result.revenueAtRisk.toLocaleString()}
 RECOVERABLE VALUE
 72 HOURS: $${result.recoverable72h.toLocaleString()}
 30 DAYS: $${result.recoverable30d.toLocaleString()}
+
+PROJECTED CASH ACCELERATION
+14 DAYS: $${cashAcceleration14d.toLocaleString()}
+
+HIGHEST-YIELD LANE
+${highestYieldLane}
 
 ROOT CAUSE
 ${rootCauseLines || '- No live node telemetry'}
@@ -288,6 +311,8 @@ CONFIDENCE
       revenueAtRisk: result.revenueAtRisk,
       recoverable72h: result.recoverable72h,
       recoverable30d: result.recoverable30d,
+      cashAcceleration14d,
+      highestYieldLane,
       top: result.top
     });
   } catch (e) {
