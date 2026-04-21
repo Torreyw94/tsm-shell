@@ -17,12 +17,12 @@ jobs:
       - name: Set up Fly CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Inject GROQ_API_KEY as Fly secret
-        run: flyctl secrets set GROQ_API_KEY="${{ secrets.GROQ_API_KEY }}" --app tsm-shell
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --app tsm-shell
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --app tsm-shell
+      - name: Inject GROQ_API_KEY as Fly secret
+        run: flyctl secrets set GROQ_API_KEY="${{ secrets.GROQ_API_KEY }}" --app tsm-shell --stage
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
