@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -765,12 +766,11 @@ function renderGrid() {
     s.apps.forEach(a => {
       const status = appStatus[a.url] || 'checking';
       const c = document.createElement('div');
-      c.className = 'acard' + (selected.has(a.url) ? ' sel' : '') + (status === 'dead' ? ' dead' : '');
+      c.className = 'acard' + (selected.has(a.url) ? ' sel' : '');
       c.setAttribute('data-url', a.url);
       const displayUrl = a.url.startsWith('http') ? a.url.replace('https://', '') : a.url;
       c.innerHTML = `<div class="aname"><span class="dot ${status}"></span>${a.name}</div><div class="aurl">${displayUrl}</div>`;
       c.onclick = () => {
-        if (status === 'dead') return; // don't select dead apps
         if (selected.has(a.url)) { selected.delete(a.url); c.classList.remove('sel'); }
         else { selected.add(a.url); c.classList.add('sel'); }
         updateCount(); renderPills();
@@ -805,7 +805,7 @@ function clearAll()      { selected.clear(); renderGrid(); updateCount(); render
 function selectSector()  {
   if (activeFilter === 'All') return;
   const s = SECTORS.find(x => x.label === activeFilter);
-  if (s) { s.apps.filter(a => appStatus[a.url] !== 'dead').forEach(a => selected.add(a.url)); renderGrid(); updateCount(); renderPills(); }
+  if (s) { s.apps.forEach(a => selected.add(a.url)); renderGrid(); updateCount(); renderPills(); }
 }
 function copySuiteUrl()  { navigator.clipboard.writeText(document.getElementById('suite-url-box').textContent).catch(() => {}); }
 function openFirst()     { const first = Array.from(selected)[0]; if (first) window.open(openUrl(first), '_blank'); }
