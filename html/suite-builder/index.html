@@ -7,120 +7,468 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#060a10;--bg2:#0a1018;--bg3:#0d1520;--panel:#0e1822;
-  --border:rgba(100,200,255,.1);--border2:rgba(201,168,76,.3);
-  --gold:#c9a84c;--gold2:#e8c87a;--gold3:rgba(201,168,76,.08);
-  --green:#10b981;--teal:#14b8a6;
-  --text:#bfcfe4;--dim:#4a5a70;--bright:#eef2ff;
-  --mono:'DM Mono',monospace;--display:'Bebas Neue',sans-serif;
-  --radius:6px;--radius-lg:10px;
+  --bg:#04080f;
+  --bg2:#070d18;
+  --bg3:#0b1422;
+  --panel:#0d1828;
+  --glass:rgba(13,24,40,0.6);
+  --glass2:rgba(255,255,255,0.03);
+  --glass3:rgba(255,255,255,0.06);
+  --border:rgba(100,200,255,0.08);
+  --border2:rgba(201,168,76,0.35);
+  --border3:rgba(255,255,255,0.06);
+  --gold:#c9a84c;
+  --gold2:#e8c87a;
+  --gold3:rgba(201,168,76,0.08);
+  --gold4:rgba(201,168,76,0.15);
+  --green:#10b981;
+  --teal:#14b8a6;
+  --blue:rgba(100,200,255,0.7);
+  --text:#b8cfe2;
+  --dim:#3a5070;
+  --dim2:#5a7090;
+  --bright:#eef4ff;
+  --mono:'DM Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --r:6px;--rl:10px;--rxl:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:0.5px solid var(--border);}
-.logo{font-family:var(--display);font-size:22px;color:var(--gold);letter-spacing:2px;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── BACKGROUND ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(201,168,76,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(20,120,200,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(20,184,166,0.04) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(100,180,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100,180,255,0.015) 1px, transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 24px;
+  background:rgba(4,8,15,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:0.5px solid var(--border);
+}
+.logo{font-family:var(--display);font-size:22px;color:var(--gold);letter-spacing:3px;}
 .topbar-title{font-size:11px;color:var(--text);letter-spacing:2px;}
-.topbar-sub{font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+.topbar-sub{font-size:9px;color:var(--dim2);letter-spacing:2px;text-transform:uppercase;}
 .topbar-right{display:flex;align-items:center;gap:10px;}
-.ai-badge{padding:4px 10px;border:0.5px solid var(--gold);border-radius:20px;font-size:9px;color:var(--gold);letter-spacing:1px;}
-.status-pill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--dim);padding:4px 10px;border:0.5px solid var(--border);border-radius:20px;}
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);}
-.tab-nav{display:flex;border-bottom:0.5px solid var(--border);background:var(--bg2);}
-.tab-btn{padding:12px 20px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;}
+.ai-badge{
+  padding:4px 11px;
+  border:0.5px solid var(--gold);
+  border-radius:20px;
+  font-size:9px;color:var(--gold);letter-spacing:1px;
+  background:var(--gold3);
+  backdrop-filter:blur(10px);
+}
+.status-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;color:var(--dim2);
+  padding:4px 11px;
+  border:0.5px solid var(--border3);
+  border-radius:20px;
+  background:var(--glass2);
+  backdrop-filter:blur(10px);
+}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+
+/* ── TAB NAV ── */
+.tab-nav{
+  position:relative;z-index:10;
+  display:flex;
+  border-bottom:0.5px solid var(--border);
+  background:rgba(7,13,24,0.8);
+  backdrop-filter:blur(20px);
+}
+.tab-btn{
+  padding:12px 22px;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--dim2);cursor:pointer;
+  border:none;background:none;
+  border-bottom:2px solid transparent;
+  transition:all .2s;
+}
 .tab-btn:hover{color:var(--text);}
 .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
-.tnum{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--border);font-size:9px;margin-right:6px;}
+.tnum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--border);font-size:9px;margin-right:6px;
+}
 .tab-btn.active .tnum{background:var(--gold);color:var(--bg);}
-.main{display:flex;min-height:calc(100vh - 88px);}
-.sidebar{width:210px;flex-shrink:0;border-right:0.5px solid var(--border);padding:14px 10px;background:var(--bg2);}
-.content{flex:1;overflow-y:auto;padding:18px 22px;}
+
+/* ── MAIN LAYOUT ── */
+.main{display:flex;min-height:calc(100vh - 90px);position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:210px;flex-shrink:0;
+  border-right:0.5px solid var(--border);
+  padding:16px 10px;
+  background:rgba(7,13,24,0.7);
+  backdrop-filter:blur(20px);
+}
+.content{flex:1;overflow-y:auto;padding:20px 24px;}
 .panel{display:none;}
 .panel.active{display:block;}
-.slabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;padding-left:4px;}
-.fitem{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:var(--radius);cursor:pointer;font-size:10px;color:var(--dim);transition:all .12s;}
-.fitem:hover{background:var(--bg3);color:var(--text);}
-.fitem.active{background:var(--gold3);color:var(--gold);border:0.5px solid var(--border2);}
-.fcount{font-size:9px;opacity:.55;}
-.shdr{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--dim);border-bottom:0.5px solid var(--border);padding-bottom:5px;margin:14px 0 7px;}
+.slabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);margin-bottom:10px;padding-left:4px;}
+
+/* ── FILTER ITEMS ── */
+.fitem{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 9px;border-radius:var(--r);
+  cursor:pointer;font-size:10px;color:var(--dim2);
+  transition:all .15s;
+  border:0.5px solid transparent;
+}
+.fitem:hover{background:var(--glass3);color:var(--text);}
+.fitem.active{
+  background:var(--gold4);
+  color:var(--gold);
+  border-color:var(--border2);
+  backdrop-filter:blur(10px);
+}
+.fcount{font-size:9px;opacity:.5;}
+
+/* ── SECTION HEADERS ── */
+.shdr{
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--dim2);
+  border-bottom:0.5px solid var(--border);
+  padding-bottom:6px;
+  margin:18px 0 8px;
+  display:flex;align-items:center;gap:8px;
+}
 .shdr:first-child{margin-top:0;}
-.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:5px;margin-bottom:3px;}
-.acard{border:0.5px solid var(--border);border-radius:var(--radius);padding:8px 11px;cursor:pointer;background:var(--panel);transition:all .13s;user-select:none;}
-.acard:hover{border-color:rgba(100,200,255,.2);background:var(--bg3);}
-.acard.sel{border-color:var(--gold);background:var(--gold3);}
+.shdr-count{
+  font-size:8px;padding:1px 6px;
+  background:var(--glass2);
+  border:0.5px solid var(--border);
+  border-radius:10px;color:var(--dim2);
+}
+
+/* ── APP GRID ── */
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:6px;margin-bottom:4px;}
+
+/* ── APP CARDS — GLASSMORPHISM ── */
+.acard{
+  border:0.5px solid var(--border3);
+  border-radius:var(--rl);
+  padding:9px 12px;
+  cursor:pointer;
+  background:var(--glass);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  transition:all .15s;
+  user-select:none;
+  position:relative;
+  overflow:hidden;
+}
+.acard::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+  pointer-events:none;
+}
+.acard:hover{
+  border-color:rgba(100,200,255,0.2);
+  background:rgba(255,255,255,0.05);
+  transform:translateY(-1px);
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+.acard.sel{
+  border-color:var(--gold);
+  background:rgba(201,168,76,0.08);
+  box-shadow:0 0 0 1px rgba(201,168,76,0.15), 0 4px 20px rgba(201,168,76,0.1);
+}
 .acard.sel .aname{color:var(--gold2);}
-.aname{font-size:11px;font-weight:500;color:var(--bright);display:flex;align-items:center;gap:5px;}
-.aurl{font-size:9px;color:var(--dim);margin-top:1px;}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
-.tray{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);margin-top:14px;flex-wrap:wrap;}
-.tc{font-size:11px;color:var(--dim);flex:1;}
+.acard.sel::before{
+  background:linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 60%);
+}
+.aname{font-size:11px;font-weight:500;color:var(--bright);display:flex;align-items:center;gap:6px;}
+.aurl{font-size:9px;color:var(--dim2);margin-top:2px;opacity:.7;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 5px var(--green);}
+
+/* ── TRAY ── */
+.tray{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:0.5px solid var(--border3);
+  border-radius:var(--rxl);
+  margin-top:16px;
+  flex-wrap:wrap;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.tc{font-size:11px;color:var(--dim2);flex:1;}
 .tc span{color:var(--gold);}
-.btn{padding:6px 13px;border:0.5px solid var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--text);transition:all .13s;}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:6px 14px;
+  border:0.5px solid var(--border3);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;
+  cursor:pointer;background:var(--glass2);
+  backdrop-filter:blur(10px);
+  color:var(--text);transition:all .15s;
+}
 .btn:hover{border-color:var(--border2);color:var(--gold);}
-.btn-g{border-color:var(--gold);color:var(--gold);background:var(--gold3);}
-.btn-g:hover{background:rgba(201,168,76,.15);}
-.crow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
-.fg label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:4px;}
-.fg input,.fg select,.fg textarea{width:100%;padding:7px 10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:11px;color:var(--text);outline:none;}
+.btn-g{
+  border-color:var(--gold);color:var(--gold);
+  background:var(--gold3);
+}
+.btn-g:hover{background:var(--gold4);}
+
+/* ── FORM ELEMENTS ── */
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.fg label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);display:block;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:8px 11px;
+  background:var(--glass);
+  backdrop-filter:blur(10px);
+  border:0.5px solid var(--border3);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:11px;color:var(--text);
+  outline:none;transition:border-color .15s;
+}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
 .fg select option{background:var(--bg3);}
 .fg textarea{resize:vertical;min-height:55px;line-height:1.5;}
-.ai-bar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-lg);margin-bottom:14px;}
+
+/* ── AI BAR ── */
+.ai-bar{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:0.5px solid var(--border2);
+  border-radius:var(--rxl);
+  margin-bottom:16px;
+  box-shadow:0 4px 24px rgba(201,168,76,0.05);
+}
 .ai-bar-label{font-size:10px;color:var(--gold);letter-spacing:1px;flex:1;}
-.ai-bar-sub{font-size:9px;color:var(--dim);margin-top:2px;}
-.model-tag{font-size:9px;padding:3px 8px;border:0.5px solid var(--border);border-radius:20px;color:var(--dim);}
-.gen-btn{padding:8px 16px;border:0.5px solid var(--gold);border-radius:var(--radius);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:var(--gold);color:var(--bg);font-weight:500;}
-.gen-btn:hover{background:var(--gold2);}
-.gen-btn:disabled{opacity:.35;cursor:not-allowed;}
-.progress{height:2px;background:var(--border);border-radius:1px;margin-bottom:14px;overflow:hidden;}
-.pfill{height:100%;background:var(--gold);border-radius:1px;transition:width .3s;width:0%;}
-.pbcard{border:0.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:11px;overflow:hidden;}
-.pbhdr{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--bg2);border-bottom:0.5px solid var(--border);}
-.pbhl{display:flex;align-items:center;gap:8px;}
+.ai-bar-sub{font-size:9px;color:var(--dim2);margin-top:2px;}
+.model-tag{
+  font-size:9px;padding:3px 9px;
+  border:0.5px solid var(--border3);
+  border-radius:20px;color:var(--dim2);
+  background:var(--glass2);
+}
+.gen-btn{
+  padding:8px 18px;
+  border:0.5px solid var(--gold);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;
+  cursor:pointer;
+  background:linear-gradient(135deg, rgba(201,168,76,0.9), rgba(232,200,122,0.8));
+  color:var(--bg);font-weight:500;
+  transition:all .15s;
+}
+.gen-btn:hover{background:linear-gradient(135deg,var(--gold2),var(--gold));}
+.gen-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+/* ── PROGRESS ── */
+.progress{height:2px;background:var(--border);border-radius:1px;margin-bottom:16px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:1px;transition:width .3s;width:0%;}
+
+/* ── PLAYBOOK CARDS ── */
+.pbcard{
+  border:0.5px solid var(--border3);
+  border-radius:var(--rxl);
+  margin-bottom:12px;
+  overflow:hidden;
+  background:var(--glass);
+  backdrop-filter:blur(16px);
+  box-shadow:0 4px 24px rgba(0,0,0,0.2);
+}
+.pbhdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  background:rgba(255,255,255,0.02);
+  border-bottom:0.5px solid var(--border);
+}
+.pbhl{display:flex;align-items:center;gap:9px;}
 .pbn{font-size:12px;font-weight:500;color:var(--bright);}
-.pbu{font-size:9px;color:var(--dim);}
-.pbhr{display:flex;gap:6px;align-items:center;}
-.oabtn{padding:4px 9px;border:0.5px solid var(--border2);border-radius:var(--radius);font-family:var(--mono);font-size:9px;color:var(--gold);cursor:pointer;background:var(--gold3);text-decoration:none;}
-.gsbtn{padding:4px 9px;border:0.5px solid var(--teal);border-radius:var(--radius);font-family:var(--mono);font-size:9px;color:var(--teal);cursor:pointer;background:rgba(20,184,166,.06);}
+.pbu{font-size:9px;color:var(--dim2);}
+.pbhr{display:flex;gap:7px;align-items:center;}
+.oabtn{
+  padding:4px 10px;
+  border:0.5px solid var(--border2);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:9px;color:var(--gold);
+  cursor:pointer;background:var(--gold3);
+  text-decoration:none;
+  backdrop-filter:blur(10px);
+  transition:all .13s;
+}
+.oabtn:hover{background:var(--gold4);}
+.gsbtn{
+  padding:4px 10px;
+  border:0.5px solid rgba(20,184,166,0.4);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:9px;color:var(--teal);
+  cursor:pointer;
+  background:rgba(20,184,166,0.06);
+  transition:all .13s;
+}
+.gsbtn:hover{background:rgba(20,184,166,0.12);}
 .gsbtn:disabled{opacity:.3;cursor:not-allowed;}
-.pbbody{padding:13px 15px;}
-.pbs{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:5px;margin-top:11px;}
+.pbbody{padding:14px 16px;}
+.pbs{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--dim2);margin-bottom:6px;margin-top:12px;
+}
 .pbs:first-child{margin-top:0;}
-.aiout{min-height:48px;font-size:11px;line-height:1.7;color:var(--text);padding:9px 11px;background:var(--bg3);border-radius:var(--radius);border-left:2px solid var(--gold);white-space:pre-wrap;word-wrap:break-word;}
-.aiout.loading{color:var(--dim);}
+.aiout{
+  min-height:48px;font-size:11px;line-height:1.7;color:var(--text);
+  padding:10px 12px;
+  background:rgba(0,0,0,0.25);
+  border-radius:var(--r);
+  border-left:2px solid var(--gold);
+  white-space:pre-wrap;word-wrap:break-word;
+  backdrop-filter:blur(10px);
+}
+.aiout.loading{color:var(--dim2);}
 .aiout.loading::after{content:'▋';animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.tp{font-size:11px;color:var(--text);padding:4px 0 4px 11px;border-left:0.5px solid var(--border);margin-bottom:3px;line-height:1.5;}
+.tp{
+  font-size:11px;color:var(--text);
+  padding:5px 0 5px 12px;
+  border-left:0.5px solid var(--border2);
+  margin-bottom:4px;line-height:1.5;
+}
 .tp::before{content:'→ ';color:var(--gold);}
-.pbtn{display:block;width:100%;text-align:left;padding:8px 11px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:10px;color:var(--text);cursor:pointer;margin-bottom:4px;transition:all .13s;}
+.pbtn{
+  display:block;width:100%;text-align:left;
+  padding:9px 12px;
+  background:rgba(0,0,0,0.2);
+  backdrop-filter:blur(10px);
+  border:0.5px solid var(--border);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:10px;color:var(--text);
+  cursor:pointer;margin-bottom:5px;transition:all .13s;
+}
 .pbtn:hover{border-color:var(--gold);color:var(--gold2);}
 .pbtn.copied{border-color:var(--green);color:var(--green);}
 .ptag{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:2px;}
-.pprev{display:block;opacity:.65;font-size:10px;}
-.dstep{display:flex;align-items:flex-start;gap:13px;margin-bottom:18px;}
-.dsnum{width:26px;height:26px;border-radius:50%;background:var(--gold);color:var(--bg);font-family:var(--display);font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.pprev{display:block;opacity:.6;font-size:10px;}
+
+/* ── DEPLOY PANEL ── */
+.dstep{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.dsnum{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:var(--bg);font-family:var(--display);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+  box-shadow:0 4px 12px rgba(201,168,76,0.3);
+}
 .dsc{flex:1;}
-.dst{font-size:12px;font-weight:500;color:var(--bright);margin-bottom:5px;}
-.surlbox{font-size:10px;padding:9px 11px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--dim);word-break:break-all;margin-bottom:7px;line-height:1.6;}
-.drow{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:4px;background:var(--panel);}
-.drowl{display:flex;align-items:center;gap:7px;}
-.bbtn{display:block;width:100%;padding:11px;text-align:center;border:0.5px solid var(--gold);border-radius:var(--radius);font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--gold);cursor:pointer;background:var(--gold3);margin-bottom:7px;}
-.bbtn:hover{background:rgba(201,168,76,.15);}
-.coachl{border-color:var(--teal);color:var(--teal);background:rgba(20,184,166,.06);}
-.coachl:hover{background:rgba(20,184,166,.12);}
+.dst{font-size:12px;font-weight:500;color:var(--bright);margin-bottom:6px;}
+.surlbox{
+  font-size:10px;padding:10px 12px;
+  background:rgba(0,0,0,0.3);
+  backdrop-filter:blur(10px);
+  border:0.5px solid var(--border);
+  border-radius:var(--r);color:var(--dim2);
+  word-break:break-all;margin-bottom:8px;line-height:1.6;
+}
+.drow{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;
+  border:0.5px solid var(--border);
+  border-radius:var(--r);margin-bottom:5px;
+  background:var(--glass);
+  backdrop-filter:blur(10px);
+  transition:all .13s;
+}
+.drow:hover{border-color:var(--border2);}
+.drowl{display:flex;align-items:center;gap:8px;}
+.bbtn{
+  display:block;width:100%;padding:12px;text-align:center;
+  border:0.5px solid var(--gold);
+  border-radius:var(--r);
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;
+  color:var(--gold);cursor:pointer;
+  background:var(--gold3);
+  backdrop-filter:blur(10px);
+  margin-bottom:8px;transition:all .15s;
+}
+.bbtn:hover{background:var(--gold4);}
+.coachl{border-color:rgba(20,184,166,0.5);color:var(--teal);background:rgba(20,184,166,0.06);}
+.coachl:hover{background:rgba(20,184,166,0.12);}
+
+/* ── PILLS ── */
 .pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
-.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border:0.5px solid var(--border2);border-radius:20px;font-size:9px;color:var(--gold);}
-.px{cursor:pointer;opacity:.45;}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;
+  border:0.5px solid var(--border2);
+  border-radius:20px;font-size:9px;color:var(--gold);
+  background:var(--gold3);
+  backdrop-filter:blur(10px);
+}
+.px{cursor:pointer;opacity:.4;}
 .px:hover{opacity:1;}
+
+/* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── GLASS PANEL WRAPPERS ── */
+.glass-section{
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:0.5px solid var(--border3);
+  border-radius:var(--rxl);
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+  position:relative;overflow:hidden;
+}
+.glass-section::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.04) 0%,transparent 50%);
+  pointer-events:none;
+}
 </style>
 </head>
 <body>
+
 <div class="topbar">
-  <div style="display:flex;align-items:center;gap:12px;">
+  <div style="display:flex;align-items:center;gap:13px;">
     <div class="logo">TSM</div>
-    <div><div class="topbar-title">PRESENTATION SUITE BUILDER</div><div class="topbar-sub">AI-Powered · Select · Narrate · Deploy</div></div>
+    <div>
+      <div class="topbar-title">PRESENTATION SUITE BUILDER</div>
+      <div class="topbar-sub">AI-Powered · Select · Narrate · Deploy</div>
+    </div>
   </div>
   <div class="topbar-right">
     <div class="ai-badge">llama-3.3-70b-versatile</div>
@@ -136,15 +484,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 
 <div class="main">
   <div class="sidebar">
-    <div class="slabel" style="margin-bottom:10px;">Sector</div>
+    <div class="slabel">Sector</div>
     <div id="sidebar-filters"></div>
-    <div style="margin-top:18px;border-top:0.5px solid var(--border);padding-top:11px;">
+    <div style="margin-top:20px;border-top:0.5px solid var(--border);padding-top:13px;">
       <div class="slabel">Selected <span style="color:var(--gold)" id="pill-count">0</span></div>
       <div id="pills-sidebar" class="pills"></div>
     </div>
   </div>
+
   <div class="content">
 
+    <!-- TAB 1: SELECT -->
     <div id="panel-select" class="panel active">
       <div id="app-grid"></div>
       <div class="tray">
@@ -155,24 +505,39 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
       </div>
     </div>
 
+    <!-- TAB 2: NARRATE -->
     <div id="panel-narrate" class="panel">
-      <div class="crow">
-        <div class="fg"><label>Suite name</label><input id="suite-name" placeholder="e.g. Desert Financial Partnership Demo"/></div>
-        <div class="fg"><label>Audience role</label>
-          <select id="audience">
-            <option>C-Suite / Board</option><option>CFO / Finance Lead</option><option>COO / Operations</option>
-            <option>Healthcare Executive</option><option>Insurance Agent / Agency Owner</option>
-            <option>Real Estate Broker</option><option>Credit Union Executive</option>
-            <option>School District Administrator</option><option>General stakeholder</option>
-          </select>
+      <div class="glass-section">
+        <div class="crow">
+          <div class="fg">
+            <label>Suite name</label>
+            <input id="suite-name" placeholder="e.g. Desert Financial Partnership Demo"/>
+          </div>
+          <div class="fg">
+            <label>Audience role</label>
+            <select id="audience">
+              <option>C-Suite / Board</option>
+              <option>CFO / Finance Lead</option>
+              <option>COO / Operations</option>
+              <option>Healthcare Executive</option>
+              <option>Insurance Agent / Agency Owner</option>
+              <option>Real Estate Broker</option>
+              <option>Credit Union Executive</option>
+              <option>School District Administrator</option>
+              <option>General stakeholder</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Additional context (deal size, pain points, company name)</label>
+          <textarea id="extra-context" placeholder="e.g. 85,000 members, $2.1B assets, main concern is compliance costs, meeting with CFO and COO..."></textarea>
         </div>
       </div>
-      <div class="fg" style="margin-bottom:14px;">
-        <label>Additional context (deal size, pain points, company name)</label>
-        <textarea id="extra-context" placeholder="e.g. 85,000 members, $2.1B assets, main concern is compliance costs, meeting with CFO and COO..."></textarea>
-      </div>
       <div class="ai-bar">
-        <div><div class="ai-bar-label">AI Narrative Generator</div><div class="ai-bar-sub">llama-3.3-70b-versatile streams narratives, talking points &amp; demo prompts tailored to your audience</div></div>
+        <div>
+          <div class="ai-bar-label">AI Narrative Generator</div>
+          <div class="ai-bar-sub">llama-3.3-70b-versatile streams narratives, talking points &amp; demo prompts tailored to your audience</div>
+        </div>
         <div class="model-tag">streaming</div>
         <button class="gen-btn" id="gen-all-btn" onclick="generateAllPlaybooks()">Generate All Playbooks</button>
       </div>
@@ -184,11 +549,43 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
       </div>
     </div>
 
+    <!-- TAB 3: DEPLOY -->
     <div id="panel-deploy" class="panel">
-      <div class="dstep"><div class="dsnum">1</div><div class="dsc"><div class="dst">Shareable suite link</div><div class="surlbox" id="suite-url-box">—</div><div style="display:flex;gap:7px;"><button class="btn btn-g" onclick="copySuiteUrl()">Copy link</button><button class="btn" onclick="openFirst()">Open first app →</button></div></div></div>
-      <div class="dstep"><div class="dsnum">2</div><div class="dsc"><div class="dst">Demo sequence</div><div id="deploy-list"></div></div></div>
-      <div class="dstep"><div class="dsnum">3</div><div class="dsc"><div class="dst">AI coaching script</div><button class="bbtn coachl" onclick="generateCoachScript()">Generate my full presentation coaching script ↗</button><div id="coach-output" class="aiout" style="display:none;margin-top:9px;"></div></div></div>
-      <div class="dstep"><div class="dsnum">4</div><div class="dsc"><div class="dst">Deploy to server</div><button class="bbtn" onclick="deployToServer()">Build live suite page at clients.tsmatter.com/suite/ ↗</button></div></div>
+      <div class="glass-section">
+        <div class="dstep">
+          <div class="dsnum">1</div>
+          <div class="dsc">
+            <div class="dst">Shareable suite link</div>
+            <div class="surlbox" id="suite-url-box">—</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-g" onclick="copySuiteUrl()">Copy link</button>
+              <button class="btn" onclick="openFirst()">Open first app →</button>
+            </div>
+          </div>
+        </div>
+        <div class="dstep">
+          <div class="dsnum">2</div>
+          <div class="dsc">
+            <div class="dst">Demo sequence</div>
+            <div id="deploy-list"></div>
+          </div>
+        </div>
+        <div class="dstep">
+          <div class="dsnum">3</div>
+          <div class="dsc">
+            <div class="dst">AI coaching script</div>
+            <button class="bbtn coachl" onclick="generateCoachScript()">Generate my full presentation coaching script ↗</button>
+            <div id="coach-output" class="aiout" style="display:none;margin-top:10px;"></div>
+          </div>
+        </div>
+        <div class="dstep">
+          <div class="dsnum">4</div>
+          <div class="dsc">
+            <div class="dst">Deploy to server</div>
+            <button class="bbtn" onclick="deployToServer()">Build live suite page at clients.tsmatter.com/suite/ ↗</button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -202,37 +599,144 @@ let generatedPlaybooks={};
 
 const APP_CTX={
   "healthcare.tsmatter.com":"Healthcare Command — tripartite AI intelligence system, 10 live nodes (Medical, Pharmacy, Insurance, Financial, Legal, Vendors, Compliance, Billing, Tax Prep, Grants). Live metrics: 247 pending claims, $2.1M revenue at risk, 84% compliance score, 18.4% denial rate vs 9% target, 10/10 nodes online.",
-  "insurance-command.tsmatter.com":"Insurance Command — 10-node tripartite insurance intelligence mesh. Sovereign Strategist synthesizes across all nodes. Live: 247 claims pending, $2.1M revenue exposure, 10/10 nodes live, Revenue at risk $2.1M.",
-  "az-insurance.tsmatter.com":"AZ Agent Command Center — for Arizona-licensed insurance agents. Medicare, ACA, Life, Accident. IRMAA calculator, ACA APTC optimizer, AZ liability gap analyzer, SR-22 tracker. NPN 18818059. AI knows AZ regulations, CMS enrollment windows, AHIP requirements.",
-  "desert-financial.tsmatter.com":"Desert Financial Credit Union — white-labeled AI intelligence platform. $792K/yr platform value. Member advisor, loan optimizer, compliance monitor, P&L intelligence. Revenue-share partnership model. Represents what every credit union in Arizona could have.",
+  "insurance-command.tsmatter.com":"Insurance Command — 10-node tripartite insurance intelligence mesh. Sovereign Strategist synthesizes across all nodes. Live: 247 claims pending, $2.1M revenue exposure, 10/10 nodes live.",
+  "az-insurance.tsmatter.com":"AZ Agent Command Center — for Arizona-licensed insurance agents. Medicare, ACA, Life, Accident. IRMAA calculator, ACA APTC optimizer, AZ liability gap analyzer, SR-22 tracker. NPN 18818059.",
+  "desert-financial.tsmatter.com":"Desert Financial Credit Union — white-labeled AI intelligence platform. $792K/yr platform value. Member advisor, loan optimizer, compliance monitor, P&L intelligence. Revenue-share partnership model.",
   "financial-command.tsmatter.com":"Financial Command — enterprise financial intelligence. Revenue cycle, billing, compliance, P&L analysis, vendor risk, cash flow. Multi-node with Sovereign Strategist. Replaces multiple analyst tools costing $400/hr.",
-  "banner-health.tsmatter.com":"Banner Health Enterprise — white-labeled AI for Arizona's largest non-profit hospital system (30+ hospitals, 6 states). Configured for their payer mix, clinical workflows, compliance. Enterprise-grade, 2-week deployment.",
-  "honorhealth.tsmatter.com":"HonorHealth Enterprise — white-labeled AI for Arizona's 2nd largest hospital system. Monitors HRSA grant compliance ($50M exposure), payer contracts, clinical operations, regulatory requirements.",
-  "hotelops.tsmatter.com":"HotelOps Pro — full-spectrum hospitality neural core. IoT gateway (68 sensors, 4 HVAC alerts), Groq AI inference, OCR engine (127 docs, 0.4s avg), revenue forecasting. Current: 84% occupancy, $1,847 weekly margin, 92% weekend forecast, $2,240 Groq Pivot recommendation.",
-  "schools-command.tsmatter.com":"Schools Command — education intelligence for district administrators. NOFO pipeline, McKinney-Vento, IDEA tracking, Single Audit prep, Title I. Live: 2,847 students, $3.4M grant funds, 96% compliance, 4 active flags, IDEA NV-01 $50K risk, McKinney-Vento dispute at AMS Las Vegas STEM.",
-  "pc-command.tsmatter.com":"P&C Enterprise Command — for commercial insurance agents. Auto coverage analyzer, AZ liability gap analysis, SR-22 tracking, E&O/Prof, commercial lines. AZ minimum $25K/$50K BI leaves $225K+ exposure gap. Teen driver $355K gap scenario.",
-  "docpro.tsmatter.com":"DocPro — AI Document Intelligence. Forensic-grade analysis of SEC filings, legal contracts, compliance reports, M&A documents, tax returns, and 46+ document types across 9 sectors. Attorney-level precision in seconds. Purpose-built for BPO, legal, financial printing, and compliance teams.",
-  "rrd-command.tsmatter.com":"RRD Command — federal grant closeout and document intelligence. SLA risk monitoring, exception tracking, TOA audits, BNCA synthesis. Current: 184 items in queue, 0.8% below threshold, HIGH risk alert.",
-  "music-command.tsmatter.com":"Music Command Center — 3 AI agents: ZAY (cadence, bounce, live feel), DJ (structure, hook timing), RIYA (wording, imagery, emotion). Full Command Mode deploys all 3 simultaneously. Song Bank tracks all versions.",
+  "banner-health.tsmatter.com":"Banner Health Enterprise — white-labeled AI for Arizona's largest non-profit hospital system (30+ hospitals, 6 states). Enterprise-grade, 2-week deployment.",
+  "honorhealth.tsmatter.com":"HonorHealth Enterprise — white-labeled AI for Arizona's 2nd largest hospital system. Monitors HRSA grant compliance ($50M exposure), payer contracts, clinical operations.",
+  "hotelops.tsmatter.com":"HotelOps Pro — full-spectrum hospitality neural core. IoT gateway (68 sensors, 4 HVAC alerts), Groq AI inference, OCR engine (127 docs, 0.4s avg), revenue forecasting. 84% occupancy, $1,847 weekly margin.",
+  "schools-command.tsmatter.com":"Schools Command — education intelligence for district administrators. NOFO pipeline, McKinney-Vento, IDEA tracking, Single Audit prep, Title I. 2,847 students, $3.4M grant funds, 96% compliance.",
+  "pc-command.tsmatter.com":"P&C Enterprise Command — for commercial insurance agents. Auto coverage analyzer, AZ liability gap analysis, SR-22 tracking, E&O/Prof, commercial lines.",
+  "docpro.tsmatter.com":"DocPro — AI Document Intelligence. Forensic-grade analysis of SEC filings, legal contracts, compliance reports, M&A documents, tax returns, 46+ document types across 9 sectors.",
+  "rrd-command.tsmatter.com":"RRD Command — federal grant closeout and document intelligence. SLA risk monitoring, exception tracking, TOA audits, BNCA synthesis. 184 items in queue, HIGH risk alert.",
+  "music-command.tsmatter.com":"Music Command Center — 3 AI agents: ZAY (cadence, bounce, live feel), DJ (structure, hook timing), RIYA (wording, imagery, emotion).",
   "construction-command.tsmatter.com":"Construction Command — AI intelligence for construction project management, compliance, safety, financial controls, subcontractor management.",
   "mortgage-command.tsmatter.com":"Mortgage Command — AI intelligence for mortgage operations, compliance, pipeline management, borrower intelligence.",
   "real-estate-command.tsmatter.com":"Real Estate Command — AI intelligence for real estate operations, market analysis, transaction management, compliance.",
   "legal.tsmatter.com":"Legal Intelligence — AI platform for legal operations, contract analysis, compliance monitoring, matter management.",
 };
 
+// ── MERGED SECTORS (no duplicates, demo files added) ──────────────────────────
 const SECTORS=[
-  {label:"Healthcare",apps:[{name:"HonorHealth Command",url:"/html/honorhealth/"},{name:"HC Billing",url:"/html/hc-billing/"},{name:"HC Compliance",url:"/html/hc-compliance/"},{name:"HC Financial",url:"/html/hc-financial/"},{name:"HC Grants",url:"/html/hc-grants/"},{name:"HC Insurance",url:"/html/hc-insurance/"},{name:"HC Legal",url:"/html/hc-legal/"},{name:"HC Medical",url:"/html/hc-medical/"},{name:"HC Pharmacy",url:"/html/hc-pharmacy/"},{name:"HC Strategist",url:"/html/hc-strategist/"},{name:"HC Tax Prep",url:"/html/hc-taxprep/"},{name:"HC Vendors",url:"/html/hc-vendors/"},{name:"HonorHealth Dee",url:"https://tsm-honorhealth-dee.fly.dev/"},{name:"Honor Portal",url:"/html/honor-portal/"},{name:"DME",url:"/html/dme/"}]},
-  {label:"Insurance",apps:[{name:"Insurance Command",url:"insurance-command.tsmatter.com"},{name:"AZ Agent Command",url:"az-insurance.tsmatter.com"},{name:"AZ Insurance Portal",url:"az-ins.tsmatter.com"},{name:"P&C Enterprise Command",url:"pc-command.tsmatter.com"}]},
-  {label:"Financial",apps:[{name:"Financial Command",url:"financial-command.tsmatter.com"},{name:"Desert Financial",url:"desert-financial.tsmatter.com"},{name:"Financial",url:"financial.tsmatter.com"},{name:"Compliance",url:"compliance.tsmatter.com"},{name:"Tax Intelligence",url:"tax.tsmatter.com"},{name:"Zero Trust",url:"zero-trust.tsmatter.com"}]},
-  {label:"Real Estate",apps:[{name:"Mortgage Command",url:"mortgage-command.tsmatter.com"},{name:"Real Estate Command",url:"real-estate-command.tsmatter.com"},{name:"Mortgage",url:"mortgage.tsmatter.com"},{name:"Realty",url:"realty.tsmatter.com"},{name:"BrokerOps BPO",url:"bpo-realty.tsmatter.com"},{name:"MortgageOps BPO",url:"bpo-mortgage.tsmatter.com"}]},
-  {label:"Construction",apps:[{name:"Construction Command",url:"construction-command.tsmatter.com"},{name:"Construction Pro",url:"construction-pro.tsmatter.com"},{name:"Construction",url:"construction.tsmatter.com"},{name:"ConstructionOps BPO",url:"bpo-construction.tsmatter.com"}]},
-  {label:"Education",apps:[{name:"Schools Command",url:"schools-command.tsmatter.com"},{name:"Schools",url:"schools.tsmatter.com"}]},
-  {label:"Hospitality",apps:[{name:"HotelOps Pro",url:"hotelops.tsmatter.com"},{name:"Concierge Command",url:"concierge-command.tsmatter.com"},{name:"HotelOps BPO",url:"bpo-hotelops.tsmatter.com"}]},
-  {label:"Legal",apps:[{name:"Legal Intelligence",url:"legal.tsmatter.com"},{name:"LegalOps BPO",url:"bpo-legal.tsmatter.com"}]},
-  {label:"Enterprise",apps:[{name:"DocPro",url:"docpro.tsmatter.com"},{name:"RRD Command",url:"rrd-command.tsmatter.com"},{name:"Appointments",url:"appointments.tsmatter.com"},{name:"AuditOps",url:"auditops.tsmatter.com"},{name:"Music Command",url:"music-command.tsmatter.com"}]},
-  {label:"Document Intelligence",apps:[{name:"DocPro",url:"docpro.tsmatter.com"},{name:"RRD Command",url:"rrd-command.tsmatter.com"},{name:"Financial Command",url:"financial-command.tsmatter.com"},{name:"AuditOps",url:"auditops.tsmatter.com"},{name:"Compliance",url:"compliance.tsmatter.com"},{name:"Legal Intelligence",url:"legal.tsmatter.com"}]},
-  {label:"Demo Decks",apps:[{name:"Desert Financial Pitch",url:"clients.tsmatter.com/demo/desert-financial-pitch.html"},{name:"Command Promo",url:"clients.tsmatter.com/demo/command-promo.html"},{name:"Why TSM",url:"clients.tsmatter.com/demo/why-tsm.html"},{name:"Bundle Demo",url:"clients.tsmatter.com/demo/bundle.html"},{name:"Financial Analyst",url:"clients.tsmatter.com/demo/financial-analyst.html"}]},
+  {label:"Healthcare",apps:[
+    {name:"HonorHealth Command",  url:"/html/honorhealth/"},
+    {name:"HC Billing",           url:"/html/hc-billing/"},
+    {name:"HC Compliance",        url:"/html/hc-compliance/"},
+    {name:"HC Financial",         url:"/html/hc-financial/"},
+    {name:"HC Grants",            url:"/html/hc-grants/"},
+    {name:"HC Insurance",         url:"/html/hc-insurance/"},
+    {name:"HC Legal",             url:"/html/hc-legal/"},
+    {name:"HC Medical",           url:"/html/hc-medical/"},
+    {name:"HC Pharmacy",          url:"/html/hc-pharmacy/"},
+    {name:"HC Strategist",        url:"/html/hc-strategist/"},
+    {name:"HC Tax Prep",          url:"/html/hc-taxprep/"},
+    {name:"HC Vendors",           url:"/html/hc-vendors/"},
+    {name:"HonorHealth Dee",      url:"https://tsm-honorhealth-dee.fly.dev/"},
+    {name:"Honor Portal",         url:"/html/honor-portal/"},
+    {name:"DME",                  url:"/html/dme/"},
+    {name:"Healthcare Command",   url:"https://healthcare.tsmatter.com"},
+    {name:"Banner Health",        url:"https://banner-health.tsmatter.com"},
+    {name:"Abrazo Health",        url:"https://abrazo.tsmatter.com"},
+    {name:"Valleywise Health",    url:"https://valleywise.tsmatter.com"},
+    {name:"HealthOps BPO",        url:"https://bpo-healthcare.tsmatter.com"},
+  ]},
+  {label:"Insurance",apps:[
+    {name:"PC Command",           url:"/html/pc-command/"},
+    {name:"AZ Insurance",         url:"/html/az-ins/"},
+    {name:"Insurance Command",    url:"https://insurance-command.tsmatter.com"},
+    {name:"AZ Insurance Portal",  url:"https://az-ins.tsmatter.com"},
+    {name:"P&C Enterprise Cmd",   url:"https://pc-command.tsmatter.com"},
+  ]},
+  {label:"Financial",apps:[
+    {name:"Financial Command",    url:"/html/financial-command/"},
+    {name:"Desert Financial",     url:"/html/desert-financial/"},
+    {name:"Strategist",           url:"/html/strategist/"},
+    {name:"Financial Command",    url:"https://financial-command.tsmatter.com"},
+    {name:"Desert Financial",     url:"https://desert-financial.tsmatter.com"},
+    {name:"Compliance",           url:"https://compliance.tsmatter.com"},
+    {name:"Tax Intelligence",     url:"https://tax.tsmatter.com"},
+    {name:"Zero Trust",           url:"https://zero-trust.tsmatter.com"},
+  ]},
+  {label:"Real Estate",apps:[
+    {name:"Mortgage Command",     url:"https://mortgage-command.tsmatter.com"},
+    {name:"Real Estate Command",  url:"https://real-estate-command.tsmatter.com"},
+    {name:"Mortgage",             url:"https://mortgage.tsmatter.com"},
+    {name:"BrokerOps BPO",        url:"https://bpo-realty.tsmatter.com"},
+    {name:"REO Pro",              url:"/html/reo-pro/"},
+  ]},
+  {label:"Construction",apps:[
+    {name:"Construction Command", url:"/html/construction-command/"},
+    {name:"Ameris Portal",        url:"/html/ameris-portal/"},
+    {name:"Construction Command", url:"https://construction-command.tsmatter.com"},
+    {name:"Construction",         url:"https://construction.tsmatter.com"},
+    {name:"ConstructionOps BPO",  url:"https://bpo-construction.tsmatter.com"},
+    {name:"Ameris Construction",  url:"https://ameris-construction.tsmatter.com"},
+  ]},
+  {label:"Education",apps:[
+    {name:"Schools Command",      url:"https://schools-command.tsmatter.com"},
+    {name:"Schools",              url:"https://schools.tsmatter.com"},
+  ]},
+  {label:"Hospitality",apps:[
+    {name:"HotelOps Pro",         url:"https://hotelops.tsmatter.com"},
+    {name:"Concierge Command",    url:"https://concierge-command.tsmatter.com"},
+    {name:"HotelOps BPO",         url:"https://bpo-hotelops.tsmatter.com"},
+  ]},
+  {label:"Legal",apps:[
+    {name:"Legal Intelligence",   url:"https://legal.tsmatter.com"},
+    {name:"LegalOps BPO",         url:"https://bpo-legal.tsmatter.com"},
+    {name:"Legal Analyst Pro",    url:"/html/legal-analyst-pro/"},
+  ]},
+  {label:"BPO",apps:[
+    {name:"BPO Legal",            url:"/html/bpo-legal/"},
+    {name:"BPO Realty",           url:"/html/bpo-realty/"},
+    {name:"BPO Tax",              url:"/html/bpo-tax/"},
+  ]},
+  {label:"Enterprise",apps:[
+    {name:"ESD Portal",           url:"/html/esd-portal/"},
+    {name:"TSM Strategy",         url:"/html/tsm-strategy/"},
+    {name:"Suite Builder",        url:"/html/suite-builder/"},
+    {name:"Case Tech",            url:"/html/case-tech/"},
+    {name:"Agents",               url:"/html/agents-ins/"},
+    {name:"DocPro",               url:"https://docpro.tsmatter.com"},
+    {name:"RRD Command",          url:"/html/rrd-command/"},
+    {name:"Appointments",         url:"https://appointments.tsmatter.com"},
+    {name:"AuditOps",             url:"https://auditops.tsmatter.com"},
+    {name:"Music Command",        url:"https://music-command.tsmatter.com"},
+    {name:"Zero Trust",           url:"https://zero-trust.tsmatter.com"},
+  ]},
+  {label:"Document Intelligence",apps:[
+    {name:"DocPro",               url:"https://docpro.tsmatter.com"},
+    {name:"RRD Command",          url:"/html/rrd-command/"},
+    {name:"Financial Command",    url:"https://financial-command.tsmatter.com"},
+    {name:"AuditOps",             url:"https://auditops.tsmatter.com"},
+    {name:"Compliance",           url:"https://compliance.tsmatter.com"},
+    {name:"Legal Intelligence",   url:"https://legal.tsmatter.com"},
+  ]},
+  {label:"Demo Decks",apps:[
+    // existing
+    {name:"Desert Financial Pitch", url:"https://clients.tsmatter.com/demo/desert-financial-pitch.html"},
+    {name:"Command Promo",          url:"https://clients.tsmatter.com/demo/command-promo.html"},
+    {name:"Why TSM",                url:"https://clients.tsmatter.com/demo/why-tsm.html"},
+    {name:"Bundle Demo",            url:"https://clients.tsmatter.com/demo/bundle.html"},
+    {name:"Financial Analyst",      url:"https://clients.tsmatter.com/demo/financial-analyst.html"},
+    // from html/demo/
+    {name:"BNCA GTM HC",            url:"/html/demo/bnca-gtm-hc.html"},
+    {name:"Demo Click Guide",       url:"/html/demo/demo-click-guide.html"},
+    {name:"Desert Pitch",           url:"/html/demo/desert-pitch.html"},
+    {name:"Honor Portal DM",        url:"/html/demo/honor-portal-dm.html"},
+    {name:"Strategist HC",          url:"/html/demo/strategist-hc.html"},
+    {name:"Suite Builder",          url:"/html/demo/suite-builder.html"},
+    {name:"Tax",                    url:"/html/demo/tax.html"},
+    {name:"TSM Pricing",            url:"/html/demo/tsm-pricing.html"},
+  ]},
 ];
+
+// deduplicate apps within each sector by URL
+SECTORS.forEach(s=>{
+  const seen=new Set();
+  s.apps=s.apps.filter(a=>{if(seen.has(a.url))return false;seen.add(a.url);return true;});
+});
 
 let selected=new Set();
 let activeFilter='All';
@@ -248,6 +752,11 @@ async function callGroq(messages,onToken){
     GROQ_KEY=k.trim();
   }
   try{
+    const res=await fetch(GROQ_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      body:JSON.stringify({model:MODEL,max_tokens:1200,stream:true,messages})
+    });
     if(!res.ok){if(res.status===401){GROQ_KEY='';throw new Error('Invalid API key');}throw new Error('API '+res.status);}
     const reader=res.body.getReader();const decoder=new TextDecoder();let full='';
     while(true){
@@ -269,39 +778,21 @@ async function generatePlaybook(url,audience,context,narrativeEl,tpEl,promptsEl)
   const extra=context?'\nAdditional deal context: '+context:'';
   narrativeEl.className='aiout loading';narrativeEl.textContent='Generating...';
   tpEl.innerHTML='';promptsEl.innerHTML='';
-
   const result=await callGroq([
-    {role:'system',content:'You are TSM Matter\'s chief sales strategist. Create sharp, specific, conversion-focused demo playbooks. Never be generic. Every word should earn its place.'},
-    {role:'user',content:`Create a demo playbook for:\nAPP: ${app.name}\nURL: ${url}\nCONTEXT: ${ctx}${extra}\nAUDIENCE: ${audience}\n\nReturn EXACTLY this structure:\n\nNARRATIVE:\n[2-3 sentences. Lead with the pain this audience feels daily, then show what this platform does about it. Be specific, not generic.]\n\nTALKING POINTS:\n• [Specific point with a number or data]\n• [What to point to on screen and what to say]\n• [The moment that creates urgency]\n\nPROMPT 1 | [LABEL]:\n[Exact AI prompt to paste into app chat that produces a stunning relevant response]\n\nPROMPT 2 | [LABEL]:\n[Second high-impact prompt]\n\nPROMPT 3 | [LABEL]:\n[Closing prompt showing ROI or next steps]`}
+    {role:'system',content:'You are TSM Matter\'s chief sales strategist. Create sharp, specific, conversion-focused demo playbooks.'},
+    {role:'user',content:`Create a demo playbook for:\nAPP: ${app.name}\nURL: ${url}\nCONTEXT: ${ctx}${extra}\nAUDIENCE: ${audience}\n\nReturn EXACTLY this structure:\n\nNARRATIVE:\n[2-3 sentences. Lead with the pain this audience feels daily, then show what this platform does about it.]\n\nTALKING POINTS:\n• [Specific point with a number or data]\n• [What to point to on screen and what to say]\n• [The moment that creates urgency]\n\nPROMPT 1 | [LABEL]:\n[Exact AI prompt to paste into app chat]\n\nPROMPT 2 | [LABEL]:\n[Second high-impact prompt]\n\nPROMPT 3 | [LABEL]:\n[Closing prompt showing ROI or next steps]`}
   ],(partial)=>{
     const nm=partial.match(/NARRATIVE:\n([\s\S]*?)(?=TALKING POINTS:|$)/);
     if(nm){narrativeEl.className='aiout';narrativeEl.textContent=nm[1].trim();}
     const tm=partial.match(/TALKING POINTS:\n([\s\S]*?)(?=PROMPT 1|$)/);
-    if(tm){
-      tpEl.innerHTML='';
-      tm[1].trim().split('\n').filter(l=>l.trim()).forEach(pt=>{
-        const d=document.createElement('div');d.className='tp';d.textContent=pt.replace(/^[•\-\*]\s*/,'');tpEl.appendChild(d);
-      });
-    }
-    const pm=partial.match(/PROMPT \d.*$/gm);
-    if(pm&&pm.length>0){
-      const fullPrompts=partial.match(/PROMPT \d[\s\S]*?(?=PROMPT \d|$)/g)||[];
-      promptsEl.innerHTML='';
-      fullPrompts.forEach(block=>{
-        const labelM=block.match(/PROMPT \d+\s*\|\s*([^\n]+)/);
-        const textM=block.match(/PROMPT \d+[^\n]*\n([\s\S]*?)$/);
-        if(labelM&&textM){
-          const label=labelM[1].trim();const text=textM[1].trim();
-          if(text.length>10){
-            const btn=document.createElement('button');btn.className='pbtn';btn.setAttribute('data-text',text);
-            btn.innerHTML=`<span class="ptag">${label}</span><span class="pprev">${text.substring(0,85)}...</span>`;
-            btn.onclick=function(){copyPrompt(this);};promptsEl.appendChild(btn);
-          }
-        }
-      });
-    }
+    if(tm){tpEl.innerHTML='';tm[1].trim().split('\n').filter(l=>l.trim()).forEach(pt=>{const d=document.createElement('div');d.className='tp';d.textContent=pt.replace(/^[•\-\*]\s*/,'');tpEl.appendChild(d);});}
+    const fullPrompts=partial.match(/PROMPT \d[\s\S]*?(?=PROMPT \d|$)/g)||[];
+    promptsEl.innerHTML='';
+    fullPrompts.forEach(block=>{
+      const lm=block.match(/PROMPT \d+\s*\|\s*([^\n]+)/);const txm=block.match(/PROMPT \d+[^\n]*\n([\s\S]*?)$/);
+      if(lm&&txm){const label=lm[1].trim();const text=txm[1].trim();if(text.length>10){const btn=document.createElement('button');btn.className='pbtn';btn.setAttribute('data-text',text);btn.innerHTML=`<span class="ptag">${label}</span><span class="pprev">${text.substring(0,85)}...</span>`;btn.onclick=function(){copyPrompt(this);};promptsEl.appendChild(btn);}}
+    });
   });
-
   if(result)generatedPlaybooks[url]=result;
   else{narrativeEl.className='aiout';narrativeEl.textContent='Generation failed. Check your API key.';}
 }
@@ -317,11 +808,9 @@ async function generateAllPlaybooks(){
   setStatus('Generating '+urls.length+' playbooks...');
   for(let i=0;i<urls.length;i++){
     fill.style.width=Math.round((i/urls.length)*100)+'%';
-    const card=document.querySelector(`[data-url="${urls[i]}"]`);
+    const card=document.querySelector(`[data-url="${CSS.escape(urls[i])}"]`);
     if(card){
-      const ne=card.querySelector('.narrative-out');
-      const te=card.querySelector('.tp-area');
-      const pe=card.querySelector('.prompts-area');
+      const ne=card.querySelector('.narrative-out');const te=card.querySelector('.tp-area');const pe=card.querySelector('.prompts-area');
       if(ne&&te&&pe)await generatePlaybook(urls[i],audience,context,ne,te,pe);
     }
   }
@@ -333,30 +822,30 @@ async function genSingle(url,btn){
   btn.disabled=true;btn.textContent='Generating...';
   const audience=document.getElementById('audience').value;
   const context=document.getElementById('extra-context').value;
-  const card=document.querySelector(`[data-url="${url}"]`);
+  const safeUrl=CSS.escape(url);
+  const card=document.querySelector(`[data-url="${safeUrl}"]`);
   const ne=card.querySelector('.narrative-out');const te=card.querySelector('.tp-area');const pe=card.querySelector('.prompts-area');
   await generatePlaybook(url,audience,context,ne,te,pe);
   btn.disabled=false;btn.textContent='Regenerate';
 }
 
 function copyPrompt(btn){
-  const text=btn.getAttribute('data-text');
-  if(!text) return;
+  const text=btn.getAttribute('data-text');if(!text)return;
   navigator.clipboard.writeText(text).catch(()=>{});
-  btn.classList.add('copied');
-  const tag=btn.querySelector('.ptag');
-  const orig=tag?tag.textContent:'';
-  if(tag) tag.textContent='COPIED ✓';
+  btn.classList.add('copied');const tag=btn.querySelector('.ptag');const orig=tag?tag.textContent:'';
+  if(tag)tag.textContent='COPIED ✓';
   setTimeout(()=>{btn.classList.remove('copied');if(tag)tag.textContent=orig;},2000);
 }
 
 function renderNarratives(){
   const nl=document.getElementById('narrative-list');nl.innerHTML='';
-  if(!selected.size){nl.innerHTML='<div style="padding:36px;text-align:center;color:var(--dim);font-size:11px;">No apps selected. Go back and select apps first.</div>';return;}
+  if(!selected.size){nl.innerHTML='<div style="padding:40px;text-align:center;color:var(--dim2);font-size:11px;">No apps selected. Go back and select apps first.</div>';return;}
   selected.forEach(url=>{
     const app=findApp(url);
-    const card=document.createElement('div');card.className='pbcard';card.setAttribute('data-url',url);
-    card.innerHTML=`<div class="pbhdr"><div class="pbhl"><span class="dot"></span><div><div class="pbn">${app.name}</div><div class="pbu">${url}</div></div></div><div class="pbhr"><a class="oabtn" href="https://${url}" target="_blank">Open ↗</a><button class="gsbtn" onclick="genSingle('${url}',this)">Generate ↗</button></div></div><div class="pbbody"><div class="pbs">Opening narrative</div><div class="narrative-out aiout" style="min-height:44px;color:var(--dim);">Click "Generate" or "Generate All Playbooks" above to create AI-powered content...</div><div class="pbs">Talking points</div><div class="tp-area" style="min-height:16px;"></div><div class="pbs">Demo prompts — click to copy · paste into app AI chat</div><div class="prompts-area" style="min-height:24px;"></div></div>`;
+    const displayUrl=url.startsWith('http')?url.replace('https://',''):url;
+    const openUrl=url.startsWith('http')?url:'https://tsm-shell.fly.dev'+url;
+    const card=document.createElement('div');card.className='pbcard';card.setAttribute('data-url',CSS.escape(url));
+    card.innerHTML=`<div class="pbhdr"><div class="pbhl"><span class="dot"></span><div><div class="pbn">${app.name}</div><div class="pbu">${displayUrl}</div></div></div><div class="pbhr"><a class="oabtn" href="${openUrl}" target="_blank">Open ↗</a><button class="gsbtn" onclick="genSingle('${url.replace(/'/g,"\\'")}',this)">Generate ↗</button></div></div><div class="pbbody"><div class="pbs">Opening narrative</div><div class="narrative-out aiout" style="color:var(--dim2);">Click "Generate" or "Generate All Playbooks" above...</div><div class="pbs">Talking points</div><div class="tp-area"></div><div class="pbs">Demo prompts — click to copy</div><div class="prompts-area"></div></div>`;
     nl.appendChild(card);
     if(generatedPlaybooks[url]){
       const ne=card.querySelector('.narrative-out');const te=card.querySelector('.tp-area');const pe=card.querySelector('.prompts-area');
@@ -366,10 +855,7 @@ function renderNarratives(){
       const tm=text.match(/TALKING POINTS:\n([\s\S]*?)(?=PROMPT 1|$)/);
       if(tm){te.innerHTML='';tm[1].trim().split('\n').filter(l=>l.trim()).forEach(pt=>{const d=document.createElement('div');d.className='tp';d.textContent=pt.replace(/^[•\-\*]\s*/,'');te.appendChild(d);});}
       const fullPrompts=text.match(/PROMPT \d[\s\S]*?(?=PROMPT \d|$)/g)||[];
-      fullPrompts.forEach(block=>{
-        const lm=block.match(/PROMPT \d+\s*\|\s*([^\n]+)/);const txm=block.match(/PROMPT \d+[^\n]*\n([\s\S]*?)$/);
-        if(lm&&txm){const label=lm[1].trim();const t=txm[1].trim();if(t.length>10){const btn=document.createElement('button');btn.className='pbtn';btn.setAttribute('data-text',t);btn.innerHTML=`<span class="ptag">${label}</span><span class="pprev">${t.substring(0,85)}...</span>`;btn.onclick=function(){copyPrompt(this);};pe.appendChild(btn);}}
-      });
+      fullPrompts.forEach(block=>{const lm=block.match(/PROMPT \d+\s*\|\s*([^\n]+)/);const txm=block.match(/PROMPT \d+[^\n]*\n([\s\S]*?)$/);if(lm&&txm){const label=lm[1].trim();const t=txm[1].trim();if(t.length>10){const btn=document.createElement('button');btn.className='pbtn';btn.setAttribute('data-text',t);btn.innerHTML=`<span class="ptag">${label}</span><span class="pprev">${t.substring(0,85)}...</span>`;btn.onclick=function(){copyPrompt(this);};pe.appendChild(btn);}}});
     }
   });
 }
@@ -381,8 +867,8 @@ async function generateCoachScript(){
   const outEl=document.getElementById('coach-output');
   outEl.style.display='block';outEl.className='aiout loading';outEl.textContent='Generating your coaching script...';
   await callGroq([
-    {role:'system',content:'You are TSM Matter\'s master sales coach. Write tight, tactical, conversion-focused demo scripts with no filler.'},
-    {role:'user',content:`Full presentation coaching script for "${name}" to a ${audience}.\nApps in order: ${apps.join(' → ')}\n\nProvide:\n1. 60-second opening hook — establish pain and urgency immediately\n2. One transition sentence between each app that builds momentum\n3. The single most powerful thing to say or show in each app\n4. Top 3 objections this audience will raise and exactly how to handle each\n5. Closing statement that drives a specific next-steps commitment\n\nBe tactical, specific, direct. Every line earns its place.`}
+    {role:'system',content:'You are TSM Matter\'s master sales coach. Write tight, tactical, conversion-focused demo scripts.'},
+    {role:'user',content:`Full presentation coaching script for "${name}" to a ${audience}.\nApps in order: ${apps.join(' → ')}\n\n1. 60-second opening hook\n2. Transition sentence between each app\n3. Most powerful thing to say/show in each app\n4. Top 3 objections and exactly how to handle each\n5. Closing statement that drives next-steps commitment`}
   ],(partial)=>{outEl.className='aiout';outEl.textContent=partial;});
 }
 
@@ -393,32 +879,27 @@ function buildDeployPanel(){
   const name=document.getElementById('suite-name')?.value||'TSM Demo Suite';
   const audience=document.getElementById('audience')?.value||'General';
   const urls=Array.from(selected);
-  const params=new URLSearchParams({title:name,audience,apps:urls.map(u=>'https://'+u).join(',')});
+  const params=new URLSearchParams({title:name,audience,apps:urls.join(',')});
   document.getElementById('suite-url-box').textContent='https://clients.tsmatter.com/suite?'+params.toString();
   const dl=document.getElementById('deploy-list');dl.innerHTML='';
   urls.forEach((url,i)=>{
     const app=findApp(url);const row=document.createElement('div');row.className='drow';
-    row.innerHTML=`<div class="drowl"><span style="font-size:9px;color:var(--dim);min-width:16px;">${i+1}.</span><span class="dot"></span><span style="font-size:11px;color:var(--text);">${app.name}</span><span style="font-size:9px;color:var(--dim);margin-left:6px;">${url}</span></div><a class="oabtn" href="https://${url}" target="_blank">Open ↗</a>`;
+    const openUrl=url.startsWith('http')?url:'https://tsm-shell.fly.dev'+url;
+    const displayUrl=url.startsWith('http')?url.replace('https://',''):url;
+    row.innerHTML=`<div class="drowl"><span style="font-size:9px;color:var(--dim2);min-width:18px;">${i+1}.</span><span class="dot"></span><span style="font-size:11px;color:var(--text);">${app.name}</span><span style="font-size:9px;color:var(--dim2);margin-left:7px;">${displayUrl}</span></div><a class="oabtn" href="${openUrl}" target="_blank">Open ↗</a>`;
     dl.appendChild(row);
   });
 }
 
-function copySuiteUrl(){
-  const url=document.getElementById('suite-url-box').textContent;
-}
-
-function openFirst(){const first=Array.from(selected)[0];if(first)window.open('https://'+first,'_blank');}
-
-function deployToServer(){
-  const name=document.getElementById('suite-name')?.value||'TSM Demo Suite';
-  const apps=Array.from(selected).map(url=>findApp(url).name+' ('+url+')');
-  const cmd='Deploy presentation suite to clients.tsmatter.com/suite/ — name: "'+name+'" — apps: '+apps.join(', ')+'. Build a live HTML page with AI narratives as coach overlay, accessible at clients.tsmatter.com/suite/[slug].';
-}
+function copySuiteUrl(){navigator.clipboard.writeText(document.getElementById('suite-url-box').textContent).catch(()=>{});}
+function openFirst(){const first=Array.from(selected)[0];if(first){const url=first.startsWith('http')?first:'https://tsm-shell.fly.dev'+first;window.open(url,'_blank');}}
+function deployToServer(){const name=document.getElementById('suite-name')?.value||'TSM Demo Suite';console.log('Deploy:',name,Array.from(selected));}
 
 function renderSidebar(){
   const f=document.getElementById('sidebar-filters');f.innerHTML='';
+  const totalApps=allApps().length;
   ['All',...SECTORS.map(s=>s.label)].forEach(lbl=>{
-    const count=lbl==='All'?allApps().length:(SECTORS.find(s=>s.label===lbl)?.apps.length||0);
+    const count=lbl==='All'?totalApps:(SECTORS.find(s=>s.label===lbl)?.apps.length||0);
     const d=document.createElement('div');d.className='fitem'+(lbl===activeFilter?' active':'');
     d.innerHTML=`<span>${lbl}</span><span class="fcount">${count}</span>`;
     d.onclick=()=>{activeFilter=lbl;renderSidebar();renderGrid();};f.appendChild(d);
@@ -429,11 +910,14 @@ function renderGrid(){
   const g=document.getElementById('app-grid');g.innerHTML='';
   SECTORS.forEach(s=>{
     if(activeFilter!=='All'&&activeFilter!==s.label)return;
-    const hdr=document.createElement('div');hdr.className='shdr';hdr.textContent=s.label;g.appendChild(hdr);
+    const hdr=document.createElement('div');hdr.className='shdr';
+    hdr.innerHTML=`${s.label}<span class="shdr-count">${s.apps.length}</span>`;
+    g.appendChild(hdr);
     const grid=document.createElement('div');grid.className='agrid';
     s.apps.forEach(a=>{
       const c=document.createElement('div');c.className='acard'+(selected.has(a.url)?' sel':'');
-      c.innerHTML=`<div class="aname"><span class="dot"></span>${a.name}</div><div class="aurl">${a.url}</div>`;
+      const displayUrl=a.url.startsWith('http')?a.url.replace('https://',''):a.url;
+      c.innerHTML=`<div class="aname"><span class="dot"></span>${a.name}</div><div class="aurl">${displayUrl}</div>`;
       c.onclick=()=>{if(selected.has(a.url)){selected.delete(a.url);c.classList.remove('sel');}else{selected.add(a.url);c.classList.add('sel');}updateCount();renderPills();};
       grid.appendChild(c);
     });
@@ -441,54 +925,42 @@ function renderGrid(){
   });
 }
 
-function updateCount(){document.getElementById('sel-count').textContent=selected.size;document.getElementById('pill-count').textContent=selected.size;setStatus(selected.size+' selected · '+allApps().length+' apps · 60 processes online');}
-function renderPills(){const p=document.getElementById('pills-sidebar');p.innerHTML='';selected.forEach(url=>{const app=findApp(url);const pill=document.createElement('div');pill.className='pill';pill.innerHTML=`${app.name}<span class="px" onclick="removePill('${url}')">✕</span>`;p.appendChild(pill);});}
-function removePill(url){selected.delete(url);document.querySelectorAll('.acard').forEach(c=>{if(c.querySelector('.aurl')?.textContent===url)c.classList.remove('sel');});updateCount();renderPills();}
+function updateCount(){
+  document.getElementById('sel-count').textContent=selected.size;
+  document.getElementById('pill-count').textContent=selected.size;
+  setStatus(selected.size+' selected · '+allApps().length+' apps available');
+}
+function renderPills(){
+  const p=document.getElementById('pills-sidebar');p.innerHTML='';
+  selected.forEach(url=>{
+    const app=findApp(url);const pill=document.createElement('div');pill.className='pill';
+    pill.innerHTML=`${app.name}<span class="px" onclick="removePill('${url.replace(/'/g,"\\'")}')">✕</span>`;
+    p.appendChild(pill);
+  });
+}
+function removePill(url){
+  selected.delete(url);
+  document.querySelectorAll('.acard').forEach(c=>{if(c.querySelector('.aurl')?.textContent===url||c.querySelector('.aurl')?.textContent===url.replace('https://',''))c.classList.remove('sel');});
+  updateCount();renderPills();
+}
 function clearAll(){selected.clear();renderGrid();updateCount();renderPills();}
-function selectSector(){if(activeFilter==='All')return;const s=SECTORS.find(x=>x.label===activeFilter);if(s){s.apps.forEach(a=>selected.add(a.url));renderGrid();updateCount();renderPills();}}
-function switchTab(id,el){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+id).classList.add('active');if(el)el.classList.add('active');if(id==='narrate')renderNarratives();if(id==='deploy')buildDeployPanel();}
+function selectSector(){
+  if(activeFilter==='All')return;
+  const s=SECTORS.find(x=>x.label===activeFilter);
+  if(s){s.apps.forEach(a=>selected.add(a.url));renderGrid();updateCount();renderPills();}
+}
+function switchTab(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  if(id==='narrate')renderNarratives();
+  if(id==='deploy')buildDeployPanel();
+}
 
-renderSidebar();renderGrid();
+renderSidebar();
+renderGrid();
+updateCount();
 </script>
-<script>
-window.safeAnalyze = async function(input, targetId="analysis_output.log"){
-  const el = document.getElementById(targetId) || document.querySelector("#output") || document.querySelector(".output");
-  if(!el) return;
-
-  el.innerHTML = "⚡ Running analysis...";
-
-  try {
-    const res = await fetch("https://tsm-core.fly.dev:3000/ask", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
-    });
-
-    const text = await res.text();
-
-    if(text.startsWith("<!DOCTYPE") || text.startsWith("<html")){
-      throw new Error("HTML response (routing issue)");
-    }
-
-    const data = JSON.parse(text);
-
-    const output = data.choices?.[0]?.message?.content ||
-                   data.response ||
-                   data.analysis ||
-                   data.feed?.map(f=>f.message).join("<br>") ||
-                   "No structured output";
-
-    el.innerHTML = "<div style=\"padding:12px;line-height:1.4\">"+output+"</div>";
-
-  } catch(e){
-    console.warn("AI ERROR:", e);
-    el.innerHTML = "⚠️ AI Error — check routing / auth / rate limits";
-  }
-};
-</script>
-
-<div id="analysis_output.log" style="padding:12px;color:#00ffa6;font-family:monospace;"></div>
-
-<script id="tsm-api-fix">/* TSM API routing fixed */</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ee3fec13f4007c6',t:'MTc3NjUxODcyMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
