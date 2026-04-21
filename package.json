@@ -1,27 +1,12 @@
 {
   "name": "tsm-shell",
   "version": "1.0.0",
-  "description": "",
+  "description": "TSM Shell — AI presentation suite builder",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Torreyw94/tsm-shell.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Torreyw94/tsm-shell/issues"
-  },
-  "homepage": "https://github.com/Torreyw94/tsm-shell#readme",
   "dependencies": {
-    "express": "^5.2.1",
-    "http-proxy": "^1.18.1",
-    "path": "^0.12.7"
+    "express": "^4.18.2"
   }
 }
