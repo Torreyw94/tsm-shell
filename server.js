@@ -58,31 +58,41 @@ app.post('/api/groq', async (req, res) => {
 });
 
 // ── APP HEALTH CHECK ──────────────────────────────────────────────────────────
-// Suite builder pings this to know which app cards are live vs placeholder.
-// GET /api/ping?url=https://tsm-shell.fly.dev/html/honorhealth/
 app.get('/api/ping', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'url required' });
 
-  // Only allow pinging our own domains for safety
-  const allowed = ['tsm-shell.fly.dev', 'tsmatter.com', 'clients.tsmatter.com', 'tsm-core.fly.dev'];
-  let hostname;
-  try { hostname = new URL(url).hostname; } catch { return res.json({ live: false }); }
-  if (!allowed.some(d => hostname === d || hostname.endsWith('.' + d))) {
+  let parsed;
+  try { parsed = new URL(url); } catch { return res.json({ live: false }); }
+
+  // For local paths served by this app, check filesystem directly
+  if (parsed.hostname === 'tsm-shell.fly.dev') {
+    const localPath = parsed.pathname.replace(/\/$/, '') || '/index';
+    const candidates = [
+      path.join(__dirname, 'html', ...localPath.replace(/^\/html/, '').split('/'), 'index.html'),
+      path.join(__dirname, localPath.replace(/^\//, '') + '.html'),
+      path.join(__dirname, localPath.replace(/^\//, '')),
+    ];
+    const live = candidates.some(p => { try { return fs.statSync(p).isFile(); } catch { return false; } });
+    return res.json({ live });
+  }
+
+  // For external domains, do a lightweight HTTP HEAD request
+  const allowed = ['tsmatter.com', 'fly.dev', 'clients.tsmatter.com'];
+  if (!allowed.some(d => parsed.hostname === d || parsed.hostname.endsWith('.' + d))) {
     return res.json({ live: false });
   }
 
   try {
     const mod = url.startsWith('https') ? https : http;
     const live = await new Promise(resolve => {
-      const req2 = mod.get(url, { timeout: 4000 }, r => resolve(r.statusCode < 400));
-      req2.on('error', () => resolve(false));
-      req2.on('timeout', () => { req2.destroy(); resolve(false); });
+      const r = mod.request(url, { method: 'HEAD', timeout: 5000 }, res2 => resolve(res2.statusCode < 500));
+      r.on('error', () => resolve(false));
+      r.on('timeout', () => { r.destroy(); resolve(false); });
+      r.end();
     });
     res.json({ live });
-  } catch {
-    res.json({ live: false });
-  }
+  } catch { res.json({ live: false }); }
 });
 
 // ── SUITE DEPLOY ──────────────────────────────────────────────────────────────
