@@ -194,4 +194,9 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// ── SERVE GENERATED SUITES ───────────────────────────────────────────────────
+// Node writes suite files to /app/html/suite/<slug>/index.html
+// nginx can't see them, so Node serves this path directly
+app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
+
 app.listen(PORT, () => console.log(`TSM Node API · port ${PORT}`));
