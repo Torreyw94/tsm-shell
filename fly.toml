@@ -14,3 +14,8 @@ primary_region = "ord"
   memory = "512mb"
   cpu_kind = "shared"
   cpus = 1
+
+
+[mounts]
+  source = "tsm_shell_data"
+  destination = "/data"

@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 8080;
 app.use(express.json());
 
 // ── DATA STORE ────────────────────────────────────────────────────────────────
-const HC_DATA_DIR = path.join(__dirname, 'data', 'hc-strategist');
+const HC_DATA_ROOT = process.env.TSM_DATA_ROOT || '/data';
+const HC_DATA_DIR = path.join(HC_DATA_ROOT, 'hc-strategist');
 const HC_REPORTS_FILE = path.join(HC_DATA_DIR, 'reports.json');
 const HC_NODE_STATE_FILE = path.join(HC_DATA_DIR, 'node-state.json');
 const HC_PROFILES_FILE = path.join(HC_DATA_DIR, 'profiles.json');
@@ -225,7 +226,39 @@ function aggregateLayer2(nodesMap) {
 
 
 
+
+function buildOfficeContext(filtered = {}) {
+  const ops = filtered.operations || {};
+  const billing = filtered.billing || {};
+  const insurance = filtered.insurance || {};
+  const compliance = filtered.compliance || {};
+
+  return {
+    officeName: ops.officeName || billing.officeName || insurance.officeName || compliance.officeName || '',
+    officeManager: ops.officeManager || billing.officeManager || insurance.officeManager || compliance.officeManager || '',
+    persistentIssues: [
+      ops.findings || null,
+      billing.findings || null,
+      insurance.findings || null,
+      compliance.findings || null
+    ].filter(Boolean),
+    localConstraints: [
+      ops.localConstraints || null,
+      billing.localConstraints || null,
+      insurance.localConstraints || null,
+      compliance.localConstraints || null
+    ].filter(Boolean),
+    recentWins: [
+      ops.recentWins || null,
+      billing.recentWins || null,
+      insurance.recentWins || null,
+      compliance.recentWins || null
+    ].filter(Boolean)
+  };
+}
+
 function buildAudienceBrief({ system, location, audience='om', format='brief', question='', filtered={}, result={} }) {
+  const office = buildOfficeContext(filtered);
   const top = result.top || [];
   const topLane = result.highestYieldLane || (top[0]?.nodeKey ? top[0].nodeKey.charAt(0).toUpperCase() + top[0].nodeKey.slice(1) : 'Unassigned');
   const rev = Number(result.revenueAtRisk || 0);
@@ -260,6 +293,8 @@ function buildAudienceBrief({ system, location, audience='om', format='brief', q
   ];
 
   const summaryLine = `Current cross-lane pressure is concentrated in ${top.map(t => t.nodeKey).join(', ') || 'the active operating lanes'}, with $${rev.toLocaleString()} at risk and $${cash14.toLocaleString()} in projected 14-day cash acceleration opportunity.`;
+  const officeLine = office.officeName ? `Office: ${office.officeName}` : '';
+  const managerLine = office.officeManager ? `Office manager: ${office.officeManager}` : '';
 
   const audiencePrefix = {
     om: 'Operational summary for office management:',
@@ -272,7 +307,7 @@ function buildAudienceBrief({ system, location, audience='om', format='brief', q
     return `${audiencePrefix}
 
 System: ${system || 'General Healthcare'}
-Location: ${location || 'All'}
+Location: ${location || 'All'}${officeLine ? '\n' + officeLine : ''}${managerLine ? '\n' + managerLine : ''}
 
 Top issue: ${top.map(t => t.nodeKey).join(' + ') || 'No qualifying node pressure found'}
 Highest-yield lane: ${topLane}
@@ -281,7 +316,7 @@ Recoverable in 72 hours: $${rec72.toLocaleString()}
 Projected 14-day cash acceleration: $${cash14.toLocaleString()}
 
 Root cause:
-${rootCause || 'No live telemetry available.'}
+${rootCause || 'No live telemetry available.'}${office.persistentIssues.length ? '\n\nPersistent issues:\n- ' + office.persistentIssues.join('\n- ') : ''}${office.localConstraints.length ? '\n\nLocal constraints:\n- ' + office.localConstraints.join('\n- ') : ''}${office.recentWins.length ? '\n\nRecent wins:\n- ' + office.recentWins.join('\n- ') : ''}
 
 Immediate actions:
 1. ${actions[0]}
@@ -311,7 +346,7 @@ ${summaryLine}
 Highest-yield lane at this time is ${topLane}. Estimated recoverable value is $${rec72.toLocaleString()} in the next 72 hours and $${rec30.toLocaleString()} over 30 days.
 
 Root cause:
-${rootCause || 'No live telemetry available.'}
+${rootCause || 'No live telemetry available.'}${office.persistentIssues.length ? '\n\nPersistent issues:\n- ' + office.persistentIssues.join('\n- ') : ''}${office.localConstraints.length ? '\n\nLocal constraints:\n- ' + office.localConstraints.join('\n- ') : ''}${office.recentWins.length ? '\n\nRecent wins:\n- ' + office.recentWins.join('\n- ') : ''}
 
 Current response plan:
 1. ${actions[0]}
@@ -334,7 +369,7 @@ Recoverable value:
 - 30 days: $${rec30.toLocaleString()}
 
 Root cause:
-${rootCause || 'No live telemetry available.'}
+${rootCause || 'No live telemetry available.'}${office.persistentIssues.length ? '\n\nPersistent issues:\n- ' + office.persistentIssues.join('\n- ') : ''}${office.localConstraints.length ? '\n\nLocal constraints:\n- ' + office.localConstraints.join('\n- ') : ''}${office.recentWins.length ? '\n\nRecent wins:\n- ' + office.recentWins.join('\n- ') : ''}
 
 Recommended next actions:
 1. ${actions[0]}
