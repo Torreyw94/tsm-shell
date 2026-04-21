@@ -1,4 +1,3 @@
-
 const express = require('express');
 const path    = require('path');
 const fs      = require('fs');
@@ -6,7 +5,7 @@ const https   = require('https');
 const http    = require('http');
 
 const app  = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.NODE_PORT || 3000;
 
 app.use(express.json({ limit: '2mb' }));
 
@@ -195,10 +194,4 @@ app.get('/api/status', (req, res) => {
   });
 });
 
-app.use(express.static(__dirname));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(PORT, () => console.log(`TSM Shell · port ${PORT}`));
+app.listen(PORT, () => console.log(`TSM Node API · port ${PORT}`));
