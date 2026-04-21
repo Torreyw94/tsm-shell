@@ -271,6 +271,11 @@ tr:hover td{background:#0f1f0f}
   </div>
 </div>
 
+
+<div class="ai-row" style="margin-top:10px;">
+  <button class="ai-btn" onclick="runEnterpriseBnca()">RUN ENTERPRISE BNCA</button>
+</div>
+
 <div id="tab-ai">
   <div class="ai-box" style="margin-top:16px">
     <div class="ai-hdr">⚡ DEEP AI ANALYSIS</div>
@@ -532,6 +537,46 @@ document.addEventListener('DOMContentLoaded', async function(){
   await refreshReports();
   setInterval(pollNodeState, 15000);
 });
+
+async function runEnterpriseBnca() {
+  const out = document.getElementById('enterprise-bnca-res');
+  if (!out) return;
+
+  const system =
+    document.getElementById('system-filter')?.value ||
+    'HonorHealth';
+
+  const location =
+    document.getElementById('location-filter')?.value ||
+    'Scottsdale - Shea';
+
+  out.textContent = '> Running enterprise BNCA...';
+
+  try {
+    const res = await fetch('/api/hc/layer2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system, location })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || 'Layer 2 request failed');
+    }
+
+    out.textContent = data.output || 'No enterprise BNCA output returned.';
+  } catch (err) {
+    out.textContent = '> Enterprise BNCA error: ' + err.message;
+  }
+}
+
 </script>
+
+<div class="ai-box" style="margin-top:16px">
+  <div class="ai-hdr">🏥 ENTERPRISE BNCA</div>
+  <div id="enterprise-bnca-res" class="ai-res">> Enterprise BNCA ready.</div>
+</div>
+
 </body>
 </html>
