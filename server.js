@@ -10,50 +10,50 @@ const PORT = process.env.NODE_PORT || 3000;
 app.use(express.json({ limit: '2mb' }));
 
 // ── GROQ PROXY ────────────────────────────────────────────────────────────────
-// Keeps the API key server-side. Frontend POSTs here instead of Groq directly.
-// Set GROQ_API_KEY in your Fly.io secrets:
-//   fly secrets set GROQ_API_KEY=gsk_...
-app.post('/api/groq', async (req, res) => {
+app.post('/api/groq', (req, res) => {
   const key = process.env.GROQ_API_KEY;
   if (!key) return res.status(500).json({ error: 'GROQ_API_KEY not set on server' });
 
   const { messages, model = 'llama-3.3-70b-versatile', max_tokens = 1200, stream = true } = req.body;
   if (!messages?.length) return res.status(400).json({ error: 'messages required' });
 
-  try {
-    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': 'Bearer ' + key,
-      },
-      body: JSON.stringify({ model, max_tokens, stream, messages }),
-    });
+  const payload = JSON.stringify({ model, max_tokens, stream, messages });
 
-    if (!groqRes.ok) {
-      const err = await groqRes.json().catch(() => ({}));
-      return res.status(groqRes.status).json({ error: err?.error?.message || 'Groq error' });
+  const options = {
+    hostname: 'api.groq.com',
+    path: '/openai/v1/chat/completions',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + key,
+      'Content-Length': Buffer.byteLength(payload),
+    },
+  };
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('X-Accel-Buffering', 'no');
+
+  const groqReq = https.request(options, groqRes => {
+    if (groqRes.statusCode !== 200) {
+      let body = '';
+      groqRes.on('data', d => body += d);
+      groqRes.on('end', () => {
+        try { res.status(groqRes.statusCode).json(JSON.parse(body)); }
+        catch { res.status(groqRes.statusCode).end(body); }
+      });
+      return;
     }
+    groqRes.pipe(res);
+  });
 
-    // Stream straight through to the client
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('X-Accel-Buffering', 'no');
-
-    const reader = groqRes.body.getReader();
-    const push = async () => {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) { res.end(); break; }
-        res.write(value);
-      }
-    };
-    push().catch(() => res.end());
-
-  } catch (e) {
+  groqReq.on('error', e => {
     console.error('[/api/groq]', e.message);
-    res.status(502).json({ error: 'Proxy error: ' + e.message });
-  }
+    res.status(502).json({ error: e.message });
+  });
+
+  groqReq.write(payload);
+  groqReq.end();
 });
 
 // ── APP HEALTH CHECK ──────────────────────────────────────────────────────────
