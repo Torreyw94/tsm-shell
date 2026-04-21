@@ -233,7 +233,7 @@ app.use('/html/hc-strategist', express.static(path.join(__dirname, 'html', 'hc-s
 app.use('/', express.static(path.join(__dirname, 'html')));
 
 // catch-all LAST
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'index.html'));
 });
 
