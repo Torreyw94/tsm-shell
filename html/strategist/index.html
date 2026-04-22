@@ -3,2203 +3,831 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sovereign Strategist — The Ultimate Business Consultant. Strategic intelligence across finance, legal, compliance, real estate, hospitality, construction, education, tax, security, and audit.">
-<meta name="robots" content="noindex, nofollow">
-<title>Sovereign Strategist | The Ultimate Business Consultant</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<title>HC Strategist · HonorHealth · Neural Core</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --bg2: #13161e;
-    --bg3: #1a1e29;
-    --bg4: #21273a;
-    --gold: #c9a84c;
-    --gold-lt: #e8cc8a;
-    --gold-dim: rgba(201,168,76,0.15);
-    --gold-border: rgba(201,168,76,0.3);
-    --white: #f0ede8;
-    --muted: #8a8d9e;
-    --muted2: #5a5d70;
-    --accent-blue: #3a7bd5;
-    --accent-blue-dim: rgba(58,123,213,0.15);
-    --accent-teal: #2ab4a0;
-    --accent-teal-dim: rgba(42,180,160,0.12);
-    --accent-coral: #d96c4a;
-    --accent-purple: #7c5cbf;
-    --accent-green: #3ea66a;
-    --border: rgba(255,255,255,0.07);
-    --border-gold: rgba(201,168,76,0.25);
-    --radius: 10px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.4);
-    --shadow-gold: 0 4px 32px rgba(201,168,76,0.12);
-    --font-display: 'Cormorant Garamond', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
-    --transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-
-  /* ── TOP BANNER ── */
-  .top-banner {
-    background: linear-gradient(90deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.04) 100%);
-    border-bottom: 1px solid var(--gold-border);
-    text-align: center;
-    padding: 8px 20px;
-    font-size: 12px;
-    color: var(--gold-lt);
-    letter-spacing: 0.06em;
-    position: relative;
-    z-index: 100;
-  }
-  .top-banner span { opacity: 0.6; margin: 0 8px; }
-
-  /* ── NAV ── */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 200;
-    background: rgba(13,15,20,0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    height: 64px;
-  }
-
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    flex-shrink: 0;
-    margin-right: auto;
-  }
-
-  .nav-logo-mark {
-    width: 36px;
-    height: 36px;
-    border: 1.5px solid var(--gold);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: -0.02em;
-    background: var(--gold-dim);
-  }
-
-  .nav-logo-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.1;
-  }
-  .nav-logo-text .name {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--white);
-    letter-spacing: 0.01em;
-  }
-  .nav-logo-text .tagline {
-    font-size: 10px;
-    color: var(--gold);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-
-  .nav-apps-btn {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--white);
-    padding: 8px 16px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 13px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: var(--transition);
-    margin-right: 12px;
-  }
-  .nav-apps-btn:hover { border-color: var(--gold-border); color: var(--gold-lt); }
-  .nav-apps-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
-
-  .nav-cta {
-    background: var(--gold);
-    color: #0d0f14;
-    border: none;
-    padding: 8px 20px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-  }
-  .nav-cta:hover { background: var(--gold-lt); }
-
-  /* Apps Mega Menu */
-  .apps-dropdown {
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    background: rgba(13,15,20,0.98);
-    backdrop-filter: blur(30px);
-    border-bottom: 1px solid var(--border-gold);
-    padding: 28px 40px;
-    display: none;
-    z-index: 300;
-  }
-  .apps-dropdown.open { display: block; }
-  .apps-dropdown-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .dropdown-app-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    text-decoration: none;
-    transition: var(--transition);
-    background: var(--bg2);
-  }
-  .dropdown-app-link:hover { border-color: var(--gold-border); background: var(--bg3); }
-  .dropdown-app-link .app-icon-sm {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    flex-shrink: 0;
-  }
-  .dropdown-app-link .app-name-sm {
-    font-size: 13px;
-    color: var(--white);
-    font-weight: 500;
-    line-height: 1.2;
-  }
-  .dropdown-app-link .app-url-sm {
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  /* ── HERO ── */
-  .hero {
-    position: relative;
-    z-index: 1;
-    padding: 90px 40px 80px;
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 500px;
-    background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--gold-dim);
-    border: 1px solid var(--gold-border);
-    color: var(--gold-lt);
-    padding: 5px 14px;
-    border-radius: 100px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 28px;
-  }
-
-  .hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(42px, 7vw, 80px);
-    font-weight: 700;
-    line-height: 1.05;
-    color: var(--white);
-    max-width: 820px;
-    margin: 0 auto 22px;
-    letter-spacing: -0.02em;
-  }
-  .hero h1 em {
-    font-style: italic;
-    color: var(--gold);
-  }
-
-  .hero-sub {
-    font-size: 17px;
-    color: var(--muted);
-    max-width: 600px;
-    margin: 0 auto 40px;
-    font-weight: 300;
-    line-height: 1.7;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 60px;
-  }
-
-  .btn-primary {
-    background: var(--gold);
-    color: #0d0f14;
-    border: none;
-    padding: 13px 28px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-  }
-  .btn-primary:hover { background: var(--gold-lt); transform: translateY(-1px); }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid var(--border);
-    padding: 13px 28px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-  }
-  .btn-secondary:hover { border-color: var(--gold-border); color: var(--gold-lt); }
-
-  /* Stats row */
-  .hero-stats {
-    display: flex;
-    gap: 40px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .stat-item {
-    text-align: center;
-  }
-  .stat-num {
-    font-family: var(--font-display);
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--gold);
-    display: block;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  /* ── SECTION STYLES ── */
-  section {
-    position: relative;
-    z-index: 1;
-    padding: 70px 40px;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-
-  .section-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), var(--border-gold), var(--border), transparent);
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-
-  .section-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-    font-weight: 600;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-label::after {
-    content: '';
-    height: 1px;
-    width: 40px;
-    background: var(--gold-border);
-  }
-
-  .section-title {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 4vw, 44px);
-    font-weight: 600;
-    line-height: 1.1;
-    color: var(--white);
-    margin-bottom: 12px;
-    letter-spacing: -0.01em;
-  }
-  .section-title em { font-style: italic; color: var(--gold); }
-
-  .section-desc {
-    font-size: 15px;
-    color: var(--muted);
-    max-width: 560px;
-    line-height: 1.7;
-    margin-bottom: 44px;
-    font-weight: 300;
-  }
-
-  /* ── CORE APP SUITE ── */
-  .apps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-  }
-
-  .app-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 22px;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-  .app-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--card-accent-dim, transparent) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    border-radius: inherit;
-  }
-  .app-card:hover { border-color: var(--card-border-hover, var(--gold-border)); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
-  .app-card:hover::before { opacity: 1; }
-
-  .app-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
-  .app-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .app-status {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    color: var(--accent-green);
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .app-status .pulse {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent-green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(62,166,106,0.4); }
-    50% { box-shadow: 0 0 0 4px rgba(62,166,106,0); }
-  }
-
-  .app-name {
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 6px;
-    letter-spacing: 0.01em;
-  }
-
-  .app-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-
-  .app-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-
-  .tag {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 100px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
-
-  .app-launch {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-  }
-
-  .app-url {
-    font-size: 11px;
-    color: var(--muted2);
-    font-family: monospace;
-    letter-spacing: 0.02em;
-  }
-
-  .launch-btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--gold);
-    font-weight: 600;
-    text-decoration: none;
-    letter-spacing: 0.02em;
-  }
-  .launch-btn:hover { color: var(--gold-lt); }
-
-  /* ── PLAYBOOKS ── */
-  .playbooks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 16px;
-  }
-
-  .playbook-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    transition: var(--transition);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .playbook-card:hover { border-color: var(--gold-border); background: var(--bg3); }
-
-  .playbook-number {
-    font-family: var(--font-display);
-    font-size: 60px;
-    font-weight: 700;
-    color: var(--bg3);
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    line-height: 1;
-    user-select: none;
-    transition: var(--transition);
-  }
-  .playbook-card:hover .playbook-number { color: var(--bg4); }
-
-  .playbook-icon {
-    font-size: 28px;
-    margin-bottom: 12px;
-  }
-
-  .playbook-title {
-    font-family: var(--font-display);
-    font-size: 19px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 8px;
-    letter-spacing: 0.01em;
-  }
-
-  .playbook-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-
-  .playbook-apps {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .playbook-app-chip {
-    background: var(--bg4);
-    border: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--muted);
-    padding: 3px 10px;
-    border-radius: 100px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: var(--transition);
-  }
-  .playbook-app-chip:hover { border-color: var(--gold-border); color: var(--gold-lt); }
-
-  .playbook-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-  }
-
-  .playbook-steps {
-    font-size: 11px;
-    color: var(--muted2);
-    letter-spacing: 0.04em;
-  }
-
-  .playbook-run {
-    font-size: 12px;
-    color: var(--gold);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-family: var(--font-body);
-  }
-  .playbook-run:hover { color: var(--gold-lt); }
-
-  /* ── AI ADVISOR ── */
-  .advisor-section {
-    background: var(--bg2);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius-xl);
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .advisor-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(201,168,76,0.04) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .advisor-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-
-  .advisor-avatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold) 0%, #8b6820 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    color: #0d0f14;
-    flex-shrink: 0;
-  }
-
-  .advisor-info h3 {
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 2px;
-  }
-  .advisor-info p {
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .advisor-info p .online { color: var(--accent-green); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-
-  .chat-window {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    height: 320px;
-    overflow-y: auto;
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    scroll-behavior: smooth;
-  }
-
-  .chat-msg {
-    display: flex;
-    gap: 10px;
-    animation: fadeUp 0.3s ease;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .chat-msg.user { flex-direction: row-reverse; }
-
-  .chat-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-  .chat-msg.user .chat-avatar { background: var(--gold-dim); border-color: var(--gold-border); }
-
-  .chat-bubble {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    border-top-left-radius: 3px;
-    padding: 10px 14px;
-    font-size: 13.5px;
-    color: var(--white);
-    max-width: 80%;
-    line-height: 1.6;
-  }
-  .chat-msg.user .chat-bubble {
-    background: var(--bg3);
-    border-color: var(--gold-border);
-    border-top-left-radius: 12px;
-    border-top-right-radius: 3px;
-    color: var(--gold-lt);
-  }
-
-  .chat-bubble .typing-dots {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    height: 16px;
-  }
-  .chat-bubble .typing-dots span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--muted);
-    animation: dot 1.4s infinite;
-  }
-  .chat-bubble .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .chat-bubble .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes dot {
-    0%, 60%, 100% { opacity: 0.3; transform: scale(1); }
-    30% { opacity: 1; transform: scale(1.2); }
-  }
-
-  .chat-input-area {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-  }
-
-  .chat-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 14px;
-    resize: none;
-    outline: none;
-    transition: var(--transition);
-    min-height: 46px;
-    max-height: 120px;
-  }
-  .chat-input:focus { border-color: var(--gold-border); }
-  .chat-input::placeholder { color: var(--muted2); }
-
-  .chat-send {
-    background: var(--gold);
-    color: #0d0f14;
-    border: none;
-    width: 46px;
-    height: 46px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    transition: var(--transition);
-    flex-shrink: 0;
-  }
-  .chat-send:hover { background: var(--gold-lt); }
-  .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .quick-prompts {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
-  .quick-prompt-btn {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 12px;
-    padding: 5px 12px;
-    border-radius: 100px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-family: var(--font-body);
-    white-space: nowrap;
-  }
-  .quick-prompt-btn:hover { border-color: var(--gold-border); color: var(--gold-lt); }
-
-  /* ── INTELLIGENCE GRID ── */
-  .intel-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-  }
-
-  @media (max-width: 900px) {
-    .intel-grid { grid-template-columns: 1fr 1fr; }
-  }
-
-  .intel-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 22px;
-    transition: var(--transition);
-  }
-  .intel-card:hover { border-color: var(--border-gold); }
-
-  .intel-card-icon {
-    font-size: 24px;
-    margin-bottom: 12px;
-  }
-
-  .intel-card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
-
-  .intel-card-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  /* ── VERTICALS ── */
-  .verticals-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-  }
-
-  .vertical-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-    display: block;
-  }
-  .vertical-card:hover { border-color: var(--gold-border); transform: translateY(-2px); }
-
-  .vertical-emoji {
-    font-size: 32px;
-    margin-bottom: 10px;
-    display: block;
-  }
-
-  .vertical-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 4px;
-  }
-
-  .vertical-apps {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  /* ── COMPLIANCE STRIP ── */
-  .compliance-strip {
-    background: linear-gradient(135deg, var(--bg2) 0%, rgba(26,30,41,0.8) 100%);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 40px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .compliance-strip-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 30px;
-    flex-wrap: wrap;
-  }
-
-  .compliance-badges {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .compliance-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 8px 14px;
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 500;
-  }
-  .compliance-badge .badge-icon { font-size: 16px; }
-
-  /* ── RISK MATRIX ── */
-  .risk-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
-  }
-
-  .risk-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    transition: var(--transition);
-  }
-  .risk-card:hover { border-color: var(--border-gold); }
-
-  .risk-level {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 100px;
-    margin-bottom: 10px;
-  }
-  .risk-level.low { background: rgba(62,166,106,0.1); color: #3ea66a; border: 1px solid rgba(62,166,106,0.2); }
-  .risk-level.medium { background: rgba(239,159,39,0.1); color: #ef9f27; border: 1px solid rgba(239,159,39,0.2); }
-  .risk-level.high { background: rgba(217,108,74,0.1); color: #d96c4a; border: 1px solid rgba(217,108,74,0.2); }
-  .risk-level.critical { background: rgba(226,75,74,0.1); color: #e24b4a; border: 1px solid rgba(226,75,74,0.2); }
-
-  .risk-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
-
-  .risk-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 12px;
-  }
-
-  .risk-action {
-    font-size: 12px;
-    color: var(--gold);
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    text-decoration: none;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-family: var(--font-body);
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    background: var(--bg2);
-    border-top: 1px solid var(--border);
-    padding: 50px 40px 30px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .footer-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-
-  .footer-top {
-    display: grid;
-    grid-template-columns: 2fr repeat(3, 1fr);
-    gap: 40px;
-    margin-bottom: 40px;
-  }
-
-  @media (max-width: 900px) {
-    .footer-top { grid-template-columns: 1fr 1fr; }
-  }
-
-  .footer-brand h3 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 8px;
-  }
-  .footer-brand p {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 16px;
-    max-width: 280px;
-  }
-
-  .footer-col h4 {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    font-weight: 600;
-    margin-bottom: 14px;
-  }
-  .footer-col ul { list-style: none; }
-  .footer-col ul li { margin-bottom: 8px; }
-  .footer-col ul li a {
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .footer-col ul li a:hover { color: var(--white); }
-
-  .footer-bottom {
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: gap;
-    gap: 16px;
-  }
-
-  .footer-bottom p {
-    font-size: 12px;
-    color: var(--muted2);
-  }
-
-  .gdpr-notice {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--muted2);
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: 100px;
-  }
-
-  /* ── COOKIE BANNER ── */
-  .cookie-banner {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    max-width: 600px;
-    background: var(--bg3);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius-lg);
-    padding: 20px 24px;
-    z-index: 1000;
-    box-shadow: var(--shadow);
-    display: none;
-    animation: slideUp 0.4s ease;
-  }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .cookie-banner.visible { display: block; }
-
-  .cookie-banner p {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 14px;
-    line-height: 1.6;
-  }
-  .cookie-banner p strong { color: var(--white); }
-
-  .cookie-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .cookie-accept {
-    background: var(--gold);
-    color: #0d0f14;
-    border: none;
-    padding: 8px 20px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .cookie-reject {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 8px 16px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .cookie-reject:hover { color: var(--white); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    nav { padding: 0 16px; }
-    .hero { padding: 60px 20px 50px; }
-    section { padding: 50px 20px; }
-    .apps-grid { grid-template-columns: 1fr; }
-    .playbooks-grid { grid-template-columns: 1fr; }
-    .intel-grid { grid-template-columns: 1fr; }
-    .nav-logo-text .tagline { display: none; }
-    footer { padding: 40px 20px 24px; }
-    .footer-top { grid-template-columns: 1fr; }
-    .advisor-section { padding: 24px; }
-    .hero-stats { gap: 24px; }
-  }
-
-  /* ── UTILITY ── */
-  .text-gold { color: var(--gold); }
-  .text-muted { color: var(--muted); }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
-  /* app card color theming */
-  .app-financial { --card-accent-dim: rgba(58,123,213,0.04); --card-border-hover: rgba(58,123,213,0.35); }
-  .app-financial .app-icon { background: rgba(58,123,213,0.12); }
-  .app-hotelops { --card-accent-dim: rgba(201,168,76,0.04); --card-border-hover: rgba(201,168,76,0.35); }
-  .app-hotelops .app-icon { background: rgba(201,168,76,0.12); }
-  .app-construction { --card-accent-dim: rgba(239,159,39,0.04); --card-border-hover: rgba(239,159,39,0.35); }
-  .app-construction .app-icon { background: rgba(239,159,39,0.12); }
-  .app-reo { --card-accent-dim: rgba(124,92,191,0.04); --card-border-hover: rgba(124,92,191,0.35); }
-  .app-reo .app-icon { background: rgba(124,92,191,0.12); }
-  .app-mortgage { --card-accent-dim: rgba(42,180,160,0.04); --card-border-hover: rgba(42,180,160,0.35); }
-  .app-mortgage .app-icon { background: rgba(42,180,160,0.12); }
-  .app-schools { --card-accent-dim: rgba(62,166,106,0.04); --card-border-hover: rgba(62,166,106,0.35); }
-  .app-schools .app-icon { background: rgba(62,166,106,0.12); }
-  .app-tax { --card-accent-dim: rgba(217,108,74,0.04); --card-border-hover: rgba(217,108,74,0.35); }
-  .app-tax .app-icon { background: rgba(217,108,74,0.12); }
-  .app-legal { --card-accent-dim: rgba(58,123,213,0.04); --card-border-hover: rgba(58,123,213,0.35); }
-  .app-legal .app-icon { background: rgba(99,82,165,0.12); }
-  .app-compliance { --card-accent-dim: rgba(42,180,160,0.04); --card-border-hover: rgba(42,180,160,0.35); }
-  .app-compliance .app-icon { background: rgba(42,180,160,0.12); }
-  .app-zerotrust { --card-accent-dim: rgba(226,75,74,0.04); --card-border-hover: rgba(226,75,74,0.35); }
-  .app-zerotrust .app-icon { background: rgba(226,75,74,0.1); }
-  .app-audit { --card-accent-dim: rgba(239,159,39,0.04); --card-border-hover: rgba(239,159,39,0.35); }
-  .app-audit .app-icon { background: rgba(239,159,39,0.12); }
+:root{
+  --bg:#060a08;--bg2:#0c1109;--bg3:#101510;--bg4:#151d14;--bg5:#1a2419;
+  --border:rgba(0,255,100,0.07);--border2:rgba(0,255,100,0.14);--border3:rgba(0,255,100,0.28);
+  --g:#00ff64;--g2:#00cc50;--g3:#008f38;--g4:#005a24;--gdim:rgba(0,255,100,0.1);--gdim2:rgba(0,255,100,0.05);
+  --gold:#f0c040;--golddim:rgba(240,192,64,0.12);--goldtext:#c89820;
+  --red:#ff4455;--reddim:rgba(255,68,85,0.1);--red2:rgba(255,68,85,0.06);
+  --amber:#ffaa00;--amberdim:rgba(255,170,0,0.1);
+  --blue:#00aaff;--bluedim:rgba(0,170,255,0.08);
+  --purple:#a855f7;--purpledim:rgba(168,85,247,0.1);
+  --teal:#00e5cc;--tealdim:rgba(0,229,204,0.08);
+  --text:#b8d8b8;--text2:#5a7a5a;--text3:#2e4a2e;--text4:#1a2e1a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.025) 3px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:9999}
+
+/* ── TOPBAR ── */
+.topbar{height:46px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;position:relative}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);opacity:.3}
+.tb-brand{display:flex;align-items:center;gap:10px;margin-right:20px}
+.tb-logo{width:30px;height:30px;border:1px solid rgba(168,85,247,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--purple);position:relative}
+.tb-logo::after{content:'';position:absolute;inset:2px;border:1px solid rgba(168,85,247,.2);border-radius:2px}
+.tb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.tb-name span{color:var(--purple)}
+.tb-sep{width:1px;height:20px;background:var(--border2);margin:0 12px;flex-shrink:0}
+.tb-pill{display:flex;align-items:center;gap:5px;padding:3px 9px;border:1px solid var(--border);border-radius:20px;font-size:9px;letter-spacing:.08em;color:var(--text2);margin-right:4px;white-space:nowrap}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dg{background:var(--g);box-shadow:0 0 5px var(--g)}.dr{background:var(--red);box-shadow:0 0 5px var(--red)}.da{background:var(--amber);box-shadow:0 0 4px var(--amber)}.dp{background:var(--purple);box-shadow:0 0 4px var(--purple)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.pls{animation:pulse 1.8s ease infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.ticker-wrap{flex:1;overflow:hidden;display:flex;align-items:center}
+.ticker{white-space:nowrap;font-size:9px;color:var(--text3);letter-spacing:.05em;animation:ticker 50s linear infinite}
+@keyframes ticker{from{transform:translateX(80%)}to{transform:translateX(-120%)}}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-time{font-size:11px;color:var(--text2);letter-spacing:.1em}
+.tb-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--border);border-radius:3px}
+.tb-av{width:24px;height:24px;border-radius:50%;background:var(--purpledim);border:1px solid rgba(168,85,247,.3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--purple);font-weight:700}
+.tb-un{font-size:11px;color:var(--text)}.tb-ur{font-size:9px;color:var(--text2);margin-top:1px}
+
+/* ── CONTEXT LOCK BAR ── */
+.ctx-lock{height:32px;background:rgba(0,255,100,0.04);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;position:relative;overflow:hidden}
+.ctx-lock::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g)}
+.ctx-label{font-size:8px;letter-spacing:.2em;color:var(--g3);text-transform:uppercase;margin-right:16px;flex-shrink:0}
+.ctx-item{display:flex;align-items:center;gap:5px;margin-right:18px;font-size:9px;color:var(--text2);white-space:nowrap}
+.ctx-item strong{color:var(--g);font-weight:500}
+.ctx-item.warn strong{color:var(--amber)}
+.ctx-item.err strong{color:var(--red)}
+.ctx-lock-badge{display:flex;align-items:center;gap:4px;padding:2px 8px;background:var(--gdim);border:1px solid var(--border2);border-radius:20px;font-size:8px;color:var(--g);letter-spacing:.1em;margin-left:auto;flex-shrink:0}
+.ctx-bleed-off{font-size:8px;color:var(--text3);letter-spacing:.06em;margin-right:14px}
+.ctx-bleed-off span{color:var(--red);font-weight:700}
+
+/* ── MAIN LAYOUT ── */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* ── LEFTNAV ── */
+.leftnav{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.nav-header{padding:10px 12px 6px;border-bottom:1px solid var(--border)}
+.nav-company{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--g);letter-spacing:.04em}
+.nav-role{font-size:8px;color:var(--text2);letter-spacing:.06em;margin-top:1px}
+.nav-scroll{overflow-y:auto;flex:1}
+.nav-scroll::-webkit-scrollbar{width:2px}
+.nav-scroll::-webkit-scrollbar-thumb{background:var(--border2)}
+.nav-gh{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 3px}
+.nav-gl{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-weight:500}
+.nav-gc{font-size:8px;color:var(--text3)}
+.ni{display:flex;align-items:center;gap:7px;padding:5px 12px 5px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .12s}
+.ni:hover{background:var(--bg3);border-left-color:var(--g3)}
+.ni.act{background:var(--gdim2);border-left-color:var(--purple)}
+.ni-d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ni-n{font-size:10px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ni.act .ni-n{color:var(--purple)}
+.ni-b{font-size:7px;padding:1px 5px;border-radius:2px;font-weight:500;flex-shrink:0}
+.bc{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.25)}
+.bw{background:var(--amberdim);color:var(--amber)}
+.bo{background:var(--gdim);color:var(--g2)}
+.bp{background:var(--purpledim);color:var(--purple)}
+
+.nav-sep{height:1px;background:var(--border);margin:6px 12px}
+
+/* Office section */
+.om-card{margin:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:7px 9px;cursor:pointer;transition:border-color .12s}
+.om-card:hover{border-color:rgba(168,85,247,.3)}
+.om-card.warn{border-left:2px solid var(--amber)}
+.om-card.crit{border-left:2px solid var(--red)}
+.om-card.ok{border-left:2px solid var(--g3)}
+.om-name{font-size:9px;color:var(--text);margin-bottom:3px}
+.om-stats{display:flex;gap:8px}
+.om-stat{font-size:8px;color:var(--text3)}
+.om-stat span{color:var(--amber)}
+.om-stat span.ok{color:var(--g2)}
+.om-stat span.cr{color:var(--red)}
+
+/* ── CENTER ── */
+.center{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.tab-bar{height:36px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 14px;gap:1px;flex-shrink:0;overflow-x:auto}
+.tab-bar::-webkit-scrollbar{height:0}
+.tab{padding:6px 14px;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--text2)}
+.tab.act{color:var(--purple);border-bottom-color:var(--purple)}
+.content{flex:1;overflow-y:auto;padding:14px}
+.content::-webkit-scrollbar{width:3px}
+.content::-webkit-scrollbar-thumb{background:var(--border2)}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px 12px;transition:border-color .15s}
+.kpi:hover{border-color:var(--border2)}
+.kpi-v{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-l{font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--text2)}
+.kpi-s{font-size:8px;margin-top:3px;color:var(--text3)}
+.pbar{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:4px}
+.pbar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.pbar-g{background:var(--g)}.pbar-r{background:var(--red)}.pbar-a{background:var(--amber)}.pbar-p{background:var(--purple)}
+.vg{color:var(--g)}.vr{color:var(--red)}.va{color:var(--amber)}.vb{color:var(--blue)}.vp{color:var(--purple)}.vt{color:var(--teal)}
+
+/* ── PULL PACK ROW ── */
+.pack-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.pack-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--bg2);border:1px solid rgba(168,85,247,.2);border-radius:3px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--purple);letter-spacing:.08em;text-transform:uppercase;transition:all .15s;flex-shrink:0}
+.pack-btn:hover{background:var(--purpledim);border-color:var(--purple);transform:translateY(-1px)}
+.pack-btn.running{opacity:.6;cursor:not-allowed}
+.pack-icon{font-size:11px}
+
+/* ── PANELS ── */
+.dg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.dg3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:11px 13px}
+.strat-panel{background:linear-gradient(135deg,rgba(168,85,247,.04),rgba(0,229,204,.02));border:1px solid rgba(168,85,247,.15);border-radius:4px;padding:11px 13px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.st{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--text2)}
+.st::before{content:'◈ ';font-size:6px;color:var(--purple)}
+.sa{font-size:9px;color:var(--text3);cursor:pointer;letter-spacing:.06em;transition:color .12s}
+.sa:hover{color:var(--purple)}
+
+/* ── SIGNALS ── */
+.sig{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(168,85,247,.08)}
+.sig:last-child{border-bottom:none}
+.sig-icon{font-size:12px;flex-shrink:0;margin-top:1px}
+.sig-body{flex:1}
+.sig-title{font-size:10px;color:var(--text);margin-bottom:2px}
+.sig-sub{font-size:9px;color:var(--text2);line-height:1.4}
+.sig-src{font-size:8px;color:var(--text3);margin-top:2px;letter-spacing:.04em}
+.sig-badge{font-size:7px;padding:2px 6px;border-radius:2px;flex-shrink:0;margin-top:2px;letter-spacing:.06em}
+.sb-urg{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.25)}
+.sb-hi{background:var(--amberdim);color:var(--amber)}
+.sb-med{background:var(--purpledim);color:var(--purple)}
+.sb-inf{background:var(--tealdim);color:var(--teal)}
+
+/* ── OFFICE SUMMARIES ── */
+.om-summary{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:9px 11px;margin-bottom:6px}
+.om-summary:last-child{margin-bottom:0}
+.om-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.om-nm{font-size:10px;color:var(--text);font-weight:500}
+.om-updated{font-size:8px;color:var(--text3)}
+.om-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
+.om-metric{text-align:center}
+.om-metric-v{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.om-metric-l{font-size:7px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.om-issues{font-size:9px;color:var(--text2);line-height:1.5;padding-top:5px;border-top:1px solid var(--border)}
+
+/* ── AI OUTPUT ── */
+.ai-out{background:var(--bg3);border:1px solid rgba(168,85,247,.15);border-left:2px solid var(--purple);border-radius:3px;padding:11px;font-size:10px;line-height:1.7;color:var(--text);white-space:pre-wrap;display:none;margin-top:8px}
+.ai-out.show{display:block}
+.ai-err{background:var(--reddim);border:1px solid rgba(255,68,85,.25);border-radius:3px;padding:9px;font-size:10px;color:var(--red);display:none;margin-top:8px}
+.ai-err.show{display:block}
+.thinking-bar{display:none;align-items:center;gap:8px;padding:8px 10px;background:var(--purpledim);border:1px solid rgba(168,85,247,.2);border-radius:3px;margin-top:8px;font-size:9px;color:var(--purple)}
+.thinking-bar.show{display:flex}
+.think-spin{width:12px;height:12px;border:1.5px solid rgba(168,85,247,.3);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite;flex-shrink:0}
+
+/* ── BUTTONS ── */
+.btn{padding:7px 14px;font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;transition:all .12s;border:none}
+.btn-strat{background:var(--purpledim);border:1px solid rgba(168,85,247,.35);color:var(--purple)}.btn-strat:hover{background:rgba(168,85,247,.2);border-color:var(--purple)}.btn-strat:disabled{opacity:.35;cursor:not-allowed}
+.btn-p{background:var(--g);color:var(--bg);font-weight:700}.btn-p:hover{background:var(--g2)}.btn-p:disabled{opacity:.4;cursor:not-allowed}
+.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-o:hover{border-color:var(--g3);color:var(--g)}.btn-o:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── FORMS ── */
+.fl{font-size:9px;color:var(--text2);margin-bottom:5px;letter-spacing:.06em}
+.fsel,.finp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);outline:none}
+.fsel:focus,.finp:focus{border-color:rgba(168,85,247,.4)}
+.ftxt{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:8px 10px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);resize:vertical;min-height:65px;outline:none;line-height:1.6}
+.ftxt:focus{border-color:rgba(168,85,247,.4)}
+
+/* ── TABLE ── */
+.rtable{width:100%;border-collapse:collapse;font-size:10px}
+.rtable th{text-align:left;padding:5px 8px;color:var(--text2);font-weight:400;font-size:8px;letter-spacing:.12em;border-bottom:1px solid var(--border2)}
+.rtable td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text)}
+.rtable tr:last-child td{border-bottom:none}
+.rtable tr:hover td{background:var(--bg3)}
+
+/* ── STATUS BAR ── */
+.sbar{height:20px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:14px;flex-shrink:0}
+.si{font-size:8px;color:var(--text3);letter-spacing:.06em;display:flex;align-items:center;gap:3px}
+
+/* ── NEURAL STREAM ── */
+.neural-stream{background:var(--bg3);border:1px solid rgba(168,85,247,.12);border-radius:3px;padding:8px 10px;font-size:9px;color:rgba(168,85,247,.6);line-height:1.7;max-height:140px;overflow-y:auto}
+.neural-stream::-webkit-scrollbar{width:2px}
+.neural-stream::-webkit-scrollbar-thumb{background:rgba(168,85,247,.2)}
+.ns-line.done{color:var(--text3)}
+.ns-line.active{color:var(--purple)}
+
+/* ── MEMORY CARD ── */
+.memory-card{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:9px 11px;margin-bottom:6px}
+.mem-hdr{font-size:9px;color:var(--purple);margin-bottom:5px;letter-spacing:.06em}
+.mem-item{font-size:9px;color:var(--text2);padding:2px 0;display:flex;gap:5px}
+.mem-item::before{content:'▸';color:var(--text3);flex-shrink:0}
+.mem-win{color:var(--g2)}
+.mem-issue{color:var(--amber)}
+.mem-constraint{color:var(--text3)}
+
+/* ── QUICK ASKS ── */
+.qa-grid{display:flex;flex-wrap:wrap;gap:5px}
+.qa-btn{font-size:8px;padding:4px 9px;background:transparent;border:1px solid rgba(168,85,247,.2);border-radius:2px;color:rgba(168,85,247,.7);cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;transition:all .12s}
+.qa-btn:hover{background:var(--purpledim);border-color:var(--purple);color:var(--purple)}
+
+/* ── ANIMATIONS ── */
+@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fi .2s ease both}
 </style>
-<script>window.showTab = function(id, el) {document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
+</head>
 <body>
 
-<!-- EU-Friendly GDPR Cookie Banner -->
-<div class="cookie-banner visible" id="cookieBanner" role="dialog" aria-labelledby="cookieTitle" aria-describedby="cookieDesc">
-  <p id="cookieDesc"><strong id="cookieTitle">Your Privacy Matters</strong> — We use essential cookies to keep Sovereign Strategist operational. No tracking cookies, no advertising profiles. We comply with GDPR, ePrivacy Directive, and CCPA. <a href="#privacy" style="color: var(--gold);">Read our Privacy Policy</a></p>
-  <div class="cookie-actions">
-    <button class="cookie-accept" onclick="closeCookie()">Accept Essential</button>
-    <button class="cookie-reject" onclick="closeCookie()">Decline Optional</button>
-  </div>
-</div>
-
-<!-- Top Banner -->
-<div class="top-banner" role="banner">
-  <span>🟢</span> All 11 Core Apps — LIVE &amp; GREEN
-  <span>|</span> Sovereign Strategist v3.0
-  <span>|</span> EU GDPR Compliant
-  <span>|</span> SOC 2 Type II Ready
-</div>
-
-<!-- Navigation -->
-<nav role="navigation" aria-label="Main navigation">
-  <a href="/" class="nav-logo" aria-label="Sovereign Strategist home">
-    <div class="nav-logo-mark" aria-hidden="true">S²</div>
-    <div class="nav-logo-text">
-      <span class="name">Sovereign Strategist</span>
-      <span class="tagline">The Ultimate Consultant</span>
-    </div>
-  </a>
-
-  <button class="nav-apps-btn" onclick="toggleAppsMenu()" aria-expanded="false" aria-controls="appsDropdown" id="appsBtn">
-    <span class="dot" aria-hidden="true"></span>
-    Core Apps Suite ▾
-  </button>
-
-  <a href="#advisor" class="nav-cta">AI Advisor →</a>
-</nav>
-
-<!-- Apps Mega Menu -->
-<div class="apps-dropdown" id="appsDropdown" role="menu" aria-label="Core applications">
-  <div class="apps-dropdown-grid">
-    <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(58,123,213,0.12);">💰</div>
-      <div><div class="app-name-sm">Financial</div><div class="app-url-sm">financial.tsmatter.com</div></div>
-    </a>
-    <a href="https://hotelops.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(201,168,76,0.12);">🏨</div>
-      <div><div class="app-name-sm">Hotel Ops</div><div class="app-url-sm">hotelops.tsmatter.com</div></div>
-    </a>
-    <a href="https://construction.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(239,159,39,0.12);">🏗️</div>
-      <div><div class="app-name-sm">Construction</div><div class="app-url-sm">construction.tsmatter.com</div></div>
-    </a>
-    <a href="https://reo-pro.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(124,92,191,0.12);">🏢</div>
-      <div><div class="app-name-sm">REO Pro</div><div class="app-url-sm">reo-pro.tsmatter.com</div></div>
-    </a>
-    <a href="https://mortgage.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(42,180,160,0.12);">🏦</div>
-      <div><div class="app-name-sm">Mortgage</div><div class="app-url-sm">mortgage.tsmatter.com</div></div>
-    </a>
-    <a href="https://schools.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(62,166,106,0.12);">🎓</div>
-      <div><div class="app-name-sm">Schools</div><div class="app-url-sm">schools.tsmatter.com</div></div>
-    </a>
-    <a href="https://tax.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(217,108,74,0.12);">📊</div>
-      <div><div class="app-name-sm">Tax</div><div class="app-url-sm">tax.tsmatter.com</div></div>
-    </a>
-    <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(99,82,165,0.12);">⚖️</div>
-      <div><div class="app-name-sm">Legal</div><div class="app-url-sm">legal.tsmatter.com</div></div>
-    </a>
-    <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(42,180,160,0.12);">✅</div>
-      <div><div class="app-name-sm">Compliance</div><div class="app-url-sm">compliance.tsmatter.com</div></div>
-    </a>
-    <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(226,75,74,0.1);">🔐</div>
-      <div><div class="app-name-sm">Zero Trust</div><div class="app-url-sm">zero-trust.tsmatter.com</div></div>
-    </a>
-    <a href="https://auditops.tsmatter.com" target="_blank" rel="noopener" class="dropdown-app-link" role="menuitem">
-      <div class="app-icon-sm" style="background: rgba(239,159,39,0.12);">🔍</div>
-      <div><div class="app-name-sm">Audit Ops</div><div class="app-url-sm">auditops.tsmatter.com</div></div>
-    </a>
-    <a href="#playbooks" class="dropdown-app-link" role="menuitem" style="border-color: var(--gold-border);">
-      <div class="app-icon-sm" style="background: var(--gold-dim);">🗺️</div>
-      <div><div class="app-name-sm" style="color: var(--gold);">All Playbooks</div><div class="app-url-sm">Cross-app workflows</div></div>
-    </a>
-  </div>
-</div>
-
-<!-- HERO -->
-<header class="hero" role="banner">
-  <div class="hero-badge" aria-label="Live status indicator">
-    <span aria-hidden="true">✦</span> 11 Core Apps • All Systems Green
-  </div>
-  <h1>Your <em>Sovereign</em> Business<br>Intelligence Hub</h1>
-  <p class="hero-sub">Strategic counsel across every domain — finance, law, compliance, real estate, hospitality, construction, education, tax, security, and audit. One platform. Total clarity.</p>
-  <div class="hero-actions">
-    <a href="#advisor" class="btn-primary">
-      <span aria-hidden="true">💬</span> Ask the Strategist
-    </a>
-    <a href="#apps" class="btn-secondary">
-      <span aria-hidden="true">⚡</span> Launch a Core App
-    </a>
-    <a href="#playbooks" class="btn-secondary">
-      <span aria-hidden="true">🗺️</span> View Playbooks
-    </a>
-  </div>
-  <div class="hero-stats" role="list">
-    <div class="stat-item" role="listitem">
-      <span class="stat-num">11</span>
-      <span class="stat-label">Core Apps</span>
-    </div>
-    <div class="stat-item" role="listitem">
-      <span class="stat-num">8</span>
-      <span class="stat-label">Playbooks</span>
-    </div>
-    <div class="stat-item" role="listitem">
-      <span class="stat-num">360°</span>
-      <span class="stat-label">Business Coverage</span>
-    </div>
-    <div class="stat-item" role="listitem">
-      <span class="stat-num">GDPR</span>
-      <span class="stat-label">EU Compliant</span>
-    </div>
-  </div>
-</header>
-
-<div class="section-divider"></div>
-
-<!-- CORE APP SUITE -->
-<section id="apps" aria-labelledby="apps-title">
-  <div class="section-label">Core App Suite</div>
-  <h2 class="section-title" id="apps-title">All <em>Eleven</em> Platforms, One Command Center</h2>
-  <p class="section-desc">Each app is purpose-built for its domain and deeply cross-connected through Sovereign Strategist's intelligence layer. Click any app to launch it directly.</p>
-
-  <div class="apps-grid" role="list">
-
-    <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="app-card app-financial" role="listitem" aria-label="Launch Financial Management app">
-      <div class="app-card-header">
-        <div class="app-icon">💰</div>
-        <div class="app-status" aria-label="System online"><span class="pulse" aria-hidden="true"></span> Live</div>
-      </div>
-      <div class="app-name">Financial Management</div>
-      <div class="app-desc">P&L tracking, cash flow forecasting, budget management, investor reporting, and multi-entity consolidation.</div>
-      <div class="app-tags">
-        <span class="tag">Cash Flow</span>
-        <span class="tag">P&L</span>
-        <span class="tag">Budgeting</span>
-        <span class="tag">Forecasting</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">financial.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://hotelops.tsmatter.com" target="_blank" rel="noopener" class="app-card app-hotelops" role="listitem" aria-label="Launch Hotel Operations app">
-      <div class="app-card-header">
-        <div class="app-icon">🏨</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Hotel Operations</div>
-      <div class="app-desc">Property management, reservations, RevPAR optimization, staff scheduling, housekeeping, and guest experience.</div>
-      <div class="app-tags">
-        <span class="tag">PMS</span>
-        <span class="tag">RevPAR</span>
-        <span class="tag">Reservations</span>
-        <span class="tag">Housekeeping</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">hotelops.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://construction.tsmatter.com" target="_blank" rel="noopener" class="app-card app-construction" role="listitem" aria-label="Launch Construction Management app">
-      <div class="app-card-header">
-        <div class="app-icon">🏗️</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Construction Management</div>
-      <div class="app-desc">Project scheduling, bid management, subcontractor tracking, material procurement, and change order control.</div>
-      <div class="app-tags">
-        <span class="tag">Projects</span>
-        <span class="tag">Bids</span>
-        <span class="tag">Scheduling</span>
-        <span class="tag">RFIs</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">construction.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://reo-pro.tsmatter.com" target="_blank" rel="noopener" class="app-card app-reo" role="listitem" aria-label="Launch REO Pro app">
-      <div class="app-card-header">
-        <div class="app-icon">🏢</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">REO Pro</div>
-      <div class="app-desc">Real estate operations, property listings, deal pipeline, asset disposition, portfolio analytics, and REO management.</div>
-      <div class="app-tags">
-        <span class="tag">Listings</span>
-        <span class="tag">Pipeline</span>
-        <span class="tag">Portfolio</span>
-        <span class="tag">REO</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">reo-pro.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://mortgage.tsmatter.com" target="_blank" rel="noopener" class="app-card app-mortgage" role="listitem" aria-label="Launch Mortgage Processing app">
-      <div class="app-card-header">
-        <div class="app-icon">🏦</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Mortgage Processing</div>
-      <div class="app-desc">Loan origination, underwriting workflows, document collection, rate locking, and RESPA/TILA compliance tracking.</div>
-      <div class="app-tags">
-        <span class="tag">Origination</span>
-        <span class="tag">Underwriting</span>
-        <span class="tag">RESPA</span>
-        <span class="tag">Closing</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">mortgage.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://schools.tsmatter.com" target="_blank" rel="noopener" class="app-card app-schools" role="listitem" aria-label="Launch Schools Administration app">
-      <div class="app-card-header">
-        <div class="app-icon">🎓</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">School Administration</div>
-      <div class="app-desc">Enrollment management, staff HR, curriculum tracking, parent communications, grants, and accreditation compliance.</div>
-      <div class="app-tags">
-        <span class="tag">Enrollment</span>
-        <span class="tag">HR</span>
-        <span class="tag">Curriculum</span>
-        <span class="tag">Grants</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">schools.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://tax.tsmatter.com" target="_blank" rel="noopener" class="app-card app-tax" role="listitem" aria-label="Launch Tax Management app">
-      <div class="app-card-header">
-        <div class="app-icon">📊</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Tax Management</div>
-      <div class="app-desc">Multi-jurisdictional tax planning, entity structuring, estimated payments, depreciation, and IRS correspondence.</div>
-      <div class="app-tags">
-        <span class="tag">Planning</span>
-        <span class="tag">Multi-Entity</span>
-        <span class="tag">IRS</span>
-        <span class="tag">Depreciation</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">tax.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="app-card app-legal" role="listitem" aria-label="Launch Legal Operations app">
-      <div class="app-card-header">
-        <div class="app-icon">⚖️</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Legal Operations</div>
-      <div class="app-desc">Contract lifecycle, matter management, outside counsel oversight, entity formation, and litigation tracking.</div>
-      <div class="app-tags">
-        <span class="tag">Contracts</span>
-        <span class="tag">Matters</span>
-        <span class="tag">Entities</span>
-        <span class="tag">Litigation</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">legal.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="app-card app-compliance" role="listitem" aria-label="Launch Compliance Management app">
-      <div class="app-card-header">
-        <div class="app-icon">✅</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Compliance Management</div>
-      <div class="app-desc">Regulatory monitoring, policy management, training tracking, incident response, and cross-framework gap analysis.</div>
-      <div class="app-tags">
-        <span class="tag">GDPR</span>
-        <span class="tag">SOC 2</span>
-        <span class="tag">Policies</span>
-        <span class="tag">Incidents</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">compliance.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="app-card app-zerotrust" role="listitem" aria-label="Launch Zero Trust Security app">
-      <div class="app-card-header">
-        <div class="app-icon">🔐</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Zero Trust Security</div>
-      <div class="app-desc">Identity verification, least-privilege access, micro-segmentation, threat detection, and continuous authorization enforcement.</div>
-      <div class="app-tags">
-        <span class="tag">Identity</span>
-        <span class="tag">Access</span>
-        <span class="tag">Threat Intel</span>
-        <span class="tag">MFA</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">zero-trust.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-    <a href="https://auditops.tsmatter.com" target="_blank" rel="noopener" class="app-card app-audit" role="listitem" aria-label="Launch Audit Ops app">
-      <div class="app-card-header">
-        <div class="app-icon">🔍</div>
-        <div class="app-status"><span class="pulse"></span> Live</div>
-      </div>
-      <div class="app-name">Audit Operations</div>
-      <div class="app-desc">Internal audit planning, fieldwork documentation, finding management, control testing, and board-ready reporting.</div>
-      <div class="app-tags">
-        <span class="tag">Internal Audit</span>
-        <span class="tag">Controls</span>
-        <span class="tag">Findings</span>
-        <span class="tag">Reporting</span>
-      </div>
-      <div class="app-launch">
-        <span class="app-url">auditops.tsmatter.com</span>
-        <span class="launch-btn">Launch →</span>
-      </div>
-    </a>
-
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- STRATEGIC PLAYBOOKS -->
-<section id="playbooks" aria-labelledby="playbooks-title">
-  <div class="section-label">Strategic Playbooks</div>
-  <h2 class="section-title" id="playbooks-title">Cross-App <em>Workflows</em> for Every Scenario</h2>
-  <p class="section-desc">Proven, multi-platform workflows that pull the right apps together automatically. Select a playbook to launch the full strategic sequence.</p>
-
-  <div class="playbooks-grid" role="list">
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('new-business')">
-      <div class="playbook-number" aria-hidden="true">01</div>
-      <div class="playbook-icon" aria-hidden="true">🚀</div>
-      <div class="playbook-title">New Business Launch</div>
-      <div class="playbook-desc">End-to-end entity formation, legal structuring, tax ID registration, banking setup, compliance framework, and security baseline.</div>
-      <div class="playbook-apps">
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-        <a href="https://tax.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Tax</a>
-        <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Financial</a>
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-        <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Zero Trust</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">5 Apps · 12 Steps</span>
-        <button class="playbook-run" aria-label="Run New Business Launch playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('re-deal')">
-      <div class="playbook-number" aria-hidden="true">02</div>
-      <div class="playbook-icon" aria-hidden="true">🏘️</div>
-      <div class="playbook-title">Real Estate Deal Flow</div>
-      <div class="playbook-desc">From property identification through mortgage processing, legal due diligence, tax strategy, and financial close.</div>
-      <div class="playbook-apps">
-        <a href="https://reo-pro.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">REO Pro</a>
-        <a href="https://mortgage.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Mortgage</a>
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-        <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Financial</a>
-        <a href="https://tax.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Tax</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">5 Apps · 9 Steps</span>
-        <button class="playbook-run" aria-label="Run Real Estate Deal Flow playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('hotel-expansion')">
-      <div class="playbook-number" aria-hidden="true">03</div>
-      <div class="playbook-icon" aria-hidden="true">🌍</div>
-      <div class="playbook-title">Hotel Portfolio Expansion</div>
-      <div class="playbook-desc">Acquisition, construction oversight, operational setup, legal entity structure, licensing, and ongoing financial monitoring.</div>
-      <div class="playbook-apps">
-        <a href="https://hotelops.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Hotel Ops</a>
-        <a href="https://construction.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Construction</a>
-        <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Financial</a>
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">5 Apps · 14 Steps</span>
-        <button class="playbook-run" aria-label="Run Hotel Portfolio Expansion playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('tax-season')">
-      <div class="playbook-number" aria-hidden="true">04</div>
-      <div class="playbook-icon" aria-hidden="true">📋</div>
-      <div class="playbook-title">Tax Season Readiness</div>
-      <div class="playbook-desc">Year-end financial close, depreciation schedules, entity K-1 prep, audit trail verification, and filing coordination.</div>
-      <div class="playbook-apps">
-        <a href="https://tax.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Tax</a>
-        <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Financial</a>
-        <a href="https://auditops.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Audit Ops</a>
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">4 Apps · 8 Steps</span>
-        <button class="playbook-run" aria-label="Run Tax Season Readiness playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('compliance-audit')">
-      <div class="playbook-number" aria-hidden="true">05</div>
-      <div class="playbook-icon" aria-hidden="true">🛡️</div>
-      <div class="playbook-title">Compliance Audit Cycle</div>
-      <div class="playbook-desc">Full-cycle internal audit: scoping, control testing, findings documentation, remediation tracking, and executive reporting.</div>
-      <div class="playbook-apps">
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-        <a href="https://auditops.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Audit Ops</a>
-        <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Zero Trust</a>
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">4 Apps · 10 Steps</span>
-        <button class="playbook-run" aria-label="Run Compliance Audit Cycle playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('school-year')">
-      <div class="playbook-number" aria-hidden="true">06</div>
-      <div class="playbook-icon" aria-hidden="true">📚</div>
-      <div class="playbook-title">School Year Planning</div>
-      <div class="playbook-desc">Enrollment campaigns, staffing budgets, grant applications, policy updates, accreditation prep, and parent engagement.</div>
-      <div class="playbook-apps">
-        <a href="https://schools.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Schools</a>
-        <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Financial</a>
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-        <a href="https://hr.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">HR</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">4 Apps · 11 Steps</span>
-        <button class="playbook-run" aria-label="Run School Year Planning playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('construction-project')">
-      <div class="playbook-number" aria-hidden="true">07</div>
-      <div class="playbook-icon" aria-hidden="true">🔨</div>
-      <div class="playbook-title">Construction Project Launch</div>
-      <div class="playbook-desc">Permits, contract formation, subcontractor onboarding, budget setup, bonding, insurance verification, and lien management.</div>
-      <div class="playbook-apps">
-        <a href="https://construction.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Construction</a>
-        <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Financial</a>
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">4 Apps · 9 Steps</span>
-        <button class="playbook-run" aria-label="Run Construction Project Launch playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-    <div class="playbook-card" role="listitem" onclick="runPlaybook('security-assessment')">
-      <div class="playbook-number" aria-hidden="true">08</div>
-      <div class="playbook-icon" aria-hidden="true">🔒</div>
-      <div class="playbook-title">Enterprise Security Assessment</div>
-      <div class="playbook-desc">Access review, threat modeling, vendor risk assessment, incident response planning, and zero-trust architecture review.</div>
-      <div class="playbook-apps">
-        <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Zero Trust</a>
-        <a href="https://auditops.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Audit Ops</a>
-        <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Compliance</a>
-        <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="playbook-app-chip" onclick="event.stopPropagation()">Legal</a>
-      </div>
-      <div class="playbook-footer">
-        <span class="playbook-steps">4 Apps · 7 Steps</span>
-        <button class="playbook-run" aria-label="Run Enterprise Security Assessment playbook">Run Playbook →</button>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- AI STRATEGIST ADVISOR -->
-<section id="advisor" aria-labelledby="advisor-title">
-  <div class="section-label">AI Strategy Advisor</div>
-  <h2 class="section-title" id="advisor-title">Ask <em>Anything</em>. Get Board-Level Counsel.</h2>
-  <p class="section-desc">Your AI advisor has full context of all 11 platforms and their strategic interactions. Ask about risk, growth, compliance, M&A, tax structuring, or operational decisions.</p>
-
-  <div class="advisor-section" role="complementary">
-    <div class="advisor-header">
-      <div class="advisor-avatar" aria-hidden="true">S</div>
-      <div class="advisor-info">
-        <h3>Sovereign Advisor</h3>
-        <p><span class="online">● Online</span> &nbsp;Powered by Claude · Context-aware across all platforms</p>
-      </div>
-    </div>
-
-    <div class="quick-prompts" role="group" aria-label="Quick prompt suggestions">
-      <button class="quick-prompt-btn" onclick="sendQuickPrompt('What are the biggest compliance risks I should address across my platforms?')">Compliance risks</button>
-      <button class="quick-prompt-btn" onclick="sendQuickPrompt('How should I structure a new entity for tax efficiency?')">Entity structuring</button>
-      <button class="quick-prompt-btn" onclick="sendQuickPrompt('What does a hotel acquisition due diligence checklist look like?')">Hotel M&A</button>
-      <button class="quick-prompt-btn" onclick="sendQuickPrompt('How do I prepare for a SOC 2 Type II audit?')">SOC 2 prep</button>
-      <button class="quick-prompt-btn" onclick="sendQuickPrompt('What zero-trust controls should I prioritize first?')">Zero trust roadmap</button>
-      <button class="quick-prompt-btn" onclick="sendQuickPrompt('What is the optimal holding company structure for a real estate portfolio?')">RE structure</button>
-    </div>
-
-    <div class="chat-window" id="chatWindow" role="log" aria-live="polite" aria-label="Advisor conversation">
-      <div class="chat-msg">
-        <div class="chat-avatar" aria-hidden="true">S</div>
-        <div class="chat-bubble">
-          Good day. I'm your Sovereign Strategist — an AI advisor with full context of your 11-platform business intelligence suite. I can reason across financial, legal, compliance, real estate, hospitality, construction, education, tax, security, and audit domains simultaneously.<br><br>
-          What strategic challenge can I help you navigate today?
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-input-area">
-      <textarea class="chat-input" id="chatInput" placeholder="Ask a strategic question across any or all of your platforms..." rows="1" aria-label="Type your question" onkeydown="handleChatKey(event)"></textarea>
-      <button class="chat-send" id="sendBtn" onclick="sendMessage()" aria-label="Send message">➤</button>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- INTELLIGENCE CAPABILITIES -->
-<section aria-labelledby="intel-title">
-  <div class="section-label">Intelligence Capabilities</div>
-  <h2 class="section-title" id="intel-title">What the <em>Strategist</em> Knows</h2>
-  <p class="section-desc">Built-in analytical frameworks that cut across all platforms to surface the insights that matter most.</p>
-
-  <div class="intel-grid" role="list">
-    <div class="intel-card" role="listitem">
-      <div class="intel-card-icon" aria-hidden="true">📈</div>
-      <div class="intel-card-title">Cross-Platform Financial Visibility</div>
-      <div class="intel-card-desc">Consolidate P&L from Hotel Ops, Construction, REO Pro, and Financial into a single executive view with tax impact modeling.</div>
-    </div>
-    <div class="intel-card" role="listitem">
-      <div class="intel-card-icon" aria-hidden="true">⚖️</div>
-      <div class="intel-card-title">Legal & Compliance Alignment</div>
-      <div class="intel-card-desc">Automatically surfaces Legal obligations triggered by Compliance findings, and links them to audit evidence in Audit Ops.</div>
-    </div>
-    <div class="intel-card" role="listitem">
-      <div class="intel-card-icon" aria-hidden="true">🔐</div>
-      <div class="intel-card-title">Security-Aware Operations</div>
-      <div class="intel-card-desc">Zero Trust policies informed by Compliance gaps and Audit findings, creating a closed-loop security management cycle.</div>
-    </div>
-    <div class="intel-card" role="listitem">
-      <div class="intel-card-icon" aria-hidden="true">🏗️</div>
-      <div class="intel-card-title">Project-to-Portfolio Intelligence</div>
-      <div class="intel-card-desc">Construction projects feed REO Pro's portfolio analytics and trigger Financial budget variance alerts in real time.</div>
-    </div>
-    <div class="intel-card" role="listitem">
-      <div class="intel-card-icon" aria-hidden="true">🎯</div>
-      <div class="intel-card-title">Tax-Optimized Deal Structuring</div>
-      <div class="intel-card-desc">Every Mortgage and REO deal is evaluated through Tax's depreciation and entity structuring lens before execution.</div>
-    </div>
-    <div class="intel-card" role="listitem">
-      <div class="intel-card-icon" aria-hidden="true">🌐</div>
-      <div class="intel-card-title">Regulatory Change Management</div>
-      <div class="intel-card-desc">Compliance monitors regulatory updates and automatically pushes impact assessments to Legal, Tax, and Audit Ops.</div>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
-
-<!-- BUSINESS VERTICALS -->
-<section aria-labelledby="verticals-title">
-  <div class="section-label">Industry Verticals</div>
-  <h2 class="section-title" id="verticals-title">Navigate by <em>Industry</em></h2>
-  <p class="section-desc">Every sector has its own compliance landscape, financial model, and operational rhythm. Jump directly to the apps that matter most for your industry.</p>
-
-  <div class="verticals-grid" role="list">
-    <a href="https://reo-pro.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">🏢</span>
-      <div class="vertical-name">Real Estate</div>
-      <div class="vertical-apps">REO Pro · Mortgage · Financial · Legal · Tax</div>
-    </a>
-    <a href="https://hotelops.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">🏨</span>
-      <div class="vertical-name">Hospitality</div>
-      <div class="vertical-apps">Hotel Ops · Financial · Compliance · Tax</div>
-    </a>
-    <a href="https://construction.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">🏗️</span>
-      <div class="vertical-name">Construction</div>
-      <div class="vertical-apps">Construction · Financial · Legal · Compliance</div>
-    </a>
-    <a href="https://schools.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">🎓</span>
-      <div class="vertical-name">Education</div>
-      <div class="vertical-apps">Schools · Financial · Legal · Compliance</div>
-    </a>
-    <a href="https://financial.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">💼</span>
-      <div class="vertical-name">Financial Services</div>
-      <div class="vertical-apps">Financial · Mortgage · Compliance · Audit Ops</div>
-    </a>
-    <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">🏛️</span>
-      <div class="vertical-name">Government / Nonprofit</div>
-      <div class="vertical-apps">Compliance · Audit Ops · Legal · Financial</div>
-    </a>
-    <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">💻</span>
-      <div class="vertical-name">Technology</div>
-      <div class="vertical-apps">Zero Trust · Compliance · Legal · Financial</div>
-    </a>
-    <a href="https://legal.tsmatter.com" target="_blank" rel="noopener" class="vertical-card" role="listitem">
-      <span class="vertical-emoji" aria-hidden="true">⚖️</span>
-      <div class="vertical-name">Professional Services</div>
-      <div class="vertical-apps">Legal · Compliance · Tax · Financial</div>
-    </a>
-  </div>
-</section>
-
-<!-- COMPLIANCE STRIP -->
-<div class="compliance-strip" role="region" aria-label="Compliance and certification information">
-  <div class="compliance-strip-inner">
+<!-- ══ TOPBAR ══ -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">◈</div>
     <div>
-      <div class="section-label" style="margin-bottom: 6px;">Trust &amp; Compliance</div>
-      <p style="font-size: 14px; color: var(--muted); max-width: 400px; font-weight: 300;">Sovereign Strategist and all Core Apps operate under enterprise-grade compliance standards designed for global operations.</p>
+      <div class="tb-name"><span>HC</span> STRATEGIST</div>
     </div>
-    <div class="compliance-badges" role="list">
-      <div class="compliance-badge" role="listitem"><span class="badge-icon" aria-hidden="true">🇪🇺</span> GDPR Article 6 Compliant</div>
-      <div class="compliance-badge" role="listitem"><span class="badge-icon" aria-hidden="true">🔒</span> SOC 2 Type II Ready</div>
-      <div class="compliance-badge" role="listitem"><span class="badge-icon" aria-hidden="true">🛡️</span> ISO 27001 Aligned</div>
-      <div class="compliance-badge" role="listitem"><span class="badge-icon" aria-hidden="true">📋</span> CCPA Compliant</div>
-      <div class="compliance-badge" role="listitem"><span class="badge-icon" aria-hidden="true">🏥</span> HIPAA Capable</div>
-      <div class="compliance-badge" role="listitem"><span class="badge-icon" aria-hidden="true">🔑</span> Zero Trust Architecture</div>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb-pill"><span class="dot dp pls"></span>NEURAL CORE</div>
+  <div class="tb-pill"><span class="dot dg"></span>10 HC NODES</div>
+  <div class="tb-pill"><span class="dot da"></span>4 OFFICES LIVE</div>
+  <div class="tb-pill"><span class="dot dr"></span>2 CRITICAL</div>
+  <div class="ticker-wrap">
+    <div class="ticker">◈ DENIAL RATE 18.4% · CMS THRESHOLD BREACH · $48K AT RISK &nbsp;&nbsp;&nbsp; ◈ CLM-0334 CO-29 WRITE-OFF WINDOW: 48HRS &nbsp;&nbsp;&nbsp; ◈ SCOTTSDALE OM: 31 AUTH PENDING · UNITED &nbsp;&nbsp;&nbsp; ◈ MODIFIER -25 OVERUSE · 47 CLAIMS · $8,460 &nbsp;&nbsp;&nbsp; ◈ MESA OM: PR-96 SPIKE DETECTED · REVIEW REQUIRED &nbsp;&nbsp;&nbsp; ◈ CPT 99215 AUDIT EXPOSURE · $12,040</div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-time" id="clk">--:--:--</div>
+    <div class="tb-sep"></div>
+    <div class="tb-user">
+      <div class="tb-av">DM</div>
+      <div><div class="tb-un">Dee Montee</div><div class="tb-ur">Revenue Cycle Manager · HonorHealth</div></div>
     </div>
   </div>
 </div>
 
-<!-- RISK MATRIX -->
-<section aria-labelledby="risk-title">
-  <div class="section-label">Strategic Risk Intelligence</div>
-  <h2 class="section-title" id="risk-title">Know Your <em>Risk</em> Before It Knows You</h2>
-  <p class="section-desc">Common risk vectors across business operations, with direct links to the platform that addresses each one.</p>
+<!-- ══ CONTEXT LOCK BAR ══ -->
+<div class="ctx-lock">
+  <div class="ctx-label">◆ CONTEXT LOCK</div>
+  <div class="ctx-item"><span>Company:</span>&nbsp;<strong>HonorHealth</strong></div>
+  <div class="ctx-item"><span>Sector:</span>&nbsp;<strong>Healthcare</strong></div>
+  <div class="ctx-item"><span>Persona:</span>&nbsp;<strong>Revenue Cycle Manager</strong></div>
+  <div class="ctx-item"><span>Mesh:</span>&nbsp;<strong>HC-only + Satellite Offices</strong></div>
+  <div class="ctx-bleed-off">Cross-sector bleed: <span>OFF</span></div>
+  <div class="ctx-lock-badge"><span class="dot dg pls"></span>LOCKED · HEALTHCARE</div>
+</div>
 
-  <div class="risk-grid" role="list">
-    <div class="risk-card" role="listitem">
-      <div class="risk-level medium" aria-label="Medium risk level">◆ Medium</div>
-      <div class="risk-title">Tax Exposure on Multi-Entity Structures</div>
-      <div class="risk-desc">Improper intercompany transactions and basis tracking across holding companies create audit and penalty risk.</div>
-      <a href="https://tax.tsmatter.com" target="_blank" rel="noopener" class="risk-action">Resolve in Tax →</a>
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- ── LEFT NAV ── -->
+  <div class="leftnav">
+    <div class="nav-header">
+      <div class="nav-company">◈ HonorHealth</div>
+      <div class="nav-role">HC Strategist · Revenue Cycle</div>
     </div>
-    <div class="risk-card" role="listitem">
-      <div class="risk-level high" aria-label="High risk level">◆ High</div>
-      <div class="risk-title">GDPR Data Processing Gaps</div>
-      <div class="risk-desc">Undocumented data flows, missing consent records, and incomplete DPAs expose EU-operating entities to significant fines.</div>
-      <a href="https://compliance.tsmatter.com" target="_blank" rel="noopener" class="risk-action">Resolve in Compliance →</a>
-    </div>
-    <div class="risk-card" role="listitem">
-      <div class="risk-level critical" aria-label="Critical risk level">◆ Critical</div>
-      <div class="risk-title">Uncontrolled Privileged Access</div>
-      <div class="risk-desc">Standing admin access without MFA or PAM controls represents the top breach vector across all industries.</div>
-      <a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener" class="risk-action">Resolve in Zero Trust →</a>
-    </div>
-    <div class="risk-card" role="listitem">
-      <div class="risk-level medium" aria-label="Medium risk level">◆ Medium</div>
-      <div class="risk-title">Construction Lien Exposure</div>
-      <div class="risk-desc">Subcontractors who aren't paid can file liens against properties, clouding title and blocking refinancing.</div>
-      <a href="https://construction.tsmatter.com" target="_blank" rel="noopener" class="risk-action">Resolve in Construction →</a>
-    </div>
-    <div class="risk-card" role="listitem">
-      <div class="risk-level low" aria-label="Low risk level">◆ Low</div>
-      <div class="risk-title">Mortgage Regulatory Compliance</div>
-      <div class="risk-desc">RESPA, TILA, and fair lending disclosure requirements have automated tracking support built in.</div>
-      <a href="https://mortgage.tsmatter.com" target="_blank" rel="noopener" class="risk-action">Manage in Mortgage →</a>
-    </div>
-    <div class="risk-card" role="listitem">
-      <div class="risk-level high" aria-label="High risk level">◆ High</div>
-      <div class="risk-title">Audit Finding Remediation Gaps</div>
-      <div class="risk-desc">Repeat audit findings without tracked remediation signal control breakdown to regulators and boards.</div>
-      <a href="https://auditops.tsmatter.com" target="_blank" rel="noopener" class="risk-action">Resolve in Audit Ops →</a>
+    <div class="nav-scroll">
+      <div class="nav-gh"><span class="nav-gl" style="color:var(--purple)">HC Nodes</span><span class="nav-gc" style="color:var(--purple)">10</span></div>
+      <div class="ni act"><span class="ni-d dp pls"></span><span class="ni-n">HC Strategist</span><span class="ni-b bp">NEURAL</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Billing</span><span class="ni-b bw">231</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Compliance</span><span class="ni-b bo">OK</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Medical</span><span class="ni-b bo">OK</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Insurance</span><span class="ni-b bw">6 auth</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Pharmacy</span><span class="ni-b bo">OK</span></div>
+      <div class="ni"><span class="ni-d dr pls"></span><span class="ni-n">HC TaxPrep</span><span class="ni-b bc">80%</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Command</span><span class="ni-b bo">OK</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Vendors</span><span class="ni-b bo">OK</span></div>
+      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">HC Grants</span><span class="ni-b bo">OK</span></div>
+
+      <div class="nav-sep"></div>
+      <div class="nav-gh"><span class="nav-gl">Satellite Offices</span><span class="nav-gc">4</span></div>
+
+      <div class="om-card warn" onclick="focusOffice('scottsdale')">
+        <div class="om-name">Scottsdale Primary Care</div>
+        <div class="om-stats">
+          <div class="om-stat">Deny: <span>18.4%</span></div>
+          <div class="om-stat">Auth: <span>31</span></div>
+        </div>
+      </div>
+      <div class="om-card crit" onclick="focusOffice('mesa')">
+        <div class="om-name">Mesa Family Practice</div>
+        <div class="om-stats">
+          <div class="om-stat">Deny: <span class="cr">22.1%</span></div>
+          <div class="om-stat">Auth: <span>14</span></div>
+        </div>
+      </div>
+      <div class="om-card ok" onclick="focusOffice('tempe')">
+        <div class="om-name">Tempe Multispecialty</div>
+        <div class="om-stats">
+          <div class="om-stat">Deny: <span class="ok">11.2%</span></div>
+          <div class="om-stat">Auth: <span>8</span></div>
+        </div>
+      </div>
+      <div class="om-card ok" onclick="focusOffice('northmountain')">
+        <div class="om-name">North Mountain Clinic</div>
+        <div class="om-stats">
+          <div class="om-stat">Deny: <span class="ok">13.5%</span></div>
+          <div class="om-stat">Auth: <span>12</span></div>
+        </div>
+      </div>
     </div>
   </div>
-</section>
 
-<div class="section-divider"></div>
+  <!-- ── CENTER ── -->
+  <div class="center">
+    <div class="tab-bar">
+      <div class="tab act" id="t-exec" onclick="showTab('exec')">Executive Brief</div>
+      <div class="tab" id="t-denial" onclick="showTab('denial')">Denial Sweep</div>
+      <div class="tab" id="t-auth" onclick="showTab('auth')">Auth Friction</div>
+      <div class="tab" id="t-coding" onclick="showTab('coding')">Coding Drift</div>
+      <div class="tab" id="t-variance" onclick="showTab('variance')">Site Variance</div>
+      <div class="tab" id="t-compliance" onclick="showTab('compliance')">Compliance Heat</div>
+      <div class="tab" id="t-pharmacy" onclick="showTab('pharmacy')">Pharmacy / DME</div>
+      <div class="tab" id="t-taxgrants" onclick="showTab('taxgrants')">Tax Prep / Grants</div>
+    </div>
 
-<!-- FOOTER -->
-<footer role="contentinfo">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <h3>Sovereign Strategist</h3>
-        <p>The ultimate business consultant — providing strategic intelligence across every domain, connected to every platform. Built for leaders who demand complete clarity.</p>
-        <div class="gdpr-notice" aria-label="GDPR compliance notice">
-          <span aria-hidden="true">🇪🇺</span> EU GDPR · ePrivacy · CCPA Compliant
+    <div class="content">
+
+      <!-- KPI ROW -->
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-v vg">10/10</div><div class="kpi-l">HC Nodes Online</div><div class="pbar"><div class="pbar-fill pbar-g" style="width:100%"></div></div></div>
+        <div class="kpi"><div class="kpi-v va">4/4</div><div class="kpi-l">Offices Reporting</div><div class="kpi-s">all summaries fresh</div></div>
+        <div class="kpi"><div class="kpi-v vr">18.4%</div><div class="kpi-l">Denial Hotspot</div><div class="kpi-s" style="color:var(--red)">CMS threshold 15%</div><div class="pbar"><div class="pbar-fill pbar-r" style="width:18.4%"></div></div></div>
+        <div class="kpi"><div class="kpi-v va">$48K</div><div class="kpi-l">Revenue at Risk</div><div class="kpi-s">231 denied claims</div></div>
+        <div class="kpi"><div class="kpi-v va">65</div><div class="kpi-l">Auth Delays</div><div class="kpi-s">6 critical · 4 offices</div></div>
+        <div class="kpi"><div class="kpi-v vp" id="strat-score">—</div><div class="kpi-l">Strategist Score</div><div class="kpi-s" id="strat-score-sub">calculating...</div></div>
+      </div>
+
+      <!-- PULL PACKS -->
+      <div class="pack-row">
+        <button class="pack-btn" onclick="runPack('revenue')"><span class="pack-icon">◈</span>Pull Revenue Pack</button>
+        <button class="pack-btn" onclick="runPack('variance')"><span class="pack-icon">▣</span>Pull Site Variance</button>
+        <button class="pack-btn" onclick="runPack('denial')"><span class="pack-icon">⚡</span>Pull Denial Recovery</button>
+        <button class="pack-btn" onclick="runPack('auth')"><span class="pack-icon">◎</span>Pull Auth Friction</button>
+        <button class="pack-btn" onclick="runPack('compliance')"><span class="pack-icon">▲</span>Pull Compliance Sweep</button>
+        <button class="pack-btn" onclick="runPack('executive')"><span class="pack-icon">◆</span>Pull Executive Brief</button>
+      </div>
+
+      <!-- ══ EXEC BRIEF TAB ══ -->
+      <div id="tab-exec">
+
+        <div class="dg3" style="margin-bottom:10px">
+          <div class="strat-panel">
+            <div class="sh"><span class="st">Strategic Recommendation Engine</span></div>
+            <div style="margin-bottom:7px">
+              <div class="fl">ANALYSIS MODE</div>
+              <select class="fsel" id="strat-mode">
+                <option value="priority">Priority Action Plan — What needs to happen NOW</option>
+                <option value="denial">Denial Rate Root Cause + Recovery Strategy</option>
+                <option value="revenue">Revenue Recovery — Full opportunity mapping</option>
+                <option value="compliance">Compliance Risk Assessment + Mitigation</option>
+                <option value="payer">Payer Strategy — Medicare / Aetna appeal tactics</option>
+                <option value="coding">Coding Quality Audit + Coder Coaching Plan</option>
+                <option value="forecast">30-Day Revenue Cycle Forecast</option>
+                <option value="board">Board Talking Points — Executive framing</option>
+              </select>
+            </div>
+            <div style="margin-bottom:7px">
+              <div class="fl">ADDITIONAL CONTEXT</div>
+              <textarea class="ftxt" id="strat-context" placeholder="e.g. Focus on Mesa denial spike + CLM-0334 CO-29 deadline. Board meeting Friday — need framing..."></textarea>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-strat" id="strat-run-btn" onclick="runStrategist()" style="flex:1">◈ Run HC Strategist Analysis</button>
+              <button class="btn btn-o" onclick="clearOut()" style="padding:7px 10px">✕</button>
+            </div>
+            <div class="thinking-bar" id="thinking-bar"><div class="think-spin"></div><span id="thinking-txt">Synthesizing HonorHealth revenue cycle mesh...</span></div>
+            <div class="ai-out" id="strat-out"></div>
+            <div class="ai-err" id="strat-err"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="strat-panel">
+              <div class="sh"><span class="st">Live Signals</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="loadSignals()">↻ REFRESH</button></div>
+              <div id="signals-out">
+                <div class="sig"><div class="sig-icon" style="color:var(--red)">⚡</div><div class="sig-body"><div class="sig-title">CLM-0334 · 48hr write-off deadline</div><div class="sig-sub">CO-29 timely filing · $3,800. Assign J. Rodriguez now.</div><div class="sig-src">SOURCE: HC-Billing · Scottsdale OM</div></div><div class="sig-badge sb-urg">URGENT</div></div>
+                <div class="sig"><div class="sig-icon" style="color:var(--red)">▲</div><div class="sig-body"><div class="sig-title">Mesa denial spike — 22.1%</div><div class="sig-sub">PR-96 surge at Mesa Family Practice. Above portfolio average.</div><div class="sig-src">SOURCE: Mesa OM · HC-Insurance</div></div><div class="sig-badge sb-urg">CRIT</div></div>
+                <div class="sig"><div class="sig-icon" style="color:var(--amber)">◎</div><div class="sig-body"><div class="sig-title">Scottsdale — 31 auth pending (United)</div><div class="sig-sub">Auth lag on United Healthcare. Modifier 25 review backlog.</div><div class="sig-src">SOURCE: Scottsdale OM</div></div><div class="sig-badge sb-hi">HIGH</div></div>
+                <div class="sig"><div class="sig-icon" style="color:var(--purple)">◈</div><div class="sig-body"><div class="sig-title">CPT 99215 upcoding — 23 claims</div><div class="sig-sub">$12,040 audit exposure. Coder education before Friday.</div><div class="sig-src">SOURCE: HC-Compliance · HC-Billing</div></div><div class="sig-badge sb-med">MED</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="strat-panel">
+            <div class="sh"><span class="st">Quick Asks</span></div>
+            <div class="qa-grid">
+              <button class="qa-btn" onclick="quickAsk('Draft a CO-29 appeal letter for CLM-0334 (CPT 93454, $3,800 cardiac catheterization, Medicare, timely filing denial). Include all required documentation elements and appeal deadlines.')">Draft CO-29 Appeal</button>
+              <button class="qa-btn" onclick="quickAsk('Analyze the Mesa Family Practice 22.1% denial rate spike vs the 18.4% portfolio average. Identify root cause from PR-96 pattern and recommend 3 specific interventions the Mesa office manager should take this week.')">Mesa Denial Spike</button>
+              <button class="qa-btn" onclick="quickAsk('Create a 30-day denial reduction plan to bring HonorHealth from 18.4% to below 15% CMS threshold. PR-96 drives 45%, CO-4 drives 28%, CO-11 drives 18%. Include payer-specific strategies for Medicare and Aetna.')">Denial Reduction Plan</button>
+              <button class="qa-btn" onclick="quickAsk('Build a board meeting executive brief for HonorHealth: 18.4% denial rate, $48K revenue at risk, 94.2% clean claim rate vs 97% target, 231 denied claims, 4 satellite offices. Frame as managed challenge with clear recovery plan.')">Board Brief</button>
+              <button class="qa-btn" onclick="quickAsk('What payer-specific strategies should Dee Montee deploy for Medicare CO-29 / PR-96 denials and Aetna CO-4 / CO-11 denials at HonorHealth? Provide appeal templates and documentation checklist for each payer.')">Payer Strategy</button>
+              <button class="qa-btn" onclick="quickAsk('Generate CPT 99215 documentation defense brief and coder education talking points for HonorHealth. Address modifier -25 overuse on 47 claims ($8,460). What must coders change immediately?')">99215 Defense</button>
+              <button class="qa-btn" onclick="quickAsk('Analyze cross-office variance across HonorHealth satellite offices: Scottsdale 18.4% denial/31 auth pending, Mesa 22.1% denial, Tempe 11.2% denial, North Mountain 13.5% denial. Which office needs the most immediate intervention and why?')">Site Variance Analysis</button>
+              <button class="qa-btn" onclick="quickAsk('Build a 30-day revenue recovery roadmap for HonorHealth: $48K at risk, 231 denied claims, 18.4% denial rate, 6 auth approvals pending. Prioritize actions by dollar recovery impact.')">Recovery Roadmap</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- OFFICE SUMMARIES -->
+        <div class="panel">
+          <div class="sh"><span class="st">Satellite Office Summaries</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="runPack('variance')">◈ COMPARE VARIANCE</button></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="office-summaries">
+
+            <div class="om-summary">
+              <div class="om-hdr"><div class="om-nm" style="color:var(--amber)">⚠ Scottsdale Primary Care</div><div class="om-updated">Updated 02:11 UTC</div></div>
+              <div class="om-grid">
+                <div class="om-metric"><div class="om-metric-v va">18.4%</div><div class="om-metric-l">Denial Rate</div></div>
+                <div class="om-metric"><div class="om-metric-v va">31</div><div class="om-metric-l">Auth Pending</div></div>
+                <div class="om-metric"><div class="om-metric-v vg">0.12</div><div class="om-metric-l">Coding Drift</div></div>
+                <div class="om-metric"><div class="om-metric-v va">6</div><div class="om-metric-l">Active Alerts</div></div>
+              </div>
+              <div class="om-issues">
+                <div>⚡ PR-96 denial spike on United · modifier 25 review backlog</div>
+                <div>▸ 2 coders in training · short-staffed Fridays</div>
+                <div style="color:var(--g2)">✓ Cleared 18 old auth holds last week</div>
+              </div>
+            </div>
+
+            <div class="om-summary">
+              <div class="om-hdr"><div class="om-nm" style="color:var(--red)">⚡ Mesa Family Practice</div><div class="om-updated">Updated 01:58 UTC</div></div>
+              <div class="om-grid">
+                <div class="om-metric"><div class="om-metric-v vr">22.1%</div><div class="om-metric-l">Denial Rate</div></div>
+                <div class="om-metric"><div class="om-metric-v va">14</div><div class="om-metric-l">Auth Pending</div></div>
+                <div class="om-metric"><div class="om-metric-v va">0.19</div><div class="om-metric-l">Coding Drift</div></div>
+                <div class="om-metric"><div class="om-metric-v vr">9</div><div class="om-metric-l">Active Alerts</div></div>
+              </div>
+              <div class="om-issues">
+                <div>⚡ PR-96 spike — above portfolio average · needs immediate review</div>
+                <div>⚡ New scheduler still onboarding · auth workflow gaps</div>
+                <div style="color:var(--red)">✗ Writeoff risk: $11.2K aging &gt;30 days</div>
+              </div>
+            </div>
+
+            <div class="om-summary">
+              <div class="om-hdr"><div class="om-nm" style="color:var(--g2)">✓ Tempe Multispecialty</div><div class="om-updated">Updated 02:05 UTC</div></div>
+              <div class="om-grid">
+                <div class="om-metric"><div class="om-metric-v vg">11.2%</div><div class="om-metric-l">Denial Rate</div></div>
+                <div class="om-metric"><div class="om-metric-v vg">8</div><div class="om-metric-l">Auth Pending</div></div>
+                <div class="om-metric"><div class="om-metric-v vg">0.04</div><div class="om-metric-l">Coding Drift</div></div>
+                <div class="om-metric"><div class="om-metric-v vg">2</div><div class="om-metric-l">Active Alerts</div></div>
+              </div>
+              <div class="om-issues">
+                <div style="color:var(--g2)">✓ Reduced 30+ day aging by 11% this month</div>
+                <div style="color:var(--g2)">✓ Clean claim rate 96.8% · near target</div>
+                <div>▸ Minor: modifier 25 flag on 3 claims — monitor</div>
+              </div>
+            </div>
+
+            <div class="om-summary">
+              <div class="om-hdr"><div class="om-nm" style="color:var(--g2)">✓ North Mountain Clinic</div><div class="om-updated">Updated 01:45 UTC</div></div>
+              <div class="om-grid">
+                <div class="om-metric"><div class="om-metric-v va">13.5%</div><div class="om-metric-l">Denial Rate</div></div>
+                <div class="om-metric"><div class="om-metric-v va">12</div><div class="om-metric-l">Auth Pending</div></div>
+                <div class="om-metric"><div class="om-metric-v vg">0.07</div><div class="om-metric-l">Coding Drift</div></div>
+                <div class="om-metric"><div class="om-metric-v va">4</div><div class="om-metric-l">Active Alerts</div></div>
+              </div>
+              <div class="om-issues">
+                <div>▸ CO-4 pattern on Aetna — 8 claims pending appeal</div>
+                <div style="color:var(--g2)">✓ Auth workflow stable · avg turnaround 2.3 days</div>
+                <div>▸ ICD-10 specificity gaps on 6 claims — physician query needed</div>
+              </div>
+            </div>
+
+          </div>
+          <div class="ai-out" id="variance-out" style="margin-top:8px"></div>
         </div>
       </div>
 
-      <div class="footer-col">
-        <h4>Core Apps</h4>
-        <ul>
-          <li><a href="https://financial.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">💰</span> Financial</a></li>
-          <li><a href="https://hotelops.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🏨</span> Hotel Ops</a></li>
-          <li><a href="https://construction.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🏗️</span> Construction</a></li>
-          <li><a href="https://reo-pro.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🏢</span> REO Pro</a></li>
-          <li><a href="https://mortgage.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🏦</span> Mortgage</a></li>
-          <li><a href="https://schools.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🎓</span> Schools</a></li>
-        </ul>
+      <!-- ══ DENIAL SWEEP TAB ══ -->
+      <div id="tab-denial" style="display:none">
+        <div class="dg2" style="margin-bottom:10px">
+          <div class="strat-panel">
+            <div class="sh"><span class="st">Denial Code Breakdown</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="runDenialAnalysis()">◈ ANALYZE</button></div>
+            <table class="rtable">
+              <thead><tr><th>CODE</th><th>COUNT</th><th>%</th><th>AT RISK</th><th>STRATEGY</th></tr></thead>
+              <tbody>
+                <tr><td style="color:var(--red)">PR-96</td><td style="color:var(--red)">104</td><td><div style="display:flex;align-items:center;gap:5px"><div class="pbar" style="width:70px"><div class="pbar-fill pbar-r" style="width:45%"></div></div>45%</div></td><td style="color:var(--red)">$21.6K</td><td><button class="qa-btn" onclick="quickAsk('Draft a PR-96 (non-covered charge) appeal strategy for HonorHealth. What documentation and approach maximizes recovery? Include payer-specific tactics for Medicare and Aetna.')">◈ Appeal</button></td></tr>
+                <tr><td style="color:var(--amber)">CO-4</td><td style="color:var(--amber)">65</td><td><div style="display:flex;align-items:center;gap:5px"><div class="pbar" style="width:70px"><div class="pbar-fill pbar-a" style="width:28%"></div></div>28%</div></td><td style="color:var(--amber)">$13.4K</td><td><button class="qa-btn" onclick="quickAsk('Draft a CO-4 (service not covered) appeal strategy for HonorHealth Aetna denials. When is it worth appealing vs writing off? Include documentation requirements.')">◈ Appeal</button></td></tr>
+                <tr><td>CO-11</td><td>42</td><td><div style="display:flex;align-items:center;gap:5px"><div class="pbar" style="width:70px"><div class="pbar-fill pbar-p" style="width:18%"></div></div>18%</div></td><td>$8.1K</td><td><button class="qa-btn" onclick="quickAsk('Draft CO-11 (diagnosis inconsistent with procedure) appeal approach for HonorHealth. What ICD-10 documentation proactively prevents this denial?')">◈ Appeal</button></td></tr>
+                <tr><td style="color:var(--red)">CO-29</td><td>12</td><td><div style="display:flex;align-items:center;gap:5px"><div class="pbar" style="width:70px"><div class="pbar-fill pbar-r" style="width:5%"></div></div>5%</div></td><td style="color:var(--red)">$5.7K</td><td><button class="qa-btn" onclick="quickAsk('Draft emergency CO-29 (timely filing) appeal for CLM-0334 (CPT 93454, $3,800, Medicare). 48hr window. What documentation is required to reverse this denial?')">◈ URGENT</button></td></tr>
+              </tbody>
+            </table>
+            <div class="ai-out" id="denial-analysis-out"></div>
+          </div>
+          <div class="strat-panel">
+            <div class="sh"><span class="st">Payer Intelligence</span></div>
+            <table class="rtable">
+              <thead><tr><th>PAYER</th><th>DENIALS</th><th>TOP CODE</th><th>AT RISK</th></tr></thead>
+              <tbody>
+                <tr><td>Medicare</td><td style="color:var(--red)">104</td><td>CO-29 · PR-96</td><td style="color:var(--red)">$28K</td></tr>
+                <tr><td>Aetna</td><td style="color:var(--amber)">78</td><td>CO-4 · CO-11</td><td style="color:var(--amber)">$14K</td></tr>
+                <tr><td>BCBS</td><td>32</td><td>CO-97</td><td>$6K</td></tr>
+                <tr><td>UHC</td><td style="color:var(--amber)">17</td><td>PR-1</td><td>$0K</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:10px">
+              <button class="btn btn-strat" style="width:100%;margin-bottom:5px" onclick="quickAsk('Generate Medicare-specific appeal strategy for CO-29 timely filing and PR-96 non-covered denials at HonorHealth. Include deadline rules, required documentation, and expected success rates.')">◈ Medicare Strategy</button>
+              <button class="btn btn-strat" style="width:100%" onclick="quickAsk('Generate Aetna-specific appeal strategy for CO-4 and CO-11 denials at HonorHealth. What clinical documentation should be attached? What is the appeal window?')">◈ Aetna Strategy</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="footer-col">
-        <h4>More Apps</h4>
-        <ul>
-          <li><a href="https://tax.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">📊</span> Tax</a></li>
-          <li><a href="https://legal.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">⚖️</span> Legal</a></li>
-          <li><a href="https://compliance.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">✅</span> Compliance</a></li>
-          <li><a href="https://zero-trust.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🔐</span> Zero Trust</a></li>
-          <li><a href="https://auditops.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🔍</span> Audit Ops</a></li>
-          <li><a href="#playbooks"><span aria-hidden="true">🗺️</span> Playbooks</a></li>
-        </ul>
+      <!-- ══ AUTH FRICTION TAB ══ -->
+      <div id="tab-auth" style="display:none">
+        <div class="strat-panel" style="margin-bottom:10px">
+          <div class="sh"><span class="st">Prior Auth Friction by Office</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="quickAsk('Analyze prior authorization delays across HonorHealth satellite offices: Scottsdale 31 pending (United), Mesa 14 pending, Tempe 8 pending, North Mountain 12 pending. Which payers are causing the most friction? Recommend 3 systemic fixes and which office manager should act first.')">◈ AI ANALYZE</button></div>
+          <table class="rtable">
+            <thead><tr><th>OFFICE</th><th>AUTH PENDING</th><th>PAYER</th><th>AVG DAYS</th><th>STATUS</th></tr></thead>
+            <tbody>
+              <tr><td>Scottsdale</td><td style="color:var(--red)">31</td><td>United Healthcare</td><td style="color:var(--amber)">4.2</td><td><span style="color:var(--amber)">◎ Review modifier workflow</span></td></tr>
+              <tr><td>Mesa</td><td style="color:var(--amber)">14</td><td>Medicare / Aetna</td><td style="color:var(--amber)">3.8</td><td><span style="color:var(--amber)">◎ Scheduler onboarding gap</span></td></tr>
+              <tr><td>North Mountain</td><td>12</td><td>Aetna</td><td>3.1</td><td><span style="color:var(--g2)">✓ Stable</span></td></tr>
+              <tr><td>Tempe</td><td style="color:var(--g2)">8</td><td>BCBS</td><td style="color:var(--g2)">2.3</td><td><span style="color:var(--g2)">✓ Best practice</span></td></tr>
+            </tbody>
+          </table>
+          <div class="ai-out" id="auth-out"></div>
+        </div>
       </div>
 
-      <div class="footer-col">
-        <h4>Platform</h4>
-        <ul>
-          <li><a href="#advisor"><span aria-hidden="true">💬</span> AI Advisor</a></li>
-          <li><a href="#apps"><span aria-hidden="true">⚡</span> Core Suite</a></li>
-          <li><a href="#playbooks"><span aria-hidden="true">📋</span> Playbooks</a></li>
-          <li><a href="https://auditops.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🔍</span> Audit Ops</a></li>
-          <li><a href="https://compliance.tsmatter.com" target="_blank" rel="noopener"><span aria-hidden="true">🛡️</span> Compliance</a></li>
-          <li><a href="#" id="privacyLink"><span aria-hidden="true">📜</span> Privacy Policy</a></li>
-        </ul>
+      <!-- ══ CODING DRIFT TAB ══ -->
+      <div id="tab-coding" style="display:none">
+        <div class="dg2">
+          <div class="strat-panel">
+            <div class="sh"><span class="st">Coding Quality Issues</span></div>
+            <div class="sig"><div class="sig-icon" style="color:var(--red)">⚡</div><div class="sig-body"><div class="sig-title">CPT 99215 upcoding — 23 claims</div><div class="sig-sub">Documentation inconsistent with E/M level. $12,040 audit exposure. Education required before Friday.</div></div><div class="sig-badge sb-urg">URGENT</div></div>
+            <div class="sig"><div class="sig-icon" style="color:var(--amber)">▲</div><div class="sig-body"><div class="sig-title">Modifier -25 overuse — 47 claims</div><div class="sig-sub">$8,460 at risk. Compliance review before next submission cycle.</div></div><div class="sig-badge sb-hi">HIGH</div></div>
+            <div class="sig"><div class="sig-icon" style="color:var(--text2)">◎</div><div class="sig-body"><div class="sig-title">ICD-10 specificity gaps — 14 claims</div><div class="sig-sub">Physician query needed: CLM-0290, CLM-0305, CLM-0312.</div></div><div class="sig-badge sb-med">MED</div></div>
+            <div style="display:flex;gap:6px;margin-top:10px">
+              <button class="btn btn-strat" style="flex:1" onclick="quickAsk('Generate CPT 99215 documentation requirements and coder education memo for HonorHealth. What must be in the note to support this E/M level? Also address modifier -25 overuse on 47 claims.')">◈ Coder Education Memo</button>
+              <button class="btn btn-strat" style="flex:1" onclick="quickAsk('Generate physician query templates for ICD-10 specificity gaps on HonorHealth claims CLM-0290, CLM-0305, CLM-0312. What information is needed from the physician?')">◈ Physician Query</button>
+            </div>
+            <div class="ai-out" id="coding-out"></div>
+          </div>
+          <div class="strat-panel">
+            <div class="sh"><span class="st">Coding Drift by Office</span></div>
+            <table class="rtable">
+              <thead><tr><th>OFFICE</th><th>DRIFT INDEX</th><th>TOP ISSUE</th></tr></thead>
+              <tbody>
+                <tr><td>Mesa</td><td style="color:var(--red)">0.19</td><td>PR-96 + modifier 25</td></tr>
+                <tr><td>Scottsdale</td><td style="color:var(--amber)">0.12</td><td>99215 upcoding</td></tr>
+                <tr><td>North Mountain</td><td>0.07</td><td>ICD-10 specificity</td></tr>
+                <tr><td>Tempe</td><td style="color:var(--g2)">0.04</td><td>Minor modifier flags</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="footer-bottom">
-      <p>© 2025 Sovereign Strategist · tsmatter.com · All rights reserved</p>
-      <p style="font-size: 11px; color: var(--muted2);">This platform does not store personal data beyond session scope. AI responses are advisory and do not constitute legal, tax, or financial advice. Consult qualified professionals for binding decisions.</p>
-    </div>
-  </div>
-</footer>
+      <!-- ══ SITE VARIANCE TAB ══ -->
+      <div id="tab-variance" style="display:none">
+        <div class="strat-panel">
+          <div class="sh"><span class="st">Cross-Office Variance Analysis</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="runPack('variance')">◈ AI VARIANCE PACK</button></div>
+          <table class="rtable" style="margin-bottom:10px">
+            <thead><tr><th>OFFICE</th><th>DENIAL RATE</th><th>AUTH PENDING</th><th>CODING DRIFT</th><th>WRITEOFF RISK</th><th>STATUS</th></tr></thead>
+            <tbody>
+              <tr><td>Mesa</td><td style="color:var(--red)">22.1%</td><td style="color:var(--amber)">14</td><td style="color:var(--red)">0.19</td><td style="color:var(--red)">$11.2K</td><td><span style="color:var(--red)">⚡ Immediate action</span></td></tr>
+              <tr><td>Scottsdale</td><td style="color:var(--amber)">18.4%</td><td style="color:var(--red)">31</td><td style="color:var(--amber)">0.12</td><td style="color:var(--amber)">$8.9K</td><td><span style="color:var(--amber)">◎ Escalate auth</span></td></tr>
+              <tr><td>North Mountain</td><td style="color:var(--amber)">13.5%</td><td>12</td><td>0.07</td><td>$4.1K</td><td><span style="color:var(--text2)">▸ Monitor</span></td></tr>
+              <tr><td>Tempe</td><td style="color:var(--g2)">11.2%</td><td style="color:var(--g2)">8</td><td style="color:var(--g2)">0.04</td><td style="color:var(--g2)">$2.1K</td><td><span style="color:var(--g2)">✓ Best practice</span></td></tr>
+            </tbody>
+          </table>
+          <div class="ai-out" id="site-variance-out"></div>
+        </div>
+      </div>
+
+      <!-- ══ COMPLIANCE TAB ══ -->
+      <div id="tab-compliance" style="display:none">
+        <div class="strat-panel">
+          <div class="sh"><span class="st">Compliance Heat Map</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="quickAsk('Generate a compliance risk assessment for HonorHealth: CPT 99215 upcoding on 23 claims ($12,040 audit exposure), modifier -25 overuse on 47 claims ($8,460), ICD-10 specificity gaps on 14 claims. Prioritize risks and provide a mitigation action plan.')">◈ COMPLIANCE SWEEP</button></div>
+          <div class="dg3">
+            <div style="background:var(--reddim);border:1px solid rgba(255,68,85,.2);border-radius:3px;padding:10px">
+              <div style="font-size:8px;letter-spacing:.1em;color:var(--red);margin-bottom:5px">HIGH RISK</div>
+              <div style="font-size:10px;color:var(--text)">CPT 99215 upcoding</div>
+              <div style="font-size:9px;color:var(--text2);margin-top:3px">23 claims · $12,040 audit exposure</div>
+            </div>
+            <div style="background:var(--amberdim);border:1px solid rgba(255,170,0,.2);border-radius:3px;padding:10px">
+              <div style="font-size:8px;letter-spacing:.1em;color:var(--amber);margin-bottom:5px">MEDIUM RISK</div>
+              <div style="font-size:10px;color:var(--text)">Modifier -25 overuse</div>
+              <div style="font-size:9px;color:var(--text2);margin-top:3px">47 claims · $8,460 at risk</div>
+            </div>
+            <div style="background:var(--gdim2);border:1px solid var(--border);border-radius:3px;padding:10px">
+              <div style="font-size:8px;letter-spacing:.1em;color:var(--g2);margin-bottom:5px">LOW RISK</div>
+              <div style="font-size:10px;color:var(--text)">ICD-10 specificity</div>
+              <div style="font-size:9px;color:var(--text2);margin-top:3px">14 claims · documentation gaps</div>
+            </div>
+          </div>
+          <div class="ai-out" id="compliance-out"></div>
+        </div>
+      </div>
+
+      <!-- ══ PHARMACY/DME TAB ══ -->
+      <div id="tab-pharmacy" style="display:none">
+        <div class="strat-panel">
+          <div class="sh"><span class="st">Pharmacy / DME Watch</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="quickAsk('Provide a pharmacy and DME status review for HonorHealth. What are the current prior auth requirements for common DME items? Are there payer-specific formulary restrictions affecting HonorHealth patients that Dee Montee should know about?')">◈ AI REVIEW</button></div>
+          <div style="font-size:10px;color:var(--text2);padding:10px 0">HC-Pharmacy node online · No critical alerts · Click AI Review for current analysis.</div>
+          <div class="ai-out" id="pharmacy-out"></div>
+        </div>
+      </div>
+
+      <!-- ══ TAX/GRANTS TAB ══ -->
+      <div id="tab-taxgrants" style="display:none">
+        <div class="strat-panel">
+          <div class="sh"><span class="st">Tax Prep / Grants</span><button class="btn btn-strat" style="padding:2px 8px;font-size:8px" onclick="quickAsk('HC-TaxPrep node is at 80% CPU with 187 restarts. What is the revenue cycle impact if this node goes offline? What tax preparation and grant reporting tasks are at risk? Recommend immediate escalation steps.')">⚡ TAXPREP NODE ALERT</button></div>
+          <div class="sig"><div class="sig-icon" style="color:var(--red)">⚡</div><div class="sig-body"><div class="sig-title">HC-TaxPrep — 80% CPU · 187 restarts</div><div class="sig-sub">Node instability. Revenue cycle reporting and grant tracking may be impacted. Escalate to TSM infrastructure.</div></div><div class="sig-badge sb-urg">INFRA</div></div>
+          <div class="ai-out" id="taxgrants-out"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /center -->
+
+</div><!-- /main -->
+
+<!-- ── STATUS BAR ── -->
+<div class="sbar">
+  <div class="si"><span class="dot dg" style="width:4px;height:4px"></span>HC-STRATEGIST NEURAL CORE · HONORHEALTH · LOCKED</div>
+  <div class="si">·</div>
+  <div class="si">CONTEXT: HEALTHCARE-ONLY · CROSS-SECTOR BLEED: OFF</div>
+  <div class="si">·</div>
+  <div class="si" id="sb-nodes">10 HC NODES · 4 OFFICES</div>
+  <div class="si" style="margin-left:auto" id="sb-status">READY</div>
+</div>
 
 <script>
-  /* ── APPS MENU TOGGLE ── */
-  function toggleAppsMenu() {
-    const menu = document.getElementById('appsDropdown');
-    const btn = document.getElementById('appsBtn');
-    const isOpen = menu.classList.toggle('open');
-    btn.setAttribute('aria-expanded', isOpen);
-  }
+// ── CLOCK ──
+function tick(){document.getElementById('clk').textContent=new Date().toLocaleTimeString('en-US',{hour12:false})}
+tick(); setInterval(tick,1000);
 
-  document.addEventListener('click', function(e) {
-    const menu = document.getElementById('appsDropdown');
-    const btn = document.getElementById('appsBtn');
-    if (!btn.contains(e.target) && !menu.contains(e.target)) {
-      menu.classList.remove('open');
-      btn.setAttribute('aria-expanded', 'false');
-    }
+// ── PROFILE (scope gate) ──
+const PROFILE = {
+  company:"HonorHealth", sector:"healthcare", persona:"revenue_cycle_manager",
+  allowedNodes:["hc-billing","hc-compliance","hc-insurance","hc-medical","hc-pharmacy","hc-grants","hc-strategist","hc-command","hc-taxprep","hc-vendors"],
+  offices:["scottsdale","mesa","tempe","northmountain"],
+  disallowedDomains:["legal","mortgage","construction","schools","reo","hotelops"],
+  priorities:["denial_rate","payer_auths","claims_backlog","documentation_gaps","satellite_office_variance"]
+};
+
+const HC_CONTEXT = `
+You are HC-Strategist for HonorHealth.
+Persona: ${PROFILE.persona} (Dee Montee).
+Approved sources: HC-only nodes + HonorHealth satellite office summaries (Scottsdale, Mesa, Tempe, North Mountain).
+DO NOT reference non-healthcare sectors (legal, mortgage, schools, construction, REO, HotelOps).
+Prioritize: revenue cycle, denial prevention, payer authorization friction, coding documentation gaps, cross-office variance.
+
+Current HonorHealth data:
+- Denial rate: 18.4% (CMS threshold: 15%) → $48K at risk, 231 denied claims
+- Top denial codes: PR-96 (45%, $21.6K), CO-4 (28%, $13.4K), CO-11 (18%, $8.1K), CO-29 (5%, $5.7K)
+- Payers: Medicare 104 denials, Aetna 78, BCBS 32, UHC 17
+- URGENT: CLM-0334 (CPT 93454, $3,800, Medicare CO-29 timely filing) — 48hr write-off deadline
+- Compliance: CPT 99215 upcoding 23 claims ($12,040), modifier-25 overuse 47 claims ($8,460), ICD-10 gaps 14 claims
+- Clean claim rate: 94.2% vs 97% target
+- Satellite offices: Scottsdale 18.4%/31 auth pending, Mesa 22.1%/14 auth (CRITICAL), Tempe 11.2% (best), North Mountain 13.5%
+- HC-TaxPrep node: 80% CPU, 187 restarts — infra risk
+- BPO queue: 4 docs pending
+
+Always return:
+1. Top issue + source office/node
+2. Business impact ($)
+3. 3 immediate actions
+4. Which office manager or node should act first
+`;
+
+// ── TAB SWITCHING ──
+const tabs=['exec','denial','auth','coding','variance','compliance','pharmacy','taxgrants'];
+function showTab(id){
+  tabs.forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===id?'block':'none';
+    document.getElementById('t-'+t).classList.toggle('act',t===id);
   });
+}
 
-  /* ── COOKIE BANNER ── */
-  function closeCookie() {
-    const banner = document.getElementById('cookieBanner');
-    banner.style.opacity = '0';
-    banner.style.transform = 'translateY(20px)';
-    banner.style.transition = 'all 0.3s ease';
-    setTimeout(() => banner.style.display = 'none', 300);
-    localStorage.setItem('ss_cookie_consent', '1');
-  }
+// ── API CALL ──
+async function callClaude(userMsg, outEl, thinkEl, errEl){
+  if(thinkEl){thinkEl.classList.add('show');}
+  if(errEl){errEl.classList.remove('show');}
+  outEl.classList.remove('show');
+  outEl.textContent='';
+  document.getElementById('sb-status').textContent='◈ SYNTHESIZING...';
 
-  if (localStorage.getItem('ss_cookie_consent')) {
-    document.getElementById('cookieBanner').style.display = 'none';
-  }
+  const thinkMessages = [
+    'Ingesting HonorHealth HC mesh...',
+    'Cross-referencing satellite office summaries...',
+    'Applying revenue cycle context...',
+    'Synthesizing scoped HC analysis...'
+  ];
+  let ti=0;
+  const thinkInterval = thinkEl ? setInterval(()=>{
+    if(thinkEl) document.getElementById('thinking-txt').textContent=thinkMessages[ti%thinkMessages.length];
+    ti++;
+  },1800) : null;
 
-  /* ── PLAYBOOK LAUNCHER ── */
-  function runPlaybook(id) {
-    const playbooks = {
-      'new-business': 'Walk me through the complete New Business Launch playbook, including entity formation, tax setup, compliance framework, and security baseline across Legal, Tax, Financial, Compliance, and Zero Trust platforms.',
-      're-deal': 'Walk me through the Real Estate Deal Flow playbook from property identification through close, covering REO Pro, Mortgage processing, Legal due diligence, Financial modeling, and Tax optimization.',
-      'hotel-expansion': 'Walk me through the Hotel Portfolio Expansion playbook covering acquisition, construction oversight, operational setup, legal structuring, and ongoing financial monitoring.',
-      'tax-season': 'Walk me through the Tax Season Readiness playbook, covering year-end financial close, depreciation schedules, entity K-1 prep, audit trail verification, and filing coordination.',
-      'compliance-audit': 'Walk me through the Compliance Audit Cycle playbook covering scoping, control testing, findings documentation, remediation tracking, and executive reporting.',
-      'school-year': 'Walk me through the School Year Planning playbook covering enrollment campaigns, staffing budgets, grant applications, policy updates, and accreditation preparation.',
-      'construction-project': 'Walk me through the Construction Project Launch playbook covering permits, contracts, subcontractor onboarding, budget setup, bonding, and lien management.',
-      'security-assessment': 'Walk me through the Enterprise Security Assessment playbook covering access review, threat modeling, vendor risk, incident response planning, and zero-trust architecture review.'
-    };
-
-    const prompt = playbooks[id];
-    if (prompt) {
-      document.getElementById('advisor').scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => {
-        document.getElementById('chatInput').value = prompt;
-        sendMessage();
-      }, 600);
+  try{
+    const resp = await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})
+    });
+    const data = await resp.json();
+    if(thinkInterval) clearInterval(thinkInterval);
+    if(thinkEl) thinkEl.classList.remove('show');
+    if(data.content && data.content){
+      outEl.textContent = data.content;
+      outEl.classList.add('show','fi');
+    } else if(data.error){
+      throw new Error(data.error.message);
     }
+    document.getElementById('sb-status').textContent='READY';
+  } catch(e){
+    if(thinkInterval) clearInterval(thinkInterval);
+    if(thinkEl) thinkEl.classList.remove('show');
+    if(errEl){errEl.textContent='Error: '+e.message;errEl.classList.add('show');}
+    document.getElementById('sb-status').textContent='ERROR';
   }
+}
 
-  /* ── CHAT / AI ADVISOR ── */
-  const SYSTEM_PROMPT = `You are the Sovereign Strategist — an elite business intelligence advisor with deep expertise across all 11 platforms in the tsmatter.com Core App Suite:
+// ── RUN STRATEGIST ──
+async function runStrategist(){
+  const mode = document.getElementById('strat-mode').value;
+  const ctx = document.getElementById('strat-context').value;
+  const modeLabels = {
+    priority:'Priority Action Plan — identify the single highest-priority issue right now. Return: top issue, source, dollar impact, 3 immediate actions, who acts first.',
+    denial:'Denial Rate Root Cause + Recovery Strategy — analyze our 18.4% denial rate, top codes, and payer patterns. Build a phased recovery plan.',
+    revenue:'Revenue Recovery — map all $48K at risk, prioritize by recovery probability and dollar value.',
+    compliance:'Compliance Risk Assessment — analyze CPT 99215 upcoding, modifier -25 overuse, and ICD-10 gaps. Prioritize mitigation.',
+    payer:'Payer Strategy — build appeal tactics specific to Medicare CO-29/PR-96 and Aetna CO-4/CO-11.',
+    coding:'Coding Quality Audit — analyze coding drift across all 4 offices and build a coder coaching plan.',
+    forecast:'30-Day Revenue Cycle Forecast — project denial rate, revenue recovery, and clean claim rate improvements if recommended actions are taken.',
+    board:'Board Talking Points — frame our current challenges as managed opportunities. Concise, confident executive language.'
+  };
+  const prompt = `Mode: ${modeLabels[mode]}\n\nAdditional context: ${ctx||'None'}\n\nPull HonorHealth healthcare mesh. Compare satellite office summaries. Provide scoped HC-only analysis.`;
+  await callClaude(prompt, document.getElementById('strat-out'), document.getElementById('thinking-bar'), document.getElementById('strat-err'));
+}
 
-1. Financial Management (financial.tsmatter.com) — P&L, cash flow, budgeting, multi-entity consolidation
-2. Hotel Operations (hotelops.tsmatter.com) — PMS, RevPAR, reservations, housekeeping
-3. Construction Management (construction.tsmatter.com) — project scheduling, bids, subcontractors, RFIs
-4. REO Pro (reo-pro.tsmatter.com) — real estate operations, deal pipeline, portfolio analytics
-5. Mortgage Processing (mortgage.tsmatter.com) — loan origination, underwriting, RESPA/TILA compliance
-6. School Administration (schools.tsmatter.com) — enrollment, HR, curriculum, grants, accreditation
-7. Tax Management (tax.tsmatter.com) — multi-jurisdictional planning, entity structuring, IRS compliance
-8. Legal Operations (legal.tsmatter.com) — contract lifecycle, matter management, entity formation
-9. Compliance Management (compliance.tsmatter.com) — GDPR, SOC 2, policy management, incident response
-10. Zero Trust Security (zero-trust.tsmatter.com) — identity, access controls, threat detection
-11. Audit Operations (auditops.tsmatter.com) — internal audit, control testing, findings management
+// ── QUICK ASK ──
+async function quickAsk(prompt){
+  showTab('exec');
+  document.getElementById('strat-context').value='';
+  await callClaude(prompt, document.getElementById('strat-out'), document.getElementById('thinking-bar'), document.getElementById('strat-err'));
+}
 
-Your role is to provide strategic, board-level counsel that draws connections ACROSS platforms. When someone asks about a business challenge, identify which platforms are relevant and explain how they interact. Be decisive, precise, and actionable. Speak like a senior McKinsey partner who also has deep legal, financial, and technical expertise. Keep responses focused and structured. Use numbered steps or clear sections when explaining workflows. Always flag risks and cross-platform dependencies. You operate under EU GDPR and never ask for or store personal data.`;
+// ── PULL PACKS ──
+const PACKS = {
+  revenue:`Pull HonorHealth Revenue Pack. Sources: HC-Billing, HC-Insurance, HC-Compliance, all 4 satellite office summaries. Metrics: denial_rate, claims_aging, payer_auth_pending, modifier_overuse, documentation_gap_rate. Synthesize into top 5 revenue risks ranked by dollar impact.`,
+  variance:`Pull HonorHealth Office Variance Pack. Compare all 4 satellite offices (Scottsdale 18.4%/31auth, Mesa 22.1%/14auth CRITICAL, Tempe 11.2% BEST, North Mountain 13.5%/12auth). Metrics: denial_rate, auth_delay, coding_review_backlog, writeoff_risk. Identify which office needs immediate intervention and recommend office-manager-specific actions.`,
+  denial:`Pull Denial Recovery Pack. Analyze PR-96 ($21.6K), CO-4 ($13.4K), CO-11 ($8.1K), CO-29 URGENT ($5.7K). Build prioritized appeal sequence with payer-specific tactics. CLM-0334 is 48hr emergency.`,
+  auth:`Pull Auth Friction Pack. Scottsdale 31 pending (United), Mesa 14 pending, North Mountain 12 pending, Tempe 8 pending. Identify payer bottlenecks and workflow fixes. Which payer is causing most friction?`,
+  compliance:`Pull Compliance Sweep Pack. Analyze: CPT 99215 upcoding 23 claims ($12,040), modifier -25 overuse 47 claims ($8,460), ICD-10 specificity gaps 14 claims. Risk-rank and provide mitigation plan.`,
+  executive:`Pull Executive Brief Pack. Synthesize all HonorHealth HC data into a 5-point executive brief for the Revenue Cycle Manager. Include: health score, top risk, top win, 3 actions for today, 1 strategic recommendation for the month.`
+};
 
-  let chatHistory = [];
-  let isTyping = false;
+async function runPack(packId){
+  showTab('exec');
+  const packNames={revenue:'Revenue Pack',variance:'Office Variance Pack',denial:'Denial Recovery Pack',auth:'Auth Friction Pack',compliance:'Compliance Sweep Pack',executive:'Executive Brief Pack'};
+  document.querySelector('.pack-btn[onclick="runPack(\''+packId+'\')"]')?.classList.add('running');
+  await callClaude(PACKS[packId], document.getElementById('strat-out'), document.getElementById('thinking-bar'), document.getElementById('strat-err'));
+  document.querySelectorAll('.pack-btn').forEach(b=>b.classList.remove('running'));
+}
 
-  function sendQuickPrompt(prompt) {
-    document.getElementById('chatInput').value = prompt;
-    sendMessage();
-  }
+// ── LOAD SIGNALS ──
+async function loadSignals(){
+  const out = document.getElementById('signals-out');
+  out.innerHTML='<div style="font-size:9px;color:var(--purple);padding:8px">◈ Refreshing HC signals...</div>';
+  await callClaude(
+    'List the top 4 live strategic signals for HonorHealth right now. For each: signal title, source (which office/node), sub-detail, and urgency level (URGENT/HIGH/MED/INFRA). Focus on revenue cycle, denials, auth, and coding issues only. Return as a simple numbered list.',
+    {classList:{add:()=>{},remove:()=>{}},textContent:'',innerText:''},
+    null, null
+  ).catch(()=>{});
+}
 
-  function handleChatKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
+// ── TAB-SPECIFIC ANALYSES ──
+async function runDenialAnalysis(){
+  await callClaude('Analyze HonorHealth denial code breakdown: PR-96 104 claims ($21.6K), CO-4 65 claims ($13.4K), CO-11 42 claims ($8.1K), CO-29 12 claims ($5.7K URGENT 48hr). Provide root cause per code and a sequenced recovery plan starting with highest dollar impact.', document.getElementById('denial-analysis-out'), null, null);
+}
 
-  async function sendMessage() {
-    if (isTyping) return;
-    const input = document.getElementById('chatInput');
-    const msg = input.value.trim();
-    if (!msg) return;
+// ── OFFICE FOCUS ──
+function focusOffice(office){
+  const prompts={
+    scottsdale:'Deep dive on Scottsdale Primary Care: 18.4% denial rate, 31 auth pending (United), coding drift 0.12, 2 coders in training. What are the 3 most important things the Scottsdale OM should do this week?',
+    mesa:'Deep dive on Mesa Family Practice: 22.1% denial rate (highest in portfolio), 14 auth pending, coding drift 0.19, new scheduler onboarding, $11.2K writeoff risk. This is the highest-risk office. What immediate interventions are needed?',
+    tempe:'Deep dive on Tempe Multispecialty: 11.2% denial rate (best in portfolio), 8 auth pending, coding drift 0.04. What is Tempe doing right that the other offices should replicate?',
+    northmountain:'Deep dive on North Mountain Clinic: 13.5% denial rate, 12 auth pending, CO-4 pattern on Aetna (8 claims), ICD-10 specificity gaps on 6 claims. What are the 3 actions for the North Mountain OM?'
+  };
+  showTab('exec');
+  quickAsk(prompts[office]);
+}
 
-    input.value = '';
-    addMessage('user', msg);
-    chatHistory.push({ role: 'user', content: msg });
+// ── CLEAR ──
+function clearOut(){
+  ['strat-out','strat-err'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('show');el.textContent='';}
+  });
+  document.getElementById('thinking-bar').classList.remove('show');
+}
 
-    isTyping = true;
-    document.getElementById('sendBtn').disabled = true;
-
-    const typingId = addTypingIndicator();
-
-    try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: chatHistory
+// ── INIT: auto-load score ──
+(async()=>{
+  setTimeout(async()=>{
+    try{
+      const resp = await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})}), $48K at risk, clean claim rate 94.2% vs 97% target, 231 denied claims, Mesa 22.1% denial CRITICAL, CLM-0334 48hr deadline. Score the overall revenue cycle health.'}]
         })
       });
-
-      const data = await response.json();
-      removeTypingIndicator(typingId);
-
-      const reply = data.content && data.content[0] ? data.content[0].text : 'I apologize — there was an issue processing your request. Please try again.';
-      addMessage('assistant', reply);
-      chatHistory.push({ role: 'assistant', content: reply });
-
-      if (chatHistory.length > 20) {
-        chatHistory = chatHistory.slice(-20);
+      const data = await resp.json();
+      if(data.content && data.content){
+        const txt = data.content.replace(/```json|```/g,'').trim();
+        const parsed = JSON.parse(txt);
+        document.getElementById('strat-score').textContent=parsed.score;
+        document.getElementById('strat-score').className='kpi-v '+(parsed.score<60?'vr':parsed.score<75?'va':'vg');
+        document.getElementById('strat-score-sub').textContent=parsed.label;
       }
-
-    } catch (err) {
-      removeTypingIndicator(typingId);
-      addMessage('assistant', 'I\'m unable to connect right now. Please check your connection and try again, or reach out via one of the Core Apps directly.');
-    }
-
-    isTyping = false;
-    document.getElementById('sendBtn').disabled = false;
-  }
-
-  function addMessage(role, text) {
-    const window_ = document.getElementById('chatWindow');
-    const isUser = role === 'user';
-    const div = document.createElement('div');
-    div.className = `chat-msg${isUser ? ' user' : ''}`;
-    div.setAttribute('role', 'article');
-    div.setAttribute('aria-label', `${isUser ? 'Your message' : 'Advisor response'}`);
-
-    const formattedText = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>');
-
-    div.innerHTML = `
-      <div class="chat-avatar" aria-hidden="true">${isUser ? '👤' : 'S'}</div>
-      <div class="chat-bubble"><p>${formattedText}</p></div>
-    `;
-    window_.appendChild(div);
-    window_.scrollTop = window_.scrollHeight;
-    return div;
-  }
-
-  function addTypingIndicator() {
-    const window_ = document.getElementById('chatWindow');
-    const id = 'typing-' + Date.now();
-    const div = document.createElement('div');
-    div.className = 'chat-msg';
-    div.id = id;
-    div.setAttribute('aria-label', 'Advisor is typing');
-    div.innerHTML = `
-      <div class="chat-avatar" aria-hidden="true">S</div>
-      <div class="chat-bubble">
-        <div class="typing-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-      </div>
-    `;
-    window_.appendChild(div);
-    window_.scrollTop = window_.scrollHeight;
-    return id;
-  }
-
-  function removeTypingIndicator(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
-  }
-
-  /* ── AUTO-RESIZE TEXTAREA ── */
-  document.getElementById('chatInput').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  });
-
-  /* ── SMOOTH SCROLL FOR ANCHOR LINKS ── */
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  /* ── SCROLL REVEAL ── */
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.app-card, .playbook-card, .intel-card, .risk-card, .vertical-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(18px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.22s, background 0.22s, box-shadow 0.22s';
-    observer.observe(el);
-  });
+    } catch(e){}
+  },800);
+})();
 </script>
-<script>window.ui = new TSM_UI();</script></body>
+</body>
 </html>

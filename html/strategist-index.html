@@ -2090,21 +2090,20 @@ Your role is to provide strategic, board-level counsel that draws connections AC
     const typingId = addTypingIndicator();
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/hc/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: chatHistory
+          query: chatHistory[chatHistory.length-1]?.content || '',
+          system: 'HonorHealth',
+          location: 'Scottsdale - Shea'
         })
       });
 
       const data = await response.json();
       removeTypingIndicator(typingId);
 
-      const reply = data.content && data.content[0] ? data.content[0].text : 'I apologize — there was an issue processing your request. Please try again.';
+      const reply = data.content && data.content ? data.content : 'I apologize — there was an issue processing your request. Please try again.';
       addMessage('assistant', reply);
       chatHistory.push({ role: 'assistant', content: reply });
 

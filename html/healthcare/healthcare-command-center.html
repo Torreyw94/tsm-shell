@@ -582,7 +582,7 @@ Node Coverage:
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────
 // Direct Anthropic API — no /api/v1/bridge dependency (that 404s on healthcare.tsmatter.com)
-const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
+const ANTHROPIC_API = '/api/hc/ask';
 const MODEL = 'tsm-neural-sonnet-4-20250514';
 
 const NODE_CONFIG = {
@@ -651,7 +651,7 @@ async function callNode(nodeKey, userQuery){
       })
     });
     if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    return { text: data.content?.[0]?.text || 'Analysis complete.', fallback: false };
+    return { text: data.content || 'Analysis complete.', fallback: false };
   } catch(e) {
     // Graceful fallback — simulate node response
     const fallbacks = {
@@ -752,7 +752,7 @@ async function synthesize(){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''), model: MODEL, max_tokens: 600, system: sys, messages: [{ role:'user', content: prompt }] })
     });
-    out.textContent = data.content?.[0]?.text || 'Synthesis complete.';
+    out.textContent = data.content || 'Synthesis complete.';
   } catch(e) {
     out.textContent = `Synthesis complete — Fallback mode.\n\nDeploy completed across selected healthcare nodes.\n\nImmediate: launch denial recovery sprint across billing, insurance, and financial lanes.\n\n72 hours: validate documentation controls and compliance remediation paths.\n\n30 days: standardize payer, vendor, legal, and grant workflows into one operating playbook.\n\nConfidence: 91%\n\nNode Coverage:\n• medical — ${Object.keys(nodeResults).includes('medical')?'89%':'42%'}\n• pharmacy — ${Object.keys(nodeResults).includes('pharmacy')?'87%':'42%'}\n• insurance — ${Object.keys(nodeResults).includes('insurance')?'91%':'42%'}\n• financial — ${Object.keys(nodeResults).includes('financial')?'88%':'42%'}\n• legal — ${Object.keys(nodeResults).includes('legal')?'85%':'42%'}\n• vendors — ${Object.keys(nodeResults).includes('vendors')?'82%':'42%'}\n• billing — ${Object.keys(nodeResults).includes('billing')?'90%':'42%'}\n• taxprep — ${Object.keys(nodeResults).includes('taxprep')?'86%':'42%'}\n• grants — ${Object.keys(nodeResults).includes('grants')?'84%':'42%'}`;
   }

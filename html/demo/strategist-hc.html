@@ -710,21 +710,13 @@ async function callClaude(userMsg, outEl, thinkEl, errEl){
   },1800) : null;
 
   try{
-    const resp = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system: HC_CONTEXT,
-        messages:[{role:'user',content:userMsg}]
-      })
+    const resp = await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})
     });
     const data = await resp.json();
     if(thinkInterval) clearInterval(thinkInterval);
     if(thinkEl) thinkEl.classList.remove('show');
-    if(data.content && data.content[0]){
-      outEl.textContent = data.content[0].text;
+    if(data.content && data.content){
+      outEl.textContent = data.content;
       outEl.classList.add('show','fi');
     } else if(data.error){
       throw new Error(data.error.message);
@@ -822,19 +814,12 @@ function clearOut(){
 (async()=>{
   setTimeout(async()=>{
     try{
-      const resp = await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:60,
-          system:'You are HC-Strategist for HonorHealth. Return ONLY a JSON object: {"score":NUMBER,"label":"SHORT_LABEL"} — score 0-100 representing overall revenue cycle health. No other text.',
-          messages:[{role:'user',content:'Current data: denial rate 18.4% (threshold 15%), $48K at risk, clean claim rate 94.2% vs 97% target, 231 denied claims, Mesa 22.1% denial CRITICAL, CLM-0334 48hr deadline. Score the overall revenue cycle health.'}]
+      const resp = await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})}), $48K at risk, clean claim rate 94.2% vs 97% target, 231 denied claims, Mesa 22.1% denial CRITICAL, CLM-0334 48hr deadline. Score the overall revenue cycle health.'}]
         })
       });
       const data = await resp.json();
-      if(data.content && data.content[0]){
-        const txt = data.content[0].text.replace(/```json|```/g,'').trim();
+      if(data.content && data.content){
+        const txt = data.content.replace(/```json|```/g,'').trim();
         const parsed = JSON.parse(txt);
         document.getElementById('strat-score').textContent=parsed.score;
         document.getElementById('strat-score').className='kpi-v '+(parsed.score<60?'vr':parsed.score<75?'va':'vg');

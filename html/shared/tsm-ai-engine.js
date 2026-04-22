@@ -284,7 +284,7 @@ Prioritize by dollar recovery opportunity.`
     _chatHistory: [],
     _model: 'claude-sonnet-4-20250514',
     _maxTokens: 1000,
-    _apiEndpoint: 'https://api.anthropic.com/v1/messages',
+    _apiEndpoint: '/api/hc/ask',
 
     /* ── INIT ──────────────────────────────────────────────── */
     init(profileId, nodeId, overrideData) {
@@ -343,8 +343,8 @@ Prioritize by dollar recovery opportunity.`
 
       const data = await resp.json();
       if (data.error) throw new Error(data.error.message || 'API error');
-      if (!data.content || !data.content[0]) throw new Error('Empty response');
-      return data.content[0].text;
+      if (!data.content || !data.content) throw new Error('Empty response');
+      return data.content;
     },
 
     /* ── STREAM TO ELEMENT (typewriter effect) ─────────────── */
