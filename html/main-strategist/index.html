@@ -324,14 +324,14 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <!-- ── CENTER ── -->
   <div class="center">
     <div class="tab-bar">
-      <div class="tab act" id="t-exec" onclick="showTab('exec')">Executive Brief</div>
-      <div class="tab" id="t-denial" onclick="showTab('denial')">Denial Sweep</div>
-      <div class="tab" id="t-auth" onclick="showTab('auth')">Auth Friction</div>
-      <div class="tab" id="t-coding" onclick="showTab('coding')">Coding Drift</div>
-      <div class="tab" id="t-variance" onclick="showTab('variance')">Site Variance</div>
-      <div class="tab" id="t-compliance" onclick="showTab('compliance')">Compliance Heat</div>
-      <div class="tab" id="t-pharmacy" onclick="showTab('pharmacy')">Pharmacy / DME</div>
-      <div class="tab" id="t-taxgrants" onclick="showTab('taxgrants')">Tax Prep / Grants</div>
+      <div class="tab act" id="t-exec" >Executive Brief</div>
+      <div class="tab" id="t-denial" >Denial Sweep</div>
+      <div class="tab" id="t-auth" >Auth Friction</div>
+      <div class="tab" id="t-coding" >Coding Drift</div>
+      <div class="tab" id="t-variance" >Site Variance</div>
+      <div class="tab" id="t-compliance" >Compliance Heat</div>
+      <div class="tab" id="t-pharmacy" >Pharmacy / DME</div>
+      <div class="tab" id="t-taxgrants" >Tax Prep / Grants</div>
     </div>
 
     <div class="content">
@@ -831,3 +831,15 @@ function clearOut(){
 </script>
 </body>
 </html>
+
+<script>
+// ===== TSM STRATEGIST SAFE TAB SYSTEM =====
+(function(){
+  window.showTab = function(tab){
+    document.querySelectorAll('[data-tab]').forEach(el=>{
+      el.style.display = (el.dataset.tab === tab) ? 'block' : 'none';
+    });
+  };
+})();
+</script>
+
