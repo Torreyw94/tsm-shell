@@ -428,7 +428,7 @@ body > div:first-of-type,
   <div class="strat-label">◈ HC STRATEGIST</div>
   <div class="strat-rec" id="strat-ticker">▸ <span>Neural HC analysis ready</span> — Mesa 22.1% denial CRITICAL · CLM-0334 48hr deadline · Scottsdale 31 auth pending</div>
   <div class="strat-actions">
-    <button class="strat-mini-btn" onclick="showTab('strategist')">FULL STRATEGIST →</button>
+    <button class="strat-mini-btn" >FULL STRATEGIST →</button>
     <button class="strat-mini-btn" onclick="runQuickPack('priority')">◈ TOP PRIORITY</button>
   </div>
 </div>
@@ -468,32 +468,32 @@ body > div:first-of-type,
       <a class="ni" href="../healthcare/om-hc-center.html" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Command OM</span><span class="ni-b bo">OM</span></a>
 
       <div class="nav-gh" style="margin-top:5px"><span class="nav-gl" style="color:var(--purple)">◈ Strategy</span></div>
-      <div class="ni" onclick="showTab('strategist')" style="cursor:pointer"><span class="ni-d dp pls"></span><span class="ni-n" style="color:var(--purple)">HC Strategist</span><span class="ni-b bp">NEURAL</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d dp pls"></span><span class="ni-n" style="color:var(--purple)">HC Strategist</span><span class="ni-b bp">NEURAL</span></div>
 
       <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">Satellite Offices</span><span class="nav-gc">4</span></div>
-      <div class="ni" onclick="showTab('offices')" style="cursor:pointer"><span class="ni-d" style="background:var(--red)"></span><span class="ni-n">Mesa OM</span><span class="ni-b bc">22.1%</span></div>
-      <div class="ni" onclick="showTab('offices')" style="cursor:pointer"><span class="ni-d da"></span><span class="ni-n">Scottsdale OM</span><span class="ni-b bw">31 auth</span></div>
-      <div class="ni" onclick="showTab('offices')" style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">Tempe OM</span><span class="ni-b bo">11.2%</span></div>
-      <div class="ni" onclick="showTab('offices')" style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">N. Mountain OM</span><span class="ni-b bo">13.5%</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d" style="background:var(--red)"></span><span class="ni-n">Mesa OM</span><span class="ni-b bc">22.1%</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d da"></span><span class="ni-n">Scottsdale OM</span><span class="ni-b bw">31 auth</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">Tempe OM</span><span class="ni-b bo">11.2%</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">N. Mountain OM</span><span class="ni-b bo">13.5%</span></div>
 
       <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">BPO Intake</span><span class="nav-gc" style="color:var(--amber)">4</span></div>
-      <div class="ni" onclick="showTab('intake')" style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">1 Ready Review</span><span class="ni-b bo">ERA</span></div>
-      <div class="ni" onclick="showTab('intake')" style="cursor:pointer"><span class="ni-d da"></span><span class="ni-n">3 Processing</span><span class="ni-b bw">queue</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">1 Ready Review</span><span class="ni-b bo">ERA</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d da"></span><span class="ni-n">3 Processing</span><span class="ni-b bw">queue</span></div>
     </div>
-    <div class="strat-nav-btn" onclick="showTab('strategist')">◈ HC Strategist Neural Core</div>
+    <div class="strat-nav-btn" >◈ HC Strategist Neural Core</div>
     <button class="brief-btn" onclick="buildBrief()">◆ Build Team Briefing</button>
   </div>
 
   <!-- ── CENTER ── -->
   <div class="center">
     <div class="tab-bar">
-      <div class="tab act" id="t-dashboard" onclick="showTab('dashboard')">Dashboard</div>
-      <div class="tab" id="t-offices" onclick="showTab('offices')">Satellite Offices</div>
-      <div class="tab" id="t-nodes" onclick="showTab('nodes')">All Nodes</div>
-      <div class="tab" id="t-intake" onclick="showTab('intake')">BPO Intake</div>
-      <div class="tab" id="t-alerts" onclick="showTab('alerts')">Alerts <span style="color:var(--red);margin-left:3px">6</span></div>
-      <div class="tab" id="t-reports" onclick="showTab('reports')">Reports</div>
-      <div class="tab strat-tab" id="t-strategist" onclick="showTab('strategist')" style="color:rgba(168,85,247,.6)">◈ HC Strategist</div>
+      <div class="tab act" id="t-dashboard" >Dashboard</div>
+      <div class="tab" id="t-offices" >Satellite Offices</div>
+      <div class="tab" id="t-nodes" >All Nodes</div>
+      <div class="tab" id="t-intake" >BPO Intake</div>
+      <div class="tab" id="t-alerts" >Alerts <span style="color:var(--red);margin-left:3px">6</span></div>
+      <div class="tab" id="t-reports" >Reports</div>
+      <div class="tab strat-tab" id="t-strategist"  style="color:rgba(168,85,247,.6)">◈ HC Strategist</div>
     </div>
 
     <div class="content">
@@ -513,17 +513,17 @@ body > div:first-of-type,
 
         <!-- PULL PACKS -->
         <div class="pack-row">
-          <button class="pack-btn" onclick="runPack('revenue')">◈ Pull Revenue Pack</button>
-          <button class="pack-btn" onclick="runPack('variance')">▣ Pull Site Variance</button>
-          <button class="pack-btn" onclick="runPack('denial')">⚡ Pull Denial Recovery</button>
-          <button class="pack-btn" onclick="runPack('auth')">◎ Pull Auth Friction</button>
-          <button class="pack-btn" onclick="runPack('compliance')">▲ Pull Compliance Sweep</button>
-          <button class="pack-btn" onclick="runPack('executive')">◆ Pull Executive Brief</button>
+          <button class="pack-btn" >◈ Pull Revenue Pack</button>
+          <button class="pack-btn" >▣ Pull Site Variance</button>
+          <button class="pack-btn" >⚡ Pull Denial Recovery</button>
+          <button class="pack-btn" >◎ Pull Auth Friction</button>
+          <button class="pack-btn" >▲ Pull Compliance Sweep</button>
+          <button class="pack-btn" >◆ Pull Executive Brief</button>
         </div>
 
         <div class="dg3">
           <div class="panel">
-            <div class="sh"><span class="st">Active Alerts</span><span class="sa" onclick="showTab('alerts')">view all →</span></div>
+            <div class="sh"><span class="st">Active Alerts</span><span class="sa" >view all →</span></div>
             <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — PR-96 (45%), CO-4 (28%), CO-11 (18%)</span><span class="am" style="color:var(--red)">$48K</span></div>
             <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (93454) — CO-29 timely filing · write-off risk in 48hrs</span><span class="am" style="color:var(--red)">$3.8K</span></div>
             <div class="ar"><span class="ap pu">CRIT</span><span class="at">Mesa OM — 22.1% denial rate spike above portfolio average · 9 active alerts</span><span class="am" style="color:var(--red)">OFFICE</span></div>
@@ -531,7 +531,7 @@ body > div:first-of-type,
             <div class="ar"><span class="ap pm">MED</span><span class="at">Modifier -25 overuse — 47 claims · compliance review required</span><span class="am">$8,460</span></div>
           </div>
           <div class="panel">
-            <div class="sh"><span class="st">BPO Intake</span><span class="sa" onclick="showTab('intake')">view all →</span></div>
+            <div class="sh"><span class="st">BPO Intake</span><span class="sa" >view all →</span></div>
             <div class="ir"><span class="id" style="background:var(--g);box-shadow:0 0 4px var(--g)"></span><div style="flex:1"><div class="in">ERA_20260414_batch.txt</div><div class="it">ERA FILE · $1.00</div></div><span class="itm">08:14</span><button class="ib rdy" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch — 231 claims, Medicare and Aetna, denial codes PR-96 and CO-4')">REVIEW</button></div>
             <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CLM-denial-batch-231.csv</div><div class="it">DENIAL BATCH · $1.00</div></div><span class="itm">07:52</span><button class="ib" disabled>PROCESSING</button></div>
             <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CPT-audit-Q1-2026.pdf</div><div class="it">AUDIT DOC · $2.00</div></div><span class="itm">07:30</span><button class="ib" disabled>PROCESSING</button></div>
@@ -556,7 +556,7 @@ body > div:first-of-type,
 
         <!-- STRATEGIST SNAPSHOT -->
         <div class="strat-panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st strat">HC Strategist Snapshot</span><button class="btn btn-strat" style="padding:3px 10px;font-size:8px" onclick="showTab('strategist')">FULL VIEW →</button></div>
+          <div class="sh"><span class="st strat">HC Strategist Snapshot</span><button class="btn btn-strat" style="padding:3px 10px;font-size:8px" >FULL VIEW →</button></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div id="dash-signals">
               <div class="strat-signal"><div class="ss-icon" style="color:var(--red)">⚡</div><div class="ss-body"><div class="ss-title">CLM-0334 · 48hr write-off deadline</div><div class="ss-sub">CO-29 appeal required today. $3,800. Source: Scottsdale OM.</div></div><div class="ss-badge sb-urg">URGENT</div></div>
@@ -571,7 +571,7 @@ body > div:first-of-type,
 
         <!-- QUICK LAUNCH -->
         <div class="panel">
-          <div class="sh"><span class="st">Quick Launch — HC Nodes</span><span class="sa" onclick="showTab('nodes')">all nodes →</span></div>
+          <div class="sh"><span class="st">Quick Launch — HC Nodes</span><span class="sa" >all nodes →</span></div>
           <div class="node-grid">
             <a class="nc ncc" href="https://hc-taxprep.tsmatter.com" target="_blank"><div class="ncn">HC Tax Prep</div><div class="ncu">hc-taxprep.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--red)">80% CPU · 187 restarts</span></div></a>
             <a class="nc ncw" href="https://hc-billing.tsmatter.com" target="_blank"><div class="ncn">HC Billing</div><div class="ncu">hc-billing.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--amber)">231 denied · $48K risk</span></div></a>
@@ -579,7 +579,7 @@ body > div:first-of-type,
             <a class="nc ncw" href="https://hc-insurance.tsmatter.com" target="_blank"><div class="ncn">HC Insurance</div><div class="ncu">hc-insurance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--amber)">6 pending authorizations</span></div></a>
             <!-- HC Command → updated to om-hc-center.html -->
             <a class="nc nco" href="../healthcare/om-hc-center.html" target="_blank"><div class="ncn">HC Command OM</div><div class="ncu">healthcare/om-hc-center.html</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · office manager hub</span></div></a>
-            <div class="nc ncp" onclick="showTab('strategist')" style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural core · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)">profile: HonorHealth · locked</span></div></div>
+            <div class="nc ncp"  style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural core · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)">profile: HonorHealth · locked</span></div></div>
           </div>
         </div>
       </div>
@@ -587,7 +587,7 @@ body > div:first-of-type,
       <!-- ══ SATELLITE OFFICES TAB ══ -->
       <div id="tab-offices" style="display:none">
         <div class="panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st">Satellite Office Summaries — 4 Offices Reporting</span><button class="btn btn-strat" style="padding:3px 10px;font-size:8px" onclick="runPack('variance')">◈ AI VARIANCE PACK</button></div>
+          <div class="sh"><span class="st">Satellite Office Summaries — 4 Offices Reporting</span><button class="btn btn-strat" style="padding:3px 10px;font-size:8px" >◈ AI VARIANCE PACK</button></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div class="om-summary crit">
               <div class="om-hdr"><div class="om-nm" style="color:var(--red)">⚡ Mesa Family Practice</div><div class="om-updated">01:58 UTC</div></div>
@@ -669,7 +669,7 @@ body > div:first-of-type,
             <a class="nc nco" href="https://hc-grants.tsmatter.com" target="_blank"><div class="ncn">HC Grants</div><div class="ncu">hc-grants.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online</span></div></a>
             <!-- Updated HC Command link -->
             <a class="nc nco" href="../healthcare/om-hc-center.html" target="_blank"><div class="ncn">HC Command OM</div><div class="ncu">healthcare/om-hc-center.html</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · office manager hub</span></div></a>
-            <div class="nc ncp" onclick="showTab('strategist')" style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural · HonorHealth-locked</div><div class="ncs"><span class="ncst" style="color:var(--purple)">active · HC-only profile</span></div></div>
+            <div class="nc ncp"  style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural · HonorHealth-locked</div><div class="ncs"><span class="ncst" style="color:var(--purple)">active · HC-only profile</span></div></div>
           </div>
         </div>
       </div>
@@ -785,12 +785,12 @@ body > div:first-of-type,
 
         <!-- PULL PACKS IN STRATEGIST -->
         <div class="pack-row" style="margin-bottom:10px">
-          <button class="pack-btn" onclick="runPack('revenue')">◈ Revenue Pack</button>
-          <button class="pack-btn" onclick="runPack('variance')">▣ Site Variance</button>
-          <button class="pack-btn" onclick="runPack('denial')">⚡ Denial Recovery</button>
-          <button class="pack-btn" onclick="runPack('auth')">◎ Auth Friction</button>
-          <button class="pack-btn" onclick="runPack('compliance')">▲ Compliance Sweep</button>
-          <button class="pack-btn" onclick="runPack('executive')">◆ Executive Brief</button>
+          <button class="pack-btn" >◈ Revenue Pack</button>
+          <button class="pack-btn" >▣ Site Variance</button>
+          <button class="pack-btn" >⚡ Denial Recovery</button>
+          <button class="pack-btn" >◎ Auth Friction</button>
+          <button class="pack-btn" >▲ Compliance Sweep</button>
+          <button class="pack-btn" >◆ Executive Brief</button>
         </div>
 
         <div class="dg2">
@@ -835,20 +835,20 @@ body > div:first-of-type,
     <div class="rps">
       <div class="rpt">HC Neural Assistant</div>
       <div class="chips">
-        <div class="chip strat-chip" onclick="sendChat('What is the top revenue risk right now?')">Top risk</div>
-        <div class="chip strat-chip" onclick="sendChat('Summarize all 4 satellite office alerts.')">Office summary</div>
-        <div class="chip strat-chip" onclick="sendChat('Draft the CO-29 appeal for CLM-0334.')">CO-29 appeal</div>
-        <div class="chip strat-chip" onclick="sendChat('What should Dee do in the next 2 hours?')">Next 2 hours</div>
-        <div class="chip strat-chip" onclick="sendChat('Which payer is our biggest denial risk today?')">Payer risk</div>
-        <div class="chip strat-chip" onclick="sendChat('Compare Tempe vs Mesa performance and explain what Tempe does differently.')">Office compare</div>
+        <div class="chip strat-chip" >Top risk</div>
+        <div class="chip strat-chip" >Office summary</div>
+        <div class="chip strat-chip" >CO-29 appeal</div>
+        <div class="chip strat-chip" >Next 2 hours</div>
+        <div class="chip strat-chip" >Payer risk</div>
+        <div class="chip strat-chip" >Office compare</div>
       </div>
     </div>
     <div class="rpc" id="chat-msgs">
       <div class="cm ca">◈ HC Strategist online — HonorHealth profile locked. Cross-sector bleed: OFF. Ask me about denials, auths, offices, appeals, or revenue.</div>
     </div>
     <div class="rpi-row">
-      <input class="rpi" id="chat-inp" placeholder="Ask HC Strategist..." onkeydown="if(event.key==='Enter')sendChat()">
-      <div class="rpsb" onclick="sendChat()">→</div>
+      <input class="rpi" id="chat-inp" placeholder="Ask HC Strategist..." onkeydown="if(event.key==='Enter')void()">
+      <div class="rpsb" >→</div>
     </div>
   </div>
 
