@@ -1,820 +1,2487 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CASE-TECH | SOVEREIGN COMMAND · TSM Intelligence Platform</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:      #050c14;
-      --bg2:     #070d18;
-      --surface: #09131f;
-      --card:    #0b1825;
-      --border:  rgba(6,182,212,.13);
-      --border2: rgba(6,182,212,.28);
-      --cyan:    #06b6d4;
-      --cyan2:   #38bdf8;
-      --green:   #00ff88;
-      --amber:   #f59e0b;
-      --purple:  #a855f7;
-      --coral:   #f97316;
-      --red:     #f43f5e;
-      --txt:     #c2d8ec;
-      --txt2:    #607a94;
-      --glow:    0 0 28px rgba(6,182,212,.16);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--txt);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(6,182,212,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(6,182,212,.025) 1px, transparent 1px);
-      background-size: 44px 44px;
-      pointer-events: none; z-index: 0;
-    }
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(5,12,20,.94);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 28px; height: 58px;
-    }
-    .logo-block { display: flex; align-items: center; gap: 14px; }
-    .logo-hex {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #0e7490 0%, var(--cyan) 100%);
-      clip-path: polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 800;
-      color: #fff; letter-spacing: 1px;
-    }
-    .logo-text  { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 600; color: var(--cyan2); letter-spacing: 2px; }
-    .logo-sub   { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt2); letter-spacing: 3px; }
-    .hdr-pills  { display: flex; gap: 12px; align-items: center; }
-    .hdr-pill {
-      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1.5px;
-      padding: 3px 10px; border-radius: 3px; border: 1px solid; cursor: pointer;
-      transition: background .15s;
-    }
-    .hdr-pill.cyan  { color: var(--cyan);  border-color: rgba(6,182,212,.3); }
-    .hdr-pill.cyan:hover { background: rgba(6,182,212,.1); }
-    .hdr-pill.green { color: var(--green); border-color: rgba(0,255,136,.3); }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
-    @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,.5); } 50% { box-shadow: 0 0 0 5px rgba(0,255,136,0); } }
-    .hdr-right { display: flex; align-items: center; gap: 16px; }
-    .hdr-status { display: flex; align-items: center; gap: 6px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--green); letter-spacing: 1px; }
-    main { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 36px 28px 80px; }
-    .hero { text-align: center; margin-bottom: 40px; }
-    .hero-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 4px; color: var(--cyan); margin-bottom: 10px; }
-    .hero-title { font-family: 'Orbitron', monospace; font-size: clamp(20px, 3.5vw, 34px); font-weight: 800; color: #e4f0fc; letter-spacing: 2px; line-height: 1.15; margin-bottom: 6px; }
-    .hero-title span { color: var(--cyan); }
-    .hero-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt2); letter-spacing: 3px; margin-bottom: 20px; }
-    .hero-divider { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); margin: 0 auto 32px; }
-    .model-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
-      color: var(--cyan); border: 1px solid rgba(6,182,212,.3); border-radius: 4px;
-      padding: 5px 14px; background: rgba(6,182,212,.06);
-    }
-    .model-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: pulse-dot 1.8s ease-in-out infinite; }
-    .bridge-banner {
-      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25);
-      border-radius: 6px; padding: 8px 16px; margin-bottom: 20px;
-      font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--amber);
-      letter-spacing: 1px; display: none; align-items: center; gap: 10px;
-    }
-    .bridge-banner.show { display: flex; }
-    .bridge-banner.ok { color: var(--green); background: rgba(0,255,136,.05); border-color: rgba(0,255,136,.2); }
-    .query-wrap { max-width: 820px; margin: 0 auto 36px; }
-    .query-label { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 3px; color: var(--txt2); margin-bottom: 6px; }
-    .query-bar { background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; display: flex; align-items: center; gap: 10px; padding: 10px 16px; box-shadow: var(--glow); }
-    .query-bar input { flex: 1; background: transparent; border: none; outline: none; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--txt); caret-color: var(--cyan); }
-    .query-bar input::placeholder { color: var(--txt2); }
-    .node-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
-    .ntog { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px; padding: 3px 8px; border-radius: 3px; border: 1px solid; cursor: pointer; transition: all .15s; user-select: none; }
-    .ntog.active.tax    { color: var(--amber);  border-color: rgba(245,158,11,.5); background: rgba(245,158,11,.1); }
-    .ntog.active.orders { color: var(--green);  border-color: rgba(0,255,136,.4);  background: rgba(0,255,136,.08); }
-    .ntog.active.ar     { color: var(--cyan);   border-color: rgba(6,182,212,.4);  background: rgba(6,182,212,.08); }
-    .ntog:not(.active)  { color: var(--txt2);   border-color: var(--border); }
-    .deploy-btn { background: var(--cyan); color: #050c14; border: none; border-radius: 4px; padding: 7px 18px; font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background .2s, transform .1s; white-space: nowrap; }
-    .deploy-btn:hover { background: var(--cyan2); }
-    .deploy-btn:active { transform: scale(.97); }
-    .deploy-btn:disabled { opacity: .5; cursor: not-allowed; }
-    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 36px; }
-    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 12px; text-align: center; }
-    .stat-val { font-family: 'Orbitron', monospace; font-size: 19px; font-weight: 800; color: var(--cyan); letter-spacing: 1px; }
-    .stat-lbl { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; color: var(--txt2); margin-top: 4px; }
-    .sec-label { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .sec-label-text { font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 600; letter-spacing: 3px; color: var(--txt2); text-transform: uppercase; white-space: nowrap; }
-    .sec-line { flex: 1; height: 1px; background: var(--border); }
-    .sec-badge { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--cyan); border: 1px solid var(--border2); border-radius: 3px; padding: 2px 8px; letter-spacing: 1px; }
-    .sovereign-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 36px; }
-    @media (max-width: 900px) { .sovereign-grid { grid-template-columns: 1fr; } }
-    .sov-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s, box-shadow .2s; position: relative; }
-    .sov-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity .2s; }
-    .sov-card:hover { box-shadow: 0 4px 36px rgba(6,182,212,.1); }
-    .sov-card:hover::before { opacity: 1; }
-    .sov-card.tax:hover { border-color: rgba(245,158,11,.35); }
-    .sov-card.tax::before { background: linear-gradient(90deg, var(--amber), #f97316); }
-    .sov-card.orders:hover { border-color: rgba(0,255,136,.3); }
-    .sov-card.orders::before { background: linear-gradient(90deg, var(--green), #00cc6a); }
-    .sov-card.ar:hover { border-color: var(--border2); }
-    .sov-card.ar::before { background: linear-gradient(90deg, var(--cyan), var(--cyan2)); }
-    .sov-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
-    .sov-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: #dceeff; line-height: 1.4; }
-    .sov-mod-badge { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px; padding: 2px 7px; border-radius: 2px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
-    .mod-tax    { color: var(--amber);  border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08); }
-    .mod-orders { color: var(--green);  border-color: rgba(0,255,136,.3);   background: rgba(0,255,136,.06); }
-    .mod-ar     { color: var(--cyan);   border-color: rgba(6,182,212,.3);   background: rgba(6,182,212,.06); }
-    .sov-body { padding: 14px 20px; flex: 1; }
-    .sov-desc { font-size: 11px; color: var(--txt2); line-height: 1.7; margin-bottom: 12px; }
-    .quick-prompts { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-    .qp-btn { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .5px; color: var(--txt2); background: rgba(6,182,212,.04); border: 1px solid var(--border); border-radius: 4px; padding: 6px 10px; text-align: left; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px; }
-    .qp-btn:hover { background: rgba(6,182,212,.09); border-color: var(--border2); color: var(--txt); }
-    .qp-arrow { color: var(--cyan); font-size: 10px; }
-    .sov-input-row { display: flex; gap: 6px; }
-    .sov-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 7px 10px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); outline: none; transition: border-color .15s; }
-    .sov-input:focus { border-color: var(--border2); }
-    .sov-input::placeholder { color: var(--txt2); }
-    .sov-run-btn { background: transparent; border: 1px solid; border-radius: 4px; padding: 7px 12px; font-family: 'Orbitron', monospace; font-size: 8px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background .15s; white-space: nowrap; }
-    .sov-run-btn.tax    { color: var(--amber);  border-color: rgba(245,158,11,.4); }
-    .sov-run-btn.tax:hover    { background: rgba(245,158,11,.1); }
-    .sov-run-btn.orders { color: var(--green);  border-color: rgba(0,255,136,.35); }
-    .sov-run-btn.orders:hover { background: rgba(0,255,136,.08); }
-    .sov-run-btn.ar     { color: var(--cyan);   border-color: rgba(6,182,212,.35); }
-    .sov-run-btn.ar:hover     { background: rgba(6,182,212,.08); }
-    .sov-response { margin: 10px 0 0; background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; min-height: 60px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); line-height: 1.8; display: none; white-space: pre-wrap; word-break: break-word; max-height: 340px; overflow-y: auto; }
-    .sov-response.active { display: block; }
-    .thinking-line { font-size: 9px; letter-spacing: 2px; margin-bottom: 8px; animation: blink .8s step-end infinite; }
-    .thinking-line.tax    { color: var(--amber); }
-    .thinking-line.orders { color: var(--green); }
-    .thinking-line.ar     { color: var(--cyan); }
-    .thinking-line.esd    { color: var(--purple); }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    .sov-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); }
-    .sov-url { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--txt2); letter-spacing: 1px; }
-    .open-app-lnk { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid; transition: background .15s; }
-    .open-app-lnk.amber  { color: var(--amber);  border-color: rgba(245,158,11,.35); }
-    .open-app-lnk.amber:hover  { background: rgba(245,158,11,.08); }
-    .open-app-lnk.green  { color: var(--green);  border-color: rgba(0,255,136,.3); }
-    .open-app-lnk.green:hover  { background: rgba(0,255,136,.07); }
-    .open-app-lnk.cyan   { color: var(--cyan);   border-color: rgba(6,182,212,.3); }
-    .open-app-lnk.cyan:hover   { background: rgba(6,182,212,.07); }
-    .open-app-lnk.purple { color: var(--purple); border-color: rgba(168,85,247,.3); }
-    .open-app-lnk.purple:hover { background: rgba(168,85,247,.07); }
-    /* ESD NODE GRID */
-    .esd-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 36px; }
-    @media (max-width: 1100px) { .esd-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 700px)  { .esd-grid { grid-template-columns: repeat(2, 1fr); } }
-    .esd-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s, box-shadow .2s; position: relative; }
-    .esd-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--purple), #c084fc); opacity: 0; transition: opacity .2s; }
-    .esd-card:hover { border-color: rgba(168,85,247,.35); box-shadow: 0 4px 24px rgba(168,85,247,.1); }
-    .esd-card:hover::before { opacity: 1; }
-    .esd-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
-    .esd-prefix { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; color: var(--purple); margin-bottom: 3px; }
-    .esd-name { font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #dceeff; line-height: 1.3; }
-    .esd-badge { font-family: 'Share Tech Mono', monospace; font-size: 7px; letter-spacing: 1px; padding: 2px 6px; border-radius: 2px; border: 1px solid rgba(168,85,247,.35); background: rgba(168,85,247,.08); color: var(--purple); white-space: nowrap; flex-shrink: 0; }
-    .esd-body { padding: 12px 16px; flex: 1; }
-    .esd-desc { font-size: 10px; color: var(--txt2); line-height: 1.6; margin-bottom: 10px; }
-    .esd-quick { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-    .esd-qp { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--txt2); background: rgba(168,85,247,.04); border: 1px solid var(--border); border-radius: 3px; padding: 5px 8px; text-align: left; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 5px; }
-    .esd-qp:hover { background: rgba(168,85,247,.09); border-color: rgba(168,85,247,.3); color: var(--txt); }
-    .esd-qp-arrow { color: var(--purple); font-size: 9px; }
-    .esd-input-row { display: flex; gap: 5px; }
-    .esd-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt); outline: none; transition: border-color .15s; }
-    .esd-input:focus { border-color: rgba(168,85,247,.4); }
-    .esd-input::placeholder { color: var(--txt2); }
-    .esd-run-btn { background: transparent; border: 1px solid rgba(168,85,247,.4); border-radius: 4px; padding: 6px 10px; font-family: 'Orbitron', monospace; font-size: 7px; font-weight: 600; letter-spacing: 1px; color: var(--purple); cursor: pointer; transition: background .15s; white-space: nowrap; }
-    .esd-run-btn:hover { background: rgba(168,85,247,.1); }
-    .esd-response { margin: 8px 0 0; background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 5px; padding: 10px 12px; min-height: 48px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); line-height: 1.7; display: none; white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; }
-    .esd-response.active { display: block; }
-    .esd-foot { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--border); }
-    /* SYNTHESIS */
-    .synthesis-panel { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 0; margin-bottom: 36px; overflow: hidden; display: none; }
-    .synthesis-panel.active { display: block; }
-    .synth-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: rgba(6,182,212,.04); }
-    .synth-title { font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 3px; color: var(--cyan); }
-    .synth-close { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt2); cursor: pointer; }
-    .synth-close:hover { color: var(--red); }
-    .synth-body { padding: 20px; }
-    .synth-query { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt2); margin-bottom: 16px; letter-spacing: 1px; }
-    .synth-nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-    @media (max-width: 700px) { .synth-nodes { grid-template-columns: 1fr; } }
-    .synth-node { background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
-    .synth-node-name { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 2px; margin-bottom: 8px; }
-    .synth-node-name.tax    { color: var(--amber); }
-    .synth-node-name.orders { color: var(--green); }
-    .synth-node-name.ar     { color: var(--cyan); }
-    .synth-node-txt { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
-    /* REPORT BUILDER */
-    .report-section { margin-bottom: 36px; }
-    .report-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-    .report-select, .report-state-input { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 7px 12px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); outline: none; transition: border-color .15s; }
-    .report-select:focus, .report-state-input:focus { border-color: var(--border2); }
-    .report-state-input { width: 220px; }
-    .build-btn { background: transparent; border: 1px solid var(--cyan); border-radius: 4px; padding: 7px 18px; font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; color: var(--cyan); cursor: pointer; transition: background .15s; }
-    .build-btn:hover { background: rgba(6,182,212,.1); }
-    .report-output { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); line-height: 1.8; display: none; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
-    .report-output.active { display: block; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,.2); border-radius: 2px; }
-    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .footer-l, .footer-r a { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--txt2); }
-    .footer-r { display: flex; gap: 18px; }
-    .footer-r a { text-decoration: none; transition: color .2s; }
-    .footer-r a:hover { color: var(--cyan); }
-    @media (max-width: 600px) { main { padding: 20px 14px 60px; } header { padding: 0 14px; } .hdr-pills { display: none; } }
-  </style>
-<script>window.showTab = function(id, el) {document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
-<body>
+<script>
+(function(){
+  if(window.location.protocol==='view-source:'){window.location.href='about:blank';return;}
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+  document.onkeydown=function(e){
+    if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&[73,74,67].includes(e.keyCode))||(e.ctrlKey&&e.keyCode===85)||(e.ctrlKey&&e.keyCode===83)){return false;}
+  };
+})();
+</script>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desert Financial CU | TSM Financial Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #020c06;
+    --bg2:      #040f08;
+    --panel:    rgba(0,255,100,0.04);
+    --panel2:   rgba(0,255,100,0.07);
+    --glass:    rgba(0,20,10,0.55);
+    --glass2:   rgba(0,30,15,0.75);
+    --border:   rgba(0,255,100,0.15);
+    --border2:  rgba(240,180,0,0.25);
+    --green:    #00ff64;
+    --green2:   #00cc50;
+    --green3:   #00ff9d;
+    --gold:     #f0b400;
+    --gold2:    #ffd040;
+    --gold3:    #b8860b;
+    --text:     #e2f0e8;
+    --muted:    #4a7a58;
+    --danger:   #ff4455;
+    --warn:     #ffaa00;
+    --mono:     'JetBrains Mono', monospace;
+    --sans:     'Syne', sans-serif;
+  }
 
-<header>
-  <div class="logo-block">
-    <div class="logo-hex">CT</div>
-    <div>
-      <div class="logo-text">CASE-TECH COMMAND</div>
-      <div class="logo-sub">SOVEREIGN INTELLIGENCE · TSM PLATFORM</div>
-    </div>
-  </div>
-  <div class="hdr-right">
-    <div class="hdr-pills">
-      <div class="hdr-pill cyan" onclick="scrollToSection('modules')">MODULES</div>
-      <div class="hdr-pill cyan" onclick="scrollToSection('esd-nodes')">ESD NODES</div>
-      <div class="hdr-pill cyan" onclick="scrollToSection('reports')">REPORTS</div>
-      <div class="hdr-pill green" onclick="window.open('https://financial.tsmatter.com','_blank')">FINANCIAL CMD ↗</div>
-    </div>
-    <div class="hdr-status"><div class="status-dot"></div>SOVEREIGN · ONLINE</div>
-  </div>
-</header>
+  * { margin:0; padding:0; box-sizing:border-box; }
 
-<main>
-  <div class="hero">
-    <div class="hero-eyebrow">// TSM WHITELABEL · CASE-TECH CLIENT PORTAL · DIRECTOR WHITEHEAD</div>
-    <div class="hero-title">CASE-TECH<br><span>SOVEREIGN COMMAND</span></div>
-    <div class="hero-sub">case-tech.tsmatter.com · AI-NATIVE OPERATIONS · 15-STATE TAX · ORDER PIPELINE · AR/AP ENGINE</div>
-    <div class="hero-divider"></div>
-    <div class="model-badge"><div class="model-dot"></div>TSM NEURAL · SOVEREIGN INTELLIGENCE LAYER · LIVE</div>
-  </div>
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-  <div class="bridge-banner" id="bridgeBanner">
-    <span id="bridgeBannerText">// Connecting to TSM Neural bridge…</span>
-  </div>
+  /* Animated mesh background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(0,255,100,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 90% 80%, rgba(240,180,0,0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,200,80,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-val" id="st-states">15</div><div class="stat-lbl">NEXUS STATES</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-orders">—</div><div class="stat-lbl">ORDERS/DAY</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-ar">—</div><div class="stat-lbl">AR OPEN ($K)</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-exempt">—</div><div class="stat-lbl">EXEMPT CERTS</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-auto">98%</div><div class="stat-lbl">AUTO-MATCH RATE</div></div>
-  </div>
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,100,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,100,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  <div class="query-wrap">
-    <div class="query-label">// TSM NEURAL — DEPLOY TO ALL SOVEREIGN NODES SIMULTANEOUSLY</div>
-    <div class="query-bar">
-      <div class="node-toggles">
-        <div class="ntog tax active" id="tog-tax" onclick="toggleNode('tax')">TAX</div>
-        <div class="ntog orders active" id="tog-orders" onclick="toggleNode('orders')">ORDERS</div>
-        <div class="ntog ar active" id="tog-ar" onclick="toggleNode('ar')">AR/AP</div>
-      </div>
-      <input id="masterQuery" placeholder="e.g. Export Q1 sales tax for 15 states, flag nexus risk…" onkeydown="if(event.key==='Enter')deployMaster()"/>
-      <button class="deploy-btn" id="masterBtn" onclick="deployMaster()">⚡ DEPLOY</button>
-    </div>
-  </div>
+  /* ── SOVEREIGN BAR ── */
+  .sovereign-bar {
+    position: relative;
+    z-index: 100;
+    background: rgba(0,10,5,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,255,100,0.12);
+    padding: 0 16px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
 
-  <div class="synthesis-panel" id="synthPanel">
-    <div class="synth-head">
-      <div class="synth-title">⚡ TSM NEURAL SYNTHESIS — ALL NODES RESPONDED</div>
-      <div class="synth-close" onclick="closeSynth()">✕ CLOSE</div>
-    </div>
-    <div class="synth-body">
-      <div class="synth-query" id="synthQuery"></div>
-      <div class="synth-nodes">
-        <div class="synth-node"><div class="synth-node-name tax">⚖ 15-STATE TAX</div><div class="synth-node-txt" id="synth-tax">…</div></div>
-        <div class="synth-node"><div class="synth-node-name orders">📦 ORDER PIPELINE</div><div class="synth-node-txt" id="synth-orders">…</div></div>
-        <div class="synth-node"><div class="synth-node-name ar">💰 AR/AP ENGINE</div><div class="synth-node-txt" id="synth-ar">…</div></div>
-      </div>
-    </div>
-  </div>
+  .sovereign-label {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-right: 4px;
+  }
 
-  <div class="sec-label" id="modules">
-    <span class="sec-label-text">Sovereign Modules</span>
-    <div class="sec-line"></div>
-    <span class="sec-badge">TSM NEURAL · CASE-TECH SPECIFIC</span>
-  </div>
+  .sov-badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    border: 1px solid;
+  }
+  .sov-badge.sox    { background: rgba(240,180,0,0.15);  color: var(--gold);   border-color: rgba(240,180,0,0.4); }
+  .sov-badge.ifrs   { background: rgba(0,255,100,0.12);  color: var(--green);  border-color: rgba(0,255,100,0.35); }
+  .sov-badge.gaap   { background: rgba(0,200,255,0.12);  color: #00d4ff;       border-color: rgba(0,200,255,0.35); }
+  .sov-badge.pcaob  { background: rgba(168,85,247,0.12); color: #c084fc;       border-color: rgba(168,85,247,0.35); }
+  .sov-badge.basel  { background: rgba(255,68,85,0.12);  color: var(--danger); border-color: rgba(255,68,85,0.35); }
 
-  <div class="sovereign-grid">
-    <!-- TAX -->
-    <div class="sov-card tax">
-      <div class="sov-head">
-        <div><div style="font-size:22px;margin-bottom:4px;">⚖️</div><div class="sov-title">15-STATE TAX<br>NEXUS TRACKER</div></div>
-        <div class="sov-mod-badge mod-tax">AVATAX LAYER</div>
-      </div>
-      <div class="sov-body">
-        <div class="sov-desc">Automated nexus monitoring across all 15 states. Tracks sales volume against economic thresholds ($100K / 200 transactions). Exemption certificates auto-applied. Zero manual filing.</div>
-        <div class="quick-prompts">
-          <button class="qp-btn" onclick="runQuick('tax','Export Q1 sales tax liability breakdown for all 15 nexus states with filing deadlines')"><span class="qp-arrow">›</span> Q1 tax liability export · all 15 states</button>
-          <button class="qp-btn" onclick="runQuick('tax','Which states are at risk of triggering new economic nexus based on current sales velocity?')"><span class="qp-arrow">›</span> New nexus risk by sales velocity</button>
-          <button class="qp-btn" onclick="runQuick('tax','List all pending exemption certificates expiring in the next 60 days')"><span class="qp-arrow">›</span> Exemption certs expiring in 60 days</button>
-          <button class="qp-btn" onclick="runQuick('tax','Generate an audit-ready sales tax reconciliation for the current quarter')"><span class="qp-arrow">›</span> Audit-ready Q reconciliation</button>
-        </div>
-        <div class="sov-input-row">
-          <input class="sov-input" id="input-tax" placeholder="Custom tax / nexus query…" onkeydown="if(event.key==='Enter')runModule('tax')"/>
-          <button class="sov-run-btn tax" onclick="runModule('tax')">ANALYZE</button>
-        </div>
-        <div class="sov-response" id="resp-tax"></div>
-      </div>
-      <div class="sov-foot"><div class="sov-url">tax.tsmatter.com</div><a href="https://tax.tsmatter.com" target="_blank" class="open-app-lnk amber">OPEN APP ↗</a></div>
-    </div>
+  .sov-divider { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
 
-    <!-- ORDERS -->
-    <div class="sov-card orders">
-      <div class="sov-head">
-        <div><div style="font-size:22px;margin-bottom:4px;">📦</div><div class="sov-title">ORDER-TO-LABEL<br>PIPELINE</div></div>
-        <div class="sov-mod-badge mod-orders">FULFILLMENT ENGINE</div>
-      </div>
-      <div class="sov-body">
-        <div class="sov-desc">PDF hits /intake → system auto-populates tracking pipeline. Zero manual entry. One-click label generation with carrier rate shopping. 98% transaction auto-categorization via TSM Neural inference.</div>
-        <div class="quick-prompts">
-          <button class="qp-btn" onclick="runQuick('orders','Generate a shipping label with cheapest carrier rate for a 5lb package going to New York')"><span class="qp-arrow">›</span> Generate label · carrier rate shop</button>
-          <button class="qp-btn" onclick="runQuick('orders','Show me all orders in the intake queue that have not been labeled in the past 48 hours')"><span class="qp-arrow">›</span> Intake queue · unlabeled 48h</button>
-          <button class="qp-btn" onclick="runQuick('orders','Analyze fulfillment bottlenecks this month and suggest workflow improvements')"><span class="qp-arrow">›</span> Fulfillment bottleneck analysis</button>
-          <button class="qp-btn" onclick="runQuick('orders','Auto-categorize and record all receipts from this week using bank feed matching')"><span class="qp-arrow">›</span> Bank feed auto-match · receipts</button>
-        </div>
-        <div class="sov-input-row">
-          <input class="sov-input" id="input-orders" placeholder="Order / fulfillment / shipping query…" onkeydown="if(event.key==='Enter')runModule('orders')"/>
-          <button class="sov-run-btn orders" onclick="runModule('orders')">PROCESS</button>
-        </div>
-        <div class="sov-response" id="resp-orders"></div>
-      </div>
-      <div class="sov-foot"><div class="sov-url">case-tech.tsmatter.com/orders</div><a href="https://case-tech.tsmatter.com/orders" target="_blank" class="open-app-lnk green">OPEN APP ↗</a></div>
-    </div>
+  .sov-status {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--muted);
+  }
+  .sov-status .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  .dot-gold  { background: var(--gold);  box-shadow: 0 0 6px var(--gold); }
+  .dot-red   { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: pulse 1.2s infinite; }
+  .sov-hi { color: var(--green); }
+  .sov-warn { color: var(--danger); }
+  .sov-gold { color: var(--gold); }
 
-    <!-- AR/AP -->
-    <div class="sov-card ar">
-      <div class="sov-head">
-        <div><div style="font-size:22px;margin-bottom:4px;">💰</div><div class="sov-title">AR/AP RECONCILIATION<br>ENGINE</div></div>
-        <div class="sov-mod-badge mod-ar">PREDICTIVE FINANCE</div>
-      </div>
-      <div class="sov-body">
-        <div class="sov-desc">Predictive AR — flags which customers are trending late before the invoice is due. Auto-matches bank deposits to open invoices. Anomaly detection fires instantly. AP auto-coding with audit trail.</div>
-        <div class="quick-prompts">
-          <button class="qp-btn" onclick="runQuick('ar','Run a risk analysis on all open AR and flag customers trending toward late payment')"><span class="qp-arrow">›</span> Risk analysis · AR late-pay prediction</button>
-          <button class="qp-btn" onclick="runQuick('ar','Auto-match all deposits from the past week against open invoices and flag discrepancies')"><span class="qp-arrow">›</span> Deposit → invoice auto-match</button>
-          <button class="qp-btn" onclick="runQuick('ar','Generate a 30-60-90 aging report with recommended collection actions')"><span class="qp-arrow">›</span> 30-60-90 aging · collection actions</button>
-          <button class="qp-btn" onclick="runQuick('ar','Update all customer records with latest payment status from QuickBooks sync')"><span class="qp-arrow">›</span> QuickBooks sync · customer update</button>
-        </div>
-        <div class="sov-input-row">
-          <input class="sov-input" id="input-ar" placeholder="AR/AP / reconciliation / QuickBooks query…" onkeydown="if(event.key==='Enter')runModule('ar')"/>
-          <button class="sov-run-btn ar" onclick="runModule('ar')">RECONCILE</button>
-        </div>
-        <div class="sov-response" id="resp-ar"></div>
-      </div>
-      <div class="sov-foot"><div class="sov-url">financial.tsmatter.com</div><a href="https://financial.tsmatter.com" target="_blank" class="open-app-lnk cyan">OPEN APP ↗</a></div>
-    </div>
-  </div>
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  <!-- ESD NODES -->
-  <div class="sec-label" id="esd-nodes">
-    <span class="sec-label-text">ESD Node Cluster</span>
-    <div class="sec-line"></div>
-    <span class="sec-badge" style="color:var(--purple);border-color:rgba(168,85,247,.3);">EXTENDED SERVICE DEPLOYMENT</span>
-  </div>
+  /* ── NEURAL MESH ── */
+  .neural-mesh {
+    position: relative;
+    z-index: 100;
+    background: rgba(0,8,4,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,255,100,0.1);
+    padding: 0 16px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .neural-mesh::-webkit-scrollbar { display: none; }
 
-  <div class="esd-grid">
+  .mesh-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
 
-    <!-- ESD-AR -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-AR</div><div class="esd-name">ACCOUNTS<br>RECEIVABLE</div></div>
-        <div class="esd-badge">AR NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Invoice aging, customer payment velocity, collections queue prioritization, AR-to-cash forecasting, and dispute resolution pipeline.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('ar','Show me all open invoices aged 60+ days with recommended collection actions')"><span class="esd-qp-arrow">›</span> Open invoices 60d+ · collection queue</button>
-          <button class="esd-qp" onclick="runESD('ar','Generate AR cash flow forecast for next 30 days based on payment velocity')"><span class="esd-qp-arrow">›</span> AR cash flow forecast · 30 days</button>
-          <button class="esd-qp" onclick="runESD('ar','Flag all customers who have disputed an invoice in the past 90 days')"><span class="esd-qp-arrow">›</span> Dispute flags · 90-day review</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-ar" placeholder="AR query…" onkeydown="if(event.key==='Enter')runESDModule('ar')"/>
-          <button class="esd-run-btn" onclick="runESDModule('ar')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-ar"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-ar.tsmatter.com</div><a href="https://esd-ar.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
+  .mesh-node {
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--muted);
+  }
+  .mesh-node:hover { color: var(--text); border-color: var(--border); }
+  .mesh-node.active {
+    background: rgba(0,255,100,0.15);
+    color: var(--green);
+    border-color: rgba(0,255,100,0.4);
+  }
+  .mesh-node .node-icon { font-size: 10px; }
 
-    <!-- ESD-CASHRECEIPTS -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-CASHRECEIPTS</div><div class="esd-name">CASH<br>RECEIPTS</div></div>
-        <div class="esd-badge">RECEIPTS NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Deposit logging, bank feed ingestion, receipt-to-invoice auto-matching, exception queue, and daily cash position reporting.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('cashreceipts','Match all unmatched bank deposits from today against open invoices')"><span class="esd-qp-arrow">›</span> Match today's deposits · open invoices</button>
-          <button class="esd-qp" onclick="runESD('cashreceipts','Show me all unmatched receipts in the exception queue older than 3 days')"><span class="esd-qp-arrow">›</span> Exception queue · unmatched 3d+</button>
-          <button class="esd-qp" onclick="runESD('cashreceipts','Generate daily cash position report with bank feed reconciliation status')"><span class="esd-qp-arrow">›</span> Daily cash position report</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-cashreceipts" placeholder="Cash receipts query…" onkeydown="if(event.key==='Enter')runESDModule('cashreceipts')"/>
-          <button class="esd-run-btn" onclick="runESDModule('cashreceipts')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-cashreceipts"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-cashreceipts.tsmatter.com</div><a href="https://esd-cashreceipts.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
+  .mesh-right {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-    <!-- ESD-SETUP -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-SETUP</div><div class="esd-name">SYSTEM<br>SETUP</div></div>
-        <div class="esd-badge">SETUP NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Client onboarding, GL chart-of-accounts mapping, entity config, integration key management, carrier accounts, and tax profiles.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('setup','Run a full integration health check across all connected systems and flag any broken connections')"><span class="esd-qp-arrow">›</span> Integration health check · all systems</button>
-          <button class="esd-qp" onclick="runESD('setup','Show me all GL mappings that do not have a corresponding QuickBooks chart of accounts entry')"><span class="esd-qp-arrow">›</span> GL mapping gaps · QuickBooks alignment</button>
-          <button class="esd-qp" onclick="runESD('setup','List all active carrier accounts with current rate agreements and expiration dates')"><span class="esd-qp-arrow">›</span> Carrier accounts · rate agreements</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-setup" placeholder="Setup / config query…" onkeydown="if(event.key==='Enter')runESDModule('setup')"/>
-          <button class="esd-run-btn" onclick="runESDModule('setup')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-setup"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-setup.tsmatter.com</div><a href="https://esd-setup.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
+  /* ── APP HEADER ── */
+  .app-header {
+    position: relative;
+    z-index: 50;
+    background: rgba(0,8,4,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-    <!-- ESD-TIMESHEETS -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-TIMESHEETS</div><div class="esd-name">TIMESHEETS<br>&amp; LABOR</div></div>
-        <div class="esd-badge">TIME NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Staff time entry, project code allocation, multi-tier approval workflows, billable vs. non-billable tracking, and payroll export bridge.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('timesheets','Show me all unapproved timesheets for the current pay period with staff names and hours')"><span class="esd-qp-arrow">›</span> Unapproved timesheets · current period</button>
-          <button class="esd-qp" onclick="runESD('timesheets','Generate billable vs non-billable utilization report for all staff this month')"><span class="esd-qp-arrow">›</span> Billable utilization · monthly report</button>
-          <button class="esd-qp" onclick="runESD('timesheets','Export payroll-ready timesheet data for this pay period in QuickBooks format')"><span class="esd-qp-arrow">›</span> Payroll export · QuickBooks format</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-timesheets" placeholder="Timesheet query…" onkeydown="if(event.key==='Enter')runESDModule('timesheets')"/>
-          <button class="esd-run-btn" onclick="runESDModule('timesheets')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-timesheets"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-timesheets.tsmatter.com</div><a href="https://esd-timesheets.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
+  .app-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
 
-    <!-- ESD-PMI -->
-    <div class="esd-card">
-      <div class="esd-head">
-        <div><div class="esd-prefix">ESD-PMI</div><div class="esd-name">PROJECT MGMT<br>INTELLIGENCE</div></div>
-        <div class="esd-badge">PMI NODE</div>
-      </div>
-      <div class="esd-body">
-        <div class="esd-desc">Project profitability, milestone tracking, budget burn-rate analysis, client deliverable status board, and cross-project resource allocation.</div>
-        <div class="esd-quick">
-          <button class="esd-qp" onclick="runESD('pmi','Show all active projects where budget burn rate exceeds 85% with projected overrun dates')"><span class="esd-qp-arrow">›</span> Budget burn alerts · overrun risk</button>
-          <button class="esd-qp" onclick="runESD('pmi','Generate project profitability report ranked by margin for all active engagements')"><span class="esd-qp-arrow">›</span> Project P&amp;L · margin ranking</button>
-          <button class="esd-qp" onclick="runESD('pmi','List all client deliverables due this week with current status and responsible staff')"><span class="esd-qp-arrow">›</span> Deliverables due this week · status</button>
-        </div>
-        <div class="esd-input-row">
-          <input class="esd-input" id="input-esd-pmi" placeholder="Project intelligence query…" onkeydown="if(event.key==='Enter')runESDModule('pmi')"/>
-          <button class="esd-run-btn" onclick="runESDModule('pmi')">RUN</button>
-        </div>
-        <div class="esd-response" id="resp-esd-pmi"></div>
-      </div>
-      <div class="esd-foot"><div class="sov-url">esd-pmi.tsmatter.com</div><a href="https://esd-pmi.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
-    </div>
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, rgba(0,255,100,0.2), rgba(240,180,0,0.15));
+    border: 1px solid rgba(0,255,100,0.35);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,255,100,0.1), inset 0 0 20px rgba(0,255,100,0.05);
+  }
 
-  </div>
+  .logo-text h1 {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, var(--green) 0%, var(--gold) 60%, var(--green3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-text p {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
 
-  <!-- REPORT BUILDER -->
-  <div class="sec-label" id="reports">
-    <span class="sec-label-text">Sovereign Report Builder</span>
-    <div class="sec-line"></div>
-    <span class="sec-badge">TSM NEURAL · EXPORT-READY</span>
-  </div>
-  <div class="report-section">
-    <div class="report-row">
-      <select class="report-select" id="reportType">
-        <option value="">— Select Report Type —</option>
-        <option value="q1-tax">Q1 Multi-State Sales Tax Export</option>
-        <option value="ar-aging">AR Aging Analysis (30/60/90)</option>
-        <option value="ap-reconcile">AP Reconciliation + Audit Trail</option>
-        <option value="nexus-risk">Economic Nexus Risk Assessment</option>
-        <option value="fulfillment">Fulfillment Performance Summary</option>
-        <option value="qb-sync">QuickBooks Migration Readiness</option>
-        <option value="exempt-cert">Exemption Certificate Inventory</option>
-        <option value="cashflow">Cash Flow Forecast (Next 90 Days)</option>
-        <option value="esd-timesheets">ESD Timesheet Utilization Report</option>
-        <option value="esd-pmi">ESD Project P&amp;L Summary</option>
-        <option value="esd-cashreceipts">ESD Cash Receipts Reconciliation</option>
-      </select>
-      <input class="report-state-input" id="reportContext" placeholder="States, client name, date range…"/>
-      <button class="build-btn" onclick="buildReport()">📄 BUILD REPORT</button>
-    </div>
-    <div class="report-output" id="reportOutput"></div>
-  </div>
-</main>
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 10px;
+  }
+  .model-tag {
+    color: var(--muted);
+  }
+  .model-tag span { color: var(--gold); font-weight: 600; }
+  .active-pill {
+    padding: 4px 12px;
+    background: rgba(0,255,100,0.12);
+    border: 1px solid rgba(0,255,100,0.4);
+    border-radius: 20px;
+    color: var(--green);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-<footer>
-  <div class="footer-l">CASE-TECH SOVEREIGN COMMAND · TSM PLATFORM · DIRECTOR WHITEHEAD</div>
-  <div class="footer-r">
-    <a href="https://financial.tsmatter.com" target="_blank">FINANCIAL CMD</a>
-    <a href="https://tax.tsmatter.com" target="_blank">TAX</a>
-    <a href="https://compliance.tsmatter.com" target="_blank">COMPLIANCE</a>
-    <a href="https://strategist.tsmatter.com" target="_blank">STRATEGIST</a>
-    <a href="https://zero-trust.tsmatter.com" target="_blank">ZERO TRUST</a>
-  </div>
-</footer>
+  /* ── TAB NAV ── */
+  .tab-nav {
+    position: relative;
+    z-index: 50;
+    background: rgba(0,6,3,0.8);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 12px 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main-layout {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 260px 1fr 280px;
+    min-height: calc(100vh - 140px);
+  }
+
+  /* ── LEFT SIDEBAR ── */
+  .sidebar {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sidebar-header span {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sidebar-header .count {
+    background: rgba(0,255,100,0.15);
+    color: var(--green);
+    border: 1px solid rgba(0,255,100,0.3);
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .sector-block { border-bottom: 1px solid rgba(0,255,100,0.07); }
+
+  .sector-hdr {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    user-select: none;
+  }
+  .sector-hdr:hover { background: rgba(0,255,100,0.04); }
+  .sector-hdr.open { color: var(--green); }
+
+  .sector-cnt {
+    font-size: 9px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .preset-list {
+    display: none;
+    padding: 4px 8px 8px;
+  }
+  .preset-list.open { display: block; }
+
+  .preset-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    margin-bottom: 3px;
+  }
+  .preset-item:hover {
+    background: rgba(0,255,100,0.06);
+    border-color: rgba(0,255,100,0.15);
+  }
+  .preset-item.active {
+    background: rgba(0,255,100,0.1);
+    border-color: rgba(0,255,100,0.3);
+  }
+  .preset-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .preset-desc {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+  }
+
+  /* ── CENTER CONTENT ── */
+  .center {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Intelligence Engine */
+  .engine-panel {
+    margin: 16px;
+    background: var(--glass2);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(0,255,100,0.1);
+  }
+
+  .engine-hdr {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,255,100,0.04);
+  }
+  .engine-hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--green);
+  }
+  .engine-hdr-left .bolt { font-size: 14px; animation: pulse 2s infinite; }
+
+  .engine-tag {
+    padding: 3px 10px;
+    background: rgba(240,180,0,0.12);
+    border: 1px solid rgba(240,180,0,0.3);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .domain-tag {
+    margin: 12px 16px;
+    padding: 8px 12px;
+    background: rgba(0,255,100,0.06);
+    border: 1px solid rgba(0,255,100,0.2);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--green);
+  }
+  .domain-tag .dot-red-sm {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
+    animation: pulse 1.2s infinite;
+  }
+
+  .engine-controls {
+    padding: 0 16px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .ctrl-select {
+    background: rgba(0,10,5,0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300ff64'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+    transition: border-color 0.2s;
+  }
+  .ctrl-select:focus { outline: none; border-color: rgba(0,255,100,0.4); }
+  .ctrl-select option { background: #040f08; }
+
+  .doc-attach {
+    margin: 0 16px 12px;
+    border: 1px dashed rgba(0,255,100,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  .doc-attach:hover {
+    border-color: rgba(0,255,100,0.4);
+    background: rgba(0,255,100,0.04);
+    color: var(--text);
+  }
+  .doc-attach-icon { font-size: 18px; }
+
+  .output-bullets {
+    margin: 0 16px 12px;
+    padding: 12px 14px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,255,100,0.08);
+    border-radius: 8px;
+    min-height: 120px;
+  }
+  .bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    padding: 3px 0;
+  }
+  .bullet-item .arr { color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+  .query-input-wrap {
+    margin: 0 16px 12px;
+    position: relative;
+  }
+  .query-input {
+    width: 100%;
+    background: rgba(0,10,5,0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s;
+  }
+  .query-input:focus { outline: none; border-color: rgba(0,255,100,0.5); }
+  .query-input::placeholder { color: var(--muted); }
+
+  .engine-actions {
+    padding: 0 16px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green2), #008040);
+    color: #000;
+    box-shadow: 0 4px 16px rgba(0,255,100,0.25);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,255,100,0.35); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-clear {
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .btn-clear:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+  .btn-relay {
+    background: linear-gradient(135deg, rgba(240,180,0,0.8), rgba(180,120,0,0.9));
+    color: #000;
+    box-shadow: 0 4px 16px rgba(240,180,0,0.25);
+  }
+  .btn-relay:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(240,180,0,0.4); }
+
+  .response-footer {
+    margin: 0 16px 16px;
+    padding: 8px 12px;
+    border: 1px solid rgba(0,255,100,0.08);
+    border-radius: 6px;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .response-footer .rf-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .rf-action {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+  }
+  .rf-action:hover { color: var(--text); border-color: var(--border); background: rgba(255,255,255,0.04); }
+  .token-count { margin-left: auto; font-family: var(--mono); font-size: 9px; color: var(--muted); }
+
+  /* AI Response area */
+  .ai-response {
+    margin: 0 16px 16px;
+    padding: 14px;
+    background: rgba(0,255,100,0.03);
+    border: 1px solid rgba(0,255,100,0.12);
+    border-radius: 8px;
+    min-height: 60px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--text);
+    display: none;
+  }
+  .ai-response.visible { display: block; }
+  .ai-response strong { color: var(--green); }
+
+  /* Typing indicator */
+  .typing { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+  .typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: bounce 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  /* Dashboard metrics */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .metric-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    opacity: 0.6;
+  }
+  .metric-card:hover { border-color: rgba(0,255,100,0.3); }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--green), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .metric-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .metric-change {
+    font-family: var(--mono);
+    font-size: 9px;
+    margin-top: 4px;
+  }
+  .metric-change.up { color: var(--green); }
+  .metric-change.down { color: var(--danger); }
+
+  /* Portfolio table */
+  .section-card {
+    margin: 0 16px 16px;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .section-hdr {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,255,100,0.03);
+  }
+  .section-hdr .badge-sm {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    background: rgba(240,180,0,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(240,180,0,0.3);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid var(--border); }
+  th {
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  td {
+    padding: 9px 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    border-bottom: 1px solid rgba(0,255,100,0.05);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(0,255,100,0.03); }
+
+  .td-green { color: var(--green); font-weight: 700; }
+  .td-gold  { color: var(--gold);  font-weight: 700; }
+  .td-red   { color: var(--danger); font-weight: 700; }
+  .td-muted { color: var(--muted); }
+
+  /* Bar */
+  .mini-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); overflow: hidden; width: 80px; }
+  .mini-bar-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+
+  /* Invoice table */
+  .inv-status {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .inv-paid    { background: rgba(0,255,100,0.12); color: var(--green); border: 1px solid rgba(0,255,100,0.3); }
+  .inv-pending { background: rgba(240,180,0,0.12); color: var(--gold);  border: 1px solid rgba(240,180,0,0.3); }
+  .inv-overdue { background: rgba(255,68,85,0.12); color: var(--danger); border: 1px solid rgba(255,68,85,0.3); }
+
+  /* How-To */
+  .howto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+  .howto-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: border-color 0.2s;
+  }
+  .howto-card:hover { border-color: rgba(0,255,100,0.3); }
+  .howto-icon { font-size: 28px; margin-bottom: 10px; }
+  .howto-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .howto-desc {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .howto-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .howto-steps li {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+  }
+  .howto-steps li .step-num {
+    color: var(--green);
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 14px;
+  }
+
+  .howto-tip {
+    margin: 0 16px 16px;
+    padding: 12px 16px;
+    background: rgba(240,180,0,0.06);
+    border: 1px solid rgba(240,180,0,0.2);
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.6;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .rp-section { border-bottom: 1px solid var(--border); padding: 14px; }
+  .rp-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .rp-badge {
+    padding: 2px 8px;
+    background: rgba(0,255,100,0.12);
+    color: var(--green);
+    border: 1px solid rgba(0,255,100,0.3);
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .framework-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 7px;
+    border: 1px solid rgba(0,255,100,0.07);
+    transition: border-color 0.2s;
+  }
+  .framework-item:hover { border-color: rgba(0,255,100,0.2); }
+  .fw-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+  .fw-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .fw-score {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .fw-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .fw-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  .fw-bar-fill { height: 100%; border-radius: 2px; transition: width 1.2s ease; }
+
+  .score-green { color: var(--green); }
+  .score-gold  { color: var(--gold);  }
+  .score-red   { color: var(--danger); }
+
+  .fill-green { background: linear-gradient(90deg, var(--green2), var(--green3)); }
+  .fill-gold  { background: linear-gradient(90deg, var(--gold3), var(--gold2)); }
+  .fill-red   { background: linear-gradient(90deg, #cc2233, var(--danger)); }
+
+  .priority-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(0,255,100,0.07);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .priority-item .pi-label { color: var(--green); font-weight: 700; font-size: 9px; margin-bottom: 2px; }
+
+  /* Intelligence AI button */
+  .ai-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, var(--green2), #006030);
+    color: #000;
+    border: none;
+    border-radius: 30px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 24px rgba(0,255,100,0.3), 0 0 0 1px rgba(0,255,100,0.2);
+    transition: all 0.2s;
+  }
+  .ai-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,255,100,0.4); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,255,100,0.2); border-radius: 2px; }
+
+  /* Animations */
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .engine-panel { animation: fadeIn 0.4s ease; }
+
+  /* Reports tab */
+  .report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+  .report-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .report-card:hover { border-color: rgba(0,255,100,0.35); transform: translateY(-2px); }
+  .report-icon { font-size: 24px; margin-bottom: 8px; }
+  .report-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .report-desc { font-family: var(--mono); font-size: 9px; color: var(--muted); line-height: 1.5; }
+  .report-tag {
+    margin-top: 8px;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 9px;
+    background: rgba(0,255,100,0.1);
+    color: var(--green);
+    border: 1px solid rgba(0,255,100,0.25);
+  }
+</style>
+<script>
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  var panel = document.getElementById('tab-' + name);
+  if(panel) panel.classList.add('active');
+  var fab = document.querySelector('.ai-fab');
+  if(fab) fab.style.display = (name === 'audit') ? 'none' : 'flex';
+}
+</script>
 
 <script>
-/*
-  TSM NEURAL ENGINE
-  Routes through: https://tsm-core.fly.dev/v1/chat  (Groq Llama 3.3-70B-Versatile)
-  Underlying model is intentionally not disclosed in the UI.
+if(typeof safeFetch === 'undefined'){
+  window.safeFetch = async function(endpoint, options) {
+    options = options || {};
+    try {
+      const res = await fetch(endpoint, Object.assign({method:'POST'}, options, {
+        headers: Object.assign({'Content-Type':'application/json'}, options.headers||{})
+      }));
+      return res;
+    } catch(e) {
+      console.error('safeFetch error:', e);
+      throw e;
+    }
+  };
+}
+</script>
+</head>
+<body>
 
-  Bridge expected request format:
-    POST /v1/chat
-    Content-Type: application/json
-    { "system": "...", "message": "...", "stream": true, "max_tokens": 900 }
+<!-- SOVEREIGN BAR -->
+<div class="sovereign-bar">
+  <span class="sovereign-label">Sovereign Financial Layer</span>
+  <span class="sov-badge sox">SOX · SOX 2.0</span>
+  <span class="sov-badge ifrs">IFRS 17</span>
+  <span class="sov-badge gaap">US GAAP</span>
+  <span class="sov-badge pcaob">PCAOB</span>
+  <span class="sov-badge basel">BASEL III</span>
+  <div class="sov-divider"></div>
+  <div class="sov-status">
+    <span><span class="dot dot-green"></span><span class="sov-hi">TSM FINANCIAL ACTIVE</span></span>
+    <span>SCORE <span class="sov-hi">91%</span> ✓</span>
+    <span>ALERTS <span class="sov-warn">2 FLAGGED</span></span>
+    <span>CYCLE <span class="sov-gold">Q1-2026</span></span>
+    <span>SESSION: FIN-2026-0308</span>
+  </div>
+</div>
 
-  Bridge SSE streaming response (preferred):
-    data: {"delta": "chunk text"}
-    data: [DONE]
+<!-- NEURAL MESH -->
+<div class="neural-mesh">
+  <span class="mesh-label">⚡ Neural Mesh</span>
+  <a class="mesh-node" href="#"><span class="node-icon">🛡️</span> Compliance</a>
+  <a class="mesh-node" href="#"><span class="node-icon">🧠</span> Strategist</a>
+  <a class="mesh-node" href="#"><span class="node-icon">📋</span> AuditOps</a>
+  <a class="mesh-node" href="#"><span class="node-icon">⚖️</span> Legal</a>
+  <a class="mesh-node active" href="#"><span class="node-icon">💹</span> Financial</a>
+  <a class="mesh-node" href="#"><span class="node-icon">🏗️</span> Construction</a>
+  <a class="mesh-node" href="#"><span class="node-icon">🧾</span> Tax</a>
+  <a class="mesh-node" href="#"><span class="node-icon">🏥</span> Healthcare</a>
+  <a class="mesh-node" href="#"><span class="node-icon">🏫</span> Schools</a>
+  <a class="mesh-node" href="#"><span class="node-icon">🏠</span> Mortgage</a>
+  <div class="mesh-right"><span class="dot dot-green"></span> ALL SYSTEMS NOMINAL</div>
+</div>
 
-  Bridge non-streaming JSON response (fallback):
-    { "response": "full text" }
-    or: { "content": "..." }
-    or OpenAI-shape: { "choices": [{ "message": { "content": "..." } }] }
+<!-- APP HEADER -->
+<div class="app-header">
+  <div class="app-logo">
+    <div class="logo-icon">💹</div>
+    <div class="logo-text">
+      <h1>Desert Financial | TSM Intelligence</h1>
+      <p>Financial Analysis · Audit Management · Portfolio Intelligence · Risk Assessment</p>
+    </div>
+  </div>
+  <div class="header-meta">
+    <span class="model-tag">MODEL: <span>TSM Financial Processor</span> &nbsp;·&nbsp; Desert Financial Credit Union · Financial Intelligence Platform</span>
+    <span class="active-pill"><span class="dot dot-green"></span> ACTIVE</span>
+  </div>
+</div>
 
-  Set useFallback: true during development if bridge is not yet running.
-  CORS: bridge must return Access-Control-Allow-Origin: * (or portal domain)
-*/
-const CONFIG = {
-  bridgeUrl: 'https://tsm-core.fly.dev/v1/chat',
-  stream: true,
-  maxTokens: 900,
-  useFallback: false
-};
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('reports', this)">📋 Reports</button>
+  <button class="tab-btn" onclick="switchTab('audit', this)">🔍 Audit Engine</button>
+  <button class="tab-btn" onclick="switchTab('invoices', this)">🧾 Invoices</button>
+  <button class="tab-btn" onclick="switchTab('health', this)">❤️ Health Score</button>
+  <button class="tab-btn" onclick="switchTab('howto', this)">📖 How-To</button>
+  <button class="tab-btn" onclick="
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  this.classList.add('active');
+  var panel=document.getElementById('tab-reconciliation');
+  if(panel){panel.classList.add('active');}
+">⚖️ Reconciliation</button>
+  <button class="tab-btn" onclick="
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  this.classList.add('active');
+  var panel=document.getElementById('tab-journal');
+  if(panel){panel.classList.add('active');}
+">📒 Journal Entries</button>
+  <button class="tab-btn" onclick="
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  this.classList.add('active');
+  var panel=document.getElementById('tab-ledger');
+  if(panel){panel.classList.add('active');}
+">🏦 General Ledger</button>
+</div>
 
-const SYSTEM_PROMPTS = {
-  tax: `You are the Sovereign Tax Intelligence Engine for Case-Tech, a multi-state sales tax and compliance specialist.
-Specialties: AvaTax/Avalara nexus monitoring across 15+ states, economic nexus thresholds ($100K revenue OR 200 transactions), exemption certificate lifecycle, sales tax filing calendars, product taxability rules, audit-ready reconciliation.
-Rules: Respond with precise, structured, actionable intelligence. Use short labeled sections. Format numbers as currency. Flag risks with ⚠. Give specific operational steps only — no generic advice.`,
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
 
-  orders: `You are the Sovereign Order-to-Label Pipeline Engine for Case-Tech, a fulfillment and operations specialist.
-Specialties: PDF intake → tracking pipeline (zero manual entry), carrier rate shopping (USPS/UPS/FedEx/DHL), label generation with optimal carrier selection, bank feed ingestion and 98%+ transaction auto-categorization, receipt digitization, fulfillment bottleneck analysis, QuickBooks sync.
-Rules: Respond with precise operational steps. Include example carrier rates and automation triggers. Flag manual-entry elimination with ✓ AUTOMATED. No generic advice.`,
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span>📚 Prompt Library</span>
+      <span class="count">18</span>
+    </div>
 
-  ar: `You are the Sovereign AR/AP Reconciliation Engine for Case-Tech, a predictive accounts receivable and payable specialist.
-Specialties: Predictive AR (flag late payers before due date), 30-60-90 aging analysis, bank deposit auto-matching, AP auto-coding with GL classification and audit trail, QuickBooks bi-directional sync, cash flow forecasting.
-Rules: Respond with precise structured financial intelligence. Include specific dollar thresholds and timing. Flag at-risk customers with ⚠. Flag automated actions with ✓ AUTO.`,
+    <!-- FINANCIAL sector -->
+    <div class="sector-block">
+      <div class="sector-hdr open" onclick="toggleSector(this)">
+        <span>💰 FINANCIAL</span>
+        <span class="sector-cnt">7 presets</span>
+      </div>
+      <div class="preset-list open">
+        <div class="preset-item active" onclick="setPreset(this, 'Perform a comprehensive DCF valuation analysis with WACC calculation, terminal value sensitivity, and equity value bridge')">
+          <div class="preset-title">DCF Valuation Analysis</div>
+          <div class="preset-desc">WACC + terminal value + equity bridge</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Analyze unit economics including CAC, LTV, payback period, gross margin per unit, and cohort retention impact on lifetime value')">
+          <div class="preset-title">Unit Economics Deep Dive</div>
+          <div class="preset-desc">CAC, LTV, payback + cohort analysis</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Review working capital cycle including DSO, DPO, DIO optimization, cash conversion cycle improvement, and liquidity ratio stress testing')">
+          <div class="preset-title">Working Capital Optimization</div>
+          <div class="preset-desc">DSO/DPO/DIO + cash conversion</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Identify M&A synergies and integration cost savings including revenue synergies, operational overlap, and goodwill impairment risk')">
+          <div class="preset-title">M&A Synergy Analysis</div>
+          <div class="preset-desc">Revenue synergies + goodwill risk</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Audit internal financial controls for SOX Section 302/404 and SOX 2.0 compliance including segregation of duties, journal entry monitoring, management override detection, cybersecurity control attestation (NIST CSF alignment), AI model governance documentation, and ESG disclosure internal controls')">
+          <div class="preset-title">SOX Controls Audit</div>
+          <div class="preset-desc">302/404 + segregation of duties</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Analyze revenue recognition policies under ASC 606 for performance obligation identification, transaction price allocation, and contract modification accounting')">
+          <div class="preset-title">ASC 606 Revenue Recognition</div>
+          <div class="preset-desc">Performance obligations + allocation</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Evaluate debt covenant compliance, leverage ratio headroom, refinancing risk, and interest coverage sustainability under stress scenarios')">
+          <div class="preset-title">Debt Covenant Stress Test</div>
+          <div class="preset-desc">Leverage + coverage + refi risk</div>
+        </div>
+      </div>
+    </div>
 
-  'esd-ar': `You are the ESD-AR Node for Case-Tech. Specialties: accounts receivable management, invoice aging, customer payment history and velocity, collections queue prioritization, AR-to-cash forecasting, dispute tracking, and credit risk scoring. Provide structured, actionable AR intelligence. Flag collection risks with ⚠.`,
+    <!-- FINTECH sector -->
+    <div class="sector-block">
+      <div class="sector-hdr" onclick="toggleSector(this)">
+        <span>💳 FINTECH</span>
+        <span class="sector-cnt">11 presets</span>
+      </div>
+      <div class="preset-list">
+        <div class="preset-item" onclick="setPreset(this, 'Analyze transaction patterns for shadow velocity indicators by measuring time-delta between fund arrival and exit, cross-border structuring patterns, and layering detection across multiple accounts')">
+          <div class="preset-title">Shadow Ledger Velocity Scan</div>
+          <div class="preset-desc">Velocity anomalies + layering detection</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Audit this BSA/AML program for Customer Due Diligence rule compliance, beneficial ownership documentation, and SAR filing threshold calibration')">
+          <div class="preset-title">BSA/AML Program Audit</div>
+          <div class="preset-desc">CDD rule + SAR threshold calibration</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Review this payment processing agreement for interchange fee optimization, chargeback liability allocation, and PCI DSS scope reduction opportunities')">
+          <div class="preset-title">Payment Processing Review</div>
+          <div class="preset-desc">Interchange optimization + PCI scope</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Analyze this crypto asset classification for securities law exposure, FinCEN MSB registration triggers, and state money transmitter license requirements')">
+          <div class="preset-title">Crypto Asset Compliance</div>
+          <div class="preset-desc">Securities exposure + MSB registration</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Audit this lending algorithm for ECOA adverse action notice adequacy, disparate impact testing documentation, and model risk management compliance')">
+          <div class="preset-title">Lending Algorithm Fair Credit Audit</div>
+          <div class="preset-desc">ECOA compliance + disparate impact</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Review this open banking API for CFPB 1033 compliance readiness, data minimization practice adequacy, and third-party access control sufficiency')">
+          <div class="preset-title">Open Banking API Compliance</div>
+          <div class="preset-desc">CFPB 1033 + data minimization</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Analyze this BNPL product disclosure for Regulation Z application, ability-to-repay assessment adequacy, and state UDAP exposure')">
+          <div class="preset-title">BNPL Regulatory Analysis</div>
+          <div class="preset-desc">Reg Z application + UDAP exposure</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Audit embedded finance BaaS program for sponsor bank obligation compliance, program agreement risk allocation, and Reg E pass-through liability exposure across partner integrations')">
+          <div class="preset-title">Embedded Finance BaaS Audit</div>
+          <div class="preset-desc">Sponsor bank + Reg E pass-through</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Stress test digital wallet float management including FDIC pass-through deposit eligibility, liquidity buffer requirements under peak redemption, and safeguarding obligation compliance')">
+          <div class="preset-title">Digital Wallet Stress Test</div>
+          <div class="preset-desc">FDIC pass-through + liquidity buffers</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Assess RegTech vendor model dependency risk including third-party audit trail adequacy, SOC 2 Type II gap analysis, and regulatory examination readiness for AI-assisted compliance tooling')">
+          <div class="preset-title">RegTech Vendor Risk Assessment</div>
+          <div class="preset-desc">SOC 2 gap + AI compliance tooling</div>
+        </div>
+        <div class="preset-item" onclick="setPreset(this, 'Review stablecoin treasury exposure including reserve attestation sufficiency, redemption risk under market stress, state trust charter triggers, and MiCA compliance obligations for EU operations')">
+          <div class="preset-title">Stablecoin Treasury Exposure</div>
+          <div class="preset-desc">Reserve attestation + MiCA + redemption risk</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  'esd-cashreceipts': `You are the ESD-CashReceipts Node for Case-Tech. Specialties: bank deposit logging, bank feed ingestion and parsing, receipt-to-invoice auto-matching, exception queue management, unmatched deposit investigation, daily cash position reporting. Provide structured, actionable cash receipts intelligence.`,
+  <!-- CENTER -->
+  <div class="center">
 
-  'esd-setup': `You are the ESD-Setup Node for Case-Tech. Specialties: client entity setup and onboarding, GL chart-of-accounts mapping, integration key management (AvaTax, QuickBooks, carriers), carrier account configuration, tax profile setup, integration health monitoring. Provide structured, step-by-step configuration guidance.`,
+    <!-- DASHBOARD TAB -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Portfolio AUM</div>
+          <div class="metric-value">$2.4B</div>
+          <div class="metric-sub">Across 14 active positions</div>
+          <div class="metric-change up">▲ +3.2% QoQ</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Compliance Score</div>
+          <div class="metric-value">91%</div>
+          <div class="metric-sub">SOX + IFRS + GAAP</div>
+          <div class="metric-change up">▲ +2pt from Q4</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Open Audits</div>
+          <div class="metric-value">7</div>
+          <div class="metric-sub">2 flagged, 5 in progress</div>
+          <div class="metric-change down">▼ 2 overdue</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Revenue YTD</div>
+          <div class="metric-value">$18.7M</div>
+          <div class="metric-sub">vs $16.2M target</div>
+          <div class="metric-change up">▲ +15.4% vs target</div>
+        </div>
+      </div>
 
-  'esd-timesheets': `You are the ESD-Timesheets Node for Case-Tech. Specialties: staff time entry, project code allocation, approval workflows, billable vs. non-billable analysis, overtime alerts, payroll export preparation, labor cost reporting. Provide structured, actionable timesheet and labor intelligence.`,
+      <div class="section-card">
+        <div class="section-hdr">
+          ⚡ LIVE PORTFOLIO POSITIONS
+          <span class="badge-sm">14 ACTIVE</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Sector</th>
+              <th>Value</th>
+              <th>Alloc</th>
+              <th>Return</th>
+              <th>Risk</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-green">TSM Growth Fund I</td>
+              <td class="td-muted">Multi-Asset</td>
+              <td>$480M</td>
+              <td><div class="mini-bar"><div class="mini-bar-fill fill-green" style="width:62%"></div></div></td>
+              <td class="td-green">+18.4%</td>
+              <td class="td-green">LOW</td>
+              <td><span class="inv-paid">ACTIVE</span><a href="https://financial-command.tsmatter.com" target="_blank" 
+  style="margin-left:10px;padding:6px 14px;background:rgba(0,255,100,.1);border:1px solid rgba(0,255,100,.4);
+  color:#00ff64;font-size:10px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;
+  border-radius:4px;font-family:monospace;transition:all .15s;white-space:nowrap;"
+  onmouseover="this.style.background='rgba(0,255,100,.2)'"
+  onmouseout="this.style.background='rgba(0,255,100,.1)'">
+  ⚡ COMMAND CENTER
+</a></td>
+            </tr>
+            <tr>
+              <td class="td-green">AMS Real Estate REIT</td>
+              <td class="td-muted">Real Estate</td>
+              <td>$310M</td>
+              <td><div class="mini-bar"><div class="mini-bar-fill fill-gold" style="width:40%"></div></div></td>
+              <td class="td-gold">+7.2%</td>
+              <td class="td-gold">MED</td>
+              <td><span class="inv-paid">ACTIVE</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">Impact Bond Series B</td>
+              <td class="td-muted">Fixed Income</td>
+              <td>$215M</td>
+              <td><div class="mini-bar"><div class="mini-bar-fill fill-green" style="width:28%"></div></div></td>
+              <td class="td-green">+4.9%</td>
+              <td class="td-green">LOW</td>
+              <td><span class="inv-paid">ACTIVE</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">Tech Venture SPV III</td>
+              <td class="td-muted">Venture</td>
+              <td>$128M</td>
+              <td><div class="mini-bar"><div class="mini-bar-fill fill-gold" style="width:17%"></div></div></td>
+              <td class="td-red">-2.1%</td>
+              <td class="td-red">HIGH</td>
+              <td><span class="inv-pending">REVIEW</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">Sovereign Credit Overlay</td>
+              <td class="td-muted">Credit</td>
+              <td>$96M</td>
+              <td><div class="mini-bar"><div class="mini-bar-fill fill-green" style="width:12%"></div></div></td>
+              <td class="td-green">+3.3%</td>
+              <td class="td-gold">MED</td>
+              <td><span class="inv-paid">ACTIVE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  'esd-pmi': `You are the ESD-PMI Node for Case-Tech. Specialties: project profitability analysis, milestone and deliverable tracking, budget burn-rate monitoring, resource allocation, client deliverable status, cross-project risk assessment. Provide structured project intelligence. Flag budget risks with ⚠. Include margin data where relevant.`
-};
+    <!-- REPORTS TAB -->
+    <div class="tab-panel" id="tab-reports">
+      <div class="report-grid">
+        <div class="report-card" onclick="generateReport('q1-financial')">
+          <div class="report-icon">📊</div>
+          <div class="report-title">Q1 2026 Financial Summary</div>
+          <div class="report-desc">Full P&L, balance sheet, cash flow with variance analysis vs Q4 2025 and prior year Q1.</div>
+          <span class="report-tag">AUTO-GENERATE</span>
+        </div>
+        <div class="report-card" onclick="generateReport('audit-trail')">
+          <div class="report-icon">🔍</div>
+          <div class="report-title">Audit Trail Report</div>
+          <div class="report-desc">Complete transaction audit log with SOX control checkpoints, exception flags, and remediation status.</div>
+          <span class="report-tag">COMPLIANCE</span>
+        </div>
+        <div class="report-card" onclick="generateReport('portfolio-perf')">
+          <div class="report-icon">📈</div>
+          <div class="report-title">Portfolio Performance Report</div>
+          <div class="report-desc">Risk-adjusted returns, Sharpe ratio, drawdown analysis, benchmark comparison across all active positions.</div>
+          <span class="report-tag">ANALYTICS</span>
+        </div>
+        <div class="report-card" onclick="generateReport('invoice-aging')">
+          <div class="report-icon">🧾</div>
+          <div class="report-title">Invoice Aging Report</div>
+          <div class="report-desc">AR aging buckets 30/60/90/120+ days, collection efficiency, DSO trend, at-risk accounts.</div>
+          <span class="report-tag">AR MANAGEMENT</span>
+        </div>
+        <div class="report-card" onclick="generateReport('fintech-compliance')">
+          <div class="report-icon">💳</div>
+          <div class="report-title">FinTech Compliance Status</div>
+          <div class="report-desc">BSA/AML program health, SAR filing cadence, CDD exception log, open regulatory items.</div>
+          <span class="report-tag">REGULATORY</span>
+        </div>
+        <div class="report-card" onclick="generateReport('cash-flow-forecast')">
+          <div class="report-icon">💵</div>
+          <div class="report-title">13-Week Cash Flow Forecast</div>
+          <div class="report-desc">Rolling cash projection with scenario modeling (base, stress, upside) and covenant headroom analysis.</div>
+          <span class="report-tag">TREASURY</span>
+        </div>
+      </div>
+    </div>
 
-const REPORT_PROMPTS = {
-  'q1-tax': 'Generate a detailed Q1 multi-state sales tax export report. Include: per-state liability totals, filing deadlines, nexus status, economic threshold progress, exemption certificate issues, and recommended immediate actions. Make it audit-ready and export-formatted.',
-  'ar-aging': 'Generate a complete AR aging analysis in 30/60/90+ day buckets. For each bucket: typical customer profile, recommended collection action, escalation trigger, estimated recovery rate, and automated follow-up sequence. Include cash flow impact.',
-  'ap-reconcile': 'Generate a full AP reconciliation report with audit trail. Include: vendor payment status, GL coding verification, duplicate detection, unapproved payables, and recommended month-end close steps.',
-  'nexus-risk': 'Generate an economic nexus risk assessment for all 15 states. Include: current threshold progress per state, projected trigger dates based on velocity, recommended proactive registration steps, and penalty risk.',
-  'fulfillment': 'Generate a fulfillment performance summary. Include: order processing time benchmarks, carrier utilization rates, label generation speed, error rates vs. industry standard, and top 3 workflow improvements.',
-  'qb-sync': 'Generate a QuickBooks migration readiness assessment. Include: data fields that auto-map, fields requiring manual review, AR/AP balance verification steps, chart of accounts alignment, and estimated migration timeline.',
-  'exempt-cert': 'Generate an exemption certificate inventory report. Include: certificates by state, expiration timeline, at-risk expirations (60/30/7 days), customers without certificates who should have them, and automated renewal workflow.',
-  'cashflow': 'Generate a 90-day cash flow forecast. Include: expected AR collections by week, AP obligations due, projected ending balance, risk scenarios (high/medium/low collection), and recommended actions to improve cash position.',
-  'esd-timesheets': 'Generate a full timesheet utilization report for the current period. Include: billable vs. non-billable breakdown by staff, project code allocation, overtime flags, approval status, and payroll export readiness.',
-  'esd-pmi': 'Generate a project P&L summary for all active engagements. Include: revenue recognized vs. budgeted, margin by project, burn rate alerts, upcoming milestones at risk, and resource allocation recommendations.',
-  'esd-cashreceipts': 'Generate a cash receipts reconciliation report. Include: matched vs. unmatched deposits, exception queue summary, bank feed sync status, daily cash position trend, and recommended actions for unmatched items.'
-};
+    <!-- AUDIT ENGINE TAB -->
+    <div class="tab-panel" id="tab-audit">
+      <div class="engine-panel">
+        <div class="engine-hdr">
+          <div class="engine-hdr-left">
+            <span class="bolt">⚡</span>
+            FINANCIAL INTELLIGENCE ENGINE
+          </div>
+          <span class="engine-tag">FINANCIAL</span>
+        </div>
 
-let bridgeOk = null;
+        <div class="domain-tag">
+          <span><span class="dot-red-sm"></span> &nbsp;DOMAIN: Financial Analysis &nbsp;·&nbsp; SOX &nbsp;·&nbsp; GAAP &nbsp;·&nbsp; IFRS 17 &nbsp;·&nbsp; FinTech Compliance</span>
+          <span style="cursor:pointer;color:var(--muted)">✕</span>
+        </div>
 
-async function checkBridge() {
-  const banner = document.getElementById('bridgeBanner');
-  const txt = document.getElementById('bridgeBannerText');
+        <div class="engine-controls">
+          <select class="ctrl-select" id="analysisType">
+            <option>Financial</option>
+            <option>FinTech</option>
+            <option>Audit</option>
+            <option>Regulatory</option>
+            <option>Portfolio</option>
+          </select>
+          <select class="ctrl-select" id="reportType">
+            <option>Gap Analysis</option>
+            <option>Risk Assessment</option>
+            <option>Valuation</option>
+            <option>Compliance Audit</option>
+            <option>Forecast</option>
+          </select>
+        </div>
+
+        <div class="doc-attach" onclick="document.getElementById('fileUpload').click()">
+          <span class="doc-attach-icon">🔗</span>
+          <span>ATTACH DOCUMENT (optional) — PDF, DOCX, XLSX, TXT</span>
+          <input type="file" id="fileUpload" style="display:none" accept=".pdf,.docx,.xlsx,.txt">
+        </div>
+
+        <div class="output-bullets">
+          <div class="bullet-item"><span class="arr">►</span><span>Applicable financial regulations and framework requirements</span></div>
+          <div class="bullet-item"><span class="arr">►</span><span>Current compliance gaps and risk exposure quantification</span></div>
+          <div class="bullet-item"><span class="arr">►</span><span>Estimated penalty ranges and financial impact if non-compliant</span></div>
+          <div class="bullet-item"><span class="arr">►</span><span>Prioritized remediation recommendations with cost estimates</span></div>
+          <div class="bullet-item"><span class="arr">►</span><span>Implementation timeline and responsible parties</span></div>
+        </div>
+
+        <div class="query-input-wrap">
+          <textarea class="query-input" id="queryInput" placeholder="Enter your financial analysis query, paste financial data, or select a preset from the library..."></textarea>
+        </div>
+
+        <div class="engine-actions">
+          <button class="btn btn-primary" id="runBtn" onclick="runAnalysis()">🚀 RUN ANALYSIS</button>
+          <button class="btn btn-clear" onclick="clearAnalysis()">✕ CLEAR</button>
+          <button class="btn btn-relay" onclick="relayToStrategist()">⚡ RELAY TO STRATEGIST</button>
+        </div>
+
+        <div class="ai-response" id="aiResponse"></div>
+
+        <div class="response-footer">
+          <span class="rf-label">📋 AI RESPONSE</span>
+          <button class="rf-action" onclick="copyResponse()">📋 COPY</button>
+          <button class="rf-action" onclick="relayToStrategist()">⚡ RELAY</button>
+          <button class="rf-action" onclick="exportResponse()">↓ EXPORT</button>
+          <span class="token-count" id="tokenCount">0 tokens</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVOICES TAB -->
+    <div class="tab-panel" id="tab-invoices">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Receivables</div>
+          <div class="metric-value">$4.2M</div>
+          <div class="metric-sub">38 open invoices</div>
+          <div class="metric-change down">▼ 8 overdue</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Collected YTD</div>
+          <div class="metric-value">$12.1M</div>
+          <div class="metric-sub">DSO: 34 days</div>
+          <div class="metric-change up">▲ -4 days vs Q4</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Overdue >60d</div>
+          <div class="metric-value">$680K</div>
+          <div class="metric-sub">3 accounts at risk</div>
+          <div class="metric-change down">▼ Escalation needed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Collection Rate</div>
+          <div class="metric-value">94.2%</div>
+          <div class="metric-sub">30-day collection efficiency</div>
+          <div class="metric-change up">▲ +1.8% vs prior period</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-hdr">
+          🧾 INVOICE MANAGEMENT
+          <span class="badge-sm">38 OPEN</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice #</th>
+              <th>Client</th>
+              <th>Amount</th>
+              <th>Issued</th>
+              <th>Due</th>
+              <th>Aging</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-green">INV-2026-0041</td>
+              <td>Meridian Capital LLC</td>
+              <td>$284,500</td>
+              <td class="td-muted">Feb 12</td>
+              <td class="td-muted">Mar 14</td>
+              <td class="td-muted">6d</td>
+              <td><span class="inv-pending">PENDING</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">INV-2026-0038</td>
+              <td>Vantage Group Holdings</td>
+              <td>$156,000</td>
+              <td class="td-muted">Jan 28</td>
+              <td class="td-muted">Feb 27</td>
+              <td class="td-muted">9d</td>
+              <td><span class="inv-overdue">OVERDUE</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">INV-2026-0035</td>
+              <td>Northbridge Advisors</td>
+              <td>$92,750</td>
+              <td class="td-muted">Jan 15</td>
+              <td class="td-muted">Feb 14</td>
+              <td class="td-muted">22d</td>
+              <td><span class="inv-overdue">OVERDUE</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">INV-2026-0033</td>
+              <td>Summit Financial Partners</td>
+              <td>$445,000</td>
+              <td class="td-muted">Jan 10</td>
+              <td class="td-muted">Mar 01</td>
+              <td class="td-muted">—</td>
+              <td><span class="inv-paid">PAID</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">INV-2026-0029</td>
+              <td>Aurora Asset Management</td>
+              <td>$318,200</td>
+              <td class="td-muted">Dec 22</td>
+              <td class="td-muted">Jan 21</td>
+              <td class="td-muted">46d</td>
+              <td><span class="inv-overdue">OVERDUE</span></td>
+            </tr>
+            <tr>
+              <td class="td-green">INV-2026-0027</td>
+              <td>Crest Ventures Inc</td>
+              <td>$74,000</td>
+              <td class="td-muted">Dec 18</td>
+              <td class="td-muted">Jan 17</td>
+              <td class="td-muted">—</td>
+              <td><span class="inv-paid">PAID</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HEALTH SCORE TAB -->
+    <div class="tab-panel" id="tab-health">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Overall Health</div>
+          <div class="metric-value">91%</div>
+          <div class="metric-sub">Composite score</div>
+          <div class="metric-change up">▲ Strong</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Liquidity Ratio</div>
+          <div class="metric-value">2.4x</div>
+          <div class="metric-sub">Current ratio</div>
+          <div class="metric-change up">▲ Above threshold</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Debt/EBITDA</div>
+          <div class="metric-value">1.8x</div>
+          <div class="metric-sub">vs 3.5x covenant</div>
+          <div class="metric-change up">▲ 1.7x headroom</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Interest Coverage</div>
+          <div class="metric-value">6.2x</div>
+          <div class="metric-sub">vs 2.5x minimum</div>
+          <div class="metric-change up">▲ Healthy</div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-hdr">📊 FINANCIAL HEALTH INDICATORS</div>
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Value</th><th>Threshold</th><th>Trend</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Gross Margin</td><td class="td-green">68.4%</td><td class="td-muted">>60%</td><td class="td-green">▲ +1.2pt</td><td><span class="inv-paid">HEALTHY</span></td></tr>
+            <tr><td>Operating Cash Flow</td><td class="td-green">$4.1M/mo</td><td class="td-muted">>$2M</td><td class="td-green">▲ +8%</td><td><span class="inv-paid">HEALTHY</span></td></tr>
+            <tr><td>Burn Rate (if applicable)</td><td class="td-gold">$1.8M/mo</td><td class="td-muted"><$2.5M</td><td class="td-gold">→ Stable</td><td><span class="inv-pending">MONITOR</span></td></tr>
+            <tr><td>Quick Ratio</td><td class="td-green">1.9x</td><td class="td-muted">>1.0x</td><td class="td-green">▲ +0.2x</td><td><span class="inv-paid">HEALTHY</span></td></tr>
+            <tr><td>Revenue Growth YoY</td><td class="td-green">22.3%</td><td class="td-muted">>10%</td><td class="td-green">▲ Accelerating</td><td><span class="inv-paid">HEALTHY</span></td></tr>
+            <tr><td>Accounts Receivable DSO</td><td class="td-gold">34 days</td><td class="td-muted"><45 days</td><td class="td-green">▲ Improving</td><td><span class="inv-pending">MONITOR</span></td></tr>
+            <tr><td>SOX Compliance Score</td><td class="td-red">78%</td><td class="td-muted">>85%</td><td class="td-red">▼ Flagged</td><td><span class="inv-overdue">ACTION</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HOW-TO TAB -->
+    <div class="tab-panel" id="tab-howto">
+      <div class="howto-tip">
+        <span>💡</span>
+        <span><strong style="color:var(--gold2)">Pro Tip:</strong> Start by selecting a preset from the left library to auto-populate the Audit Engine — then customize the query with your specific entity, period, or document context before running. Use Relay to Strategist to escalate complex findings directly to TSM Intelligence.</span>
+      </div>
+
+      <div class="howto-grid">
+        <div class="howto-card">
+          <div class="howto-icon">📊</div>
+          <div class="howto-title">Generating Custom Reports</div>
+          <div class="howto-desc">Build tailored financial reports using live portfolio data, audit trails, and AI-generated analysis.</div>
+          <ul class="howto-steps">
+            <li><span class="step-num">01</span><span>Navigate to the Reports tab and select your report type</span></li>
+            <li><span class="step-num">02</span><span>Click any report card — the system auto-populates with live data</span></li>
+            <li><span class="step-num">03</span><span>Use the Audit Engine to add AI analysis to any report section</span></li>
+            <li><span class="step-num">04</span><span>Export via the ↓ EXPORT button — PDF or JSON format</span></li>
+            <li><span class="step-num">05</span><span>Schedule recurring reports via the API tab settings</span></li>
+          </ul>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-icon">🤖</div>
+          <div class="howto-title">AI Assistant for Finance Queries</div>
+          <div class="howto-desc">Ask the Financial Intelligence Engine anything — valuations, ratio analysis, compliance gaps, forecasts.</div>
+          <ul class="howto-steps">
+            <li><span class="step-num">01</span><span>Go to Audit Engine tab → select analysis type and report format</span></li>
+            <li><span class="step-num">02</span><span>Pick a preset from the sidebar or type your own query</span></li>
+            <li><span class="step-num">03</span><span>Optionally attach a PDF, DOCX, or XLSX for document analysis</span></li>
+            <li><span class="step-num">04</span><span>Click RUN ANALYSIS — response streams in real-time</span></li>
+            <li><span class="step-num">05</span><span>Hit RELAY TO STRATEGIST to escalate to strategist.tsmatter.com</span></li>
+          </ul>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-icon">🧾</div>
+          <div class="howto-title">Invoice Management</div>
+          <div class="howto-desc">Track accounts receivable, aging buckets, DSO metrics, and overdue escalations in one view.</div>
+          <ul class="howto-steps">
+            <li><span class="step-num">01</span><span>Open the Invoices tab for full AR dashboard with aging data</span></li>
+            <li><span class="step-num">02</span><span>Filter by status: PAID, PENDING, OVERDUE using the table</span></li>
+            <li><span class="step-num">03</span><span>Run the Invoice Aging Report from Reports tab for bucket analysis</span></li>
+            <li><span class="step-num">04</span><span>Click any invoice row to view full details and payment history</span></li>
+            <li><span class="step-num">05</span><span>Use AI Engine with "Invoice aging analysis" preset to get collection strategies</span></li>
+          </ul>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-icon">💳</div>
+          <div class="howto-title">FinTech Compliance Presets</div>
+          <div class="howto-desc">11 specialized presets covering BSA/AML, crypto, BNPL, embedded finance, digital wallets, and more.</div>
+          <ul class="howto-steps">
+            <li><span class="step-num">01</span><span>Expand the FINTECH section in the left sidebar</span></li>
+            <li><span class="step-num">02</span><span>Click any preset — it auto-loads into the Audit Engine</span></li>
+            <li><span class="step-num">03</span><span>Add your specific program details or paste agreement text</span></li>
+            <li><span class="step-num">04</span><span>Set Analysis Type to "FinTech" and Report Type to "Compliance Audit"</span></li>
+            <li><span class="step-num">05</span><span>Export results or relay to Compliance at compliance.tsmatter.com</span></li>
+          </ul>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-icon">⚡</div>
+          <div class="howto-title">Relay to Strategist</div>
+          <div class="howto-desc">Escalate any financial finding or AI response directly to the TSM Strategic Intelligence platform.</div>
+          <ul class="howto-steps">
+            <li><span class="step-num">01</span><span>Run any analysis in the Audit Engine tab</span></li>
+            <li><span class="step-num">02</span><span>Click the gold ⚡ RELAY TO STRATEGIST button</span></li>
+            <li><span class="step-num">03</span><span>Your query + AI response packages and opens strategist.tsmatter.com</span></li>
+            <li><span class="step-num">04</span><span>Context is pre-loaded — Strategist receives full financial context</span></li>
+            <li><span class="step-num">05</span><span>Use for M&A decisions, board presentation prep, or executive briefings</span></li>
+          </ul>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-icon">📡</div>
+          <div class="howto-title">Key Data Endpoints</div>
+          <div class="howto-desc">Financial Intelligence Pro connects to these live data sources and internal APIs.</div>
+          <ul class="howto-steps">
+            <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Portfolio API</strong> — /api/portfolio/positions (live AUM data)</span></li>
+            <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Invoices API</strong> — /api/invoices/aging (AR + DSO metrics)</span></li>
+            <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Compliance API</strong> — /api/compliance/score (framework scores)</span></li>
+            <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Audit API</strong> — /api/audit/queue (open items + flags)</span></li>
+            <li><span class="step-num">▸</span><span><strong style="color:var(--gold)">Relay API</strong> — POST /api/relay → strategist.tsmatter.com</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  
+<div class="tab-panel" id="tab-reconciliation" style="padding:16px;overflow-y:auto;height:100%">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="section-card">
+      <div class="section-hdr"><span>⚖️ ACCOUNT RECONCILIATION</span></div>
+      <div style="padding:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">ACCOUNT NAME</label><input type="text" id="recon-account" placeholder="e.g. Cash - Checking #4821" style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px;font-size:11px;font-family:inherit"></div>
+          <div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">PERIOD</label><input type="month" id="recon-period" style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px;font-size:11px;font-family:inherit"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">GL BALANCE ($)</label><input type="number" id="recon-gl" placeholder="0.00" oninput="calcRecon()" style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px;font-size:11px;font-family:inherit"></div>
+          <div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">BANK STATEMENT ($)</label><input type="number" id="recon-bank" placeholder="0.00" oninput="calcRecon()" style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px;font-size:11px;font-family:inherit"></div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);padding:12px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:11px"><span style="color:var(--muted)">GL Balance</span><span id="r-gl" style="color:var(--accent)">$0.00</span></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:11px"><span style="color:var(--muted)">Bank Balance</span><span id="r-bank" style="color:var(--accent)">$0.00</span></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-top:1px solid var(--border);margin-top:4px;font-weight:700"><span>VARIANCE</span><span id="r-var" style="color:#4ade80">$0.00 — RECONCILED</span></div>
+        </div>
+        <textarea id="recon-notes" placeholder="Outstanding checks, deposits in transit, bank errors, timing differences..." style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:8px;font-size:11px;font-family:inherit;resize:vertical;min-height:60px;margin-bottom:10px"></textarea>
+        <button onclick="runReconAI()" style="width:100%;background:var(--accent);border:none;color:#000;padding:9px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">🤖 AI RECONCILIATION ANALYSIS</button>
+        <div id="recon-ai" style="display:none;margin-top:10px;background:#001a00;border-left:3px solid #00ff88;padding:14px;font-size:11px;line-height:1.9;color:#b8ffcc;border-radius:2px"></div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-hdr"><span>📋 RECONCILIATION QUICK ACTIONS</span></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:6px">
+        <button onclick="reconAsk('Walk me through a complete bank reconciliation: GL balance $142,500, bank statement $138,200, outstanding checks $6,800, deposit in transit $2,500. Show all reconciling items and required journal entries.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📊 BANK RECONCILIATION WALKTHROUGH</button>
+        <button onclick="reconAsk('What are the most common account reconciliation errors in corporate accounting? Include timing differences, data entry errors, missing transactions, duplicates. For each, explain identification and the correcting journal entry.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">⚠️ COMMON RECONCILIATION ERRORS</button>
+        <button onclick="reconAsk('Explain AR subledger to GL control account reconciliation. Include aging analysis, disputed invoices, write-off procedures, allowance for doubtful accounts calculation, and required journal entries for bad debt expense under GAAP.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">💰 AR SUBLEDGER RECONCILIATION</button>
+        <button onclick="reconAsk('How do you reconcile intercompany accounts? Include elimination entries, intercompany transaction identification, timing differences, and consolidation journal entries under ASC 810.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">🏢 INTERCOMPANY RECONCILIATION</button>
+        <button onclick="reconAsk('Explain the month-end close reconciliation checklist for a corporate accounting team. Include sub-ledger recs, accruals, prepaid amortization, depreciation, and typical timeline with responsible parties.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📅 MONTH-END CLOSE CHECKLIST</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNAL ENTRIES TAB -->
+<div class="tab-panel" id="tab-journal" style="padding:16px;overflow-y:auto;height:100%">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="section-card">
+      <div class="section-hdr"><span>📒 JOURNAL ENTRY BUILDER</span></div>
+      <div style="padding:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">DATE</label><input type="date" id="je-date" style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px;font-size:11px;font-family:inherit"></div>
+          <div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px">ENTRY TYPE</label><select id="je-type" style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px;font-size:11px;font-family:inherit"><option>STANDARD</option><option>ADJUSTING</option><option>CLOSING</option><option>REVERSING</option><option>ACCRUAL</option><option>DEPRECIATION</option></select></div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px" id="je-table">
+          <thead><tr><th style="background:var(--bg2);border:1px solid var(--border);padding:6px;text-align:left;color:var(--muted)">ACCOUNT</th><th style="background:var(--bg2);border:1px solid var(--border);padding:6px;color:var(--muted);width:100px">DEBIT ($)</th><th style="background:var(--bg2);border:1px solid var(--border);padding:6px;color:var(--muted);width:100px">CREDIT ($)</th></tr></thead>
+          <tbody id="je-rows">
+            <tr><td style="border:1px solid var(--border);padding:4px"><input placeholder="Account" style="width:100%;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:11px;outline:none"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-dr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-cr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:4px"><input placeholder="Account" style="width:100%;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:11px;outline:none"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-dr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-cr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:4px"><input placeholder="Account" style="width:100%;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:11px;outline:none"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-dr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-cr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:4px"><input placeholder="Account" style="width:100%;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:11px;outline:none"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-dr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="je-cr" placeholder="0" oninput="calcJE()" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+          </tbody>
+          <tfoot><tr><td style="border:1px solid var(--border);padding:6px;font-weight:700">TOTALS</td><td style="border:1px solid var(--border);padding:6px;text-align:right;font-weight:700;color:#4ade80" id="je-total-dr">$0.00</td><td style="border:1px solid var(--border);padding:6px;text-align:right;font-weight:700;color:#f87171" id="je-total-cr">$0.00</td></tr></tfoot>
+        </table>
+        <div id="je-status" style="text-align:center;padding:6px;font-size:11px;background:var(--bg2);border:1px solid var(--border);margin-bottom:10px;color:var(--muted)">⚖️ Enter amounts to check balance</div>
+        <textarea id="je-memo" placeholder="Transaction description and business purpose..." style="width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:8px;font-size:11px;font-family:inherit;resize:vertical;min-height:50px;margin-bottom:10px"></textarea>
+        <button onclick="runJEAI()" style="width:100%;background:var(--accent);border:none;color:#000;padding:9px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">🤖 AI REVIEW JOURNAL ENTRY</button>
+        <div id="je-ai" style="display:none;margin-top:10px;background:#001a00;border-left:3px solid #00ff88;padding:14px;font-size:11px;line-height:1.9;color:#b8ffcc;border-radius:2px"></div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-hdr"><span>📚 COMMON JOURNAL ENTRIES</span></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:6px">
+        <button onclick="jeAsk('Show double-entry journal entries for: (1) Credit sale $50,000, (2) Customer payment $50,000, (3) COGS $35,000. DR/CR format with account names and accounting equation impact.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">💰 SALES & REVENUE ENTRIES</button>
+        <button onclick="jeAsk('Month-end accruals journal entries: (1) Accrued wages $28,000, (2) Accrued interest $1,200, (3) Accrued revenue $15,000, (4) Prepaid insurance expensed $2,400. Show DR/CR and explain GAAP matching principle.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📅 MONTH-END ACCRUALS</button>
+        <button onclick="jeAsk('Fixed asset journal entries: (1) Purchase equipment $85,000, (2) Monthly straight-line depreciation 5 years, (3) Sale of fully depreciated asset $12,000, (4) Disposal with $8,000 book value for $5,000. Include gain/loss calculations.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">🏭 FIXED ASSET & DEPRECIATION</button>
+        <button onclick="jeAsk('Closing entries: (1) Close revenue $1,250,000, (2) Close expenses $980,000, (3) Close income summary to retained earnings, (4) Dividends declared $50,000. Explain temporary vs permanent accounts.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">🔒 CLOSING ENTRIES</button>
+        <button onclick="jeAsk('Payroll journal entries: gross wages $42,000, federal tax withheld $6,300, SS 6.2% both sides, Medicare 1.45% both sides, state tax $2,100, health insurance $800. Show all entries including employer payroll tax expense.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">👥 PAYROLL ENTRIES</button>
+        <button onclick="jeAsk('Explain double-entry bookkeeping: accounting equation Assets=Liabilities+Equity, normal balances, rules of debits and credits, 5 examples showing equation balance. Include T-account format.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📖 DOUBLE-ENTRY FUNDAMENTALS</button>
+        <button onclick="safeAnalyze(document.querySelector(`textarea`)?.value || `analysis`, `output`)" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">🔄 FULL ACCOUNTING CYCLE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GENERAL LEDGER TAB -->
+<div class="tab-panel" id="tab-ledger" style="padding:16px;overflow-y:auto;height:100%">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="section-card">
+      <div class="section-hdr"><span>🏦 TRIAL BALANCE CHECKER</span></div>
+      <div style="padding:14px">
+        <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
+          <thead><tr><th style="background:var(--bg2);border:1px solid var(--border);padding:6px;text-align:left;color:var(--muted)">ACCOUNT</th><th style="background:var(--bg2);border:1px solid var(--border);padding:6px;color:var(--muted);width:100px">DR ($)</th><th style="background:var(--bg2);border:1px solid var(--border);padding:6px;color:var(--muted);width:100px">CR ($)</th></tr></thead>
+          <tbody>
+            <tr><td style="border:1px solid var(--border);padding:5px;color:var(--muted);font-size:9px;background:var(--bg2)" colspan="3">ASSETS</td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Cash</td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-dr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Accounts Receivable</td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-dr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Inventory</td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-dr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Fixed Assets (Net)</td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-dr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px;color:var(--muted);font-size:9px;background:var(--bg2)" colspan="3">LIABILITIES</td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Accounts Payable</td><td style="border:1px solid var(--border);padding:4px"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-cr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Notes Payable</td><td style="border:1px solid var(--border);padding:4px"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-cr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px;color:var(--muted);font-size:9px;background:var(--bg2)" colspan="3">EQUITY & INCOME</td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Common Stock</td><td style="border:1px solid var(--border);padding:4px"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-cr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Retained Earnings</td><td style="border:1px solid var(--border);padding:4px"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-cr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Revenue</td><td style="border:1px solid var(--border);padding:4px"></td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-cr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#f87171;font-family:inherit;font-size:11px;outline:none;text-align:right"></td></tr>
+            <tr><td style="border:1px solid var(--border);padding:5px">Expenses</td><td style="border:1px solid var(--border);padding:4px"><input type="number" class="tb-dr" oninput="calcTB()" placeholder="0" style="width:100%;background:transparent;border:none;color:#4ade80;font-family:inherit;font-size:11px;outline:none;text-align:right"></td><td style="border:1px solid var(--border);padding:4px"></td></tr>
+          </tbody>
+          <tfoot><tr><td style="border:1px solid var(--border);padding:6px;font-weight:700">TOTALS</td><td style="border:1px solid var(--border);padding:6px;text-align:right;font-weight:700;color:#4ade80" id="tb-dr">$0</td><td style="border:1px solid var(--border);padding:6px;text-align:right;font-weight:700;color:#f87171" id="tb-cr">$0</td></tr></tfoot>
+        </table>
+        <div id="tb-status" style="text-align:center;padding:8px;font-size:11px;background:var(--bg2);border:1px solid var(--border);margin-bottom:10px;color:var(--muted)">⚖️ Enter amounts to check balance</div>
+        <button onclick="runTBAI()" style="width:100%;background:var(--accent);border:none;color:#000;padding:9px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">🤖 AI TRIAL BALANCE ANALYSIS</button>
+        <div id="tb-ai" style="display:none;margin-top:10px;background:#001a00;border-left:3px solid #00ff88;padding:14px;font-size:11px;line-height:1.9;color:#b8ffcc;border-radius:2px"></div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-hdr"><span>📊 CORPORATE ACCOUNTING TOOLS</span></div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:6px">
+        <button onclick="ledgerAsk('Corporate chart of accounts structure: assets 1000-1999, liabilities 2000-2999, equity 3000-3999, revenue 4000-4999, COGS 5000-5999, expenses 6000-7999. Provide complete sample chart of accounts for a mid-size corporation.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📋 CHART OF ACCOUNTS</button>
+        <button onclick="ledgerAsk('Month-end close procedures for a corporation: sub-ledger reconciliations, accruals, prepaid amortization, depreciation, inventory adjustment, intercompany eliminations, trial balance review, financial statements. Include timeline and responsible parties.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📅 MONTH-END CLOSE</button>
+        <button onclick="ledgerAsk('Inventory accounting under GAAP: FIFO vs LIFO vs weighted average. For each: journal entries, COGS calculation, ending inventory. Same example: 100 units at $10 beginning, 200 units at $12 purchased, 150 units sold at $20. Include lower of cost or NRV rule.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">📦 INVENTORY METHODS</button>
+        <button onclick="ledgerAsk('Compare QuickBooks, SAP, Oracle NetSuite, and Microsoft Dynamics 365 for corporate accounting. Key features, best company size, integration, cost, and which is strongest for journal entries, reconciliation, and financial reporting.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">💻 ACCOUNTING SOFTWARE COMPARISON</button>
+        <button onclick="ledgerAsk('Internal controls for corporate accounting: segregation of duties, authorization limits, reconciliation controls, journal entry approval workflows, access controls, SOX 302/404 documentation. Include sample internal control matrix for cash receipts.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">🔒 INTERNAL CONTROLS</button>
+        <button onclick="ledgerAsk('Explain the difference between cash basis and accrual basis accounting. When is each appropriate? Show examples of how the same transactions are recorded differently under each method. Include implications for financial statement analysis and tax reporting.')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:inherit;font-size:10px;cursor:pointer;text-align:left">💡 CASH VS ACCRUAL BASIS</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end center -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="rp-section">
+      <div class="rp-label">
+        ACTIVE FRAMEWORKS
+        <span class="rp-badge">8 ACTIVE</span>
+      </div>
+
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">SOX 302/404 · SOX 2.0</span><span class="fw-score score-gold">78%</span></div>
+        <div class="fw-sub">Financial Controls · Cyber · AI Gov · ESG · Flagged</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-gold" style="width:78%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">IFRS 17</span><span class="fw-score score-green">94%</span></div>
+        <div class="fw-sub">Insurance Contracts · Q1-2026</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-green" style="width:94%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">US GAAP</span><span class="fw-score score-green">91%</span></div>
+        <div class="fw-sub">Revenue Recognition · Current</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-green" style="width:91%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">PCAOB AS 2201</span><span class="fw-score score-gold">82%</span></div>
+        <div class="fw-sub">Internal Control Audit · In Review</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-gold" style="width:82%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">Basel III</span><span class="fw-score score-green">89%</span></div>
+        <div class="fw-sub">Capital Adequacy · Compliant</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-green" style="width:89%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">BSA/AML</span><span class="fw-score score-red">65%</span></div>
+        <div class="fw-sub">FinTech · SAR Review Needed</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-red" style="width:65%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">CFPB 1033</span><span class="fw-score score-gold">71%</span></div>
+        <div class="fw-sub">Open Banking · Implementation</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-gold" style="width:71%"></div></div>
+      </div>
+      <div class="framework-item">
+        <div class="fw-top"><span class="fw-name">SEC Reg FD</span><span class="fw-score score-green">96%</span></div>
+        <div class="fw-sub">Disclosure · Apr 30 Deadline</div>
+        <div class="fw-bar"><div class="fw-bar-fill fill-green" style="width:96%"></div></div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">PRIORITY ACTIONS</div>
+      <div class="priority-item">
+        <div class="pi-label">⚠ SOX FLAGGED</div>
+        SOX controls gap — AP workflow segregation of duties needs remediation before Apr 15
+      </div>
+      <div class="priority-item">
+        <div class="pi-label">🔴 BSA/AML REVIEW</div>
+        3 SAR filing thresholds require re-calibration — Q1 review overdue
+      </div>
+      <div class="priority-item">
+        <div class="pi-label">💛 AR ESCALATION</div>
+        $680K overdue >60 days — Aurora Asset Management requires collections action
+      </div>
+      <div class="priority-item">
+        <div class="pi-label">📋 CFPB 1033</div>
+        Open banking API compliance readiness assessment due Q2 2026
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+<!-- end main layout -->
+<!-- RECONCILIATION TAB -->
+
+
+</div>
+
+<!-- FAB -->
+<button class="ai-fab" onclick="switchTab('audit', document.querySelector('[onclick*=audit]'))">
+  ⚡ FINANCIAL AI
+</button>
+
+<script>
+const GROQ_API_KEY_VAR = 'tsm_fin_groq_key';
+
+const SYS = `You are TSM Financial Intelligence Pro — the AI engine of the TSM Desert Financial Credit Union Financial Platform. You specialize in:
+- Financial statement analysis: P&L, balance sheet, cash flow, ratio analysis (liquidity, leverage, profitability, efficiency)
+- Valuation: DCF, comps, precedent transactions, LBO, NAV, sum-of-parts
+- Audit & compliance: SOX 302/404 · SOX 2.0, GAAP ASC 606/842/326, IFRS 17, PCAOB standards, Basel III capital ratios
+- FinTech regulation: BSA/AML, CFPB 1033, Reg Z, ECOA, PCI DSS, FinCEN MSB, state money transmitter, crypto classification
+- Portfolio management: risk-adjusted returns, Sharpe/Sortino, drawdown, VaR, factor exposure
+- Treasury: cash flow forecasting, covenant compliance, working capital optimization, FX hedging
+- Invoice & AR: DSO optimization, aging analysis, collection strategies, bad debt provisioning
+Your tone is expert, precise, and commercially actionable. Cite specific code sections, FASB ASC references, and regulatory citations where relevant. Structure responses with ► section markers. Always include RISK, OPPORTUNITY, and ACTION ITEMS sections.`;
+
+function toggleSector(hdr) {
+  hdr.classList.toggle('open');
+  const list = hdr.nextElementSibling;
+  list.classList.toggle('open');
+}
+
+function setPreset(el, prompt) {
+  document.querySelectorAll('.preset-item').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  var auditBtn = null;
+  document.querySelectorAll('.tab-btn').forEach(function(b){
+    if(b.textContent.indexOf('Audit')>-1) auditBtn = b;
+  });
+  switchTab('audit', auditBtn);
+  setTimeout(function(){
+    var qi = document.getElementById('queryInput');
+    if(qi){
+      var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+      nativeInputValueSetter.call(qi, prompt);
+      qi.dispatchEvent(new Event('input', {bubbles:true}));
+      qi.dispatchEvent(new Event('change', {bubbles:true}));
+      qi.focus();
+      qi.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  }, 100);
+}
+
+async function getKey() {
+  let key = sessionStorage.getItem(GROQ_API_KEY_VAR);
+  if (key) return key;
   try {
-    const res = await fetch(CONFIG.bridgeUrl.replace('/v1/chat', '/health'), {
-      method: 'GET', signal: AbortSignal.timeout(4000)
-    });
-    if (res.ok) {
-      bridgeOk = true;
-      banner.className = 'bridge-banner show ok';
-      txt.textContent = '✓ TSM Neural bridge online · ai.tsmatter.com connected';
-      setTimeout(() => banner.classList.remove('show'), 4000);
-    } else { warnBridge(banner, txt); }
-  } catch(e) { warnBridge(banner, txt); }
+    const r = await safeFetch('/api/config');
+    if (!r.ok) throw new Error('Config ' + r.status);
+    key = j.groqApiKey || j.GROQ_API_KEY || j.groq_api_key;
+    if (!key) throw new Error('Key not found');
+    sessionStorage.setItem(GROQ_API_KEY_VAR, key);
+    return key;
+  } catch(e) { throw e; }
 }
 
-function warnBridge(banner, txt) {
-  bridgeOk = false;
-  banner.className = 'bridge-banner show';
-  if (CONFIG.useFallback) {
-    txt.textContent = '⚠ Bridge unreachable — running in simulation mode';
-    setTimeout(() => banner.classList.remove('show'), 6000);
-  } else {
-    txt.textContent = '⚠ TSM Neural bridge unreachable — check /var/www/tsm-ai config at ai.tsmatter.com';
-  }
-}
+async function runAnalysis() {
+  const query = document.getElementById('queryInput').value.trim();
+  if (!query) return;
 
-window.addEventListener('load', checkBridge);
+  const btn = document.getElementById('runBtn');
+  const responseEl = document.getElementById('aiResponse');
+  const tokenEl = document.getElementById('tokenCount');
 
-function animCount(el, target, suffix) {
-  const start = Date.now(), dur = 1200;
-  (function tick() {
-    const p = Math.min((Date.now()-start)/dur, 1);
-    const ease = 1-Math.pow(1-p, 3);
-    el.textContent = Math.round(ease*target) + suffix;
-    if (p<1) requestAnimationFrame(tick);
-  })();
-}
-window.addEventListener('load', () => {
-  setTimeout(()=>animCount(document.getElementById('st-orders'), 148, ''), 300);
-  setTimeout(()=>animCount(document.getElementById('st-ar'), 284, 'K'), 500);
-  setTimeout(()=>animCount(document.getElementById('st-exempt'), 63, ''), 700);
-});
+  btn.disabled = true;
+  btn.textContent = '⏳ ANALYZING...';
+  responseEl.className = 'ai-response visible';
+  responseEl.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
 
-const activeNodes = { tax: true, orders: true, ar: true };
-function toggleNode(n) {
-  activeNodes[n] = !activeNodes[n];
-  document.getElementById('tog-'+n).classList.toggle('active', activeNodes[n]);
-}
+  const analysisType = document.getElementById('analysisType').value;
+  const reportType = document.getElementById('reportType').value;
+  const contextPrompt = `[Analysis Type: ${analysisType} | Report Format: ${reportType}]\n\n${query}`;
 
-async function callAI(systemPrompt, userMessage, onChunk, onDone) {
-  if (CONFIG.useFallback || bridgeOk === false) {
-    await simulateResponse(systemPrompt, userMessage, onChunk, onDone);
-    return;
-  }
   try {
-    const res = await fetch(CONFIG.bridgeUrl, {
+    const data = await safeFetch('/api/v1/bridge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: systemPrompt,
-        message: userMessage,
-        stream: CONFIG.stream,
-        max_tokens: CONFIG.maxTokens
+      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),
+        messages: [{role:'user', content: contextPrompt}]
       })
     });
-    if (!res.ok) {
-      const errText = await res.text().catch(()=>'');
-      if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
-      else { onChunk('[Bridge error ' + res.status + ' — verify ai.tsmatter.com/v1/chat is live and CORS is open]\n' + errText.slice(0,200)); onDone(); }
+
+    if (!data || data.error) throw new Error((data && data.error) || 'API error');
+
+    const text = data.choices?.[0]?.message?.content || 'No response.';
+    const tokens = data.usage?.total_tokens || 0;
+
+    const formatted = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--green3)">$1</strong>')
+      .replace(/►/g, '<span style="color:var(--gold);font-weight:700">►</span>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+
+    responseEl.innerHTML = formatted;
+    tokenEl.textContent = tokens + ' tokens';
+  } catch(err) {
+    responseEl.innerHTML = '<span style="color:var(--danger)">⚠ ' + err.message + '</span>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 RUN ANALYSIS';
+}
+
+function clearAnalysis() {
+  document.getElementById('queryInput').value = '';
+  const r = document.getElementById('aiResponse');
+  r.className = 'ai-response';
+  r.innerHTML = '';
+  document.getElementById('tokenCount').textContent = '0 tokens';
+  document.querySelectorAll('.preset-item').forEach(p => p.classList.remove('active'));
+}
+
+function copyResponse() {
+  const text = document.getElementById('aiResponse').innerText;
+}
+
+function exportResponse() {
+  const query = document.getElementById('queryInput').value;
+  const response = document.getElementById('aiResponse').innerText;
+  const content = `DESERT FINANCIAL | TSM INTELLIGENCE — EXPORT\n${'='.repeat(50)}\nDate: ${new Date().toLocaleString()}\n\nQUERY:\n${query}\n\nAI ANALYSIS:\n${response}`;
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `tsm-financial-analysis-${Date.now()}.txt`;
+  a.click();
+}
+
+function relayToStrategist() {
+  const query = document.getElementById('queryInput').value.trim();
+  const response = document.getElementById('aiResponse').innerText.trim();
+  const context = encodeURIComponent(`[RELAYED FROM: TSM Financial Intelligence Pro]\n\nFINANCIAL QUERY:\n${query}${response ? '\n\nAI ANALYSIS:\n' + response : ''}`);
+  window.open('https://strategist.tsmatter.com?relay=' + context, '_blank');
+}
+
+function generateReport(type) {
+  // Switch to audit engine with pre-loaded report query
+  const queries = {
+    'q1-financial': 'Generate a comprehensive Q1 2026 financial summary including P&L variance analysis vs Q4 2025 and prior year Q1, balance sheet changes, cash flow highlights, and key ratio movements.',
+    'audit-trail': 'Produce an audit trail report covering all Q1 2026 transactions with SOX control checkpoints, exception flags, segregation of duties violations, and remediation status.',
+    'portfolio-perf': 'Analyze portfolio performance for Q1 2026 including risk-adjusted returns, Sharpe ratio, max drawdown, benchmark comparison, and position-level attribution.',
+    'invoice-aging': 'Generate an accounts receivable aging report with 30/60/90/120+ day buckets, collection efficiency metrics, DSO trend analysis, and at-risk account identification.',
+    'fintech-compliance': 'Produce a FinTech compliance status report covering BSA/AML program health, SAR filing cadence, CDD exception log, CFPB 1033 readiness, and open regulatory items.',
+    'cash-flow-forecast': 'Build a 13-week rolling cash flow forecast with base, stress, and upside scenarios. Include debt covenant headroom analysis and liquidity buffer assessment.'
+  };
+  document.getElementById('queryInput').value = queries[type] || '';
+  const auditBtn = document.querySelector('[onclick*="audit"]');
+  switchTab('audit', auditBtn);
+}
+
+// Initialize bar animations
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.fw-bar-fill, .mini-bar-fill').forEach(b => {
+      const w = b.style.width;
+      b.style.width = '0';
+      setTimeout(() => { b.style.width = w; }, 100);
+    });
+  }, 300);
+});
+
+function calcRecon(){
+  var gl=parseFloat(document.getElementById('recon-gl').value)||0;
+  var bank=parseFloat(document.getElementById('recon-bank').value)||0;
+  var variance=gl-bank;
+  var fmt=v=>'$'+Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  document.getElementById('r-gl').textContent=fmt(gl);
+  document.getElementById('r-bank').textContent=fmt(bank);
+  var el=document.getElementById('r-var');
+  if(Math.abs(variance)<0.01){el.textContent='$0.00 — RECONCILED ✓';el.style.color='#4ade80';}
+  else{el.textContent=fmt(variance)+' — VARIANCE ⚠';el.style.color='#fbbf24';}
+}
+function runReconAI(){
+  var acct=document.getElementById('recon-account').value||'General Account';
+  var gl=document.getElementById('recon-gl').value||'0';
+  var bank=document.getElementById('recon-bank').value||'0';
+  var notes=document.getElementById('recon-notes').value||'No additional notes';
+  var prompt='Perform a complete account reconciliation analysis for: Account: '+acct+', GL Balance: $'+gl+', Bank/Statement Balance: $'+bank+', Notes: '+notes+'. Identify the variance, explain possible causes, list required reconciling items, and provide any necessary correcting journal entries in DR/CR format.';
+  var el=document.getElementById('recon-ai');
+  el.style.display='block';el.textContent='Analyzing...';
+  safeFetch('/api/v1/bridge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'system',content:'You are a senior corporate accountant and CPA with expertise in account reconciliation, GAAP, and internal controls. Provide precise, actionable accounting guidance with journal entries in DR/CR format. Use ► for section headers.'},{role:'user',content:prompt}]})})
+}
+function calcJE(){
+  var drs=Array.from(document.querySelectorAll('#je-rows input[type=number]:nth-child(odd)')).map(i=>parseFloat(i.value)||0);
+  var crs=Array.from(document.querySelectorAll('#je-rows input[type=number]:nth-child(even)')).map(i=>parseFloat(i.value)||0);
+  var totalDR=0,totalCR=0;
+  document.querySelectorAll('#je-rows tr').forEach(function(row){
+    var inputs=row.querySelectorAll('input[type=number]');
+    if(inputs.length>=2){totalDR+=parseFloat(inputs[0].value)||0;totalCR+=parseFloat(inputs[1].value)||0;}
+  });
+  var fmt=v=>'$'+v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  document.getElementById('je-total-dr').textContent=fmt(totalDR);
+  document.getElementById('je-total-cr').textContent=fmt(totalCR);
+  var status=document.getElementById('je-balance-status');
+  if(Math.abs(totalDR-totalCR)<0.01&&totalDR>0){status.textContent='✓ ENTRY BALANCED: '+fmt(totalDR)+' DR = '+fmt(totalCR)+' CR';status.style.color='#4ade80';}
+  else if(totalDR>0||totalCR>0){status.textContent='⚠ OUT OF BALANCE: DR '+fmt(totalDR)+' ≠ CR '+fmt(totalCR);status.style.color='#f87171';}
+  else{status.textContent='⚖️ ENTRY BALANCED: $0.00 DR = $0.00 CR';status.style.color='var(--muted)';}
+}
+function runJEAI(){
+  var type=document.getElementById('je-type').value;
+  var memo=document.getElementById('je-memo').value||'No description provided';
+  var rows=[];
+  document.querySelectorAll('#je-rows tr').forEach(function(row){
+    var acct=row.querySelector('input[type=text]');
+    var inputs=row.querySelectorAll('input[type=number]');
+    if(acct&&acct.value&&inputs.length>=2){
+      var dr=parseFloat(inputs[0].value)||0;
+      var cr=parseFloat(inputs[1].value)||0;
+      if(dr>0||cr>0)rows.push(acct.value+': DR $'+dr+' / CR $'+cr);
+    }
+  });
+  var prompt='Review this '+type+': '+rows.join(', ')+'. Description: '+memo+'. Verify the entry follows double-entry bookkeeping rules, confirm it is balanced, check GAAP compliance, identify any issues, and explain the business purpose and financial statement impact.';
+  var el=document.getElementById('je-ai');
+  el.style.display='block';el.textContent='Analyzing...';
+  safeFetch('/api/v1/bridge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'system',content:'You are a senior corporate accountant and CPA. Review journal entries for accuracy, GAAP compliance, and proper double-entry bookkeeping. Use ► for section headers.'},{role:'user',content:prompt}]})})
+}
+function calcTB(){
+  var totalDR=0,totalCR=0;
+  document.querySelectorAll('.tb-dr').forEach(function(i){totalDR+=parseFloat(i.value)||0;});
+  document.querySelectorAll('.tb-cr').forEach(function(i){totalCR+=parseFloat(i.value)||0;});
+  var fmt=v=>'$'+Math.round(v).toLocaleString();
+  document.getElementById('tb-total-dr').textContent=fmt(totalDR);
+  document.getElementById('tb-total-cr').textContent=fmt(totalCR);
+  var status=document.getElementById('tb-status');
+  if(totalDR===0&&totalCR===0){status.textContent='⚖️ Enter amounts above to check balance';status.style.color='var(--muted)';}
+  else if(Math.abs(totalDR-totalCR)<1){status.textContent='✓ TRIAL BALANCE IS BALANCED — '+fmt(totalDR);status.style.color='#4ade80';}
+  else{status.textContent='⚠ OUT OF BALANCE — DR: '+fmt(totalDR)+' vs CR: '+fmt(totalCR)+' (Diff: $'+Math.round(Math.abs(totalDR-totalCR)).toLocaleString()+')';status.style.color='#f87171';}
+}
+function runTBAI(){
+  var drs=[],crs=[];
+  document.querySelectorAll('.tb-dr').forEach(function(i){drs.push(parseFloat(i.value)||0);});
+  document.querySelectorAll('.tb-cr').forEach(function(i){crs.push(parseFloat(i.value)||0);});
+  var totalDR=drs.reduce((a,b)=>a+b,0),totalCR=crs.reduce((a,b)=>a+b,0);
+  var prompt='Analyze this trial balance: Total Debits $'+totalDR+', Total Credits $'+totalCR+'. '+(Math.abs(totalDR-totalCR)<1?'The trial balance is balanced.':'ALERT: Trial balance is out of balance by $'+Math.abs(totalDR-totalCR)+'.')+' Explain what this means, common causes of trial balance errors, and next steps for the month-end close.';
+  var el=document.getElementById('tb-ai');
+  el.style.display='block';el.textContent='Analyzing...';
+  safeFetch('/api/v1/bridge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'system',content:'You are a senior corporate accountant. Analyze trial balances and provide accounting guidance. Use ► for section headers.'},{role:'user',content:prompt}]})})
+}
+function askAI(prompt){
+  switchTab('journal',document.querySelectorAll('.tab-btn')[7]);
+}
+
+function calcRecon(){
+  var gl=parseFloat(document.getElementById('recon-gl').value)||0;
+  var bank=parseFloat(document.getElementById('recon-bank').value)||0;
+  var v=gl-bank;
+  var f=function(n){return '$'+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+  document.getElementById('r-gl').textContent=f(gl);
+  document.getElementById('r-bank').textContent=f(bank);
+  var el=document.getElementById('r-var');
+  if(Math.abs(v)<0.01){el.textContent='$0.00 — RECONCILED ✓';el.style.color='#4ade80';}
+  else{el.textContent=f(v)+' — VARIANCE ⚠';el.style.color='#fbbf24';}
+}
+function runReconAI(){var acct=document.getElementById('recon-account').value||'Account';var gl=document.getElementById('recon-gl').value||'0';var bank=document.getElementById('recon-bank').value||'0';var notes=document.getElementById('recon-notes').value||'None';reconAsk('Reconcile: Account: '+acct+', GL: $'+gl+', Bank: $'+bank+', Notes: '+notes+'. Identify variance, causes, reconciling items, correcting journal entries.');}
+function calcJE(){
+  var dr=0,cr=0;
+  document.querySelectorAll('.je-dr').forEach(function(i){dr+=parseFloat(i.value)||0;});
+  document.querySelectorAll('.je-cr').forEach(function(i){cr+=parseFloat(i.value)||0;});
+  var f=function(n){return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');};
+  document.getElementById('je-total-dr').textContent=f(dr);
+  document.getElementById('je-total-cr').textContent=f(cr);
+  var s=document.getElementById('je-status');
+  if(Math.abs(dr-cr)<0.01&&dr>0){s.textContent='✓ BALANCED: '+f(dr)+' DR = '+f(cr)+' CR';s.style.color='#4ade80';}
+  else if(dr>0||cr>0){s.textContent='⚠ OUT OF BALANCE: DR '+f(dr)+' ≠ CR '+f(cr);s.style.color='#f87171';}
+}
+function runJEAI(){var t=document.getElementById('je-type').value;var m=document.getElementById('je-memo').value||'No description';var rows=[];document.querySelectorAll('#je-rows tr').forEach(function(row){var a=row.querySelector('input[type=text]');var dr=row.querySelector('.je-dr');var cr=row.querySelector('.je-cr');if(a&&a.value){rows.push(a.value+': DR $'+(parseFloat(dr&&dr.value)||0)+' CR $'+(parseFloat(cr&&cr.value)||0));}});jeAsk('Review this '+t+' entry: '+rows.join(', ')+'. Memo: '+m+'. Verify double-entry rules, GAAP compliance, balance, and explain financial statement impact.');}
+function calcTB(){
+  var dr=0,cr=0;
+  document.querySelectorAll('.tb-dr').forEach(function(i){dr+=parseFloat(i.value)||0;});
+  document.querySelectorAll('.tb-cr').forEach(function(i){cr+=parseFloat(i.value)||0;});
+  var f=function(n){return '$'+Math.round(n).toLocaleString();};
+  document.getElementById('tb-dr').textContent=f(dr);
+  document.getElementById('tb-cr').textContent=f(cr);
+  var s=document.getElementById('tb-status');
+  if(dr===0&&cr===0){s.textContent='⚖️ Enter amounts to check balance';s.style.color='var(--muted)';}
+  else if(Math.abs(dr-cr)<1){s.textContent='✓ TRIAL BALANCE BALANCED — '+f(dr);s.style.color='#4ade80';}
+  else{s.textContent='⚠ OUT OF BALANCE — DR: '+f(dr)+' vs CR: '+f(cr)+' (Diff: $'+Math.round(Math.abs(dr-cr)).toLocaleString()+')';s.style.color='#f87171';}
+}
+function runTBAI(){var dr=0,cr=0;document.querySelectorAll('.tb-dr').forEach(function(i){dr+=parseFloat(i.value)||0;});document.querySelectorAll('.tb-cr').forEach(function(i){cr+=parseFloat(i.value)||0;});ledgerAsk('Trial balance analysis: Total Debits $'+dr+', Total Credits $'+cr+'. '+(Math.abs(dr-cr)<1?'Balanced.':'OUT OF BALANCE by $'+Math.abs(dr-cr)+'.')+' Explain causes and next steps for month-end close.');}
+</script>
+<div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
+<script>
+async function safeNeuralFetch(payload, route = 'https://strategist.tsmatter.com/api/groq/chat') {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
+  const t = text.trim();
+  if (!res.ok || t.startsWith('<!DOCTYPE') || t.startsWith('<html') || t.startsWith('<head')) {
+    throw new Error('TSM Neural upstream unavailable');
+  }
+  return JSON.parse(text);
+}
+</script>
+
+
+<script id="tsm-unified-render">
+function renderTSM(data, target){
+  try {
+    const el = document.querySelector(target) || document.body;
+
+    if (!data) {
+      el.innerHTML = "<div style='color:red'>No data</div>";
       return;
     }
-    const ct = res.headers.get('content-type') || '';
-    if (ct.includes('text/event-stream') || CONFIG.stream) {
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const json = line.slice(6).trim();
-          if (json === '[DONE]') continue;
-          try {
-            const p = JSON.parse(json);
-            const t = p.delta || p.text || p.content || p.choices?.[0]?.delta?.content || '';
-            if (t) onChunk(t);
-          } catch(e) {}
-        }
-      }
-    } else {
-      const data = await res.json();
-      const text = data.response || data.content || data.text || data.choices?.[0]?.message?.content || JSON.stringify(data);
-      onChunk(text);
+
+    // Normalize fallback
+    if (!data.feed && data.choices) {
+      data = {
+        report_title: "AI Response",
+        kpis: [],
+        feed: [{ message: data.choices[0].message.content }]
+      };
     }
-    onDone();
-  } catch(err) {
-    if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
-    else { onChunk('[Connection error: ' + err.message + ']\nVerify ai.tsmatter.com is reachable and CORS headers include your portal domain.'); onDone(); }
+
+    if (!data.feed) {
+      el.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      return;
+    }
+
+    let htmlOut = "<div style='padding:12px;font-family:monospace'>";
+
+    if (data.report_title) {
+      htmlOut += "<h3 style='color:#00ffc3'>" + data.report_title + "</h3>";
+    }
+
+    data.feed.forEach(item => {
+      htmlOut += "<div style='margin-bottom:10px'>";
+      htmlOut += "<div style='color:#d7f7ff'>" + (item.message || "") + "</div>";
+      if (item.detail) {
+        htmlOut += "<div style='opacity:0.6;font-size:12px'>" + item.detail + "</div>";
+      }
+      htmlOut += "</div>";
+    });
+
+    htmlOut += "</div>";
+    el.innerHTML = htmlOut;
+
+  } catch(e) {
+    console.error("Render error", e);
   }
 }
-
-const SIM = {
-  tax: ['Q1 TAX LIABILITY — ALL 15 STATES\n\nTX: $14,220 | CA: $9,810 | FL: $6,340 | NY: $5,880\nOH: $3,120 | IL: $2,940 | WA: $2,610 | PA: $2,480\nNJ: $2,200 | GA: $1,980 | NC: $1,740 | VA: $1,560\nAZ: $1,340 | CO: $1,180 | TN: $980\n\nTOTAL: $58,380\n\n⚠ OH approaching 200-transaction threshold (187 YTD). Breach in ~23 days.\n⚠ 3 exemption certs expiring in 47 days — renewal queue flagged.\n✓ AUTO: Filing profiles staged for all 15 states.'],
-  orders: ['LABEL GENERATED ✓ AUTOMATED\n\n5.0 lb → New York, NY 10001\n\nUPS Ground:   $8.42  (4 days)  ← SELECTED\nFedEx Ground: $9.17  (4 days)\nUSPS Priority: $11.30 (2 days)\nDHL Express:  $24.80 (1 day)\n\nTracking: 1Z999AA10123456784\n✓ AUTOMATED: Filed to pipeline. QB sync queued.'],
-  ar: ['AR PREDICTIVE RISK\n\n⚠ HIGH RISK:\n  Acme Logistics — INV $12,400 due 8 days, 3 prior lates\n  Vertex Supply  — INV $8,200 due 5 days, velocity slowing\n\n✓ AUTO: 3 soft reminders → T-5 days\n✓ AUTO: 2 escalations   → T+3 days\n1 hold flag — awaiting your approval\n\nPROJECTED RECOVERY THIS WEEK: $34,200'],
-  'esd-ar': ['ESD-AR ACTIVE\n\nOPEN 60d+: 8 invoices · $28,400 total\n\nPriority 1: Vertex Inc    $12,100 (87d) — formal demand\nPriority 2: Summit Co     $9,800  (72d) — escalation call\nPriority 3: Redline LLC   $6,500  (63d) — second reminder\n\nAR FORECAST 30d:\n  Expected:  $84,200\n  At-risk:   $22,300\n  Probable:  $71,400\n\n⚠ 2 accounts flagged for credit hold.'],
-  'esd-cashreceipts': ["ESD-CASHRECEIPTS ACTIVE\n\nTODAY'S DEPOSITS: $31,240 · 9 transactions\n  ✓ MATCHED: 7 deposits ($27,040)\n  ⚠ EXCEPTIONS: 2 deposits ($4,200) — no invoice match\n\n  $3,200 — Wire 'VTXS CORP' → possible Vertex Supply?\n  $1,000 — ACH 'ADV PMT' → create prepayment invoice?\n\nCASH POSITION: $142,800 · Bank feed synced 4 min ago"],
-  'esd-setup': ['ESD-SETUP ACTIVE\n\nINTEGRATION HEALTH:\n  ✓ AvaTax API    — connected (v22.6)\n  ✓ QuickBooks    — synced 12 min ago\n  ✓ UPS           — active (expires Dec 2025)\n  ✓ FedEx         — active (expires Mar 2026)\n  ✓ USPS          — active\n  ⚠ DHL           — API key rotation due in 14 days\n\nGL GAPS: 2 unmapped accounts\n  5210 "Freight Expense" — not in QB CoA\n  4320 "Misc Revenue"   — ambiguous, review needed'],
-  'esd-timesheets': ['ESD-TIMESHEETS ACTIVE\n\nPAY PERIOD Apr 1–15:\n  Total: 312 hrs\n  Billable: 274 hrs (87.8%)\n  Non-billable: 38 hrs (12.2%)\n\nAPPROVALS:\n  ✓ Approved: 8 of 11 staff\n  ⚠ Pending: Torres, McKinley, Pham — deadline today\n\n⚠ Torres: 52 hrs logged — OT authorization required\n\nPAYROLL EXPORT: Ready for 8 approved staff · QB format available'],
-  'esd-pmi': ['ESD-PMI ACTIVE\n\nACTIVE PROJECTS (8):\n  ✓ CASE-TECH Fulfillment Ops — 74% budget · on track\n  ✓ Ameris Portal Buildout    — 61% budget · on track\n  ⚠ Honor Portal Integration  — 91% budget · OVERRUN RISK\n  ⚠ HC Command Dashboard      — 88% budget · monitor\n\nDELIVERABLES THIS WEEK:\n  Mon: HC Command v2 API spec — Torres (in progress)\n  Wed: Ameris UAT             — McKinley (on track)\n  Fri: CASE-TECH Q1 report    — Pham ⚠ NOT STARTED\n\nPORTFOLIO MARGIN: 34.2%']
-};
-
-async function simulateResponse(systemPrompt, userMessage, onChunk, onDone) {
-  const key = Object.keys(SIM).find(k => systemPrompt.toLowerCase().includes(k.replace('-',''))) || 'tax';
-  const pool = SIM[key];
-  const full = pool[Math.floor(Math.random() * pool.length)];
-  for (const ch of full) { await new Promise(r => setTimeout(r, 9)); onChunk(ch); }
-  onDone();
-}
-
-async function runModule(mod, query) {
-  const input = query || document.getElementById('input-'+mod).value.trim();
-  if (!input) return;
-  const el = document.getElementById('resp-'+mod);
-  el.className = 'sov-response active';
-  el.innerHTML = '<div class="thinking-line ' + mod + '">' +
-    (mod==='tax' ? '// TSM NEURAL · NEXUS ANALYSIS…' : mod==='orders' ? '// TSM NEURAL · PIPELINE PROCESSING…' : '// TSM NEURAL · AR/AP RECONCILING…') + '</div>';
-  await callAI(SYSTEM_PROMPTS[mod], input, (c) => {
-    const t = el.querySelector('.thinking-line'); if (t) t.remove();
-    el.textContent += c; el.scrollTop = el.scrollHeight;
-  }, () => {});
-}
-
-function runQuick(mod, query) { document.getElementById('input-'+mod).value = query; runModule(mod, query); }
-
-async function runESDModule(node, query) {
-  const input = query || document.getElementById('input-esd-'+node).value.trim();
-  if (!input) return;
-  const el = document.getElementById('resp-esd-'+node);
-  el.className = 'esd-response active';
-  el.innerHTML = '<div class="thinking-line esd">// TSM NEURAL · ESD-' + node.toUpperCase() + ' PROCESSING…</div>';
-  await callAI(SYSTEM_PROMPTS['esd-'+node], input, (c) => {
-    const t = el.querySelector('.thinking-line'); if (t) t.remove();
-    el.textContent += c; el.scrollTop = el.scrollHeight;
-  }, () => {});
-}
-
-function runESD(node, query) { document.getElementById('input-esd-'+node).value = query; runESDModule(node, query); }
-
-async function deployMaster() {
-  const q = document.getElementById('masterQuery').value.trim();
-  if (!q) return;
-  const btn = document.getElementById('masterBtn');
-  btn.disabled = true; btn.textContent = '…';
-  const panel = document.getElementById('synthPanel');
-  document.getElementById('synthQuery').textContent = '// QUERY: ' + q;
-  panel.classList.add('active');
-  const targets = Object.keys(activeNodes).filter(n => activeNodes[n]);
-  ['tax','orders','ar'].forEach(n => {
-    document.getElementById('synth-'+n).textContent = targets.includes(n) ? '// TSM Neural analyzing…' : '// Node disabled';
-  });
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  await Promise.all(targets.map(mod =>
-    callAI(SYSTEM_PROMPTS[mod], 'From your domain (' + mod + '), give targeted intelligence for: ' + q,
-      (c) => { const el = document.getElementById('synth-'+mod); if (el.textContent.includes('analyzing')) el.textContent = ''; el.textContent += c; }, () => {})
-  ));
-  btn.disabled = false; btn.textContent = '⚡ DEPLOY';
-}
-
-function closeSynth() { document.getElementById('synthPanel').classList.remove('active'); }
-
-async function buildReport() {
-  const type = document.getElementById('reportType').value;
-  const ctx = document.getElementById('reportContext').value.trim();
-  if (!type) { alert('Select a report type.'); return; }
-  const out = document.getElementById('reportOutput');
-  out.className = 'report-output active';
-  out.textContent = '// TSM NEURAL REPORT ENGINE GENERATING…\n\n';
-  const prompt = REPORT_PROMPTS[type] + (ctx ? '\n\nContext: ' + ctx : '');
-  const sys = type.includes('tax')||type.includes('nexus')||type.includes('exempt') ? SYSTEM_PROMPTS.tax
-    : type.includes('timesheets') ? SYSTEM_PROMPTS['esd-timesheets']
-    : type.includes('pmi') ? SYSTEM_PROMPTS['esd-pmi']
-    : type.includes('cashreceipts') ? SYSTEM_PROMPTS['esd-cashreceipts']
-    : type.includes('ar')||type.includes('ap')||type.includes('qb')||type.includes('cashflow') ? SYSTEM_PROMPTS.ar
-    : SYSTEM_PROMPTS.orders;
-  await callAI(sys, prompt, (c) => {
-    if (out.textContent.includes('GENERATING')) out.textContent = out.textContent.replace('// TSM NEURAL REPORT ENGINE GENERATING…\n\n','');
-    out.textContent += c; out.scrollTop = out.scrollHeight;
-  }, () => {});
-}
-
-function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
 </script>
-<script>window.ui = new TSM_UI();</script></body>
+
+<script>
+window.safeAnalyze = async function(input, targetId="output"){
+  const el = document.getElementById(targetId) || document.querySelector("#output") || document.querySelector(".output");
+  if(!el) return;
+
+  el.innerHTML = "⚡ Running analysis...";
+
+  try {
+    const res = await fetch("https://tsm-core.fly.dev/ask", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
+    });
+
+    const text = await res.text();
+
+    if(text.startsWith("<!DOCTYPE") || text.startsWith("<html")){
+      throw new Error("HTML response (routing issue)");
+    }
+
+    const data = JSON.parse(text);
+
+    const output = data.choices?.[0]?.message?.content ||
+                   data.response ||
+                   data.analysis ||
+                   data.feed?.map(f=>f.message).join("<br>") ||
+                   "No structured output";
+
+    el.innerHTML = "<div style=\"padding:12px;line-height:1.4\">"+output+"</div>";
+
+  } catch(e){
+    console.warn("AI ERROR:", e);
+    el.innerHTML = "⚠️ AI Error — check routing / auth / rate limits";
+  }
+};
+</script>
+
+<div id="output" style="padding:12px;color:#00ffa6;font-family:monospace;"></div>
+
+  <!-- TSM AI Assistant -->
+  <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
+    <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
+    <div style="display:flex;gap:4px">
+      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
+    </div>
+  </div>
+  <script>
+(function(){
+var AI="https://tsm-core.fly.dev/ask";
+var H=[];
+async function send(){
+var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
+var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
+var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
+if(!inp||!btn)return;
+var t=inp.value.trim();if(!t)return;
+inp.value="";btn.disabled=true;btn.textContent="...";
+if(out){out.style.display="block";out.innerHTML+='<div style="text-align:right;margin:4px 0"><span style="background:#e8f0fe;padding:4px 8px;border-radius:10px;font-size:12px">'+t+'</span></div>';}
+var thinking=document.createElement("div");
+if(out){thinking.innerHTML='<em style="color:#999;font-size:12px">Thinking...</em>';out.appendChild(thinking);}
+H.push({role:"user",content:t});
+try{
+var r=await fetch(AI,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({app:window.location.hostname.replace(".tsmatter.com",""),messages:H})});
+var d=await r.json();
+var reply=d.reply||"No response";
+H.push({role:"assistant",content:reply});
+if(thinking)thinking.innerHTML='<div style="text-align:left;margin:4px 0"><span style="background:#f4f4f4;padding:4px 8px;border-radius:10px;font-size:12px;display:inline-block;max-width:90%">'+reply.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</span></div>';
+}catch(e){if(thinking)thinking.textContent="Error: "+e.message;}
+btn.disabled=false;btn.textContent="Ask";
+if(out)out.scrollTop=out.scrollHeight;
+}
+document.addEventListener("DOMContentLoaded",function(){
+var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
+var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
+var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
+if(btn)btn.addEventListener("click",send);
+if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey)send();});
+if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";});
+});
+})();
+</script>
+  <!-- END TSM AI Assistant -->
+
+<script id="tsm-core-fix">
+(function(){
+  // FIX 1: Tab switching — show first tab on load
+  window.initTabs=function initTabs(){
+    var tabs = document.querySelectorAll('[id^="tab-"]');
+    if(!tabs.length) return;
+    var btns = document.querySelectorAll('.nav-btn');
+    // Hide all
+    tabs.forEach(function(t){ t.style.setProperty('display','none','important'); });
+    // Show first
+    tabs[0].style.setProperty('display','block','important');
+    if(btns[0]) btns[0].classList.add('active');
+  }
+
+  // FIX 2: Make switchTab globally reliable
+  window.switchTab = function(tabId, btn){
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el){
+      el.style.setProperty('display','none','important');
+    });
+    var t = document.getElementById('tab-'+tabId);
+    if(t) t.style.setProperty('display','block','important');
+    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+  };
+
+  // FIX 3: Repair broken Q() function — route through TSM-AI-3200
+  window.Q = async function(prompt, btnId, resId){
+    if(!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if(!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
+    try {
+      var r = await fetch('https://tsm-core.fly.dev/ask', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          app: window.location.hostname.replace('.tsmatter.com',''),
+          messages: [{role:'user', content:prompt}]
+        })
+      });
+      var d = await r.json();
+      var reply = d.reply || 'No response';
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']
+
+' +
+        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
+    } catch(e) {
+      res.textContent = '> TSM NEURAL ERROR: ' + e.message;
+    }
+    btn.disabled = false;
+  };
+
+  // FIX 4: loadAI and loadPreset helpers
+  window.loadAI = function(prompt){
+    var inp = document.getElementById('dash-inp') || document.getElementById('ai-inp') ||
+              document.querySelector('.ai-inp');
+    if(inp){ inp.value = prompt; inp.focus(); }
+  };
+
+  window.loadPreset = function(prompt){
+    var aiTab = null;
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      if((b.getAttribute('onclick')||'').indexOf("'ai'") > -1) aiTab = b;
+    });
+    if(aiTab) window.switchTab('ai', aiTab);
+    var inp = document.getElementById('ai-inp') || document.querySelector('.ai-inp');
+    if(inp){ inp.value = prompt; inp.focus(); }
+  };
+
+  // FIX 5: Rename injected widget IDs to avoid conflicts
+  function fixWidgetIds(){
+    var w = document.getElementById('ai-input');
+    var b = document.getElementById('ai-btn');
+    var o = document.getElementById('ai-output');
+    // Only rename if these are the floating widget ones (inside fixed div)
+    if(w && w.closest('[style*="position:fixed"][style*="bottom:20px"]')){
+      w.id = 'tsm-widget-input';
+      if(b) b.id = 'tsm-widget-btn';
+      if(o) o.id = 'tsm-widget-output';
+      // Re-init the widget with new IDs
+      import('/tsm-ai-client.js').then(function(m){
+        m.initAIButton('#tsm-widget-btn','#tsm-widget-input','#tsm-widget-output');
+        document.getElementById('tsm-widget-input').addEventListener('focus', function(){
+          document.getElementById('tsm-widget-output').style.display='block';
+        });
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    initTabs();
+    fixWidgetIds();
+  });
+
+  // Also run immediately if DOM already loaded
+  if(document.readyState !== 'loading'){
+    initTabs();
+    fixWidgetIds();
+  }
+})();
+</script>
+
+
+<script id="tsm-api-fix">/* TSM API routing fixed */</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd844fdd411f1',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script id="tsm-final-engine">
+(function() {
+    window.switchTab = function(id, btn) {
+        console.log("TSM Global Engine: Switching to", id);
+        document.querySelectorAll('[id^="tab-"]').forEach(el => {
+            el.style.setProperty('display', 'none', 'important');
+        });
+        const target = document.getElementById('tab-' + id);
+        if (target) { target.style.setProperty('display', 'block', 'important'); }
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    };
+
+    function init() {
+        const firstBtn = document.querySelector('.nav-btn');
+        if (firstBtn) {
+            const m = (firstBtn.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
+            window.switchTab(m ? m[1] : 'dash', firstBtn);
+        }
+    }
+    window.addEventListener('DOMContentLoaded', init);
+    setTimeout(init, 150);
+})();
+</script>
+</body>
 </html>
