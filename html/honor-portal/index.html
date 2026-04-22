@@ -1232,5 +1232,41 @@ html, body {
 })();
 </script>
 
+
+<div id="dee-command-center" style="display:block;position:relative;width:100%;max-width:1400px;margin:0 auto;padding:24px;color:#00ffa3;background:#050b14;font-family:monospace;">
+  <div id="dee-loading" style="padding:24px;font-size:18px;">Dee War Room Loading...</div>
+</div>
+
+<script>
+(function(){
+  var dee = document.getElementById('dee-command-center');
+  if (!dee) return;
+
+  document.documentElement.style.background = '#050b14';
+  document.body.style.background = '#050b14';
+  document.body.style.margin = '0';
+  document.body.style.padding = '0';
+
+  fetch('/api/honor/dee/dashboard', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({system:'HonorHealth'})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    dee.innerHTML =
+      '<div style="padding:24px;">' +
+      '<div style="font-size:22px;font-weight:700;margin-bottom:16px;">Dee War Room Live</div>' +
+      '<pre style="white-space:pre-wrap;font-size:12px;line-height:1.5;color:#00ffa3;">' +
+      JSON.stringify(d, null, 2) +
+      '</pre>' +
+      '</div>';
+  })
+  .catch(function(e){
+    dee.innerHTML = '<div style="color:#ff6b6b;padding:24px;">Dee failed to load</div>';
+  });
+})();
+</script>
+
 </body>
 </html>
