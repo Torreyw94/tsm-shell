@@ -1244,5 +1244,56 @@ html, body {
 })();
 </script>
 
+
+<script>
+if (typeof window.quickAsk !== 'function') {
+  window.quickAsk = async function(promptText) {
+    try {
+      const r = await fetch('/api/strategist/hc/dee-action', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          system: 'HonorHealth',
+          selectedOffice: 'Scottsdale - Shea',
+          prompt: promptText || ''
+        })
+      });
+
+      const data = await r.json();
+
+      const target =
+        document.getElementById('dee-content') ||
+        document.getElementById('dee-command-center') ||
+        document.body;
+
+      const html = `
+        <div style="margin-top:16px;padding:16px;border:1px solid rgba(0,255,163,.18);background:#07111b;color:#00ffa3;font-family:monospace;">
+          <div style="font-size:16px;font-weight:700;margin-bottom:10px;">TSM Strategist Response</div>
+          <div style="white-space:pre-wrap;font-size:12px;line-height:1.55;">${
+            (data && data.actionBoard && (
+              "TOP PRIORITY\n" + (data.actionBoard.topPriorityNow || "—") + "\n\n" +
+              "PAYER FOCUS\n" + (data.actionBoard.payerFocus || "—") + "\n\n" +
+              "NARRATIVE\n" + (data.actionBoard.strategistNarrative || "—") + "\n\n" +
+              "ACTIONS\n- " + ((data.actionBoard.actions || []).join("\n- ") || "—")
+            )) || JSON.stringify(data, null, 2)
+          }</div>
+        </div>
+      `;
+
+      if (target.id === 'dee-content') {
+        target.innerHTML = html;
+      } else {
+        target.insertAdjacentHTML('beforeend', html);
+      }
+
+      return data;
+    } catch (e) {
+      console.error('quickAsk bridge failed', e);
+      return { ok:false, error:e.message };
+    }
+  };
+}
+</script>
+
 </body>
 </html>
