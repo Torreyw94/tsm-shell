@@ -1099,6 +1099,7 @@ function summarizeOfficeDriver(officeName, state = {}, officeEval = {}) {
 app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
 app.use('/html/hc-strategist', express.static(path.join(__dirname, 'html', 'hc-strategist')));
+app.use('/html/main-strategist', express.static(path.join(__dirname, 'html', 'main-strategist')));
 app.use('/', express.static(path.join(__dirname, 'html')));
 
 // catch-all LAST
