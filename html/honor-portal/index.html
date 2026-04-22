@@ -992,20 +992,16 @@ async function callClaude(userMsg, outEl, thinkEl, thinkTxtEl, errEl){
   const ticker=thinkTxtEl?setInterval(()=>{thinkTxtEl.textContent=msgs[ti++%msgs.length]},1600):null;
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:HC_CONTEXT,messages:[{role:'user',content:userMsg}]})
-    });
+    const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:userMsg,system:'HonorHealth',location:'Scottsdale - Shea'})});
     const data=await resp.json();
     if(ticker) clearInterval(ticker);
     if(thinkEl) thinkEl.classList.remove('show');
-    if(data.content&&data.content[0]&&outEl){
-      outEl.textContent=data.content[0].text;
+    if(data.content&&outEl){
+      outEl.textContent=data.content;
       outEl.classList.add('show','fi');
     }
     document.getElementById('sb-status').textContent='READY';
-    return data.content?.[0]?.text||'';
+    return data.content||'';
   }catch(e){
     if(ticker) clearInterval(ticker);
     if(thinkEl) thinkEl.classList.remove('show');
@@ -1064,9 +1060,9 @@ async function runQuickPack(type){
   out.classList.add('show');
   document.getElementById('sb-status').textContent='◈ SYNTHESIZING...';
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:HC_CONTEXT,messages:[{role:'user',content:quick[type]}]})});
+    const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:quick[type],system:'HonorHealth',location:'Scottsdale - Shea'})});
     const data=await resp.json();
-    if(data.content&&data.content[0]){out.textContent=data.content[0].text;out.classList.add('fi');}
+    if(data.content){out.textContent=data.content;out.classList.add('fi');}
     document.getElementById('sb-status').textContent='READY';
   }catch(e){out.textContent='Error: '+e.message;}
 }
@@ -1152,10 +1148,10 @@ async function sendChat(preset){
   msgs.appendChild(loader);
   msgs.scrollTop=msgs.scrollHeight;
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:HC_CONTEXT+'\nKeep response under 150 words. Be direct and actionable.',messages:[{role:'user',content:msg}]})});
+    const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:msg,system:'HonorHealth',location:'Scottsdale - Shea'})});
     const data=await resp.json();
     loader.className='cm ca';
-    loader.textContent=data.content?.[0]?.text||'Error';
+    loader.textContent=data.content||'Error';
   }catch(e){
     loader.className='cm ce';
     loader.textContent='Error: '+e.message;
@@ -1167,10 +1163,10 @@ async function sendChat(preset){
 (async()=>{
   setTimeout(async()=>{
     try{
-      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:50,system:'Return ONLY JSON: {"score":NUMBER,"label":"SHORT_LABEL"} — 0-100 revenue cycle health score. No other text.',messages:[{role:'user',content:'HonorHealth: denial rate 18.4% vs 15% threshold, $48K at risk, clean claim rate 94.2% vs 97% target, Mesa 22.1% CRITICAL, CLM-0334 48hr deadline. Score overall revenue cycle health.'}]})});
+      const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'Score HonorHealth revenue cycle 0-100, return ONLY JSON {"score":NUMBER,"label":"SHORT_LABEL"}. denial rate 18.4%, $48K at risk, clean claim 94.2%, Mesa 22.1% CRITICAL, CLM-0334 48hr deadline.',system:'HonorHealth',location:'Scottsdale - Shea'})});
       const data=await resp.json();
-      if(data.content&&data.content[0]){
-        const parsed=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+      if(data.content){
+        const parsed=JSON.parse(data.content.replace(/```json|```/g,'').trim());
         document.getElementById('strat-score').textContent=parsed.score;
         document.getElementById('strat-score').className='kpi-v '+(parsed.score<60?'vr':parsed.score<75?'va':'vg');
         document.getElementById('strat-score-sub').textContent=parsed.label;
@@ -1183,6 +1179,27 @@ async function sendChat(preset){
 
 
 
+
+
+<script>
+window.HONOR_PACKS = {
+  revenue: `Pull HonorHealth Revenue Pack. Synthesize HC-Billing, HC-Insurance, HC-Compliance + all 4 office summaries. Metrics: denial_rate, claims_aging, payer_auth_pending, modifier_overuse, documentation_gap_rate. Return top 5 revenue risks ranked by dollar impact.`,
+  variance: `Pull HonorHealth Office Variance Pack. Compare Scottsdale, Mesa, Tempe, North Mountain. Metrics: denial_rate, auth_delay, coding_drift, writeoff_risk. Which office needs immediate intervention and why? What should each OM do this week?`,
+  denial: `Pull Denial Recovery Pack. Prioritize payer-specific denial recovery by deadline and dollar impact.`,
+  auth: `Pull Auth Friction Pack. Identify payer bottlenecks, pending auth concentration, and workflow fixes.`,
+  executive: `Pull Executive Brief Pack. Synthesize all HonorHealth HC data into a 5-point executive brief: overall health score, top risk, top win, 3 actions for today, 1 strategic recommendation for this month.`
+};
+</script>
+
+
+<script>
+window.HONOR_QUICK = {
+  priority: `What is the single highest-priority action Dee Montee at HonorHealth should take in the next hour? Consider urgent denial deadlines, auth backlog, and office variance. Return: action, why it is first, who acts.`,
+  executive: `Generate an executive summary for HonorHealth with integrated HC Strategist recommendations. Include current performance metrics, top 3 risks, top 3 opportunities, and 5 actions ranked by ROI.`,
+  team: `Build a team briefing for HonorHealth revenue cycle staff. Include top issues, compliance items, and action items by role.`,
+  appeals: `Generate payer-specific appeal strategy for the highest-value denials. Include documentation requirements, deadline rules, and sequencing.`
+};
+</script>
 
 </body>
 </html>
