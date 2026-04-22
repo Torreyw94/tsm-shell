@@ -37,17 +37,23 @@
   --r-sm:      6px;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 body {
   background: var(--bg);
   color: var(--white);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   line-height: 1.65;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── NAV ── */
 nav {
+  flex-shrink: 0;
   position: sticky; top: 0; z-index: 200;
   background: rgba(9,14,25,.96);
   backdrop-filter: blur(14px);
@@ -86,7 +92,10 @@ nav {
 }
 
 /* ── PAGES ── */
-.page { display: none; max-width: 1020px; margin: 0 auto; padding: 48px 32px 72px; }
+.page {
+  flex: 1;
+  overflow-y: auto;
+  height: 0; display: none; max-width: 1020px; margin: 0 auto; padding: 48px 32px 72px; }
 .page.on { display: block; animation: up .3s ease both; }
 @keyframes up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -382,8 +391,12 @@ footer em { color: var(--orange); font-style: normal; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 680px) {
-  .page { padding: 28px 16px 56px; }
-  nav { padding: 0 16px; }
+  .page {
+  flex: 1;
+  overflow-y: auto;
+  height: 0; padding: 28px 16px 56px; }
+  nav {
+  flex-shrink: 0; padding: 0 16px; }
   .om-row { grid-template-columns: 1fr; }
   .nodes-grid { grid-template-columns: repeat(2, 1fr); }
   .compare, .bpo-grid { grid-template-columns: 1fr; }
