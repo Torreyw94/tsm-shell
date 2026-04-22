@@ -1030,10 +1030,58 @@ async function runStrategist(){
 }
 
 // ── QUICK ASK ──
+
 async function quickAsk(prompt){
-  showTab('strategist');
-  await callClaude(prompt,document.getElementById('strat-out'),document.getElementById('strat-thinking'),document.getElementById('strat-think-txt'),document.getElementById('strat-err'));
+  try{
+    const panel = document.querySelector('[data-email="brief"]')?.parentElement?.parentElement
+      || Array.from(document.querySelectorAll('div')).find(d => (d.textContent || '').includes('EXECUTIVE CORRESPONDENCE'))
+      || document.body;
+
+    let target = Array.from(panel.querySelectorAll('div, p')).find(el => (el.textContent || '').includes('Subject:'));
+    if(!target){
+      target = document.createElement('div');
+      panel.appendChild(target);
+    }
+
+    target.innerHTML = '<div style="white-space:pre-wrap;line-height:1.7;opacity:.75">⏳ Pulling HonorHealth HC-only analysis...\n\n' + prompt + '</div>';
+
+    const res = await fetch('/api/hc/brief', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system: 'HonorHealth',
+        location: 'Scottsdale - Shea',
+        audience: 'cfo',
+        format: 'email',
+        question: prompt
+      })
+    });
+
+    const text = await res.text();
+    if (text.startsWith('<!DOCTYPE') || text.startsWith('<html')) {
+      throw new Error('HTML fallback returned instead of JSON');
+    }
+
+    const data = JSON.parse(text);
+    if(!data || (!data.brief && !data.error)) throw new Error('No brief returned');
+
+    const body = data.brief || data.error || 'No response';
+    target.innerHTML = '<div style="white-space:pre-wrap;line-height:1.7;">' + body + '</div>';
+
+    const risk = document.querySelector('[data-kpi="risk"]');
+    const rec72 = document.querySelector('[data-kpi="72h"]');
+    const acc14 = document.querySelector('[data-kpi="14d"]');
+    const lane = document.querySelector('[data-kpi="lane"]');
+    if (risk && data.revenueAtRisk != null) risk.textContent = '$' + Number(data.revenueAtRisk).toLocaleString();
+    if (rec72 && data.recoverable72h != null) rec72.textContent = '$' + Number(data.recoverable72h).toLocaleString();
+    if (acc14 && data.cashAcceleration14d != null) acc14.textContent = '$' + Number(data.cashAcceleration14d).toLocaleString();
+    if (lane && data.highestYieldLane) lane.textContent = data.highestYieldLane;
+
+  }catch(e){
+    console.warn('quickAsk failed:', e.message);
+  }
 }
+
 
 // ── PULL PACKS ──
 const PACKS={
@@ -1199,6 +1247,60 @@ window.HONOR_QUICK = {
   team: `Build a team briefing for HonorHealth revenue cycle staff. Include top issues, compliance items, and action items by role.`,
   appeals: `Generate payer-specific appeal strategy for the highest-value denials. Include documentation requirements, deadline rules, and sequencing.`
 };
+</script>
+
+
+<div id="dee-brain-actions" style="margin:18px 0;padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(10,18,34,.72);">
+  <div style="font-size:12px;letter-spacing:.12em;color:#8fb3ff;text-transform:uppercase;margin-bottom:10px;">Dee Neural Actions</div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Draft a CO-29 appeal letter for CLM-0334 (CPT 93454, $3,800 cardiac catheterization denied by Medicare for timely filing). Include all required elements.')">Draft CO-29 Appeal</button>
+<button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Create a 3-step action plan to bring our 18.4% denial rate below the 15% CMS threshold within 30 days. Top codes: PR-96 45%, CO-4 28%, CO-11 18%.')">Denial Reduction Plan</button>
+<button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('What is the exact documentation needed to defend CPT 99215 usage and prevent a modifier -25 compliance finding? Provide coder education talking points.')">99215 Defense Brief</button>
+<button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Build a 30-day revenue recovery roadmap for HonorHealth given: $48K at risk, 18.4% denial rate, 231 pending denied claims, 6 auth approvals pending. Prioritize by dollar impact.')">30-Day Recovery Map</button>
+<button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Analyze our payer mix risk for Medicare and Aetna given CO-29 and PR-96 denial patterns. What payer-specific strategies should we deploy?')">Payer Strategy</button>
+<button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Generate executive talking points for a board meeting about our revenue cycle performance: 18.4% denial rate, $48K at risk, 94.2% clean claim rate vs 97% target. Frame challenges as managed opportunities.')">Board Talking Points</button>
+<button class="btn btn-strat" style="font-size:8px;padding:3px 10px" onclick="quickAsk('Analyze all 6 active alerts for HonorHealth: 18.4% denial rate ($48K), CLM-0334 CO-29 write-off risk ($3.8K), CPT 99215 upcoding ($12K audit risk), Modifier -25 overuse ($8,460), HC-TaxPrep 80% CPU, ICD-10 specificity gaps. Prioritize by total dollar impact and provide a single action plan.')">◈ AI Triage All Alerts</button>
+  </div>
+</div>
+
+
+<div id="dee-payer-strategies" style="margin:18px 0;padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(10,18,34,.72);">
+  <div style="font-size:12px;letter-spacing:.12em;color:#8fb3ff;text-transform:uppercase;margin-bottom:10px;">Payer / Denial Strategy</div>
+  <div style="display:grid;gap:8px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate Medicare-specific appeal strategy for CO-29 timely filing and PR-96 non-covered denials. Include deadline rules and required documentation.')">Strategy →</button></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate Aetna-specific appeal strategy for CO-4 (denial code: service not covered) and CO-11 (diagnosis inconsistent). What clinical documentation should be attached?')">Strategy →</button></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate BCBS appeal strategy for CO-97 payment adjusted because proposed service included in another service.')">Strategy →</button></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate United Healthcare appeal strategy for PR-1 patient deductible denials. When should we bill patient vs appeal?')">Strategy →</button></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft a PR-96 (non-covered charge) appeal strategy for HonorHealth. What documentation and approach maximizes recovery?')">◈ Strategy</button></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft a CO-4 (service not covered) appeal strategy. When is this worth appealing vs writing off?')">◈ Strategy</button></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft CO-11 (diagnosis inconsistent with procedure) appeal approach. What ICD-10 documentation fixes this proactively?')">◈ Strategy</button></div>
+  </div>
+</div>
+
+
+<script>
+(function wireDeeTopButtons(){
+  const buttons = Array.from(document.querySelectorAll('button'));
+  const cfo = buttons.find(b => /Generate CFO Email/i.test(b.textContent || ''));
+  const refresh = buttons.find(b => /Refresh Live Intelligence/i.test(b.textContent || ''));
+  const copy = buttons.find(b => /Copy Brief/i.test(b.textContent || ''));
+
+  if (cfo && !cfo.dataset.deeWired) {
+    cfo.dataset.deeWired = '1';
+    cfo.addEventListener('click', () => quickAsk(window.HONOR_PACKS?.executive || 'Generate an executive brief for HonorHealth revenue cycle leadership.'));
+  }
+  if (refresh && !refresh.dataset.deeWired) {
+    refresh.dataset.deeWired = '1';
+    refresh.addEventListener('click', () => quickAsk(window.HONOR_QUICK?.priority || 'What is the single highest-priority action Dee Montee should take right now?'));
+  }
+  if (copy && !copy.dataset.deeWired) {
+    copy.dataset.deeWired = '1';
+    copy.addEventListener('click', async () => {
+      const panel = Array.from(document.querySelectorAll('div, p')).find(el => (el.textContent || '').includes('Subject: Scottsdale - Shea Revenue Pressure Update'));
+      if (panel) await navigator.clipboard.writeText(panel.textContent || '');
+    });
+  }
+})();
 </script>
 
 </body>
