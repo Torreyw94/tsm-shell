@@ -1517,14 +1517,19 @@ window.NEURAL_SYNC = {
 
 
 
+
+
+
 <style>
 #dee-command-center{
   margin:18px 0 24px 0;
   border:1px solid rgba(255,255,255,.08);
   border-radius:16px;
-  background:rgba(7,14,28,.82);
+  background:rgba(7,14,28,.88);
   padding:16px;
   color:#d9e7ff;
+  max-height:calc(100vh - 170px);
+  overflow:auto;
 }
 #dee-command-center .dcc-title{
   display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
@@ -1535,31 +1540,46 @@ window.NEURAL_SYNC = {
 }
 #dee-command-center .dcc-kpi{
   border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.03);padding:10px;
+  min-height:92px;
 }
 #dee-command-center .dcc-kpi .lab{
   font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8fb3ff;margin-bottom:6px;
 }
 #dee-command-center .dcc-kpi .val{
-  font-size:20px;font-weight:700;color:#ffffff;
+  font-size:20px;font-weight:700;color:#ffffff;line-height:1.15;
 }
 #dee-command-center .dcc-grid{
-  display:grid;grid-template-columns:1.15fr 1fr .9fr;gap:14px;
+  display:grid;grid-template-columns:1.18fr 1.02fr .9fr;gap:14px;align-items:start;
+}
+#dee-command-center .dcc-grid-bottom{
+  display:grid;grid-template-columns:1fr 1fr .9fr;gap:14px;align-items:start;margin-top:14px;
 }
 #dee-command-center .dcc-card{
   border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03);padding:12px;
+  min-height:420px;
+  max-height:420px;
+  overflow:auto;
+}
+#dee-command-center .dcc-card.dcc-short{
+  min-height:300px;
+  max-height:300px;
 }
 #dee-command-center .dcc-head{
   font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8fb3ff;margin-bottom:10px;
 }
 #dee-command-center .dcc-pre{
-  white-space:pre-wrap;line-height:1.7;font-size:13px;
+  white-space:pre-wrap;line-height:1.72;font-size:13px;
 }
 #dee-command-center .dcc-list{
   display:grid;gap:8px;
 }
 #dee-command-center .dcc-item{
-  display:flex;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;background:rgba(255,255,255,.02);font-size:13px;
+  display:flex;justify-content:space-between;gap:12px;padding:10px 10px;border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;background:rgba(255,255,255,.02);font-size:13px;cursor:pointer;
+}
+#dee-command-center .dcc-item:hover{
+  background:rgba(143,179,255,.08);
+  border-color:rgba(143,179,255,.24);
 }
 #dee-command-center .dcc-rank-critical{color:#ff8f8f}
 #dee-command-center .dcc-rank-high{color:#ffcb7d}
@@ -1579,9 +1599,23 @@ window.NEURAL_SYNC = {
 #dee-command-center .dcc-sub{
   font-size:12px;color:#9fb4d9;
 }
-@media (max-width: 1180px){
+#dee-command-center .dcc-heatmap{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px;
+}
+#dee-command-center .dcc-heat{
+  border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;font-size:12px;
+}
+#dee-command-center .dcc-heat-critical{background:rgba(255,82,82,.12)}
+#dee-command-center .dcc-heat-high{background:rgba(255,184,77,.12)}
+#dee-command-center .dcc-heat-medium{background:rgba(68,166,255,.12)}
+#dee-command-center .dcc-heat-stable{background:rgba(57,214,123,.12)}
+@media (max-width: 1380px){
   #dee-command-center .dcc-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
-  #dee-command-center .dcc-grid{grid-template-columns:1fr}
+  #dee-command-center .dcc-grid,
+  #dee-command-center .dcc-grid-bottom{grid-template-columns:1fr}
+  #dee-command-center .dcc-card,
+  #dee-command-center .dcc-card.dcc-short{min-height:unset;max-height:unset}
+  #dee-command-center{max-height:none}
 }
 </style>
 
@@ -1590,6 +1624,7 @@ window.DEECC = {
   system: 'HonorHealth',
   selectedOffice: 'Scottsdale - Shea',
   offices: ['Scottsdale - Shea','Mesa','Tempe','North Mountain'],
+  timer: null,
 
   money(v){
     return '$' + Number(v || 0).toLocaleString();
@@ -1651,6 +1686,8 @@ window.DEECC = {
           <div class="dcc-actions">
             <button class="dcc-btn" id="dcc-refresh">Refresh</button>
             <button class="dcc-btn" id="dcc-cfo">Generate CFO Brief</button>
+            <button class="dcc-btn" id="dcc-recovery">Run Recovery Plan</button>
+            <button class="dcc-btn" id="dcc-escalate">Escalate Payer</button>
             <button class="dcc-btn" id="dcc-variance">Run Office Variance</button>
             <button class="dcc-btn" id="dcc-mesa">Mesa Deep Dive</button>
           </div>
@@ -1659,21 +1696,23 @@ window.DEECC = {
         <div class="dcc-card">
           <div class="dcc-head">System Posture + Ranking</div>
           <div class="dcc-list" id="dcc-ranking"></div>
+          <div class="dcc-head" style="margin-top:12px;">System Pressure Heatmap</div>
+          <div class="dcc-heatmap" id="dcc-heatmap"></div>
         </div>
       </div>
 
-      <div class="dcc-grid" style="margin-top:14px;">
-        <div class="dcc-card">
+      <div class="dcc-grid-bottom">
+        <div class="dcc-card dcc-short">
           <div class="dcc-head">Alerts</div>
           <div class="dcc-list" id="dcc-alerts"></div>
         </div>
 
-        <div class="dcc-card">
+        <div class="dcc-card dcc-short">
           <div class="dcc-head">Executive Brief</div>
           <div class="dcc-pre" id="dcc-brief">Loading brief...</div>
         </div>
 
-        <div class="dcc-card">
+        <div class="dcc-card dcc-short">
           <div class="dcc-head">Office Selector</div>
           <div class="dcc-list" id="dcc-offices"></div>
         </div>
@@ -1764,12 +1803,19 @@ EXECUTIVE NARRATIVE
 ${board.execNarrativeNow || '—'}`;
 
     document.getElementById('dcc-ranking').innerHTML = rank.map(r => `
-      <div class="dcc-item">
+      <div class="dcc-item" data-rank-office="${r.office}">
         <div>
           <div><b>#${r.riskRank} ${r.office}</b></div>
           <div class="dcc-sub">${r.summary || ''}</div>
         </div>
         <div class="dcc-rank-${(r.status || 'stable').toLowerCase()}">${r.status || '—'} · ${r.riskScore || 0}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('dcc-heatmap').innerHTML = rank.map(r => `
+      <div class="dcc-heat dcc-heat-${(r.status || 'stable').toLowerCase()}">
+        <b>${r.office}</b><br>
+        ${r.primaryDriver || '—'} · ${r.riskScore || 0}
       </div>
     `).join('');
 
@@ -1797,11 +1843,20 @@ ${board.execNarrativeNow || '—'}`;
         await this.load();
       };
     });
+
+    document.querySelectorAll('[data-rank-office]').forEach(row => {
+      row.onclick = async () => {
+        this.selectedOffice = row.getAttribute('data-rank-office');
+        await this.load();
+      };
+    });
   },
 
   bindPrimaryButtons(payload){
     const refresh = document.getElementById('dcc-refresh');
     const cfo = document.getElementById('dcc-cfo');
+    const recovery = document.getElementById('dcc-recovery');
+    const escalate = document.getElementById('dcc-escalate');
     const variance = document.getElementById('dcc-variance');
     const mesa = document.getElementById('dcc-mesa');
 
@@ -1812,6 +1867,18 @@ ${board.execNarrativeNow || '—'}`;
         await window.quickAsk(window.HONOR_PACKS?.executive || 'Generate an executive brief for HonorHealth revenue cycle leadership.');
       } else {
         await this.load();
+      }
+    };
+
+    if (recovery) recovery.onclick = async () => {
+      if (typeof window.quickAsk === 'function') {
+        await window.quickAsk(`Generate denial recovery plan for ${this.selectedOffice}`);
+      }
+    };
+
+    if (escalate) escalate.onclick = async () => {
+      if (typeof window.quickAsk === 'function') {
+        await window.quickAsk(`Draft payer escalation for ${this.selectedOffice}`);
       }
     };
 
@@ -1826,11 +1893,18 @@ ${board.execNarrativeNow || '—'}`;
         await window.quickAsk('Deep dive on Mesa. What is the root cause and what should the Mesa OM do today?');
       }
     };
+  },
+
+  startAutoRefresh(){
+    if (this.timer) clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      this.load().catch(err => console.error('DEECC auto-refresh failed', err));
+    }, 15000);
   }
 };
 
 setTimeout(() => {
-  window.DEECC.load().catch(err => console.error('DEECC load failed', err));
+  window.DEECC.load().then(() => window.DEECC.startAutoRefresh()).catch(err => console.error('DEECC load failed', err));
 }, 500);
 </script>
 
