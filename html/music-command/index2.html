@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM Music Command | Artist & Label Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #04080f;
+  --bg2: #060d18;
+  --bg3: #080f1f;
+  --card: rgba(6,13,24,0.97);
+  --border: rgba(139,92,246,0.15);
+  --border2: rgba(139,92,246,0.35);
+  --purple: #a855f7;
+  --purple2: #7c3aed;
+  --purple3: rgba(139,92,246,0.08);
+  --cyan: #22d3ee;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --pink: #ec4899;
+  --text: #e2d9f3;
+  --text2: #8b6fc7;
+  --text3: #3d2d6b;
+  --mono: 'Share Tech Mono', monospace;
+  --head: 'Orbitron', monospace;
+  --body: 'Rajdhani', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(139,92,246,0.012) 2px,rgba(139,92,246,0.012) 4px);
+  pointer-events:none;z-index:0;
+}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--purple2);border-radius:2px}
+
+/* TICKER */
+.ticker-wrap{
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  overflow:hidden;height:26px;display:flex;align-items:center;
+  position:relative;z-index:10;flex-shrink:0;
+}
+.ticker{
+  display:flex;gap:3rem;
+  animation:tick 50s linear infinite;
+  white-space:nowrap;
+  font-family:var(--mono);font-size:0.6rem;color:var(--text2);
+}
+.ticker .hot{color:var(--pink)}
+.ticker .warn{color:var(--amber)}
+.ticker .ok{color:var(--green)}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* HEADER */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border2);
+  position:relative;z-index:100;flex-shrink:0;
+  box-shadow:0 0 30px rgba(139,92,246,0.08);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--purple2),var(--bg3));
+  border:1px solid var(--purple);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.brand-text h1{
+  font-family:var(--head);font-size:0.85rem;font-weight:900;
+  color:var(--purple);letter-spacing:0.15em;
+  text-shadow:0 0 20px rgba(168,85,247,0.5);
+}
+.brand-text p{font-family:var(--mono);font-size:0.5rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase}
+.header-pills{display:flex;gap:8px;align-items:center}
+.pill{
+  font-family:var(--mono);font-size:0.58rem;padding:3px 9px;
+  border-radius:3px;border:1px solid;letter-spacing:0.06em;
+  display:flex;align-items:center;gap:4px;
+}
+.pill.purple{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,0.06)}
+.pill.green{border-color:var(--green);color:var(--green);background:rgba(16,185,129,0.06)}
+.pill.amber{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,0.06)}
+.pill.pink{border-color:var(--pink);color:var(--pink);background:rgba(236,72,153,0.06)}
+.dot{width:5px;height:5px;border-radius:50%;animation:pulse 2s infinite}
+.dot.purple{background:var(--purple);box-shadow:0 0 5px var(--purple)}
+.dot.green{background:var(--green);box-shadow:0 0 5px var(--green)}
+.dot.amber{background:var(--amber)}
+.dot.pink{background:var(--pink);box-shadow:0 0 5px var(--pink)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.clock{font-family:var(--mono);font-size:0.62rem;color:var(--text3)}
+
+/* LAYOUT */
+.layout{
+  display:grid;
+  grid-template-columns:200px 1fr 220px;
+  flex:1;overflow:hidden;position:relative;z-index:1;
+}
+
+/* SIDEBAR */
+.sidebar{
+  background:var(--bg2);border-right:1px solid var(--border);
+  overflow-y:auto;padding:12px 0;
+}
+.sb-section{
+  padding:5px 14px 3px;
+  font-family:var(--mono);font-size:0.5rem;color:var(--text3);
+  letter-spacing:0.12em;text-transform:uppercase;
+  margin-top:10px;margin-bottom:3px;
+}
+.nav-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 14px;cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all 0.2s;
+  font-family:var(--body);font-size:0.82rem;font-weight:600;
+  color:var(--text2);gap:6px;
+}
+.nav-item:hover{background:rgba(168,85,247,0.05);color:var(--text)}
+.nav-item.active{border-left-color:var(--purple);background:rgba(168,85,247,0.08);color:var(--purple)}
+.nav-icon{font-size:13px;width:16px;text-align:center}
+.nav-badge{
+  font-family:var(--mono);font-size:0.5rem;
+  padding:1px 5px;border-radius:2px;
+}
+.nav-badge.hot{background:rgba(236,72,153,0.2);color:var(--pink);border:1px solid rgba(236,72,153,0.4)}
+.nav-badge.warn{background:rgba(245,158,11,0.15);color:var(--amber)}
+.nav-badge.ok{background:rgba(16,185,129,0.1);color:var(--green)}
+.nav-badge.purple{background:rgba(168,85,247,0.15);color:var(--purple)}
+
+/* MAIN */
+.main{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.kpi{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:4px;padding:10px 12px;position:relative;overflow:hidden;
+}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.purple::before{background:var(--purple);box-shadow:0 0 8px var(--purple)}
+.kpi.pink::before{background:var(--pink);box-shadow:0 0 8px var(--pink)}
+.kpi.green::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+.kpi.amber::before{background:var(--amber)}
+.kpi.cyan::before{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.kpi.red::before{background:var(--red)}
+.kpi-label{font-family:var(--mono);font-size:0.48rem;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px}
+.kpi-val{font-family:var(--head);font-size:1.3rem;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi.purple .kpi-val{color:var(--purple)}
+.kpi.pink .kpi-val{color:var(--pink)}
+.kpi.green .kpi-val{color:var(--green)}
+.kpi.amber .kpi-val{color:var(--amber)}
+.kpi.cyan .kpi-val{color:var(--cyan)}
+.kpi.red .kpi-val{color:var(--red)}
+.kpi-sub{font-family:var(--mono);font-size:0.5rem;color:var(--text3)}
+
+/* SECTION HDR */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sec-title{
+  font-family:var(--mono);font-size:0.58rem;color:var(--purple);
+  letter-spacing:0.14em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;
+}
+.sec-title::before{content:'◆';font-size:0.45rem}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* PANEL */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:14px}
+.panel:hover{border-color:var(--border2)}
+
+/* ARTIST CARD */
+.artist-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:4px;padding:12px;
+  transition:border-color 0.2s;cursor:pointer;
+}
+.artist-card:hover{border-color:var(--border2);background:rgba(168,85,247,0.04)}
+.artist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.artist-name{font-family:var(--head);font-size:0.7rem;font-weight:700;letter-spacing:0.06em;color:var(--text)}
+.artist-status{
+  font-family:var(--mono);font-size:0.5rem;padding:2px 6px;
+  border-radius:2px;
+}
+.artist-status.active{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
+.artist-status.recording{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.3)}
+.artist-status.touring{background:rgba(236,72,153,0.1);color:var(--pink);border:1px solid rgba(236,72,153,0.3)}
+.artist-status.pending{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.3)}
+.artist-genre{font-family:var(--mono);font-size:0.5rem;color:var(--text3);margin-bottom:6px}
+.artist-bar-wrap{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:5px;overflow:hidden}
+.artist-bar{height:100%;border-radius:2px;position:relative}
+.artist-bar::after{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:inherit;filter:brightness(2)}
+.artist-stats{display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.5rem;color:var(--text3)}
+
+/* RELEASE PIPELINE */
+.release-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border:1px solid var(--border);
+  border-radius:3px;background:var(--card);
+  margin-bottom:5px;transition:all 0.2s;
+  border-left:3px solid transparent;
+}
+.release-item.dropping{border-left-color:var(--pink)}
+.release-item.recording{border-left-color:var(--purple)}
+.release-item.mastering{border-left-color:var(--amber)}
+.release-item.distribution{border-left-color:var(--cyan)}
+.release-item.released{border-left-color:var(--green)}
+.rel-badge{
+  font-family:var(--mono);font-size:0.48rem;padding:2px 6px;
+  border-radius:2px;white-space:nowrap;flex-shrink:0;
+}
+.rel-badge.dropping{background:rgba(236,72,153,0.15);color:var(--pink);border:1px solid rgba(236,72,153,0.3)}
+.rel-badge.recording{background:rgba(168,85,247,0.15);color:var(--purple);border:1px solid rgba(168,85,247,0.3)}
+.rel-badge.mastering{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.3)}
+.rel-badge.distribution{background:rgba(34,211,238,0.1);color:var(--cyan);border:1px solid rgba(34,211,238,0.3)}
+.rel-badge.released{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.3)}
+.rel-info{flex:1}
+.rel-title{font-weight:700;font-size:0.83rem;color:var(--text);margin-bottom:2px}
+.rel-artist{font-family:var(--mono);font-size:0.52rem;color:var(--text2)}
+.rel-meta{font-family:var(--mono);font-size:0.52rem;color:var(--text3);text-align:right;flex-shrink:0}
+
+/* ROYALTY */
+.royalty-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid rgba(168,85,247,0.06);
+  font-size:0.8rem;
+}
+.royalty-item:last-child{border-bottom:none}
+.royalty-source{color:var(--text2);font-weight:600}
+.royalty-val{font-family:var(--mono);font-size:0.62rem}
+.royalty-val.up{color:var(--green)}
+.royalty-val.down{color:var(--red)}
+.royalty-val.neutral{color:var(--amber)}
+
+/* ALERT */
+.alert-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border:1px solid;border-radius:3px;
+  background:var(--card);margin-bottom:5px;
+  border-left:3px solid;
+}
+.alert-item.critical{border-color:rgba(239,68,68,0.25);border-left-color:var(--red)}
+.alert-item.high{border-color:rgba(245,158,11,0.2);border-left-color:var(--amber)}
+.alert-item.info{border-color:rgba(168,85,247,0.15);border-left-color:var(--purple)}
+.alert-item.ok{border-color:rgba(16,185,129,0.12);border-left-color:var(--green)}
+.alert-badge{font-family:var(--mono);font-size:0.48rem;padding:2px 6px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.alert-badge.critical{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.4)}
+.alert-badge.high{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.3)}
+.alert-badge.info{background:rgba(168,85,247,0.12);color:var(--purple);border:1px solid rgba(168,85,247,0.3)}
+.alert-badge.ok{background:rgba(16,185,129,0.08);color:var(--green);border:1px solid rgba(16,185,129,0.25)}
+.alert-text{flex:1;font-size:0.8rem;color:var(--text);line-height:1.3}
+.alert-meta{font-family:var(--mono);font-size:0.5rem;color:var(--text3);text-align:right;flex-shrink:0}
+
+/* TABS */
+.tab-bar{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.tab-btn{
+  font-family:var(--mono);font-size:0.58rem;padding:7px 12px;
+  background:transparent;border:none;color:var(--text3);
+  cursor:pointer;letter-spacing:0.08em;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:all 0.2s;text-transform:uppercase;
+}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--purple);border-bottom-color:var(--purple)}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* RIGHT PANEL */
+.right-panel{
+  background:var(--bg2);border-left:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.rp-sec{padding:12px 14px;border-bottom:1px solid var(--border)}
+.rp-title{font-family:var(--mono);font-size:0.5rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px}
+
+/* STREAMING BARS */
+.stream-item{margin-bottom:8px}
+.stream-header{display:flex;justify-content:space-between;margin-bottom:3px}
+.stream-name{font-family:var(--mono);font-size:0.55rem;color:var(--text2)}
+.stream-val{font-family:var(--mono);font-size:0.55rem;color:var(--purple)}
+.stream-bar-wrap{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.stream-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--purple2),var(--purple));position:relative}
+.stream-bar::after{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--purple);filter:brightness(1.5);box-shadow:0 0 6px var(--purple)}
+
+/* BOOKING */
+.booking-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid rgba(168,85,247,0.05);
+  font-size:0.78rem;
+}
+.booking-item:last-child{border-bottom:none}
+.booking-venue{color:var(--text2);font-weight:600}
+.booking-date{font-family:var(--mono);font-size:0.55rem}
+.booking-date.soon{color:var(--amber)}
+.booking-date.confirmed{color:var(--green)}
+.booking-date.pending{color:var(--text3)}
+
+/* AI CHAT */
+.ai-chat{flex:1;display:flex;flex-direction:column;padding:12px 14px;min-height:250px}
+.ai-title{font-family:var(--mono);font-size:0.5rem;color:var(--purple);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:8px;max-height:200px}
+.chat-msg{padding:7px 9px;border-radius:3px;font-size:0.78rem;line-height:1.5}
+.chat-msg.user{background:rgba(168,85,247,0.07);border:1px solid rgba(168,85,247,0.2);color:var(--text);align-self:flex-end;max-width:90%}
+.chat-msg.ai{background:var(--bg3);border:1px solid var(--border);color:var(--text2);align-self:flex-start;max-width:95%;white-space:pre-wrap;border-left:2px solid var(--purple)}
+.chat-msg.thinking{color:var(--text3);font-family:var(--mono);font-size:0.58rem;border:1px dashed var(--border);background:transparent}
+.chat-row{display:flex;gap:5px}
+.chat-in{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--body);font-size:0.78rem;padding:6px 8px;outline:none}
+.chat-in:focus{border-color:var(--border2)}
+.chat-send{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);color:var(--purple);border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--mono);font-size:0.65rem;transition:all 0.2s}
+.chat-send:hover{background:rgba(168,85,247,0.18);border-color:var(--purple)}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.qa-btn{background:var(--bg3);border:1px solid var(--border);border-radius:3px;color:var(--text2);font-family:var(--mono);font-size:0.52rem;padding:6px 7px;cursor:pointer;text-align:left;transition:all 0.2s;letter-spacing:0.03em}
+.qa-btn:hover{border-color:var(--border2);color:var(--purple);background:rgba(168,85,247,0.04)}
+
+/* BTN */
+.btn{font-family:var(--mono);font-size:0.6rem;padding:7px 14px;border-radius:3px;border:1px solid;cursor:pointer;letter-spacing:0.07em;text-transform:uppercase;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px}
+.btn-purple{background:rgba(168,85,247,0.08);border-color:var(--purple);color:var(--purple)}
+.btn-purple:hover{background:rgba(168,85,247,0.15);box-shadow:0 0 12px rgba(168,85,247,0.2)}
+.btn-ghost{background:transparent;border-color:var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+
+/* FADE IN */
+.fade-in{animation:fadeIn 0.4s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stagger>*{opacity:0;animation:fadeIn 0.4s ease forwards}
+.stagger>*:nth-child(1){animation-delay:0.05s}
+.stagger>*:nth-child(2){animation-delay:0.1s}
+.stagger>*:nth-child(3){animation-delay:0.15s}
+.stagger>*:nth-child(4){animation-delay:0.2s}
+.stagger>*:nth-child(5){animation-delay:0.25s}
+.stagger>*:nth-child(6){animation-delay:0.3s}
+
+/* SPINNER */
+.spinner{display:inline-block;width:9px;height:9px;border:2px solid rgba(168,85,247,0.2);border-top-color:var(--purple);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* GROQ KEY */
+.key-bar{display:flex;gap:7px;padding:8px 16px;background:var(--bg2);border-bottom:1px solid var(--border);align-items:center;position:relative;z-index:10;flex-shrink:0}
+.key-label{font-family:var(--mono);font-size:0.58rem;color:var(--text3);white-space:nowrap}
+.key-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:3px;color:var(--text2);font-family:var(--mono);font-size:0.62rem;padding:4px 8px;outline:none}
+.key-input:focus{border-color:var(--border2)}
+.key-save{font-family:var(--mono);font-size:0.58rem;padding:4px 10px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);color:var(--purple);border-radius:3px;cursor:pointer;white-space:nowrap}
+.key-save:hover{border-color:var(--purple);background:rgba(168,85,247,0.14)}
+.key-status{font-family:var(--mono);font-size:0.58rem}
+.key-status.ok{color:var(--green)}
+.key-status.err{color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="hot">🔥 "Neon Dreams" — 2.4M streams in 48hrs — chart position #3 climbing</span>
+    <span class="warn">⚠ Contract renewal — Artist K — expires in 14 days</span>
+    <span class="ok">✓ Tour confirmed — 12 dates — Southeast leg — $340K projected</span>
+    <span>Spotify editorial playlist pitch submitted — "After Hours" — response due Apr 28</span>
+    <span class="hot">🔥 TikTok viral — "Midnight Run" — 8.2M uses — sync deal inquiry inbound</span>
+    <span class="warn">⚠ Royalty statement dispute — Q4 2025 — publisher response pending</span>
+    <span class="ok">✓ Distribution deal closed — 3 new territories — EU + LATAM + SEA</span>
+    <span>Studio session — Artist M — Block A booked Apr 25–28 — 72hrs</span>
+    <span class="hot">🔥 "Neon Dreams" — 2.4M streams in 48hrs — chart position #3 climbing</span>
+    <span class="warn">⚠ Contract renewal — Artist K — expires in 14 days</span>
+    <span class="ok">✓ Tour confirmed — 12 dates — Southeast leg — $340K projected</span>
+    <span>Spotify editorial playlist pitch submitted — "After Hours" — response due Apr 28</span>
+  </div>
+</div>
+
+<!-- GROQ KEY -->
+<div class="key-bar">
+  <span class="key-label">⚡ GROQ API KEY:</span>
+  <input type="password" class="key-input" id="groqKey" placeholder="gsk_... (required for AI features)" />
+  <button class="key-save" onclick="saveKey()">SET KEY</button>
+  <span class="key-status" id="keyStatus"></span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">🎵</div>
+    <div class="brand-text">
+      <h1>TSM MUSIC COMMAND</h1>
+      <p>Artist Intelligence · Label Ops · Royalty Engine · Release Pipeline · Booking</p>
+    </div>
+  </div>
+  <div class="header-pills">
+    <div class="pill purple"><div class="dot purple"></div>AI ACTIVE</div>
+    <div class="pill pink"><div class="dot pink"></div>3 DROPPING</div>
+    <div class="pill green"><div class="dot green"></div>12 ARTISTS LIVE</div>
+    <div class="pill amber">$2.4M PIPELINE</div>
+  </div>
+  <div class="clock" id="clock">2026-04-22 00:00:00 UTC</div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">Navigation</div>
+    <div class="nav-item active" onclick="showTab('roster',this)"><span class="nav-icon">🎤</span>Roster<span class="nav-badge ok">12</span></div>
+    <div class="nav-item" onclick="showTab('releases',this)"><span class="nav-icon">💿</span>Releases<span class="nav-badge hot">3</span></div>
+    <div class="nav-item" onclick="showTab('royalties',this)"><span class="nav-icon">💰</span>Royalties<span class="nav-badge purple">$</span></div>
+    <div class="nav-item" onclick="showTab('booking',this)"><span class="nav-icon">🎪</span>Booking<span class="nav-badge warn">5</span></div>
+    <div class="nav-item" onclick="showTab('sync',this)"><span class="nav-icon">🎬</span>Sync/Licensing</div>
+    <div class="nav-item" onclick="showTab('marketing',this)"><span class="nav-icon">📢</span>Marketing</div>
+    <div class="sb-section">AI Tools</div>
+    <div class="nav-item" onclick="showTab('strategy',this)"><span class="nav-icon">🧠</span>AI Strategy</div>
+    <div class="nav-item" onclick="showTab('contracts',this)"><span class="nav-icon">📋</span>Contracts<span class="nav-badge warn">2</span></div>
+    <div class="sb-section">Intelligence</div>
+    <div class="nav-item" onclick="showTab('charts',this)"><span class="nav-icon">📊</span>Chart Tracking</div>
+    <div class="nav-item" onclick="showTab('streaming',this)"><span class="nav-icon">🎧</span>Streaming Intel</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main" id="mainContent">
+
+    <!-- ROSTER TAB -->
+    <div id="tab-roster" class="tab-pane active fade-in">
+      <div class="kpi-row stagger">
+        <div class="kpi purple"><div class="kpi-label">Active Artists</div><div class="kpi-val">12</div><div class="kpi-sub">↑ 2 this quarter</div></div>
+        <div class="kpi pink"><div class="kpi-label">Monthly Streams</div><div class="kpi-val">84M</div><div class="kpi-sub">↑ 18% MoM</div></div>
+        <div class="kpi green"><div class="kpi-label">Revenue MTD</div><div class="kpi-val">$847K</div><div class="kpi-sub">On target</div></div>
+        <div class="kpi amber"><div class="kpi-label">Releases Pending</div><div class="kpi-val">7</div><div class="kpi-sub">3 this month</div></div>
+        <div class="kpi cyan"><div class="kpi-label">Active Bookings</div><div class="kpi-val">23</div><div class="kpi-sub">$1.2M value</div></div>
+        <div class="kpi purple"><div class="kpi-label">Sync Deals</div><div class="kpi-val">4</div><div class="kpi-sub">↑ 1 new</div></div>
+      </div>
+
+      <div>
+        <div class="sec-hdr">
+          <div class="sec-title">Artist Roster — Live Status</div>
+          <button class="btn btn-purple" onclick="aiRosterAnalysis()"><span id="rosterSpinner" class="spinner" style="display:none"></span>⚡ AI Roster Brief</button>
+        </div>
+        <div class="grid3 stagger">
+          <div class="artist-card">
+            <div class="artist-header"><span class="artist-name">NOVA ECLIPSE</span><span class="artist-status active">ACTIVE</span></div>
+            <div class="artist-genre">Dark Pop · Electronic</div>
+            <div class="artist-bar-wrap"><div class="artist-bar" style="width:91%;background:linear-gradient(90deg,var(--purple2),var(--pink))"></div></div>
+            <div class="artist-stats"><span>24.1M streams/mo</span><span style="color:var(--pink)">$142K rev</span></div>
+          </div>
+          <div class="artist-card">
+            <div class="artist-header"><span class="artist-name">AXIOM</span><span class="artist-status recording">RECORDING</span></div>
+            <div class="artist-genre">Hip-Hop · Trap</div>
+            <div class="artist-bar-wrap"><div class="artist-bar" style="width:78%;background:linear-gradient(90deg,var(--purple2),var(--cyan))"></div></div>
+            <div class="artist-stats"><span>18.4M streams/mo</span><span style="color:var(--cyan)">$98K rev</span></div>
+          </div>
+          <div class="artist-card">
+            <div class="artist-header"><span class="artist-name">SOLARA</span><span class="artist-status touring">ON TOUR</span></div>
+            <div class="artist-genre">R&B · Soul</div>
+            <div class="artist-bar-wrap"><div class="artist-bar" style="width:85%;background:linear-gradient(90deg,var(--amber),var(--pink))"></div></div>
+            <div class="artist-stats"><span>21.3M streams/mo</span><span style="color:var(--amber)">$187K rev</span></div>
+          </div>
+          <div class="artist-card">
+            <div class="artist-header"><span class="artist-name">CIPHER KAI</span><span class="artist-status active">ACTIVE</span></div>
+            <div class="artist-genre">Alternative · Indie</div>
+            <div class="artist-bar-wrap"><div class="artist-bar" style="width:62%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
+            <div class="artist-stats"><span>9.8M streams/mo</span><span style="color:var(--green)">$54K rev</span></div>
+          </div>
+          <div class="artist-card">
+            <div class="artist-header"><span class="artist-name">VEXEN</span><span class="artist-status recording">RECORDING</span></div>
+            <div class="artist-genre">EDM · House</div>
+            <div class="artist-bar-wrap"><div class="artist-bar" style="width:71%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div>
+            <div class="artist-stats"><span>14.2M streams/mo</span><span style="color:var(--cyan)">$76K rev</span></div>
+          </div>
+          <div class="artist-card">
+            <div class="artist-header"><span class="artist-name">ARTIST K</span><span class="artist-status pending">CONTRACT ⚠</span></div>
+            <div class="artist-genre">Pop · Dance</div>
+            <div class="artist-bar-wrap"><div class="artist-bar" style="width:55%;background:linear-gradient(90deg,var(--amber),var(--red))"></div></div>
+            <div class="artist-stats"><span>7.1M streams/mo</span><span style="color:var(--amber)">$41K rev</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-hdr"><div class="sec-title">Priority Alerts</div></div>
+        <div class="stagger">
+          <div class="alert-item critical"><span class="alert-badge critical">URGENT</span><div class="alert-text">Artist K contract renewal — expires in 14 days · negotiation window closing · revenue at risk if lapsed</div><div class="alert-meta">$41K/mo<br>CONTRACT</div></div>
+          <div class="alert-item high"><span class="alert-badge high">HIGH</span><div class="alert-text">Royalty dispute — Q4 2025 publisher statement — $28,400 discrepancy · audit required</div><div class="alert-meta">$28.4K<br>ROYALTY</div></div>
+          <div class="alert-item high"><span class="alert-badge high">HIGH</span><div class="alert-text">TikTok sync inquiry inbound — "Midnight Run" — 8.2M uses — brand deal opportunity · respond within 48hrs</div><div class="alert-meta">$50K+<br>SYNC</div></div>
+          <div class="alert-item info"><span class="alert-badge info">INFO</span><div class="alert-text">Spotify editorial pitch — "After Hours" by Nova Eclipse — response expected Apr 28 · prepare follow-up</div><div class="alert-meta">Apr 28<br>PROMO</div></div>
+          <div class="alert-item ok"><span class="alert-badge ok">OK</span><div class="alert-text">Southeast tour leg confirmed — 12 dates — all venues secured · rider approved · $340K projected gross</div><div class="alert-meta">$340K<br>TOUR</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELEASES TAB -->
+    <div id="tab-releases" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr">
+          <div class="sec-title">Release Pipeline</div>
+          <button class="btn btn-purple" onclick="aiReleasePlan()"><span id="relSpinner" class="spinner" style="display:none"></span>⚡ AI Release Plan</button>
+        </div>
+        <div class="stagger">
+          <div class="release-item dropping"><span class="rel-badge dropping">DROPPING MAY 3</span><div class="rel-info"><div class="rel-title">Neon Dreams (Deluxe)</div><div class="rel-artist">Nova Eclipse · Dark Pop · 14 tracks</div></div><div class="rel-meta">Pre-saves: 42K<br>Promo: LIVE</div></div>
+          <div class="release-item dropping"><span class="rel-badge dropping">DROPPING APR 26</span><div class="rel-info"><div class="rel-title">Midnight Run</div><div class="rel-artist">Axiom · Hip-Hop · Single</div></div><div class="rel-meta">Pre-saves: 18K<br>TikTok: VIRAL</div></div>
+          <div class="release-item dropping"><span class="rel-badge dropping">DROPPING APR 30</span><div class="rel-info"><div class="rel-title">Orbit</div><div class="rel-artist">Solara · R&B · EP · 6 tracks</div></div><div class="rel-meta">Pre-saves: 31K<br>Promo: ACTIVE</div></div>
+          <div class="release-item mastering"><span class="rel-badge mastering">MASTERING</span><div class="rel-info"><div class="rel-title">After Hours</div><div class="rel-artist">Nova Eclipse · Single</div></div><div class="rel-meta">ETA: May 10<br>Mix: APPROVED</div></div>
+          <div class="release-item recording"><span class="rel-badge recording">RECORDING</span><div class="rel-info"><div class="rel-title">Untitled LP</div><div class="rel-artist">Axiom · Album · Studio Block A</div></div><div class="rel-meta">Progress: 60%<br>ETA: Jun 2026</div></div>
+          <div class="release-item recording"><span class="rel-badge recording">RECORDING</span><div class="rel-info"><div class="rel-title">Frequency</div><div class="rel-artist">Vexen · EP · Electronic</div></div><div class="rel-meta">Progress: 40%<br>ETA: Jul 2026</div></div>
+          <div class="release-item distribution"><span class="rel-badge distribution">DISTRIBUTION</span><div class="rel-info"><div class="rel-title">Soul Sessions Vol.2</div><div class="rel-artist">Cipher Kai · Album</div></div><div class="rel-meta">DSPs: 42/42<br>Launch: Apr 25</div></div>
+          <div class="release-item released"><span class="rel-badge released">RELEASED</span><div class="rel-info"><div class="rel-title">Neon Dreams (Original)</div><div class="rel-artist">Nova Eclipse · Album</div></div><div class="rel-meta">2.4M streams<br>Chart: #3 ↑</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROYALTIES TAB -->
+    <div id="tab-royalties" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr">
+          <div class="sec-title">Royalty Intelligence</div>
+          <button class="btn btn-purple" onclick="aiRoyaltyAnalysis()"><span id="roySpinner" class="spinner" style="display:none"></span>⚡ AI Analysis</button>
+        </div>
+        <div class="grid2">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px;letter-spacing:0.08em">REVENUE BY SOURCE — MTD</div>
+            <div class="royalty-item"><span class="royalty-source">Spotify Streaming</span><span class="royalty-val up">$312,400 ↑14%</span></div>
+            <div class="royalty-item"><span class="royalty-source">Apple Music</span><span class="royalty-val up">$189,200 ↑8%</span></div>
+            <div class="royalty-item"><span class="royalty-source">YouTube / Content ID</span><span class="royalty-val up">$98,700 ↑22%</span></div>
+            <div class="royalty-item"><span class="royalty-source">Amazon Music</span><span class="royalty-val neutral">$54,100 →</span></div>
+            <div class="royalty-item"><span class="royalty-source">Tidal / Others</span><span class="royalty-val up">$31,800 ↑5%</span></div>
+            <div class="royalty-item"><span class="royalty-source">Sync Licensing</span><span class="royalty-val up">$124,000 ↑31%</span></div>
+            <div class="royalty-item"><span class="royalty-source">Publishing / PRO</span><span class="royalty-val down">$37,200 ↓3%</span></div>
+            <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between">
+              <span style="font-family:var(--mono);font-size:0.58rem;color:var(--text2)">TOTAL MTD</span>
+              <span style="font-family:var(--head);font-size:1rem;color:var(--green)">$847,400</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px;letter-spacing:0.08em">BY ARTIST — TOP 6</div>
+            <div class="royalty-item"><span class="royalty-source">Nova Eclipse</span><span class="royalty-val up">$242,100</span></div>
+            <div class="royalty-item"><span class="royalty-source">Solara</span><span class="royalty-val up">$187,400</span></div>
+            <div class="royalty-item"><span class="royalty-source">Axiom</span><span class="royalty-val up">$138,200</span></div>
+            <div class="royalty-item"><span class="royalty-source">Vexen</span><span class="royalty-val neutral">$96,800</span></div>
+            <div class="royalty-item"><span class="royalty-source">Cipher Kai</span><span class="royalty-val up">$74,400</span></div>
+            <div class="royalty-item"><span class="royalty-source">Artist K</span><span class="royalty-val down">$41,200</span></div>
+            <div style="margin-top:10px;padding:8px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:3px">
+              <div style="font-family:var(--mono);font-size:0.52rem;color:var(--red);margin-bottom:3px">⚠ DISPUTE FLAGGED</div>
+              <div style="font-size:0.78rem;color:var(--text2)">Q4 2025 publisher statement — $28,400 discrepancy vs DSP reporting. Audit initiated.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKING TAB -->
+    <div id="tab-booking" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr">
+          <div class="sec-title">Booking & Tour Command</div>
+          <button class="btn btn-purple" onclick="aiBookingBrief()">⚡ AI Tour Brief</button>
+        </div>
+        <div class="grid2">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px;letter-spacing:0.08em">UPCOMING SHOWS</div>
+            <div class="booking-item"><span class="booking-venue">Terminal 5 — NYC</span><span class="booking-date confirmed">Apr 26 ✓</span></div>
+            <div class="booking-item"><span class="booking-venue">The Fillmore — SF</span><span class="booking-date confirmed">Apr 28 ✓</span></div>
+            <div class="booking-item"><span class="booking-venue">House of Blues — LA</span><span class="booking-date soon">May 2</span></div>
+            <div class="booking-item"><span class="booking-venue">Stubb's — Austin</span><span class="booking-date soon">May 5</span></div>
+            <div class="booking-item"><span class="booking-venue">9:30 Club — DC</span><span class="booking-date soon">May 8</span></div>
+            <div class="booking-item"><span class="booking-venue">Royale — Boston</span><span class="booking-date pending">May 11 (pending)</span></div>
+            <div class="booking-item"><span class="booking-venue">Metro — Chicago</span><span class="booking-date pending">May 14 (pending)</span></div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px;letter-spacing:0.08em">TOUR FINANCIALS</div>
+            <div class="royalty-item"><span class="royalty-source">Confirmed Revenue</span><span class="royalty-val up">$218,000</span></div>
+            <div class="royalty-item"><span class="royalty-source">Projected Total</span><span class="royalty-val up">$340,000</span></div>
+            <div class="royalty-item"><span class="royalty-source">Production Costs</span><span class="royalty-val down">-$82,000</span></div>
+            <div class="royalty-item"><span class="royalty-source">Artist Fee</span><span class="royalty-val down">-$95,000</span></div>
+            <div class="royalty-item"><span class="royalty-source">Net Projected</span><span class="royalty-val up">$163,000</span></div>
+            <div style="margin-top:8px;padding:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:3px">
+              <div style="font-family:var(--mono);font-size:0.52rem;color:var(--green);margin-bottom:2px">✓ MERCH DEAL ACTIVE</div>
+              <div style="font-size:0.78rem;color:var(--text2)">Bandwagon Merch — 18% rev share — all 12 venues confirmed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYNC TAB -->
+    <div id="tab-sync" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr"><div class="sec-title">Sync & Licensing Pipeline</div><button class="btn btn-purple" onclick="aiSyncAnalysis()">⚡ AI Sync Brief</button></div>
+        <div class="stagger">
+          <div class="alert-item info"><span class="alert-badge info">INBOUND</span><div class="alert-text">TikTok brand deal inquiry — "Midnight Run" — 8.2M organic uses — Nike campaign interest — $50–80K estimated</div><div class="alert-meta">RESPOND 48H<br>SYNC</div></div>
+          <div class="alert-item ok"><span class="alert-badge ok">SIGNED</span><div class="alert-text">Netflix series "Night Shift" — "Neon Dreams" — S2E4 placement — $24,000 flat fee + backend</div><div class="alert-meta">$24K<br>TV SYNC</div></div>
+          <div class="alert-item ok"><span class="alert-badge ok">SIGNED</span><div class="alert-text">Apple TV+ trailer — "Orbit" by Solara — $18,500 — 90-day exclusive</div><div class="alert-meta">$18.5K<br>TRAILER</div></div>
+          <div class="alert-item high"><span class="alert-badge high">NEGOTIATING</span><div class="alert-text">FIFA 27 game soundtrack — 3 tracks from Vexen — $45,000 offer on table — counter at $62K</div><div class="alert-meta">$45–62K<br>GAMING</div></div>
+          <div class="alert-item info"><span class="alert-badge info">PITCH SENT</span><div class="alert-text">Spotify Brand Partnership — Nova Eclipse — "After Hours" — global campaign — response due May 3</div><div class="alert-meta">$100K+<br>BRAND</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKETING TAB -->
+    <div id="tab-marketing" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr"><div class="sec-title">Marketing Intelligence</div><button class="btn btn-purple" onclick="aiMarketingPlan()">⚡ AI Campaign Plan</button></div>
+        <div class="grid2">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px">SOCIAL PERFORMANCE</div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">TikTok</span><span class="stream-val">8.2M uses</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:92%"></div></div></div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">Instagram</span><span class="stream-val">4.1M reach</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:74%"></div></div></div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">YouTube</span><span class="stream-val">12.4M views</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:85%"></div></div></div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">Twitter/X</span><span class="stream-val">890K impressions</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:42%"></div></div></div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px">ACTIVE CAMPAIGNS</div>
+            <div class="royalty-item"><span class="royalty-source">Nova Eclipse — Release Push</span><span class="royalty-val up">LIVE ↑</span></div>
+            <div class="royalty-item"><span class="royalty-source">Axiom — Single Promo</span><span class="royalty-val up">LIVE ↑</span></div>
+            <div class="royalty-item"><span class="royalty-source">Solara — Tour Promo</span><span class="royalty-val up">LIVE ↑</span></div>
+            <div class="royalty-item"><span class="royalty-source">Playlist Pitching — May</span><span class="royalty-val neutral">PENDING</span></div>
+            <div class="royalty-item"><span class="royalty-source">Press Campaign — LP</span><span class="royalty-val neutral">DRAFTING</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI STRATEGY TAB -->
+    <div id="tab-strategy" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr"><div class="sec-title">AI Label Strategy Engine</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+          <div style="font-family:var(--mono);font-size:0.58rem;color:var(--text2);padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:3px">Ask the Music AI anything — release strategy, artist development, deal negotiation, market analysis, royalty optimization, touring strategy...</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="stratInput" class="key-input" style="flex:1;font-size:0.78rem;font-family:var(--body)" placeholder="e.g. How should we maximize revenue from the TikTok viral moment on Midnight Run?" />
+          <button class="btn btn-purple" onclick="aiStrategy(document.getElementById('stratInput').value)">ASK AI</button>
+        </div>
+        <div id="stratOutput" style="background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:12px;font-size:0.82rem;line-height:1.7;color:var(--text2);white-space:pre-wrap;display:none;max-height:400px;overflow-y:auto"></div>
+        <div style="margin-top:10px">
+          <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:6px;letter-spacing:0.08em">QUICK STRATEGIES</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <button class="qa-btn" onclick="aiStrategy('How do we maximize the TikTok viral moment for Midnight Run into a long-term revenue strategy?')">TikTok Monetization</button>
+            <button class="qa-btn" onclick="aiStrategy('What is the optimal release strategy for Nova Eclipse Neon Dreams Deluxe edition?')">Release Strategy</button>
+            <button class="qa-btn" onclick="aiStrategy('How should we approach the Artist K contract renewal negotiation?')">Contract Negotiation</button>
+            <button class="qa-btn" onclick="aiStrategy('What sync licensing opportunities should we prioritize for Q2 2026?')">Sync Pipeline</button>
+            <button class="qa-btn" onclick="aiStrategy('How do we grow Solara from $187K to $300K monthly revenue?')">Revenue Growth</button>
+            <button class="qa-btn" onclick="aiStrategy('What is the best touring strategy for the Southeast leg to maximize net revenue?')">Tour Optimization</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTRACTS TAB -->
+    <div id="tab-contracts" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr"><div class="sec-title">Contract Management</div><button class="btn btn-purple" onclick="aiContractReview()">⚡ AI Contract Review</button></div>
+        <div class="stagger">
+          <div class="alert-item critical"><span class="alert-badge critical">EXPIRING</span><div class="alert-text">Artist K — Recording & Distribution Agreement — expires May 6 · renewal terms not yet proposed</div><div class="alert-meta">14 DAYS<br>CRITICAL</div></div>
+          <div class="alert-item high"><span class="alert-badge high">REVIEW</span><div class="alert-text">Vexen — Management Agreement — 3-year term ends Jun 1 · commission structure renegotiation needed</div><div class="alert-meta">40 DAYS<br>MGMT</div></div>
+          <div class="alert-item ok"><span class="alert-badge ok">ACTIVE</span><div class="alert-text">Nova Eclipse — 360 Deal — 5-year term through Dec 2028 · all terms current · next review Dec 2026</div><div class="alert-meta">CURRENT<br>360 DEAL</div></div>
+          <div class="alert-item ok"><span class="alert-badge ok">ACTIVE</span><div class="alert-text">Solara — Recording Agreement — 2-album deal · Album 1 delivered · Album 2 in progress · on schedule</div><div class="alert-meta">CURRENT<br>RECORDING</div></div>
+          <div class="alert-item info"><span class="alert-badge info">PENDING</span><div class="alert-text">Axiom — Publishing Deal — co-pub with Sony/ATV — terms drafted · awaiting attorney review</div><div class="alert-meta">IN REVIEW<br>PUBLISHING</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARTS TAB -->
+    <div id="tab-charts" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr"><div class="sec-title">Chart Tracking</div></div>
+        <div class="grid2">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px">BILLBOARD / SPOTIFY CHARTS</div>
+            <div class="royalty-item"><span class="royalty-source">Neon Dreams — Nova Eclipse</span><span class="royalty-val up">#3 ↑ Hot 100</span></div>
+            <div class="royalty-item"><span class="royalty-source">Orbit — Solara</span><span class="royalty-val up">#12 ↑ R&B</span></div>
+            <div class="royalty-item"><span class="royalty-source">Midnight Run — Axiom</span><span class="royalty-val up">#8 ↑ Hip-Hop</span></div>
+            <div class="royalty-item"><span class="royalty-source">After Hours — Nova Eclipse</span><span class="royalty-val neutral">#44 → Pop</span></div>
+            <div class="royalty-item"><span class="royalty-source">Soul Sessions — Cipher Kai</span><span class="royalty-val up">#22 ↑ Indie</span></div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:8px">SPOTIFY WEEKLY STREAMS</div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">Neon Dreams</span><span class="stream-val">2.4M</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:95%"></div></div></div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">Midnight Run</span><span class="stream-val">1.8M</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:78%"></div></div></div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">Orbit EP</span><span class="stream-val">1.4M</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:64%"></div></div></div>
+            <div class="stream-item"><div class="stream-header"><span class="stream-name">After Hours</span><span class="stream-val">890K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:42%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STREAMING TAB -->
+    <div id="tab-streaming" class="tab-pane">
+      <div class="panel">
+        <div class="sec-hdr"><div class="sec-title">Streaming Intelligence</div><button class="btn btn-purple" onclick="aiStreamingAnalysis()">⚡ AI Analysis</button></div>
+        <div style="font-family:var(--mono);font-size:0.52rem;color:var(--text3);margin-bottom:10px">PLATFORM PERFORMANCE — ALL ARTISTS — MTD</div>
+        <div class="stream-item"><div class="stream-header"><span class="stream-name">Spotify</span><span class="stream-val">42.1M streams · $186K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:91%"></div></div></div>
+        <div class="stream-item"><div class="stream-header"><span class="stream-name">Apple Music</span><span class="stream-val">18.4M streams · $142K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:72%"></div></div></div>
+        <div class="stream-item"><div class="stream-header"><span class="stream-name">YouTube Music</span><span class="stream-val">14.2M views · $98K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:61%"></div></div></div>
+        <div class="stream-item"><div class="stream-header"><span class="stream-name">Amazon Music</span><span class="stream-val">6.8M streams · $54K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:38%"></div></div></div>
+        <div class="stream-item"><div class="stream-header"><span class="stream-name">Tidal</span><span class="stream-val">2.1M streams · $31K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:24%"></div></div></div>
+        <div class="stream-item"><div class="stream-header"><span class="stream-name">Deezer / Other</span><span class="stream-val">890K streams · $8K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:12%"></div></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="rp-sec">
+      <div class="rp-title">Label Health</div>
+      <div style="margin-bottom:6px"><div style="font-family:var(--mono);font-size:0.48rem;color:var(--text3);margin-bottom:2px">Artists Online</div><div style="font-family:var(--head);font-size:0.95rem;color:var(--green)">12/12</div></div>
+      <div style="margin-bottom:6px"><div style="font-family:var(--mono);font-size:0.48rem;color:var(--text3);margin-bottom:2px">AI Engine</div><div style="font-family:var(--head);font-size:0.75rem;color:var(--purple)" id="aiStatus">CHECKING...</div></div>
+      <div><div style="font-family:var(--mono);font-size:0.48rem;color:var(--text3);margin-bottom:2px">Model</div><div style="font-family:var(--head);font-size:0.65rem;color:var(--cyan)">Llama 3.3 70B</div></div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-title">Streaming Today</div>
+      <div class="stream-item"><div class="stream-header"><span class="stream-name">Spotify</span><span class="stream-val">2.1M</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:88%"></div></div></div>
+      <div class="stream-item"><div class="stream-header"><span class="stream-name">Apple</span><span class="stream-val">840K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:62%"></div></div></div>
+      <div class="stream-item"><div class="stream-header"><span class="stream-name">YouTube</span><span class="stream-val">1.2M</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:74%"></div></div></div>
+      <div class="stream-item"><div class="stream-header"><span class="stream-name">Amazon</span><span class="stream-val">320K</span></div><div class="stream-bar-wrap"><div class="stream-bar" style="width:31%"></div></div></div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-title">Upcoming Deadlines</div>
+      <div class="booking-item"><span class="booking-venue">Artist K Contract</span><span class="booking-date soon">May 6</span></div>
+      <div class="booking-item"><span class="booking-venue">Neon Dreams Deluxe</span><span class="booking-date soon">May 3</span></div>
+      <div class="booking-item"><span class="booking-venue">Midnight Run Drop</span><span class="booking-date soon">Apr 26</span></div>
+      <div class="booking-item"><span class="booking-venue">Orbit EP Drop</span><span class="booking-date soon">Apr 30</span></div>
+      <div class="booking-item"><span class="booking-venue">Spotify Pitch Response</span><span class="booking-date soon">Apr 28</span></div>
+      <div class="booking-item"><span class="booking-venue">TikTok Deal Response</span><span class="booking-date soon">48 HRS</span></div>
+      <div class="booking-item"><span class="booking-venue">Vexen Mgmt Renewal</span><span class="booking-date pending">Jun 1</span></div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-title">Revenue Pipeline</div>
+      <div class="royalty-item"><span class="royalty-source">Streaming MTD</span><span class="royalty-val up">$847K</span></div>
+      <div class="royalty-item"><span class="royalty-source">Tour Projected</span><span class="royalty-val up">$340K</span></div>
+      <div class="royalty-item"><span class="royalty-source">Sync Deals</span><span class="royalty-val up">$242K</span></div>
+      <div class="royalty-item"><span class="royalty-source">Merch</span><span class="royalty-val neutral">$84K</span></div>
+      <div class="royalty-item" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px"><span style="font-family:var(--mono);font-size:0.55rem;color:var(--text2)">TOTAL Q2</span><span class="royalty-val up" style="font-size:0.8rem">$2.4M</span></div>
+    </div>
+
+    <div class="ai-chat">
+      <div class="ai-title"><div class="dot purple"></div>MUSIC AI — LIVE</div>
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="chat-msg ai">🎵 TSM Music Command AI online. I have full context on your 12-artist roster, release pipeline, royalty streams, booking schedule, and sync opportunities. Ask me anything.</div>
+      </div>
+      <div class="chat-row">
+        <input type="text" class="chat-in" id="chatIn" placeholder="Ask music AI..." />
+        <button class="chat-send" onclick="sendChat()">→</button>
+      </div>
+    </div>
+
+    <div class="rp-sec">
+      <div class="rp-title">Quick Actions</div>
+      <div class="qa-grid">
+        <button class="qa-btn" onclick="quickAction('How do we maximize the TikTok viral moment for Midnight Run right now?')">🔥 TikTok Viral</button>
+        <button class="qa-btn" onclick="quickAction('What are the key terms we need in the Artist K contract renewal?')">📋 Contract K</button>
+        <button class="qa-btn" onclick="quickAction('What is the optimal release sequence for May 2026 across all artists?')">💿 Release Plan</button>
+        <button class="qa-btn" onclick="quickAction('How do we counter the FIFA 27 sync offer to maximize value?')">🎮 Sync Deal</button>
+        <button class="qa-btn" onclick="quickAction('What streaming platform should we prioritize for Nova Eclipse promotion?')">🎧 Streaming</button>
+        <button class="qa-btn" onclick="quickAction('Generate a 90-day label revenue acceleration plan')">📈 Revenue Plan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let groqKey = localStorage.getItem('tsm_music_groq') || '';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'llama-3.3-70b-versatile';
+const chatHistory = [];
+
+const SYSTEM = `You are TSM Music Command AI — an expert music industry intelligence system for a full-service label/management company. You have deep expertise in:
+- Artist development, career strategy, and roster management
+- Release planning, marketing campaigns, and DSP optimization
+- Royalty structures, publishing deals, sync licensing
+- Tour routing, booking strategy, and live revenue optimization
+- Contract negotiation (360 deals, recording, publishing, management, sync)
+- Music industry analytics, chart strategy, and playlist pitching
+- Social media monetization (TikTok viral moments, YouTube, Instagram)
+
+Current label status:
+- 12 active artists including Nova Eclipse (chart #3), Axiom (viral TikTok), Solara (on tour)
+- $847K streaming revenue MTD, $2.4M Q2 pipeline
+- 3 releases dropping this month, 7 in pipeline
+- Critical: Artist K contract expiring in 14 days
+- Opportunity: TikTok sync inquiry $50-80K, FIFA 27 sync $45-62K
+- Royalty dispute: $28,400 Q4 publisher discrepancy
+
+Provide specific, actionable, expert music industry guidance.`;
+
+window.onload = () => {
+  if (groqKey) {
+    document.getElementById('groqKey').value = groqKey;
+    document.getElementById('keyStatus').textContent = '✓ KEY SET';
+    document.getElementById('keyStatus').className = 'key-status ok';
+    document.getElementById('aiStatus').textContent = 'LIVE';
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+};
+
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC';
+}
+
+function saveKey() {
+  groqKey = document.getElementById('groqKey').value.trim();
+  if (!groqKey) return;
+  localStorage.setItem('tsm_music_groq', groqKey);
+  document.getElementById('keyStatus').textContent = '✓ KEY SET';
+  document.getElementById('keyStatus').className = 'key-status ok';
+  document.getElementById('aiStatus').textContent = 'LIVE';
+}
+
+function showTab(id, el) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pane = document.getElementById('tab-' + id);
+  if (pane) { pane.classList.add('active'); pane.classList.add('fade-in'); }
+  if (el) el.classList.add('active');
+}
+
+async function groqChat(messages, maxTokens=2048) {
+  if (!groqKey) { alert('Set your Groq API key first'); throw new Error('No key'); }
+  const res = await fetch(GROQ_URL, {
+    method:'POST',
+    headers:{'Authorization':`Bearer ${groqKey}`,'Content-Type':'application/json'},
+    body:JSON.stringify({model:MODEL,messages,temperature:0.5,max_tokens:maxTokens})
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.choices[0].message.content;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatIn');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addMsg('user', msg);
+  chatHistory.push({role:'user',content:msg});
+  const t = addMsg('thinking','🧠 Analyzing...');
+  try {
+    const reply = await groqChat([{role:'system',content:SYSTEM},...chatHistory.slice(-10)]);
+    t.remove(); addMsg('ai', reply);
+    chatHistory.push({role:'assistant',content:reply});
+  } catch(e) { t.remove(); addMsg('ai','⚠️ '+e.message); }
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+async function quickAction(prompt) {
+  addMsg('user', prompt);
+  chatHistory.push({role:'user',content:prompt});
+  const t = addMsg('thinking','🧠 Analyzing...');
+  try {
+    const reply = await groqChat([{role:'system',content:SYSTEM},...chatHistory.slice(-10)]);
+    t.remove(); addMsg('ai', reply);
+    chatHistory.push({role:'assistant',content:reply});
+  } catch(e) { t.remove(); addMsg('ai','⚠️ '+e.message); }
+}
+
+async function aiStrategy(q) {
+  if (!q) return;
+  const out = document.getElementById('stratOutput');
+  out.style.display = 'block';
+  out.textContent = '🧠 Generating strategy...';
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:q}], 3000);
+    out.textContent = r;
+  } catch(e) { out.textContent = '⚠️ '+e.message; }
+}
+
+async function aiRosterAnalysis() {
+  const s = document.getElementById('rosterSpinner');
+  s.style.display = 'inline-block';
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Give me a comprehensive roster brief — top opportunities, risks, and 3 immediate actions for each of the top 5 artists.'}], 3000);
+    alert(r.slice(0,500)+'...\n\n[See AI Strategy tab for full analysis]');
+  } catch(e) { alert(e.message); }
+  s.style.display = 'none';
+}
+
+async function aiReleasePlan() {
+  const s = document.getElementById('relSpinner');
+  s.style.display = 'inline-block';
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Create an optimal release sequencing plan for May-June 2026 with marketing priorities and DSP strategy for each release.'}], 3000);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+  s.style.display = 'none';
+}
+
+async function aiRoyaltyAnalysis() {
+  const s = document.getElementById('roySpinner');
+  s.style.display = 'inline-block';
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Analyze our royalty streams, identify optimization opportunities, and give me a plan to resolve the $28,400 Q4 publisher dispute.'}], 2048);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+  s.style.display = 'none';
+}
+
+async function aiBookingBrief() {
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Generate a tour optimization brief for the Southeast leg — routing efficiency, revenue maximization, and risk mitigation.'}], 2048);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+}
+
+async function aiSyncAnalysis() {
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Prioritize and give negotiation strategy for all current sync opportunities — TikTok, Netflix, FIFA 27, Apple TV+, and Spotify brand deal.'}], 2048);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+}
+
+async function aiMarketingPlan() {
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Create a comprehensive marketing plan for May 2026 covering all 3 dropping releases with platform-specific strategies.'}], 3000);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+}
+
+async function aiContractReview() {
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Give me a contract action plan — what terms to prioritize in Artist K renewal, how to handle Vexen management renegotiation, and Axiom publishing deal strategy.'}], 2048);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+}
+
+async function aiStreamingAnalysis() {
+  try {
+    const r = await groqChat([{role:'system',content:SYSTEM},{role:'user',content:'Analyze our streaming performance across platforms and give me 5 specific actions to increase monthly streams by 25% in Q2 2026.'}], 2048);
+    showTab('strategy', null);
+    document.getElementById('stratOutput').style.display = 'block';
+    document.getElementById('stratOutput').textContent = r;
+  } catch(e) { alert(e.message); }
+}
+
+document.getElementById('chatIn').addEventListener('keydown', e => { if(e.key==='Enter') sendChat(); });
+document.getElementById('stratInput').addEventListener('keydown', e => { if(e.key==='Enter') aiStrategy(e.target.value); });
+</script>
+</body>
+</html>
