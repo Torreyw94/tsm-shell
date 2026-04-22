@@ -2226,10 +2226,8 @@ html, body {
   background:#050b14 !important;
 }
 
-/* Hide EVERYTHING except Dee war room */
-body > *:not(#dee-command-center):not(script):not(style) {
-  display:none !important;
-}
+
+
 
 /* Ensure Dee fills full screen */
 #dee-command-center {
@@ -2249,6 +2247,37 @@ body > *:not(#dee-command-center):not(script):not(style) {
 /* Fix header spacing */
 #dee-command-center > div:first-child {
   margin-top:0 !important;
+}
+</style>
+
+
+<style id="dee-clean-takeover">
+html, body {
+  height:auto !important;
+  min-height:100% !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  background:#050b14 !important;
+}
+
+/* Hide all legacy portal layers */
+body > *:not(#dee-command-center):not(script):not(style) {
+  display:none !important;
+}
+
+/* Ensure Dee is primary */
+#dee-command-center {
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  max-width:1400px;
+  margin:0 auto;
+}
+
+/* Kill nested scroll traps */
+#dee-command-center * {
+  max-height:none !important;
+  overflow:visible !important;
 }
 </style>
 
