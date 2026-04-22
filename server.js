@@ -258,6 +258,9 @@ function buildStrategistSystemPosture(system, officesPayload = []) {
 
 app.use(express.json());
 
+// ── HUB ROUTE ──
+app.get("/hub", (req, res) => res.sendFile(path.join(__dirname, "html", "hub", "index.html")));
+
 app.use(express.static(__dirname, {
   extensions: ['html']
 }));
