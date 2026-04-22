@@ -92,6 +92,32 @@ function buildLayer2Summary(officeState = {}, system = '', location = '') {
 }
 
 
+
+function buildHCBrief({ system = '', location = '', question = '' }) {
+  return {
+    subject: `${location} Revenue Pressure Update`,
+    body: `System: ${system}
+
+Location: ${location}
+
+Summary:
+Revenue pressure is being driven by billing, insurance, and operational constraints.
+
+Key Focus:
+- Reduce denial backlog
+- Accelerate auth processing
+- Stabilize intake throughput
+
+Executive Direction:
+Immediate intervention recommended in high-risk lanes.
+
+Question Context:
+${question}
+`
+  };
+}
+
+
 app.use(express.json());
 
 app.use(express.static(__dirname, {
