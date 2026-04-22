@@ -750,7 +750,6 @@ CONFIDENCE
   }catch(e){
     return res.status(500).json({ok:false,error:e.message});
   }
-});
 
 // ── STATIC ────────────────────────────────────────────────────────────────────
 app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
@@ -759,12 +758,7 @@ app.use('/html/hc-strategist', express.static(path.join(__dirname, 'html', 'hc-s
 app.use('/', express.static(path.join(__dirname, 'html')));
 
 // catch-all LAST
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, req.path), (err) => {
-    if (err) {
-      res.sendFile(path.join(__dirname, 'html', 'index.html'));
-    }
-  });
+
 });
 
 app.listen(PORT, '0.0.0.0', () => {
@@ -882,3 +876,19 @@ app.post('/api/hc/alerts', (req, res) => {
     res.status(500).json({ ok: false, error: e.message });
   }
 });
+
+
+// ===== FRONTEND FALLBACK (KEEP LAST) =====
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ ok: false, error: 'API route not found' });
+  }
+
+  // serve exact frontend file/path when present, otherwise launcher
+  return res.sendFile(path.join(__dirname, req.path), (err) => {
+    if (err) {
+      return res.sendFile(path.join(__dirname, 'html', 'index.html'));
+    }
+  });
+});
+
