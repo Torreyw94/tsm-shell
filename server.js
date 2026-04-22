@@ -752,6 +752,25 @@ CONFIDENCE
   }
 
 
+
+function filterHCState(state = {}, system = '', location = '') {
+  const out = {};
+  for (const [nodeKey, node] of Object.entries(state || {})) {
+    if (!node || typeof node !== 'object') continue;
+
+    const nodeSystem = String(node.system || '').trim();
+    const nodeLocation = String(node.location || '').trim();
+
+    const systemOk = !system || nodeSystem === system;
+    const locationOk = !location || nodeLocation === location;
+
+    if (systemOk && locationOk) {
+      out[nodeKey] = node;
+    }
+  }
+  return out;
+}
+
 function normalizeOfficeState(state = {}) {
   const ops = state.operations || {};
   const billing = state.billing || {};
