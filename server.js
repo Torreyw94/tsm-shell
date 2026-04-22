@@ -6,6 +6,29 @@ const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+
+// ===============================
+// HC STATE FILTER (GLOBAL HELPER)
+// ===============================
+function filterHCState(state = {}, system = '', location = '') {
+  const out = {};
+  for (const [nodeKey, node] of Object.entries(state || {})) {
+    if (!node || typeof node !== 'object') continue;
+
+    const nodeSystem = String(node.system || '').trim();
+    const nodeLocation = String(node.location || '').trim();
+
+    const systemOk = !system || nodeSystem === system;
+    const locationOk = !location || nodeLocation === location;
+
+    if (systemOk && locationOk) {
+      out[nodeKey] = node;
+    }
+  }
+  return out;
+}
+
+
 app.use(express.json());
 
 app.use(express.static(__dirname, {
