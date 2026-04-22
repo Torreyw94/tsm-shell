@@ -93,12 +93,38 @@ app.get('/api/hc/nodes', (req, res) => {
 
 app.post('/api/hc/nodes/:nodeKey', (req, res) => {
   const state = readJson(HC_NODE_STATE_FILE, {});
-  state[req.params.nodeKey] = {
+  const merged = {
     ...(state[req.params.nodeKey] || {}),
     ...req.body,
     nodeKey: req.params.nodeKey,
     updatedAt: new Date().toISOString()
   };
+
+  // Generate live BNCA from actual node telemetry
+  const n = merged;
+  merged.bnca = `TOP ISSUE
+${n.findings || 'Cross-lane operational drag is the primary issue.'}
+
+WHY IT MATTERS
+Live telemetry received for ${n.system || 'this system'} · ${n.location || 'all locations'}.
+
+METRICS
+Queue Depth: ${n.queueDepth ?? 'N/A'} · Intake Backlog: ${n.intakeBacklog ?? 'N/A'} · Staffing: ${n.staffingCoverage ?? 'N/A'}%
+Denial Rate: ${n.denialRate ?? 'N/A'}% · Claim Lag: ${n.claimLagDays ?? 'N/A'} days · AR >30: ${n.arOver30 ?? 'N/A'}
+Auth Backlog: ${n.authBacklog ?? 'N/A'} · Auth Delay: ${n.authDelayHours ?? 'N/A'}h · Pending Claims: ${n.pendingClaimsValue ?? 'N/A'}
+
+BEST NEXT COURSE OF ACTION
+1. Clear highest-value backlog first
+2. Escalate auth and documentation blockers older than 24-72 hours
+3. Align intake, billing, and scheduling handoffs for the next shift
+
+OWNER LANES
+Operations · Billing · Insurance
+
+CONFIDENCE
+92%`;
+
+  state[req.params.nodeKey] = merged;
   writeJson(HC_NODE_STATE_FILE, state);
   res.json({ ok: true, node: state[req.params.nodeKey] });
 });
@@ -482,6 +508,107 @@ CONFIDENCE
 
 
 
+
+function buildSystemRollup(state = {}, system = '', topN = 3) {
+  const grouped = {};
+
+  for (const [nodeKey, node] of Object.entries(state || {})) {
+    if (system && (node.system || '') !== system) continue;
+    const loc = node.location || 'Unknown';
+    if (!grouped[loc]) grouped[loc] = {};
+    grouped[loc][nodeKey] = node;
+  }
+
+  const offices = Object.entries(grouped).map(([location, nodes]) => {
+    const result = aggregateLayer2(nodes);
+    const highestYieldLane =
+      result.top?.[0]?.nodeKey
+        ? result.top[0].nodeKey.charAt(0).toUpperCase() + result.top[0].nodeKey.slice(1)
+        : 'Unassigned';
+
+    const officeName =
+      nodes.operations?.officeName ||
+      nodes.billing?.officeName ||
+      nodes.insurance?.officeName ||
+      nodes.compliance?.officeName ||
+      location;
+
+    const officeManager =
+      nodes.operations?.officeManager ||
+      nodes.billing?.officeManager ||
+      nodes.insurance?.officeManager ||
+      nodes.compliance?.officeManager ||
+      '';
+
+    return {
+      location,
+      officeName,
+      officeManager,
+      revenueAtRisk: result.revenueAtRisk || 0,
+      recoverable72h: result.recoverable72h || 0,
+      recoverable30d: result.recoverable30d || 0,
+      cashAcceleration14d: result.cashAcceleration14d || Math.round((result.recoverable30d || 0) * 0.7),
+      highestYieldLane,
+      top: result.top || []
+    };
+  }).sort((a, b) => b.revenueAtRisk - a.revenueAtRisk);
+
+  const totals = offices.reduce((acc, office) => {
+    acc.totalRevenueAtRisk += office.revenueAtRisk || 0;
+    acc.totalRecoverable72h += office.recoverable72h || 0;
+    acc.totalRecoverable30d += office.recoverable30d || 0;
+    acc.totalCashAcceleration14d += office.cashAcceleration14d || 0;
+    return acc;
+  }, {
+    totalRevenueAtRisk: 0,
+    totalRecoverable72h: 0,
+    totalRecoverable30d: 0,
+    totalCashAcceleration14d: 0
+  });
+
+  const laneCounts = {};
+  for (const office of offices) {
+    const lane = office.highestYieldLane || 'Unassigned';
+    laneCounts[lane] = (laneCounts[lane] || 0) + 1;
+  }
+
+  const topOffices = offices.slice(0, topN);
+
+  const summary = [
+    `${system || 'System'} currently has $${totals.totalRevenueAtRisk.toLocaleString()} at risk across ${offices.length} reporting office(s).`,
+    `Near-term recoverable value is $${totals.totalRecoverable72h.toLocaleString()} in 72 hours and $${totals.totalCashAcceleration14d.toLocaleString()} in projected 14-day cash acceleration.`,
+    topOffices.length
+      ? `Highest-priority office is ${topOffices[0].officeName} (${topOffices[0].location}) with $${topOffices[0].revenueAtRisk.toLocaleString()} at risk and ${topOffices[0].highestYieldLane} as the highest-yield lane.`
+      : `No reporting offices found.`
+  ].join(' ');
+
+  return {
+    ...totals,
+    offices,
+    topOffices,
+    laneCounts,
+    summary
+  };
+}
+
+
+app.post('/api/hc/rollup', (req, res) => {
+  try {
+    const { system = '', top_n = 3 } = req.body || {};
+    const state = readJson(HC_NODE_STATE_FILE, {});
+    const rollup = buildSystemRollup(state, system, Number(top_n || 3));
+
+    res.json({
+      ok: true,
+      system,
+      ...rollup
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+
 app.post('/api/hc/brief', (req, res) => {
   try {
     const {
@@ -640,6 +767,6 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`TSM Node API running on ${PORT}`);
 });
