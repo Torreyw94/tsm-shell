@@ -1,1593 +1,916 @@
 <!DOCTYPE html>
+<script>
+window.PRESET = "PC_ENTERPRISE"; 
+window.FORCE_LOAD = true; 
+console.log("🛡️ Preset Forced: P&C Enterprise");
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🚀 Sovereign Mesh Initialized...");
+});
+</script>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>TSM | P&C Enterprise Command</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Barlow:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#050a0e;--s1:#080e14;--s2:#0b1218;--s3:#0f1820;
-  --border:rgba(0,200,120,.1);--border2:rgba(0,200,120,.22);--border3:rgba(0,200,120,.4);
-  --green:#00c878;--green2:#00ff9a;--green3:rgba(0,200,120,.08);
-  --gold:#e8b84b;--gold2:#ffd77a;--gold3:rgba(232,184,75,.08);
-  --blue:#3d9be8;--blue2:#6db8f0;--red:#ff4455;--orange:#ff8c00;
-  --purple:#9b72f0;--teal:#00d4b4;--cyan:#00d8e8;
-  --text:#c8dce8;--muted:#4a6878;--dim:#243040;--bright:#e8f4ff;
-  --font-display:'Bebas Neue',Impact,sans-serif;
-  --font-body:'Barlow',system-ui,sans-serif;
-  --font-mono:'DM Mono',monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:13px;overflow:hidden;}
-body{background:
-  radial-gradient(ellipse 70% 35% at 15% 0%,rgba(0,180,100,.06),transparent),
-  radial-gradient(ellipse 50% 25% at 85% 100%,rgba(0,200,180,.04),transparent),
-  var(--bg);}
-
-/* ── TOPBAR ── */
-.topbar{height:50px;background:rgba(5,10,14,.98);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 18px;gap:12px;flex-shrink:0;z-index:100;}
-.brand{display:flex;align-items:center;gap:10px;}
-.brand-mark{width:36px;height:36px;border:2px solid var(--green);display:grid;place-items:center;font-family:var(--font-display);font-size:.9rem;color:var(--green);letter-spacing:.06em;}
-.brand-name{font-family:var(--font-display);font-size:1.2rem;color:var(--bright);letter-spacing:.1em;}
-.brand-sub{font-family:var(--font-mono);font-size:.55rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
-.tpill{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.1em;padding:3px 9px;border-radius:2px;border:1px solid;text-transform:uppercase;white-space:nowrap;}
-.tpill.live{border-color:rgba(0,200,120,.35);color:var(--green);background:var(--green3);}
-.tpill.info{border-color:rgba(61,155,232,.35);color:var(--blue2);background:rgba(61,155,232,.06);}
-.tpill.warn{border-color:rgba(255,140,0,.35);color:var(--orange);background:rgba(255,140,0,.06);}
-.hdr-btn{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.1em;padding:4px 10px;border:1px solid var(--border2);background:var(--green3);color:var(--green);cursor:pointer;text-transform:uppercase;transition:all .15s;border-radius:2px;}
-.hdr-btn:hover{background:rgba(0,200,120,.16);}
-#tb-clock{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);}
-
-/* ── SHELL ── */
-.shell{display:flex;flex-direction:column;height:calc(100vh - 50px);}
-
-/* ── TICKER ── */
-.ticker{height:24px;background:rgba(5,10,14,.95);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow:hidden;flex-shrink:0;}
-.ticker-label{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.16em;color:var(--green);padding:0 12px;border-right:1px solid var(--border);white-space:nowrap;flex-shrink:0;text-transform:uppercase;}
-.ticker-wrap{flex:1;overflow:hidden;}
-.ticker-track{display:flex;gap:40px;animation:ticker 50s linear infinite;padding-left:16px;white-space:nowrap;}
-.ti{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);}
-.ti span{color:var(--green2);margin-right:4px;}
-.ti.w span{color:var(--orange);}
-.ti.r span{color:var(--red);}
-.ti.g span{color:var(--teal);}
-@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-/* ── TABS ── */
-.tab-row{height:38px;background:rgba(8,14,20,.9);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 16px;gap:2px;flex-shrink:0;overflow-x:auto;}
-.tab-row::-webkit-scrollbar{height:0;}
-.tab{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border:1px solid transparent;border-bottom:none;cursor:pointer;color:var(--muted);white-space:nowrap;transition:all .15s;border-radius:2px 2px 0 0;position:relative;bottom:-1px;}
-.tab:hover{color:var(--text);}
-.tab.active{color:var(--green2);border-color:var(--border2);border-bottom-color:var(--s2);background:var(--s2);}
-
-/* ── PANELS ── */
-.panels{flex:1;overflow:hidden;display:flex;}
-.panel{display:none;width:100%;height:100%;overflow-y:auto;flex-direction:column;}
-.panel.active{display:flex;}
-.panel::-webkit-scrollbar{width:3px;}
-.panel::-webkit-scrollbar-thumb{background:var(--border2);}
-.panel-inner{padding:16px;display:flex;flex-direction:column;gap:14px;}
-
-/* ── CARDS ── */
-.card{background:var(--s1);border:1px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color .2s;}
-.card:hover{border-color:var(--border2);}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);}
-.card-title{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;color:var(--green);text-transform:uppercase;}
-.card-sub{font-size:.65rem;color:var(--muted);}
-.card-body{padding:14px;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-
-/* ── FORM ELEMENTS ── */
-.lbl{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;}
-input[type=text],input[type=number],select,textarea{
-  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:2px;
-  color:var(--text);padding:8px 10px;font-family:var(--font-body);font-size:.8rem;outline:none;transition:border-color .15s;
-}
-input:focus,select:focus,textarea:focus{border-color:var(--border3);}
-textarea{resize:vertical;min-height:80px;line-height:1.65;}
-select{cursor:pointer;}
-
-/* ── BUTTONS ── */
-.btn{padding:8px 18px;border-radius:2px;border:1px solid;font-family:var(--font-body);font-weight:700;font-size:.78rem;cursor:pointer;transition:all .18s;}
-.btn:disabled{opacity:.4;cursor:default;}
-.btn.primary{background:linear-gradient(135deg,var(--green),#007a50);color:#fff;border-color:var(--green);box-shadow:0 4px 16px rgba(0,200,120,.2);}
-.btn.primary:hover:not(:disabled){opacity:.9;transform:translateY(-1px);}
-.btn.gold{background:var(--gold3);border-color:rgba(232,184,75,.35);color:var(--gold);}
-.btn.gold:hover{background:rgba(232,184,75,.14);}
-.btn.blue{background:rgba(61,155,232,.08);border-color:rgba(61,155,232,.3);color:var(--blue2);}
-.btn.blue:hover{background:rgba(61,155,232,.16);}
-.btn.red{background:rgba(255,68,85,.08);border-color:rgba(255,68,85,.3);color:var(--red);}
-.btn-sm{padding:5px 12px;font-size:.7rem;}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-
-/* ── KPI STRIP ── */
-.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
-.kpi{background:var(--s1);border:1px solid var(--border);border-radius:2px;padding:10px 12px;position:relative;overflow:hidden;}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kc,var(--green));}
-.kpi-label{font-family:var(--font-mono);font-size:.55rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
-.kpi-val{font-size:1.2rem;font-weight:800;color:var(--green);margin-top:3px;font-family:var(--font-mono);}
-.kpi-sub{font-size:.58rem;color:var(--muted);margin-top:1px;}
-
-/* ── AI OUTPUT ── */
-.ai-output{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:2px;padding:12px;font-size:.76rem;line-height:1.8;color:var(--text);min-height:100px;white-space:pre-wrap;}
-.ai-output.loading{color:var(--muted);font-style:italic;}
-.ai-output.done{border-color:var(--border2);}
-
-/* ── RISK CARDS ── */
-.risk-card{background:var(--s2);border:1px solid var(--border);border-radius:2px;padding:12px;display:flex;gap:10px;align-items:flex-start;transition:border-color .2s;}
-.risk-card:hover{border-color:var(--border2);}
-.risk-icon{font-size:1.2rem;flex-shrink:0;}
-.risk-title{font-size:.8rem;font-weight:700;color:var(--bright);margin-bottom:3px;}
-.risk-desc{font-size:.7rem;color:var(--muted);line-height:1.6;}
-.risk-badge{font-family:var(--font-mono);font-size:.58rem;padding:2px 7px;border-radius:1px;margin-top:5px;display:inline-block;border:1px solid;}
-.rb-crit{border-color:rgba(255,68,85,.3);color:var(--red);background:rgba(255,68,85,.07);}
-.rb-high{border-color:rgba(255,140,0,.3);color:var(--orange);background:rgba(255,140,0,.07);}
-.rb-mod{border-color:rgba(232,184,75,.3);color:var(--gold);background:var(--gold3);}
-.rb-ok{border-color:rgba(0,200,120,.3);color:var(--green);background:var(--green3);}
-
-/* ── COVERAGE TABLE ── */
-.cov-table{width:100%;border-collapse:collapse;}
-.cov-table th{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.1em;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;text-transform:uppercase;}
-.cov-table td{font-size:.75rem;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text);}
-.cov-table tr:hover td{background:rgba(0,200,120,.03);}
-.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;}
-.dot-ok{background:var(--green);}
-.dot-warn{background:var(--orange);}
-.dot-crit{background:var(--red);}
-.dot-na{background:var(--muted);}
-
-/* ── LOG ── */
-.log-box{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:2px;padding:8px;max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
-.log-line{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);}
-.log-line.ok{color:var(--green);}
-.log-line.err{color:var(--red);}
-.log-line.info{color:var(--cyan);}
-
-/* ── ALERT ITEMS ── */
-.alert-item{padding:8px 10px;border-radius:2px;font-size:.72rem;margin-bottom:5px;line-height:1.55;border:1px solid;}
-.ai-crit{background:rgba(255,68,85,.06);border-color:rgba(255,68,85,.2);color:#ff8899;}
-.ai-warn{background:rgba(255,140,0,.06);border-color:rgba(255,140,0,.2);color:#ffb040;}
-.ai-info{background:rgba(61,155,232,.06);border-color:rgba(61,155,232,.2);color:var(--blue2);}
-.ai-ok{background:rgba(0,200,120,.06);border-color:rgba(0,200,120,.2);color:var(--green);}
-
-/* ── RESULT BOX ── */
-.result-box{background:rgba(0,200,120,.04);border:1px solid var(--border2);border-radius:2px;padding:14px;margin-top:10px;display:none;}
-.result-box.on{display:block;animation:fadeIn .25s ease;}
-.result-big{font-size:2rem;font-weight:900;color:var(--green2);font-family:var(--font-mono);}
-.result-label{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);letter-spacing:.1em;margin-top:2px;text-transform:uppercase;}
-.result-note{font-size:.72rem;color:var(--text);margin-top:8px;line-height:1.7;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-
-/* ── HOW TO ── */
-.hs{display:flex;gap:12px;background:var(--s2);border:1px solid var(--border);border-radius:2px;padding:12px;margin-bottom:7px;}
-.hs-num{font-family:var(--font-display);font-size:1.4rem;color:var(--green);flex-shrink:0;width:28px;text-align:center;line-height:1.1;}
-.hs-title{font-size:.82rem;font-weight:700;color:var(--bright);margin-bottom:3px;}
-.hs-desc{font-size:.72rem;color:var(--muted);line-height:1.7;}
-.hs-tip{margin-top:6px;font-size:.65rem;color:var(--teal);padding:4px 8px;background:rgba(0,212,180,.06);border:1px solid rgba(0,212,180,.18);border-radius:2px;}
-
-/* ── STATUS BAR ── */
-.statusbar{height:22px;background:#030608;border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:14px;flex-shrink:0;}
-.sbi{font-family:var(--font-mono);font-size:.56rem;color:var(--muted);display:flex;align-items:center;gap:4px;}
-.sbi .dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green);}
-</style>
-<script>function switchTab(t){document.querySelectorAll(".trm-tab").forEach(e=>e.classList.remove("active"));document.querySelectorAll(".trm-panel").forEach(e=>e.classList.remove("active"));document.getElementById(t).classList.add("active");}</script>
-</head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CASE-TECH | SOVEREIGN COMMAND · TSM Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:      #050c14;
+      --bg2:     #070d18;
+      --surface: #09131f;
+      --card:    #0b1825;
+      --border:  rgba(6,182,212,.13);
+      --border2: rgba(6,182,212,.28);
+      --cyan:    #06b6d4;
+      --cyan2:   #38bdf8;
+      --green:   #00ff88;
+      --amber:   #f59e0b;
+      --purple:  #a855f7;
+      --coral:   #f97316;
+      --red:     #f43f5e;
+      --txt:     #c2d8ec;
+      --txt2:    #607a94;
+      --glow:    0 0 28px rgba(6,182,212,.16);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(6,182,212,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6,182,212,.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none; z-index: 0;
+    }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,12,20,.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 58px;
+    }
+    .logo-block { display: flex; align-items: center; gap: 14px; }
+    .logo-hex {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #0e7490 0%, var(--cyan) 100%);
+      clip-path: polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 800;
+      color: #fff; letter-spacing: 1px;
+    }
+    .logo-text  { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 600; color: var(--cyan2); letter-spacing: 2px; }
+    .logo-sub   { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt2); letter-spacing: 3px; }
+    .hdr-pills  { display: flex; gap: 12px; align-items: center; }
+    .hdr-pill {
+      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1.5px;
+      padding: 3px 10px; border-radius: 3px; border: 1px solid; cursor: pointer;
+      transition: background .15s;
+    }
+    .hdr-pill.cyan  { color: var(--cyan);  border-color: rgba(6,182,212,.3); }
+    .hdr-pill.cyan:hover { background: rgba(6,182,212,.1); }
+    .hdr-pill.green { color: var(--green); border-color: rgba(0,255,136,.3); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,.5); } 50% { box-shadow: 0 0 0 5px rgba(0,255,136,0); } }
+    .hdr-right { display: flex; align-items: center; gap: 16px; }
+    .hdr-status { display: flex; align-items: center; gap: 6px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--green); letter-spacing: 1px; }
+    main { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 36px 28px 80px; }
+    .hero { text-align: center; margin-bottom: 40px; }
+    .hero-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 4px; color: var(--cyan); margin-bottom: 10px; }
+    .hero-title { font-family: 'Orbitron', monospace; font-size: clamp(20px, 3.5vw, 34px); font-weight: 800; color: #e4f0fc; letter-spacing: 2px; line-height: 1.15; margin-bottom: 6px; }
+    .hero-title span { color: var(--cyan); }
+    .hero-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt2); letter-spacing: 3px; margin-bottom: 20px; }
+    .hero-divider { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); margin: 0 auto 32px; }
+    .model-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
+      color: var(--cyan); border: 1px solid rgba(6,182,212,.3); border-radius: 4px;
+      padding: 5px 14px; background: rgba(6,182,212,.06);
+    }
+    .model-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: pulse-dot 1.8s ease-in-out infinite; }
+    .bridge-banner {
+      background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.25);
+      border-radius: 6px; padding: 8px 16px; margin-bottom: 20px;
+      font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--amber);
+      letter-spacing: 1px; display: none; align-items: center; gap: 10px;
+    }
+    .bridge-banner.show { display: flex; }
+    .bridge-banner.ok { color: var(--green); background: rgba(0,255,136,.05); border-color: rgba(0,255,136,.2); }
+    .query-wrap { max-width: 820px; margin: 0 auto 36px; }
+    .query-label { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 3px; color: var(--txt2); margin-bottom: 6px; }
+    .query-bar { background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; display: flex; align-items: center; gap: 10px; padding: 10px 16px; box-shadow: var(--glow); }
+    .query-bar input { flex: 1; background: transparent; border: none; outline: none; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--txt); caret-color: var(--cyan); }
+    .query-bar input::placeholder { color: var(--txt2); }
+    .node-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
+    .ntog { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px; padding: 3px 8px; border-radius: 3px; border: 1px solid; cursor: pointer; transition: all .15s; user-select: none; }
+    .ntog.active.tax    { color: var(--amber);  border-color: rgba(245,158,11,.5); background: rgba(245,158,11,.1); }
+    .ntog.active.orders { color: var(--green);  border-color: rgba(0,255,136,.4);  background: rgba(0,255,136,.08); }
+    .ntog.active.ar     { color: var(--cyan);   border-color: rgba(6,182,212,.4);  background: rgba(6,182,212,.08); }
+    .ntog:not(.active)  { color: var(--txt2);   border-color: var(--border); }
+    .deploy-btn { background: var(--cyan); color: #050c14; border: none; border-radius: 4px; padding: 7px 18px; font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background .2s, transform .1s; white-space: nowrap; }
+    .deploy-btn:hover { background: var(--cyan2); }
+    .deploy-btn:active { transform: scale(.97); }
+    .deploy-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 36px; }
+    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 12px; text-align: center; }
+    .stat-val { font-family: 'Orbitron', monospace; font-size: 19px; font-weight: 800; color: var(--cyan); letter-spacing: 1px; }
+    .stat-lbl { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; color: var(--txt2); margin-top: 4px; }
+    .sec-label { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sec-label-text { font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 600; letter-spacing: 3px; color: var(--txt2); text-transform: uppercase; white-space: nowrap; }
+    .sec-line { flex: 1; height: 1px; background: var(--border); }
+    .sec-badge { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--cyan); border: 1px solid var(--border2); border-radius: 3px; padding: 2px 8px; letter-spacing: 1px; }
+    .sovereign-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 36px; }
+    @media (max-width: 900px) { .sovereign-grid { grid-template-columns: 1fr; } }
+    .sov-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s, box-shadow .2s; position: relative; }
+    .sov-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity .2s; }
+    .sov-card:hover { box-shadow: 0 4px 36px rgba(6,182,212,.1); }
+    .sov-card:hover::before { opacity: 1; }
+    .sov-card.tax:hover { border-color: rgba(245,158,11,.35); }
+    .sov-card.tax::before { background: linear-gradient(90deg, var(--amber), #f97316); }
+    .sov-card.orders:hover { border-color: rgba(0,255,136,.3); }
+    .sov-card.orders::before { background: linear-gradient(90deg, var(--green), #00cc6a); }
+    .sov-card.ar:hover { border-color: var(--border2); }
+    .sov-card.ar::before { background: linear-gradient(90deg, var(--cyan), var(--cyan2)); }
+    .sov-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
+    .sov-title { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: #dceeff; line-height: 1.4; }
+    .sov-mod-badge { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 1px; padding: 2px 7px; border-radius: 2px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
+    .mod-tax    { color: var(--amber);  border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08); }
+    .mod-orders { color: var(--green);  border-color: rgba(0,255,136,.3);   background: rgba(0,255,136,.06); }
+    .mod-ar     { color: var(--cyan);   border-color: rgba(6,182,212,.3);   background: rgba(6,182,212,.06); }
+    .sov-body { padding: 14px 20px; flex: 1; }
+    .sov-desc { font-size: 11px; color: var(--txt2); line-height: 1.7; margin-bottom: 12px; }
+    .quick-prompts { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .qp-btn { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .5px; color: var(--txt2); background: rgba(6,182,212,.04); border: 1px solid var(--border); border-radius: 4px; padding: 6px 10px; text-align: left; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px; }
+    .qp-btn:hover { background: rgba(6,182,212,.09); border-color: var(--border2); color: var(--txt); }
+    .qp-arrow { color: var(--cyan); font-size: 10px; }
+    .sov-input-row { display: flex; gap: 6px; }
+    .sov-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 7px 10px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); outline: none; transition: border-color .15s; }
+    .sov-input:focus { border-color: var(--border2); }
+    .sov-input::placeholder { color: var(--txt2); }
+    .sov-run-btn { background: transparent; border: 1px solid; border-radius: 4px; padding: 7px 12px; font-family: 'Orbitron', monospace; font-size: 8px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background .15s; white-space: nowrap; }
+    .sov-run-btn.tax    { color: var(--amber);  border-color: rgba(245,158,11,.4); }
+    .sov-run-btn.tax:hover    { background: rgba(245,158,11,.1); }
+    .sov-run-btn.orders { color: var(--green);  border-color: rgba(0,255,136,.35); }
+    .sov-run-btn.orders:hover { background: rgba(0,255,136,.08); }
+    .sov-run-btn.ar     { color: var(--cyan);   border-color: rgba(6,182,212,.35); }
+    .sov-run-btn.ar:hover     { background: rgba(6,182,212,.08); }
+    .sov-response { margin: 10px 0 0; background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; min-height: 60px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); line-height: 1.8; display: none; white-space: pre-wrap; word-break: break-word; max-height: 340px; overflow-y: auto; }
+    .sov-response.active { display: block; }
+    .thinking-line { font-size: 9px; letter-spacing: 2px; margin-bottom: 8px; animation: blink .8s step-end infinite; }
+    .thinking-line.tax    { color: var(--amber); }
+    .thinking-line.orders { color: var(--green); }
+    .thinking-line.ar     { color: var(--cyan); }
+    .thinking-line.esd    { color: var(--purple); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .sov-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); }
+    .sov-url { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--txt2); letter-spacing: 1px; }
+    .open-app-lnk { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid; transition: background .15s; }
+    .open-app-lnk.amber  { color: var(--amber);  border-color: rgba(245,158,11,.35); }
+    .open-app-lnk.amber:hover  { background: rgba(245,158,11,.08); }
+    .open-app-lnk.green  { color: var(--green);  border-color: rgba(0,255,136,.3); }
+    .open-app-lnk.green:hover  { background: rgba(0,255,136,.07); }
+    .open-app-lnk.cyan   { color: var(--cyan);   border-color: rgba(6,182,212,.3); }
+    .open-app-lnk.cyan:hover   { background: rgba(6,182,212,.07); }
+    .open-app-lnk.purple { color: var(--purple); border-color: rgba(168,85,247,.3); }
+    .open-app-lnk.purple:hover { background: rgba(168,85,247,.07); }
+    /* ESD NODE GRID */
+    .esd-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 36px; }
+    @media (max-width: 1100px) { .esd-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px)  { .esd-grid { grid-template-columns: repeat(2, 1fr); } }
+    .esd-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s, box-shadow .2s; position: relative; }
+    .esd-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--purple), #c084fc); opacity: 0; transition: opacity .2s; }
+    .esd-card:hover { border-color: rgba(168,85,247,.35); box-shadow: 0 4px 24px rgba(168,85,247,.1); }
+    .esd-card:hover::before { opacity: 1; }
+    .esd-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+    .esd-prefix { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 2px; color: var(--purple); margin-bottom: 3px; }
+    .esd-name { font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #dceeff; line-height: 1.3; }
+    .esd-badge { font-family: 'Share Tech Mono', monospace; font-size: 7px; letter-spacing: 1px; padding: 2px 6px; border-radius: 2px; border: 1px solid rgba(168,85,247,.35); background: rgba(168,85,247,.08); color: var(--purple); white-space: nowrap; flex-shrink: 0; }
+    .esd-body { padding: 12px 16px; flex: 1; }
+    .esd-desc { font-size: 10px; color: var(--txt2); line-height: 1.6; margin-bottom: 10px; }
+    .esd-quick { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .esd-qp { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--txt2); background: rgba(168,85,247,.04); border: 1px solid var(--border); border-radius: 3px; padding: 5px 8px; text-align: left; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 5px; }
+    .esd-qp:hover { background: rgba(168,85,247,.09); border-color: rgba(168,85,247,.3); color: var(--txt); }
+    .esd-qp-arrow { color: var(--purple); font-size: 9px; }
+    .esd-input-row { display: flex; gap: 5px; }
+    .esd-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt); outline: none; transition: border-color .15s; }
+    .esd-input:focus { border-color: rgba(168,85,247,.4); }
+    .esd-input::placeholder { color: var(--txt2); }
+    .esd-run-btn { background: transparent; border: 1px solid rgba(168,85,247,.4); border-radius: 4px; padding: 6px 10px; font-family: 'Orbitron', monospace; font-size: 7px; font-weight: 600; letter-spacing: 1px; color: var(--purple); cursor: pointer; transition: background .15s; white-space: nowrap; }
+    .esd-run-btn:hover { background: rgba(168,85,247,.1); }
+    .esd-response { margin: 8px 0 0; background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 5px; padding: 10px 12px; min-height: 48px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); line-height: 1.7; display: none; white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow-y: auto; }
+    .esd-response.active { display: block; }
+    .esd-foot { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--border); }
+    /* SYNTHESIS */
+    .synthesis-panel { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 0; margin-bottom: 36px; overflow: hidden; display: none; }
+    .synthesis-panel.active { display: block; }
+    .synth-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); background: rgba(6,182,212,.04); }
+    .synth-title { font-family: 'Orbitron', monospace; font-size: 9px; letter-spacing: 3px; color: var(--cyan); }
+    .synth-close { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--txt2); cursor: pointer; }
+    .synth-close:hover { color: var(--red); }
+    .synth-body { padding: 20px; }
+    .synth-query { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt2); margin-bottom: 16px; letter-spacing: 1px; }
+    .synth-nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    @media (max-width: 700px) { .synth-nodes { grid-template-columns: 1fr; } }
+    .synth-node { background: rgba(0,0,0,.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+    .synth-node-name { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 2px; margin-bottom: 8px; }
+    .synth-node-name.tax    { color: var(--amber); }
+    .synth-node-name.orders { color: var(--green); }
+    .synth-node-name.ar     { color: var(--cyan); }
+    .synth-node-txt { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--txt); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+    /* REPORT BUILDER */
+    .report-section { margin-bottom: 36px; }
+    .report-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .report-select, .report-state-input { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 7px 12px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); outline: none; transition: border-color .15s; }
+    .report-select:focus, .report-state-input:focus { border-color: var(--border2); }
+    .report-state-input { width: 220px; }
+    .build-btn { background: transparent; border: 1px solid var(--cyan); border-radius: 4px; padding: 7px 18px; font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; color: var(--cyan); cursor: pointer; transition: background .15s; }
+    .build-btn:hover { background: rgba(6,182,212,.1); }
+    .report-output { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--txt); line-height: 1.8; display: none; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+    .report-output.active { display: block; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,.2); border-radius: 2px; }
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .footer-l, .footer-r a { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--txt2); }
+    .footer-r { display: flex; gap: 18px; }
+    .footer-r a { text-decoration: none; transition: color .2s; }
+    .footer-r a:hover { color: var(--cyan); }
+    @media (max-width: 600px) { main { padding: 20px 14px 60px; } header { padding: 0 14px; } .hdr-pills { display: none; } }
+  </style>
+<script>const TSM_BRIDGE = 'https://glowing-journey-jj5p9g9gwjqfvpv69-3200.app.github.dev?t=1776482846'; console.log('🛡️ TSM-Core Linked');</script>
+<script>window.showTab = function(id, el) {document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
+window.PRESET = "PC_ENTERPRISE";
+window.FORCE_LOAD = true;
+console.log("🛡️ Preset Forced: P&C Enterprise");
+document.querySelectorAll(".nav-link, .tab-button").forEach(t => {
+    t.onclick = function(e) {
+        e.preventDefault();
+        const target = this.getAttribute("data-target") || this.innerText.toLowerCase().trim();
+        document.querySelectorAll(".tab-pane, .tab-content").forEach(p => p.style.display = "none");
+        const activePane = document.getElementById(target) || document.querySelector("." + target);
+        if(activePane) activePane.style.display = "block";
+    };
+});
+try { 
+    console.log("Sovereign $600k Forced"); 
+} catch(e) {}
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="brand">
-    <div class="brand-mark">P&C</div>
+<header>
+  <div class="logo-block">
+    <div class="logo-hex">CT</div>
     <div>
-      <div class="brand-name">P&C Enterprise Command</div>
-      <div class="brand-sub">Property · Casualty · Liability · Risk Intelligence</div>
+      <div class="logo-text">CASE-TECH COMMAND</div>
+      <div class="logo-sub">SOVEREIGN INTELLIGENCE · TSM PLATFORM</div>
     </div>
   </div>
-  <div class="topbar-right">
-    <div class="tpill live">● System Ready</div>
-    <div class="tpill info">AZ Licensed · NPN 18818059</div>
-    <div class="tpill warn" id="alert-pill">3 Alerts</div>
-    <button class="hdr-btn" onclick="switchTab('howto')">📘 HOW TO</button>
-    <button class="hdr-btn" onclick="window.open('https://insurance-command.tsmatter.com','_blank')">← COMMAND CENTER</button>
-    <div id="tb-clock"></div>
-  </div>
-</div>
-
-<div class="shell">
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-label">P&C INTEL</div>
-  <div class="ticker-wrap">
-    <div class="ticker-track">
-      <div class="ti r"><span>WILDFIRE:</span> AZ DFES remapping Maricopa/Pinal zones — 14 client properties now HIGH risk</div>
-      <div class="ti w"><span>AUTO:</span> AZ min liability $25K/$50K — insufficient for serious accidents — umbrella gap flagged</div>
-      <div class="ti g"><span>COMMERCIAL:</span> CGL ISO form updates 2025 — pollution exclusion expanded · review all commercial accounts</div>
-      <div class="ti"><span>HOMEOWNERS:</span> AZ carriers +22% YoY · HOA master policy gaps common in Scottsdale/Gilbert</div>
-      <div class="ti w"><span>E&O:</span> Insurance agent E&O claims up 18% in AZ — documentation gaps primary cause</div>
-      <div class="ti g"><span>CYBER:</span> SMB cyber attacks +43% · standalone policy underutilized in AZ commercial book</div>
-      <div class="ti r"><span>UMBRELLA:</span> Pool owners: avg liability claim $247K · $1M umbrella costs ~$300/yr · massive gap</div>
-      <div class="ti w"><span>WORKERS COMP:</span> AZ construction sector WC rates increasing Q2 2026 · lock in rates now</div>
-      <!-- duplicate -->
-      <div class="ti r"><span>WILDFIRE:</span> AZ DFES remapping Maricopa/Pinal zones — 14 client properties now HIGH risk</div>
-      <div class="ti w"><span>AUTO:</span> AZ min liability $25K/$50K — insufficient for serious accidents — umbrella gap flagged</div>
-      <div class="ti g"><span>COMMERCIAL:</span> CGL ISO form updates 2025 — pollution exclusion expanded · review all commercial accounts</div>
-      <div class="ti"><span>HOMEOWNERS:</span> AZ carriers +22% YoY · HOA master policy gaps common in Scottsdale/Gilbert</div>
-      <div class="ti w"><span>E&O:</span> Insurance agent E&O claims up 18% in AZ — documentation gaps primary cause</div>
-      <div class="ti g"><span>CYBER:</span> SMB cyber attacks +43% · standalone cyber policy underutilized in AZ commercial book</div>
-      <div class="ti r"><span>UMBRELLA:</span> Pool owners: avg liability claim $247K · $1M umbrella costs ~$300/yr · massive gap</div>
-      <div class="ti w"><span>WORKERS COMP:</span> AZ construction sector WC rates increasing Q2 2026 · lock in rates now</div>
+  <div class="hdr-right">
+    <div class="hdr-pills">
+      <div class="hdr-pill cyan" onclick="event.preventDefault(); scrollToSection('modules')">MODULES</div>
+      <div class="hdr-pill cyan" onclick="event.preventDefault(); scrollToSection('esd-nodes')">ESD NODES</div>
+      <div class="hdr-pill cyan" onclick="event.preventDefault(); scrollToSection('reports')">REPORTS</div>
+      <div class="hdr-pill green" onclick="event.preventDefault(); window.open('https://financial.tsmatter.com','_blank')">FINANCIAL CMD ↗</div>
     </div>
+    <div class="hdr-status"><div class="status-dot"></div>SOVEREIGN · ONLINE</div>
   </div>
-</div>
+</header>
 
-<!-- TABS -->
-<div class="tab-row">
-  <div class="tab active" id="tab-dashboard" onclick="switchTab('dashboard')">◉ Dashboard</div>
-  <div class="tab" id="tab-homeowners" onclick="switchTab('homeowners')">🏠 Homeowners</div>
-  <div class="tab" id="tab-auto" onclick="switchTab('auto')">🚗 Auto</div>
-  <div class="tab" id="tab-commercial" onclick="switchTab('commercial')">🏢 Commercial</div>
-  <div class="tab" id="tab-liability" onclick="switchTab('liability')">⚖ Liability</div>
-  <div class="tab" id="tab-umbrella" onclick="switchTab('umbrella')">☂ Umbrella</div>
-  <div class="tab" id="tab-eo" onclick="switchTab('eo')">📋 E&O / Prof</div>
-  <div class="tab" id="tab-risk" onclick="switchTab('risk')">🌵 AZ Risk</div>
-  <div class="tab" id="tab-bop" onclick="switchTab('bop')">🏗 BOP</div>
-  <div class="tab" id="tab-claims" onclick="switchTab('claims')">📊 Claims ROI</div>
-  <div class="tab" id="tab-howto" onclick="switchTab('howto')">? How To</div>
-</div>
-
-<!-- PANELS -->
-<div class="panels">
-
-<!-- ── DASHBOARD ── -->
-<div class="panel active" id="panel-dashboard">
-<div class="panel-inner">
-
-  <div class="kpi-strip">
-    <div class="kpi" style="--kc:var(--green)"><div class="kpi-label">HO Policies</div><div class="kpi-val">47</div><div class="kpi-sub">Active book</div></div>
-    <div class="kpi" style="--kc:var(--blue)"><div class="kpi-label">Auto Policies</div><div class="kpi-val">63</div><div class="kpi-sub">Personal + commercial</div></div>
-    <div class="kpi" style="--kc:var(--gold)"><div class="kpi-label">Commercial</div><div class="kpi-val">28</div><div class="kpi-sub">CGL + BOP + WC</div></div>
-    <div class="kpi" style="--kc:var(--red)"><div class="kpi-label">Coverage Gaps</div><div class="kpi-val" style="color:var(--red)">14</div><div class="kpi-sub">Need attention</div></div>
-    <div class="kpi" style="--kc:var(--orange)"><div class="kpi-label">Renewals 90d</div><div class="kpi-val" style="color:var(--orange)">22</div><div class="kpi-sub">Pipeline</div></div>
-    <div class="kpi" style="--kc:var(--teal)"><div class="kpi-label">Umbrella Gap</div><div class="kpi-val" style="color:var(--red)">$4.2M</div><div class="kpi-sub">Unprotected exposure</div></div>
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">// TSM WHITELABEL · CASE-TECH CLIENT PORTAL · DIRECTOR WHITEHEAD</div>
+    <div class="hero-title">CASE-TECH<br><span>SOVEREIGN COMMAND</span></div>
+    <div class="hero-sub">case-tech.tsmatter.com · AI-NATIVE OPERATIONS · 15-STATE TAX · ORDER PIPELINE · AR/AP ENGINE</div>
+    <div class="hero-divider"></div>
+    <div class="model-badge"><div class="model-dot"></div>TSM NEURAL · SOVEREIGN INTELLIGENCE LAYER · LIVE</div>
   </div>
 
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Priority Alerts</div><div class="card-sub">Action required</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:6px;">
-        <div class="alert-item ai-crit">🔥 14 client properties flagged in NEW AZ wildfire high-risk zones — coverage review needed immediately</div>
-        <div class="alert-item ai-crit">🚗 8 clients carrying AZ minimum auto liability — catastrophic gap for serious accidents</div>
-        <div class="alert-item ai-warn">☂ 31 clients with pools have no umbrella policy — avg claim $247K vs $0 coverage</div>
-        <div class="alert-item ai-warn">🏢 5 commercial clients missing cyber liability — average SMB breach cost $4.35M</div>
-        <div class="alert-item ai-info">📋 3 professional clients E&O expired or inadequate — renewal window open</div>
-        <div class="alert-item ai-ok">✓ WC renewal locked for 12 construction accounts before Q2 rate increase</div>
+  <div class="bridge-banner" id="bridgeBanner">
+    <span id="bridgeBannerText">// Connecting to TSM Neural bridge…</span>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="st-states">15</div><div class="stat-lbl">NEXUS STATES</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-orders">—</div><div class="stat-lbl">ORDERS/DAY</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-ar">—</div><div class="stat-lbl">AR OPEN ($K)</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-exempt">—</div><div class="stat-lbl">EXEMPT CERTS</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-auto">98%</div><div class="stat-lbl">AUTO-MATCH RATE</div></div>
+  </div>
+
+  <div class="query-wrap">
+    <div class="query-label">// TSM NEURAL — DEPLOY TO ALL SOVEREIGN NODES SIMULTANEOUSLY</div>
+    <div class="query-bar">
+      <div class="node-toggles">
+        <div class="ntog tax active" id="tog-tax" onclick="event.preventDefault(); toggleNode('tax')">TAX</div>
+        <div class="ntog orders active" id="tog-orders" onclick="event.preventDefault(); toggleNode('orders')">ORDERS</div>
+        <div class="ntog ar active" id="tog-ar" onclick="event.preventDefault(); toggleNode('ar')">AR/AP</div>
       </div>
+      <input id="masterQuery" placeholder="e.g. Export Q1 sales tax for 15 states, flag nexus risk…" onkeydown="if(event.key==='Enter')deployMaster()"/>
+      <button class="deploy-btn" id="masterBtn" onclick="event.preventDefault(); deployMaster()">⚡ DEPLOY</button>
     </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Coverage Status Overview</div><div class="card-sub">Book of business health</div></div>
-      <div class="card-body">
-        <table class="cov-table">
-          <thead><tr><th>Line</th><th>Policies</th><th>Gaps</th><th>Avg Premium</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Homeowners</td><td>47</td><td>14</td><td>$2,840/yr</td><td><span class="status-dot dot-warn"></span>Review</td></tr>
-            <tr><td>Auto (Personal)</td><td>51</td><td>8</td><td>$1,920/yr</td><td><span class="status-dot dot-warn"></span>Min Limits</td></tr>
-            <tr><td>Auto (Commercial)</td><td>12</td><td>2</td><td>$4,200/yr</td><td><span class="status-dot dot-ok"></span>Adequate</td></tr>
-            <tr><td>CGL / Commercial</td><td>28</td><td>5</td><td>$6,800/yr</td><td><span class="status-dot dot-warn"></span>Cyber Gap</td></tr>
-            <tr><td>Umbrella</td><td>19</td><td>28</td><td>$380/yr</td><td><span class="status-dot dot-crit"></span>Critical Gap</td></tr>
-            <tr><td>E&O / Professional</td><td>11</td><td>3</td><td>$3,200/yr</td><td><span class="status-dot dot-warn"></span>Renewal</td></tr>
-            <tr><td>Workers Comp</td><td>16</td><td>0</td><td>$8,400/yr</td><td><span class="status-dot dot-ok"></span>Current</td></tr>
-            <tr><td>Cyber Liability</td><td>8</td><td>20</td><td>$1,800/yr</td><td><span class="status-dot dot-crit"></span>Critical Gap</td></tr>
-          </tbody>
-        </table>
+  </div>
+
+  <div class="synthesis-panel" id="synthPanel">
+    <div class="synth-head">
+      <div class="synth-title">⚡ TSM NEURAL SYNTHESIS — ALL NODES RESPONDED</div>
+      <div class="synth-close" onclick="event.preventDefault(); closeSynth()">✕ CLOSE</div>
+    </div>
+    <div class="synth-body">
+      <div class="synth-query" id="synthQuery"></div>
+      <div class="synth-nodes">
+        <div class="synth-node"><div class="synth-node-name tax">⚖ 15-STATE TAX</div><div class="synth-node-txt" id="synth-tax">…</div></div>
+        <div class="synth-node"><div class="synth-node-name orders">📦 ORDER PIPELINE</div><div class="synth-node-txt" id="synth-orders">…</div></div>
+        <div class="synth-node"><div class="synth-node-name ar">💰 AR/AP ENGINE</div><div class="synth-node-txt" id="synth-ar">…</div></div>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">AI Intelligence Briefing</div><div class="card-sub">Full cross-line P&C analysis</div></div>
-    <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-      <textarea id="dash-query" style="min-height:60px;" placeholder="Enter directive or use preset below...">Run a full P&C enterprise briefing: identify top 5 coverage gaps by dollar exposure, AZ-specific risks requiring immediate action, and best next course of action for each line of business.</textarea>
-      <div class="btn-row">
-        <button class="btn primary" id="dash-btn" onclick="runAI('dash')">▶ Run Intelligence Briefing</button>
-        <button class="btn gold btn-sm" onclick="document.getElementById('dash-query').value='Identify all clients with umbrella gaps. Calculate total unprotected exposure and create a prioritized outreach list.'">Umbrella Gap Scan</button>
-        <button class="btn gold btn-sm" onclick="document.getElementById('dash-query').value='Run AZ wildfire risk assessment. Identify clients in high-risk zones and recommend coverage adjustments.'">Wildfire Scan</button>
-        <button class="btn gold btn-sm" onclick="document.getElementById('dash-query').value='Analyze auto liability gaps across the book. Identify minimum-limit clients and quantify catastrophic exposure.'">Auto Gap Scan</button>
+  <div class="sec-label" id="modules">
+    <span class="sec-label-text">Sovereign Modules</span>
+    <div class="sec-line"></div>
+    <span class="sec-badge">TSM NEURAL · CASE-TECH SPECIFIC</span>
+  </div>
+
+  <div class="sovereign-grid">
+    <!-- TAX -->
+    <div class="sov-card tax">
+      <div class="sov-head">
+        <div><div style="font-size:22px;margin-bottom:4px;">⚖️</div><div class="sov-title">15-STATE TAX<br>NEXUS TRACKER</div></div>
+        <div class="sov-mod-badge mod-tax">AVATAX LAYER</div>
       </div>
-      <div class="ai-output loading" id="out-dash">Run a briefing to see cross-line intelligence...</div>
+      <div class="sov-body">
+        <div class="sov-desc">Automated nexus monitoring across all 15 states. Tracks sales volume against economic thresholds ($100K / 200 transactions). Exemption certificates auto-applied. Zero manual filing.</div>
+        <div class="quick-prompts">
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('tax','Export Q1 sales tax liability breakdown for all 15 nexus states with filing deadlines')"><span class="qp-arrow">›</span> Q1 tax liability export · all 15 states</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('tax','Which states are at risk of triggering new economic nexus based on current sales velocity?')"><span class="qp-arrow">›</span> New nexus risk by sales velocity</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('tax','List all pending exemption certificates expiring in the next 60 days')"><span class="qp-arrow">›</span> Exemption certs expiring in 60 days</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('tax','Generate an audit-ready sales tax reconciliation for the current quarter')"><span class="qp-arrow">›</span> Audit-ready Q reconciliation</button>
+        </div>
+        <div class="sov-input-row">
+          <input class="sov-input" id="input-tax" placeholder="Custom tax / nexus query…" onkeydown="if(event.key==='Enter')runModule('tax')"/>
+          <button class="sov-run-btn tax" onclick="event.preventDefault(); runModule('tax')">ANALYZE</button>
+        </div>
+        <div class="sov-response" id="resp-tax"></div>
+      </div>
+      <div class="sov-foot"><div class="sov-url">tax.tsmatter.com</div><a href="https://tax.tsmatter.com" target="_blank" class="open-app-lnk amber">OPEN APP ↗</a></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="sov-card orders">
+      <div class="sov-head">
+        <div><div style="font-size:22px;margin-bottom:4px;">📦</div><div class="sov-title">ORDER-TO-LABEL<br>PIPELINE</div></div>
+        <div class="sov-mod-badge mod-orders">FULFILLMENT ENGINE</div>
+      </div>
+      <div class="sov-body">
+        <div class="sov-desc">PDF hits /intake → system auto-populates tracking pipeline. Zero manual entry. One-click label generation with carrier rate shopping. 98% transaction auto-categorization via TSM Neural inference.</div>
+        <div class="quick-prompts">
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('orders','Generate a shipping label with cheapest carrier rate for a 5lb package going to New York')"><span class="qp-arrow">›</span> Generate label · carrier rate shop</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('orders','Show me all orders in the intake queue that have not been labeled in the past 48 hours')"><span class="qp-arrow">›</span> Intake queue · unlabeled 48h</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('orders','Analyze fulfillment bottlenecks this month and suggest workflow improvements')"><span class="qp-arrow">›</span> Fulfillment bottleneck analysis</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('orders','Auto-categorize and record all receipts from this week using bank feed matching')"><span class="qp-arrow">›</span> Bank feed auto-match · receipts</button>
+        </div>
+        <div class="sov-input-row">
+          <input class="sov-input" id="input-orders" placeholder="Order / fulfillment / shipping query…" onkeydown="if(event.key==='Enter')runModule('orders')"/>
+          <button class="sov-run-btn orders" onclick="event.preventDefault(); runModule('orders')">PROCESS</button>
+        </div>
+        <div class="sov-response" id="resp-orders"></div>
+      </div>
+      <div class="sov-foot"><div class="sov-url">case-tech.tsmatter.com/orders</div><a href="https://case-tech.tsmatter.com/orders" target="_blank" class="open-app-lnk green">OPEN APP ↗</a></div>
+    </div>
+
+    <!-- AR/AP -->
+    <div class="sov-card ar">
+      <div class="sov-head">
+        <div><div style="font-size:22px;margin-bottom:4px;">💰</div><div class="sov-title">AR/AP RECONCILIATION<br>ENGINE</div></div>
+        <div class="sov-mod-badge mod-ar">PREDICTIVE FINANCE</div>
+      </div>
+      <div class="sov-body">
+        <div class="sov-desc">Predictive AR — flags which customers are trending late before the invoice is due. Auto-matches bank deposits to open invoices. Anomaly detection fires instantly. AP auto-coding with audit trail.</div>
+        <div class="quick-prompts">
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('ar','Run a risk analysis on all open AR and flag customers trending toward late payment')"><span class="qp-arrow">›</span> Risk analysis · AR late-pay prediction</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('ar','Auto-match all deposits from the past week against open invoices and flag discrepancies')"><span class="qp-arrow">›</span> Deposit → invoice auto-match</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('ar','Generate a 30-60-90 aging report with recommended collection actions')"><span class="qp-arrow">›</span> 30-60-90 aging · collection actions</button>
+          <button class="qp-btn" onclick="event.preventDefault(); runQuick('ar','Update all customer records with latest payment status from QuickBooks sync')"><span class="qp-arrow">›</span> QuickBooks sync · customer update</button>
+        </div>
+        <div class="sov-input-row">
+          <input class="sov-input" id="input-ar" placeholder="AR/AP / reconciliation / QuickBooks query…" onkeydown="if(event.key==='Enter')runModule('ar')"/>
+          <button class="sov-run-btn ar" onclick="event.preventDefault(); runModule('ar')">RECONCILE</button>
+        </div>
+        <div class="sov-response" id="resp-ar"></div>
+      </div>
+      <div class="sov-foot"><div class="sov-url">financial.tsmatter.com</div><a href="https://financial.tsmatter.com" target="_blank" class="open-app-lnk cyan">OPEN APP ↗</a></div>
     </div>
   </div>
 
-</div>
-</div>
-
-<!-- ── HOMEOWNERS ── -->
-<div class="panel" id="panel-homeowners">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">HO Coverage Analyzer</div><div class="card-sub">Dwelling · Personal Property · Liability · ALE</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div class="grid-2">
-          <div><label class="lbl">Dwelling Value ($)</label><input type="number" id="ho-dwelling" placeholder="485000"></div>
-          <div><label class="lbl">Personal Property ($)</label><input type="number" id="ho-personal" placeholder="120000"></div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Current Coverage ($)</label><input type="number" id="ho-current" placeholder="400000"></div>
-          <div><label class="lbl">ZIP Code</label><input type="text" id="ho-zip" placeholder="85254"></div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Policy Type</label>
-            <select id="ho-type">
-              <option>HO-3 (Special Form)</option>
-              <option>HO-5 (Comprehensive)</option>
-              <option>HO-6 (Condo)</option>
-              <option>HO-8 (Older Home)</option>
-              <option>DP-3 (Rental / Investment)</option>
-            </select>
-          </div>
-          <div><label class="lbl">AZ Risk Factors</label>
-            <select id="ho-risk">
-              <option>Pool + standard</option>
-              <option>Wildfire zone</option>
-              <option>Monsoon/flood area</option>
-              <option>HOA community</option>
-              <option>Vacation / seasonal</option>
-              <option>No special risks</option>
-            </select>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary btn-sm" onclick="runAI('homeowners')">▶ Analyze Coverage</button>
-          <button class="btn gold btn-sm" onclick="calcHOGap()">Calculate Gap</button>
-        </div>
-        <div class="result-box" id="ho-gap-result">
-          <div class="result-big" id="ho-gap-amt">$0</div>
-          <div class="result-label">Coverage Gap</div>
-          <div class="result-note" id="ho-gap-note"></div>
-        </div>
-        <div class="ai-output loading" id="out-homeowners">Analyze a property to see AI recommendations...</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">AZ Homeowners Risk Profile</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:7px;">
-        <div class="risk-card"><div class="risk-icon">🔥</div><div><div class="risk-title">Wildfire — Critical AZ Exposure</div><div class="risk-desc">Maricopa, Pinal, Yavapai counties facing increased DFES risk reclassification. Many carriers adding exclusions or non-renewing. Verify coverage annually.</div><div class="risk-badge rb-crit">CRITICAL</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🌊</div><div><div class="risk-title">Monsoon / Flash Flood</div><div class="risk-desc">Standard HO excludes flood. AZ monsoon season Jun-Sep causes $180M+ annual losses. NFIP or private flood endorsement essential in flood-prone ZIP codes.</div><div class="risk-badge rb-high">HIGH</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🏊</div><div><div class="risk-title">Pool / Spa Liability</div><div class="risk-desc">AZ #1 per capita pool ownership. Drowning liability avg $247K-$4M. Standard HO liability $100-300K — grossly inadequate. Umbrella mandatory.</div><div class="risk-badge rb-crit">CRITICAL</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🌡️</div><div><div class="risk-title">Extreme Heat Structural Damage</div><div class="risk-desc">115°F+ temps cause AC failure, roof damage, pipe expansion. Verify mechanical breakdown coverage. Many HO policies exclude heat-related wear.</div><div class="risk-badge rb-mod">MODERATE</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🏘️</div><div><div class="risk-title">HOA Master Policy Gaps</div><div class="risk-desc">Scottsdale/Gilbert HOA master policies often bare-walls only. HO-6 condo owners need walls-in coverage + loss assessment rider.</div><div class="risk-badge rb-high">HIGH</div></div></div>
-      </div>
-    </div>
+  <!-- ESD NODES -->
+  <div class="sec-label" id="esd-nodes">
+    <span class="sec-label-text">ESD Node Cluster</span>
+    <div class="sec-line"></div>
+    <span class="sec-badge" style="color:var(--purple);border-color:rgba(168,85,247,.3);">EXTENDED SERVICE DEPLOYMENT</span>
   </div>
-</div>
-</div>
 
-<!-- ── AUTO ── -->
-<div class="panel" id="panel-auto">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Auto Coverage Analyzer</div><div class="card-sub">Personal · Commercial · Rideshare · Classic</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div class="grid-2">
-          <div><label class="lbl">Vehicle Value ($)</label><input type="number" id="auto-value" placeholder="42000"></div>
-          <div><label class="lbl">Annual Mileage</label><input type="number" id="auto-miles" placeholder="14000"></div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Current BI Limit</label>
-            <select id="auto-bi">
-              <option>$25K/$50K (AZ Minimum)</option>
-              <option>$50K/$100K</option>
-              <option>$100K/$300K</option>
-              <option>$250K/$500K</option>
-              <option>$500K/$1M</option>
-            </select>
-          </div>
-          <div><label class="lbl">Policy Type</label>
-            <select id="auto-type">
-              <option>Personal Auto</option>
-              <option>Commercial Auto</option>
-              <option>Rideshare (TNC)</option>
-              <option>Classic / Collector</option>
-              <option>RV / Motorhome</option>
-              <option>Motorcycle</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Drivers (ages)</label><input type="text" id="auto-drivers" placeholder="42, 39, 17"></div>
-          <div><label class="lbl">Violations (3yr)</label>
-            <select id="auto-violations">
-              <option>None</option>
-              <option>1 minor (speeding)</option>
-              <option>1 at-fault accident</option>
-              <option>DUI / major violation</option>
-              <option>Multiple violations</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">UM/UIM Coverage</label>
-            <select id="auto-um">
-              <option>None (rejected in writing)</option>
-              <option>$25K/$50K (matches BI)</option>
-              <option>$100K/$300K</option>
-              <option>$250K/$500K</option>
-              <option>Stacked (multi-vehicle)</option>
-            </select>
-          </div>
-          <div><label class="lbl">Comp / Collision Deductible</label>
-            <select id="auto-ded">
-              <option>$250 / $250</option>
-              <option>$500 / $500</option>
-              <option>$1,000 / $1,000</option>
-              <option>$2,500 / $2,500</option>
-              <option>Comp only (no collision)</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Loan / Lease Balance ($)</label><input type="number" id="auto-loan" placeholder="28000" oninput="calcGAP()"></div>
-          <div><label class="lbl">MedPay Limit</label>
-            <select id="auto-medpay">
-              <option>None</option>
-              <option>$1,000</option>
-              <option>$5,000</option>
-              <option>$10,000</option>
-              <option>$25,000</option>
-            </select>
-          </div>
-        </div>
-        <div class="result-box" id="gap-result">
-          <div class="result-big" id="gap-amt">$0</div>
-          <div class="result-label">GAP Exposure (Loan vs Vehicle Value)</div>
-          <div class="result-note" id="gap-note"></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary btn-sm" onclick="runAI('auto')">▶ Analyze Auto Coverage</button>
-          <button class="btn gold btn-sm" onclick="runAI('um-az')">AZ Uninsured Motorist Analysis</button>
-          <button class="btn gold btn-sm" onclick="runAI('sr22')">SR-22 / High Risk</button>
-        </div>
-        <div class="ai-output loading" id="out-auto">Analyze auto coverage to see AI recommendations...</div>
+  <div class="esd-grid">
+
+    <!-- ESD-AR -->
+    <div class="esd-card">
+      <div class="esd-head">
+        <div><div class="esd-prefix">ESD-AR</div><div class="esd-name">ACCOUNTS<br>RECEIVABLE</div></div>
+        <div class="esd-badge">AR NODE</div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">AZ Auto Liability Gap Analysis</div></div>
-      <div class="card-body">
-        <div class="alert-item ai-crit" style="margin-bottom:10px;">⚠ AZ minimum $25K/$50K BI — a single serious accident can produce $500K-$2M+ in judgments. Minimum limits leave clients personally exposed to the difference.</div>
-        <table class="cov-table">
-          <thead><tr><th>Scenario</th><th>Typical Cost</th><th>Min Limit</th><th>Exposure Gap</th></tr></thead>
-          <tbody>
-            <tr><td>Serious injury (1 person)</td><td>$250,000</td><td>$25,000</td><td style="color:var(--red)">$225,000</td></tr>
-            <tr><td>Multi-vehicle accident</td><td>$450,000</td><td>$50,000</td><td style="color:var(--red)">$400,000</td></tr>
-            <tr><td>Fatality</td><td>$1,200,000</td><td>$25,000</td><td style="color:var(--red)">$1,175,000</td></tr>
-            <tr><td>Teen driver at fault</td><td>$380,000</td><td>$25,000</td><td style="color:var(--red)">$355,000</td></tr>
-            <tr><td>With $1M umbrella</td><td>$1,200,000</td><td>$1,025,000</td><td style="color:var(--green)">$175,000</td></tr>
-          </tbody>
-        </table>
-        <div style="margin-top:12px;padding:8px 10px;background:var(--green3);border:1px solid var(--border2);font-size:.72rem;color:var(--text);">
-          <b style="color:var(--green2);">Recommendation:</b> Minimum $100K/$300K + $1M umbrella for any client with assets to protect. Annual cost difference: ~$200/yr. Worth every penny.
+      <div class="esd-body">
+        <div class="esd-desc">Invoice aging, customer payment velocity, collections queue prioritization, AR-to-cash forecasting, and dispute resolution pipeline.</div>
+        <div class="esd-quick">
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('ar','Show me all open invoices aged 60+ days with recommended collection actions')"><span class="esd-qp-arrow">›</span> Open invoices 60d+ · collection queue</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('ar','Generate AR cash flow forecast for next 30 days based on payment velocity')"><span class="esd-qp-arrow">›</span> AR cash flow forecast · 30 days</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('ar','Flag all customers who have disputed an invoice in the past 90 days')"><span class="esd-qp-arrow">›</span> Dispute flags · 90-day review</button>
         </div>
+        <div class="esd-input-row">
+          <input class="esd-input" id="input-esd-ar" placeholder="AR query…" onkeydown="if(event.key==='Enter')runESDModule('ar')"/>
+          <button class="esd-run-btn" onclick="event.preventDefault(); runESDModule('ar')">RUN</button>
+        </div>
+        <div class="esd-response" id="resp-esd-ar"></div>
       </div>
+      <div class="esd-foot"><div class="sov-url">esd-ar.tsmatter.com</div><a href="https://esd-ar.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
     </div>
+
+    <!-- ESD-CASHRECEIPTS -->
+    <div class="esd-card">
+      <div class="esd-head">
+        <div><div class="esd-prefix">ESD-CASHRECEIPTS</div><div class="esd-name">CASH<br>RECEIPTS</div></div>
+        <div class="esd-badge">RECEIPTS NODE</div>
+      </div>
+      <div class="esd-body">
+        <div class="esd-desc">Deposit logging, bank feed ingestion, receipt-to-invoice auto-matching, exception queue, and daily cash position reporting.</div>
+        <div class="esd-quick">
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('cashreceipts','Match all unmatched bank deposits from today against open invoices')"><span class="esd-qp-arrow">›</span> Match today's deposits · open invoices</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('cashreceipts','Show me all unmatched receipts in the exception queue older than 3 days')"><span class="esd-qp-arrow">›</span> Exception queue · unmatched 3d+</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('cashreceipts','Generate daily cash position report with bank feed reconciliation status')"><span class="esd-qp-arrow">›</span> Daily cash position report</button>
+        </div>
+        <div class="esd-input-row">
+          <input class="esd-input" id="input-esd-cashreceipts" placeholder="Cash receipts query…" onkeydown="if(event.key==='Enter')runESDModule('cashreceipts')"/>
+          <button class="esd-run-btn" onclick="event.preventDefault(); runESDModule('cashreceipts')">RUN</button>
+        </div>
+        <div class="esd-response" id="resp-esd-cashreceipts"></div>
+      </div>
+      <div class="esd-foot"><div class="sov-url">esd-cashreceipts.tsmatter.com</div><a href="https://esd-cashreceipts.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
+    </div>
+
+    <!-- ESD-SETUP -->
+    <div class="esd-card">
+      <div class="esd-head">
+        <div><div class="esd-prefix">ESD-SETUP</div><div class="esd-name">SYSTEM<br>SETUP</div></div>
+        <div class="esd-badge">SETUP NODE</div>
+      </div>
+      <div class="esd-body">
+        <div class="esd-desc">Client onboarding, GL chart-of-accounts mapping, entity config, integration key management, carrier accounts, and tax profiles.</div>
+        <div class="esd-quick">
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('setup','Run a full integration health check across all connected systems and flag any broken connections')"><span class="esd-qp-arrow">›</span> Integration health check · all systems</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('setup','Show me all GL mappings that do not have a corresponding QuickBooks chart of accounts entry')"><span class="esd-qp-arrow">›</span> GL mapping gaps · QuickBooks alignment</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('setup','List all active carrier accounts with current rate agreements and expiration dates')"><span class="esd-qp-arrow">›</span> Carrier accounts · rate agreements</button>
+        </div>
+        <div class="esd-input-row">
+          <input class="esd-input" id="input-esd-setup" placeholder="Setup / config query…" onkeydown="if(event.key==='Enter')runESDModule('setup')"/>
+          <button class="esd-run-btn" onclick="event.preventDefault(); runESDModule('setup')">RUN</button>
+        </div>
+        <div class="esd-response" id="resp-esd-setup"></div>
+      </div>
+      <div class="esd-foot"><div class="sov-url">esd-setup.tsmatter.com</div><a href="https://esd-setup.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
+    </div>
+
+    <!-- ESD-TIMESHEETS -->
+    <div class="esd-card">
+      <div class="esd-head">
+        <div><div class="esd-prefix">ESD-TIMESHEETS</div><div class="esd-name">TIMESHEETS<br>&amp; LABOR</div></div>
+        <div class="esd-badge">TIME NODE</div>
+      </div>
+      <div class="esd-body">
+        <div class="esd-desc">Staff time entry, project code allocation, multi-tier approval workflows, billable vs. non-billable tracking, and payroll export bridge.</div>
+        <div class="esd-quick">
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('timesheets','Show me all unapproved timesheets for the current pay period with staff names and hours')"><span class="esd-qp-arrow">›</span> Unapproved timesheets · current period</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('timesheets','Generate billable vs non-billable utilization report for all staff this month')"><span class="esd-qp-arrow">›</span> Billable utilization · monthly report</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('timesheets','Export payroll-ready timesheet data for this pay period in QuickBooks format')"><span class="esd-qp-arrow">›</span> Payroll export · QuickBooks format</button>
+        </div>
+        <div class="esd-input-row">
+          <input class="esd-input" id="input-esd-timesheets" placeholder="Timesheet query…" onkeydown="if(event.key==='Enter')runESDModule('timesheets')"/>
+          <button class="esd-run-btn" onclick="event.preventDefault(); runESDModule('timesheets')">RUN</button>
+        </div>
+        <div class="esd-response" id="resp-esd-timesheets"></div>
+      </div>
+      <div class="esd-foot"><div class="sov-url">esd-timesheets.tsmatter.com</div><a href="https://esd-timesheets.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
+    </div>
+
+    <!-- ESD-PMI -->
+    <div class="esd-card">
+      <div class="esd-head">
+        <div><div class="esd-prefix">ESD-PMI</div><div class="esd-name">PROJECT MGMT<br>INTELLIGENCE</div></div>
+        <div class="esd-badge">PMI NODE</div>
+      </div>
+      <div class="esd-body">
+        <div class="esd-desc">Project profitability, milestone tracking, budget burn-rate analysis, client deliverable status board, and cross-project resource allocation.</div>
+        <div class="esd-quick">
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('pmi','Show all active projects where budget burn rate exceeds 85% with projected overrun dates')"><span class="esd-qp-arrow">›</span> Budget burn alerts · overrun risk</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('pmi','Generate project profitability report ranked by margin for all active engagements')"><span class="esd-qp-arrow">›</span> Project P&amp;L · margin ranking</button>
+          <button class="esd-qp" onclick="event.preventDefault(); runESD('pmi','List all client deliverables due this week with current status and responsible staff')"><span class="esd-qp-arrow">›</span> Deliverables due this week · status</button>
+        </div>
+        <div class="esd-input-row">
+          <input class="esd-input" id="input-esd-pmi" placeholder="Project intelligence query…" onkeydown="if(event.key==='Enter')runESDModule('pmi')"/>
+          <button class="esd-run-btn" onclick="event.preventDefault(); runESDModule('pmi')">RUN</button>
+        </div>
+        <div class="esd-response" id="resp-esd-pmi"></div>
+      </div>
+      <div class="esd-foot"><div class="sov-url">esd-pmi.tsmatter.com</div><a href="https://esd-pmi.tsmatter.com" target="_blank" class="open-app-lnk purple">OPEN ↗</a></div>
+    </div>
+
   </div>
-</div>
-</div>
 
-<!-- ── COMMERCIAL ── -->
-<div class="panel" id="panel-commercial">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Commercial Lines Analyzer</div><div class="card-sub">CGL · Commercial Auto · WC · Inland Marine</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div><label class="lbl">Business Type</label>
-          <select id="comm-type">
-            <option>General Contractor / Construction</option>
-            <option>Retail / Restaurant</option>
-            <option>Medical / Healthcare</option>
-            <option>Real Estate / Property Management</option>
-            <option>Technology / Software</option>
-            <option>Transportation / Trucking</option>
-            <option>Manufacturing</option>
-            <option>Professional Services</option>
-            <option>Non-Profit</option>
-            <option>Cannabis / Dispensary (AZ)</option>
-          </select>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Annual Revenue ($)</label><input type="number" id="comm-revenue" placeholder="2500000"></div>
-          <div><label class="lbl">Employees</label><input type="number" id="comm-employees" placeholder="18"></div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Current CGL Limit</label>
-            <select id="comm-cgl">
-              <option>$1M/$2M (standard)</option>
-              <option>$2M/$4M</option>
-              <option>$5M/$10M</option>
-              <option>None / Unknown</option>
-            </select>
-          </div>
-          <div><label class="lbl">Special Exposures</label>
-            <select id="comm-special">
-              <option>None</option>
-              <option>Liquor liability</option>
-              <option>Products liability</option>
-              <option>Professional services</option>
-              <option>Pollution / environmental</option>
-              <option>Directors & Officers</option>
-            </select>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary btn-sm" onclick="runAI('commercial')">▶ Analyze Commercial Coverage</button>
-          <button class="btn gold btn-sm" onclick="runAI('wc')">Workers Comp Analysis</button>
-        </div>
-        <div class="ai-output loading" id="out-commercial">Analyze commercial lines to see AI recommendations...</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Commercial Cyber Liability</div><div class="card-sub">Most underinsured commercial line in AZ</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
-        <div class="alert-item ai-crit">Average SMB data breach cost: $4.35M. AZ businesses target of 1 in 5 ransomware attacks. Most BOP policies provide zero cyber coverage.</div>
-        <div class="grid-2">
-          <div><label class="lbl">Business Size</label>
-            <select id="cyber-size">
-              <option>Micro (1-10 employees)</option>
-              <option>Small (11-50 employees)</option>
-              <option>Mid (51-250 employees)</option>
-              <option>Enterprise (250+)</option>
-            </select>
-          </div>
-          <div><label class="lbl">Data Handled</label>
-            <select id="cyber-data">
-              <option>PII / Customer data</option>
-              <option>PHI / Medical records</option>
-              <option>Payment card data (PCI)</option>
-              <option>Financial data</option>
-              <option>Minimal sensitive data</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn primary btn-sm" onclick="runAI('cyber')">▶ Cyber Risk Assessment</button>
-        <div class="ai-output loading" id="out-cyber">Run cyber assessment to see exposure analysis...</div>
-      </div>
-    </div>
+  <!-- REPORT BUILDER -->
+  <div class="sec-label" id="reports">
+    <span class="sec-label-text">Sovereign Report Builder</span>
+    <div class="sec-line"></div>
+    <span class="sec-badge">TSM NEURAL · EXPORT-READY</span>
   </div>
-</div>
-</div>
-
-<!-- ── LIABILITY ── -->
-<div class="panel" id="panel-liability">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">General Liability Assessment</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div><label class="lbl">Liability Scenario</label>
-          <select id="liab-scenario">
-            <option>Slip and fall on premises</option>
-            <option>Product liability claim</option>
-            <option>Completed operations claim</option>
-            <option>Advertising injury</option>
-            <option>Contractual liability</option>
-            <option>Liquor liability</option>
-            <option>Employment practices (EPLI)</option>
-            <option>Directors & Officers (D&O)</option>
-          </select>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Industry</label><input type="text" id="liab-industry" placeholder="e.g. Restaurant, Contractor"></div>
-          <div><label class="lbl">Revenue ($)</label><input type="number" id="liab-revenue" placeholder="1200000"></div>
-        </div>
-        <button class="btn primary btn-sm" onclick="runAI('liability')">▶ Liability Gap Analysis</button>
-        <div class="ai-output loading" id="out-liability">Select scenario to see liability analysis...</div>
-      </div>
+  <div class="report-section">
+    <div class="report-row">
+      <select class="report-select" id="reportType">
+        <option value="">— Select Report Type —</option>
+        <option value="q1-tax">Q1 Multi-State Sales Tax Export</option>
+        <option value="ar-aging">AR Aging Analysis (30/60/90)</option>
+        <option value="ap-reconcile">AP Reconciliation + Audit Trail</option>
+        <option value="nexus-risk">Economic Nexus Risk Assessment</option>
+        <option value="fulfillment">Fulfillment Performance Summary</option>
+        <option value="qb-sync">QuickBooks Migration Readiness</option>
+        <option value="exempt-cert">Exemption Certificate Inventory</option>
+        <option value="cashflow">Cash Flow Forecast (Next 90 Days)</option>
+        <option value="esd-timesheets">ESD Timesheet Utilization Report</option>
+        <option value="esd-pmi">ESD Project P&amp;L Summary</option>
+        <option value="esd-cashreceipts">ESD Cash Receipts Reconciliation</option>
+      </select>
+      <input class="report-state-input" id="reportContext" placeholder="States, client name, date range…"/>
+      <button class="build-btn" onclick="event.preventDefault(); buildReport()">📄 BUILD REPORT</button>
     </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">EPLI — Employment Practices</div><div class="card-sub">Most sued liability in small business</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
-        <div class="alert-item ai-warn">AZ employment claims: wrongful termination +31% since 2023. Average settlement $175K. Most small businesses have zero EPLI coverage.</div>
-        <div class="grid-2">
-          <div><label class="lbl">Employees</label><input type="number" id="epli-emp" placeholder="12"></div>
-          <div><label class="lbl">Industry Risk</label>
-            <select id="epli-risk">
-              <option>Standard</option>
-              <option>High turnover</option>
-              <option>Tipped / hourly workers</option>
-              <option>Healthcare</option>
-              <option>Finance / legal</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn primary btn-sm" onclick="runAI('epli')">▶ EPLI Exposure Analysis</button>
-        <div class="ai-output loading" id="out-epli">Run EPLI analysis to see exposure...</div>
-      </div>
-    </div>
+    <div class="report-output" id="reportOutput"></div>
   </div>
-</div>
-</div>
+</main>
 
-<!-- ── UMBRELLA ── -->
-<div class="panel" id="panel-umbrella">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Umbrella Coverage Calculator</div><div class="card-sub">Personal · Commercial · Excess</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div class="grid-2">
-          <div><label class="lbl">Net Worth / Assets ($)</label><input type="number" id="umb-assets" placeholder="850000"></div>
-          <div><label class="lbl">Annual Income ($)</label><input type="number" id="umb-income" placeholder="180000"></div>
-        </div>
-        <div><label class="lbl">Risk Factors (check all that apply)</label>
-          <select id="umb-risks">
-            <option>Pool owner</option>
-            <option>Pool + teen drivers</option>
-            <option>Rental properties (1-3)</option>
-            <option>Rental properties (4+)</option>
-            <option>Business owner</option>
-            <option>Public figure / social media</option>
-            <option>Standard household</option>
-          </select>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Current Auto BI Limit</label>
-            <select id="umb-auto">
-              <option>$25K/$50K</option>
-              <option>$50K/$100K</option>
-              <option>$100K/$300K</option>
-              <option>$250K/$500K</option>
-            </select>
-          </div>
-          <div><label class="lbl">HO Liability Limit</label>
-            <select id="umb-ho">
-              <option>$100,000</option>
-              <option>$200,000</option>
-              <option>$300,000</option>
-              <option>$500,000</option>
-            </select>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary btn-sm" onclick="calcUmbrella()">Calculate Umbrella Need</button>
-          <button class="btn gold btn-sm" onclick="runAI('umbrella')">▶ AI Umbrella Analysis</button>
-        </div>
-        <div class="result-box" id="umb-result">
-          <div class="result-big" id="umb-rec-limit">$1M</div>
-          <div class="result-label">Recommended Minimum Umbrella Limit</div>
-          <div class="result-note" id="umb-note"></div>
-        </div>
-        <div class="ai-output loading" id="out-umbrella">Calculate or run AI analysis to see umbrella recommendations...</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Umbrella ROI Calculator</div></div>
-      <div class="card-body">
-        <div class="alert-item ai-ok" style="margin-bottom:10px;">A $1M personal umbrella costs approximately $150-$300/yr — protecting assets that took a lifetime to build.</div>
-        <table class="cov-table">
-          <thead><tr><th>Umbrella Limit</th><th>Est. Annual Cost</th><th>Cost Per Day</th><th>Protection Added</th></tr></thead>
-          <tbody>
-            <tr><td>$1,000,000</td><td>$150–$300</td><td>$0.41–$0.82</td><td style="color:var(--green)">$700K+ net coverage</td></tr>
-            <tr><td>$2,000,000</td><td>$225–$400</td><td>$0.62–$1.10</td><td style="color:var(--green)">$1.7M+ net coverage</td></tr>
-            <tr><td>$3,000,000</td><td>$300–$500</td><td>$0.82–$1.37</td><td style="color:var(--green)">$2.7M+ net coverage</td></tr>
-            <tr><td>$5,000,000</td><td>$400–$650</td><td>$1.10–$1.78</td><td style="color:var(--green)">$4.7M+ net coverage</td></tr>
-          </tbody>
-        </table>
-        <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.7;">AZ pool owners: required to have minimum $300K HO liability + $1M umbrella by most umbrella carriers. Teen drivers add ~$50-150/yr to umbrella premium. Umbrella rates are the best value in insurance.</div>
-      </div>
-    </div>
+<footer>
+  <div class="footer-l">CASE-TECH SOVEREIGN COMMAND · TSM PLATFORM · DIRECTOR WHITEHEAD</div>
+  <div class="footer-r">
+    <a href="https://financial.tsmatter.com" target="_blank">FINANCIAL CMD</a>
+    <a href="https://tax.tsmatter.com" target="_blank">TAX</a>
+    <a href="https://compliance.tsmatter.com" target="_blank">COMPLIANCE</a>
+    <a href="https://strategist.tsmatter.com" target="_blank">STRATEGIST</a>
+    <a href="https://zero-trust.tsmatter.com" target="_blank">ZERO TRUST</a>
   </div>
-</div>
-</div>
-
-<!-- ── E&O / PROFESSIONAL ── -->
-<div class="panel" id="panel-eo">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">E&O / Professional Liability</div><div class="card-sub">Errors & Omissions · D&O · Fiduciary</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div><label class="lbl">Profession Type</label>
-          <select id="eo-type">
-            <option>Insurance Agent / Broker</option>
-            <option>Real Estate Agent / Broker</option>
-            <option>Attorney / Law Firm</option>
-            <option>CPA / Accountant</option>
-            <option>Financial Advisor / RIA</option>
-            <option>Healthcare Provider</option>
-            <option>Architect / Engineer</option>
-            <option>IT / Technology Consultant</option>
-            <option>Mortgage Broker</option>
-            <option>HR / Staffing Firm</option>
-          </select>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Annual Revenue ($)</label><input type="number" id="eo-revenue" placeholder="750000"></div>
-          <div><label class="lbl">Policy Form</label>
-            <select id="eo-form">
-              <option>Claims-Made (standard)</option>
-              <option>Occurrence</option>
-              <option>Claims-Made + tail</option>
-              <option>None / Unknown</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Current Limit</label>
-            <select id="eo-limit">
-              <option>$250K/$500K</option>
-              <option>$500K/$1M</option>
-              <option>$1M/$2M</option>
-              <option>$2M/$4M</option>
-              <option>None</option>
-            </select>
-          </div>
-          <div><label class="lbl">Claims History (3yr)</label>
-            <select id="eo-claims">
-              <option>None</option>
-              <option>1 claim (resolved)</option>
-              <option>Multiple claims</option>
-              <option>Open claim</option>
-            </select>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary btn-sm" onclick="runAI('eo')">▶ E&O Gap Analysis</button>
-          <button class="btn gold btn-sm" onclick="runAI('do')">D&O Analysis</button>
-        </div>
-        <div class="ai-output loading" id="out-eo">Analyze E&O coverage to see recommendations...</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Agent E&O — Self-Assessment</div><div class="card-sub">Critical for licensed AZ producers</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:7px;">
-        <div class="risk-card"><div class="risk-icon">📋</div><div><div class="risk-title">Documentation Gaps</div><div class="risk-desc">#1 cause of AZ agent E&O claims. Always document client conversations, coverage recommendations declined, and changes requested in writing.</div><div class="risk-badge rb-crit">TOP RISK</div></div></div>
-        <div class="risk-card"><div class="risk-icon">⏰</div><div><div class="risk-title">Missed Enrollment Deadlines</div><div class="risk-desc">Failing to enroll client in SEP/AEP on time. E&O must cover prior acts. Verify retroactive date on claims-made policy covers full book.</div><div class="risk-badge rb-high">HIGH</div></div></div>
-        <div class="risk-card"><div class="risk-icon">💸</div><div><div class="risk-title">Inadequate Coverage Sold</div><div class="risk-desc">Recommending minimum limits that later prove insufficient. Document all coverage discussions and client's written acceptance of limits.</div><div class="risk-badge rb-high">HIGH</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🔄</div><div><div class="risk-title">Policy Lapse / Non-Renewal</div><div class="risk-desc">ARS §20-443: Agent liability for coverage lapses when responsible for renewal. Calendar all renewals 90 days out. Client confirmation in writing.</div><div class="risk-badge rb-mod">MODERATE</div></div></div>
-        <button class="btn gold btn-sm" style="margin-top:6px;" onclick="runAI('agent-eo')">▶ Run Agent E&O Self-Audit</button>
-        <div class="ai-output loading" id="out-agent-eo">Run self-audit to assess your E&O exposure...</div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ── AZ RISK ── -->
-<div class="panel" id="panel-risk">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">AZ Property Risk Intelligence</div><div class="card-sub">ZIP-based risk profiling</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div class="grid-2">
-          <div><label class="lbl">ZIP Code</label><input type="text" id="az-zip" placeholder="85254 (Scottsdale)"></div>
-          <div><label class="lbl">Property Type</label>
-            <select id="az-prop">
-              <option>Single Family Home</option>
-              <option>Condo / Townhome</option>
-              <option>Multi-Family (2-4 unit)</option>
-              <option>Commercial Building</option>
-              <option>Vacant Land</option>
-              <option>Agricultural</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Property Value ($)</label><input type="number" id="az-value" placeholder="620000"></div>
-          <div><label class="lbl">Year Built</label><input type="number" id="az-year" placeholder="2008"></div>
-        </div>
-        <button class="btn primary btn-sm" onclick="runAI('az-risk')">▶ AZ Risk Profile</button>
-        <div class="ai-output loading" id="out-az-risk">Enter property details to generate AZ risk profile...</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">AZ Catastrophic Risk Map</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:7px;">
-        <div class="risk-card"><div class="risk-icon">🔥</div><div><div class="risk-title">Wildfire — Maricopa/Yavapai/Pinal</div><div class="risk-desc">DFES high-risk zones expanding. Many national carriers non-renewing. Surplus lines becoming primary market. Average HO claim: $485K.</div><div class="risk-badge rb-crit">CRITICAL</div></div></div>
-        <div class="risk-card"><div class="risk-icon">⚡</div><div><div class="risk-title">Monsoon / Lightning / Haboob</div><div class="risk-desc">Jun-Sep season. Dust storms cause auto/property damage. Lightning avg 1M+ strikes/yr. Roof and HVAC damage most common claims.</div><div class="risk-badge rb-high">HIGH</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🌡️</div><div><div class="risk-title">Extreme Heat (115°F+)</div><div class="risk-desc">AC failure claims surge Jun-Aug. Pipe expansion, roof membrane failure. Home warranty vs HO coverage distinction critical.</div><div class="risk-badge rb-high">HIGH</div></div></div>
-        <div class="risk-card"><div class="risk-icon">🐍</div><div><div class="risk-title">Wildlife / Envenomation</div><div class="risk-desc">Rattlesnake removal: $500-$2K. Bite treatment: $50K-$150K. Liability if snake on property. Verify HO liability covers visitor injuries from wildlife.</div><div class="risk-badge rb-mod">MODERATE</div></div></div>
-        <div class="risk-card"><div class="risk-icon">💧</div><div><div class="risk-title">Slab Leak / Plumbing</div><div class="risk-desc">AZ soil movement causes slab leaks. Often excluded or sub-limited. Service line endorsement + foundation coverage essential.</div><div class="risk-badge rb-mod">MODERATE</div></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ── BOP ── -->
-<div class="panel" id="panel-bop">
-<div class="panel-inner">
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">Business Owner Policy (BOP) Gap Analysis</div><div class="card-sub">Property · CGL · Business Interruption · Optional Endorsements</div></div>
-    <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-      <div class="grid-3">
-        <div><label class="lbl">Business Type</label>
-          <select id="bop-type">
-            <option>Retail Store</option>
-            <option>Restaurant / Bar</option>
-            <option>Office / Professional</option>
-            <option>Contractor / Trades</option>
-            <option>Auto Repair / Service</option>
-            <option>Healthcare Office</option>
-            <option>Fitness / Gym</option>
-            <option>Child Care / Education</option>
-            <option>Non-Profit</option>
-            <option>Cannabis Dispensary (AZ)</option>
-          </select>
-        </div>
-        <div><label class="lbl">Annual Revenue ($)</label><input type="number" id="bop-revenue" placeholder="1800000"></div>
-        <div><label class="lbl">Employees</label><input type="number" id="bop-emp" placeholder="14"></div>
-      </div>
-      <div class="grid-3">
-        <div><label class="lbl">Building Value ($)</label><input type="number" id="bop-building" placeholder="850000"></div>
-        <div><label class="lbl">Business Personal Property ($)</label><input type="number" id="bop-bpp" placeholder="120000"></div>
-        <div><label class="lbl">Monthly Revenue (for BI)</label><input type="number" id="bop-monthly" placeholder="150000"></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn primary btn-sm" onclick="runAI('bop')">▶ BOP Gap Analysis</button>
-        <button class="btn gold btn-sm" onclick="runAI('bi')">Business Interruption Deep Dive</button>
-        <button class="btn gold btn-sm" onclick="runAI('crime')">Crime / Employee Dishonesty</button>
-      </div>
-      <div class="ai-output loading" id="out-bop">Enter business details to run BOP gap analysis...</div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ── CLAIMS ROI ── -->
-<div class="panel" id="panel-claims">
-<div class="panel-inner">
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Claims ROI Analyzer</div><div class="card-sub">Premium vs. Claims · Deductible Optimization · Renewal Strategy</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <div class="grid-2">
-          <div><label class="lbl">Annual Premium ($)</label><input type="number" id="cr-premium" placeholder="8400" oninput="calcClaimsROI()"></div>
-          <div><label class="lbl">3-Year Claims Total ($)</label><input type="number" id="cr-claims" placeholder="12000" oninput="calcClaimsROI()"></div>
-        </div>
-        <div class="grid-2">
-          <div><label class="lbl">Current Deductible ($)</label><input type="number" id="cr-deductible" placeholder="2500" oninput="calcClaimsROI()"></div>
-          <div><label class="lbl">Line of Business</label>
-            <select id="cr-line" onchange="calcClaimsROI()">
-              <option>Homeowners</option>
-              <option>Commercial Property</option>
-              <option>Auto</option>
-              <option>CGL</option>
-              <option>Workers Comp</option>
-              <option>Umbrella</option>
-            </select>
-          </div>
-        </div>
-        <div class="result-box on" id="cr-result">
-          <div class="grid-3" style="gap:12px;text-align:center;">
-            <div><div class="result-big" id="cr-loss-ratio" style="font-size:1.6rem;">—</div><div class="result-label">3-Year Loss Ratio</div></div>
-            <div><div class="result-big" id="cr-avg-claim" style="font-size:1.6rem;">—</div><div class="result-label">Avg Annual Claim</div></div>
-            <div><div class="result-big" id="cr-net-cost" style="font-size:1.6rem;">—</div><div class="result-label">Net Annual Cost</div></div>
-          </div>
-          <div class="result-note" id="cr-verdict"></div>
-        </div>
-        <button class="btn primary btn-sm" onclick="runAI('claims-roi')">▶ AI Renewal Strategy</button>
-        <div class="ai-output loading" id="out-claims-roi">Enter claims data to see ROI analysis...</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">Deductible Optimization Guide</div></div>
-      <div class="card-body">
-        <table class="cov-table">
-          <thead><tr><th>Deductible</th><th>Typical Savings</th><th>Best For</th><th>Risk</th></tr></thead>
-          <tbody>
-            <tr><td>$500</td><td>Baseline</td><td>Frequent small claims</td><td style="color:var(--red)">Higher premium</td></tr>
-            <tr><td>$1,000</td><td>5–10%</td><td>Average household</td><td style="color:var(--orange)">Moderate</td></tr>
-            <tr><td>$2,500</td><td>15–20%</td><td>Emergency fund available</td><td style="color:var(--gold)">Low-Mod</td></tr>
-            <tr><td>$5,000</td><td>25–35%</td><td>Self-funding small claims</td><td style="color:var(--green)">Low</td></tr>
-            <tr><td>$10,000</td><td>35–45%</td><td>HNW / catastrophe-only</td><td style="color:var(--green)">Very Low</td></tr>
-          </tbody>
-        </table>
-        <div style="margin-top:10px;padding:8px 10px;background:var(--green3);border:1px solid var(--border2);font-size:.72rem;color:var(--text);line-height:1.7;">
-          <b style="color:var(--green2);">Rule of thumb:</b> Only file claims that exceed 2–3x your deductible. Frequent small claims trigger non-renewal and rate increases worth 3–5x the claim amount over time.
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ── HOW TO ── -->
-<div class="panel" id="panel-howto">
-<div class="panel-inner">
-  <div style="font-family:var(--font-display);font-size:1.5rem;letter-spacing:.1em;color:var(--green2);margin-bottom:4px;">HOW TO USE P&C ENTERPRISE COMMAND</div>
-  <div style="font-size:.78rem;color:var(--muted);margin-bottom:16px;">Complete guide for every tab and tool in this platform</div>
-  <div class="grid-2">
-    <div>
-      <div class="hs"><div class="hs-num">1</div><div><div class="hs-title">Dashboard — Start Here</div><div class="hs-desc">The Dashboard gives you a live overview of your entire P&C book: coverage gaps, priority alerts, and a full AI briefing. Use the preset buttons (Umbrella Gap Scan, Wildfire Scan, Auto Gap Scan) for instant book-wide analysis. The Coverage Status table shows which lines need attention.</div><div class="hs-tip">💡 Run the full briefing first thing each morning to catch time-sensitive issues</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div><div class="hs-title">Homeowners Tab</div><div class="hs-desc">Enter dwelling value, personal property, current coverage, ZIP, and risk factors. Click "Calculate Gap" to see the coverage shortfall instantly. Then run "Analyze Coverage" for AI recommendations including AZ-specific wildfire, monsoon, and pool liability considerations.</div><div class="hs-tip">💡 The AZ Risk Profile cards show which risks are most common for each ZIP area</div></div></div>
-      <div class="hs"><div class="hs-num">3</div><div><div class="hs-title">Auto Tab</div><div class="hs-desc">Enter vehicle value, current BI limits, driver ages, and violations. The AI identifies minimum-limit gaps (the #1 P&C exposure in AZ), recommends proper limits, and flags teen driver and rideshare exposures. The liability gap table shows real-dollar exposure at minimum limits.</div><div class="hs-tip">💡 AZ minimum $25K/$50K leaves clients personally liable for hundreds of thousands — always recommend $100K/$300K minimum</div></div></div>
-      <div class="hs"><div class="hs-num">4</div><div><div class="hs-title">Commercial Tab</div><div class="hs-desc">Select business type, revenue, and employee count. Get CGL limit recommendations, workers comp requirements, and a cyber liability gap analysis. The cyber assessment is separate — run it for any client handling PII, PHI, or payment data. AZ cannabis businesses have unique P&C needs covered here.</div></div></div>
-    </div>
-    <div>
-      <div class="hs"><div class="hs-num">5</div><div><div class="hs-title">Umbrella Tab</div><div class="hs-desc">Enter net worth, income, and risk factors (pool, teen drivers, rentals). The calculator recommends minimum umbrella limits and shows the ROI table — most clients are shocked how cheap umbrella coverage is relative to the protection it provides. Use the "Underlying Requirements" output to ensure auto and HO limits are umbrella-qualifying.</div><div class="hs-tip">💡 Pool + teen driver = $2M umbrella minimum recommendation every time</div></div></div>
-      <div class="hs"><div class="hs-num">6</div><div><div class="hs-title">E&O / Professional Tab</div><div class="hs-desc">Analyze professional liability for any profession. The Agent E&O Self-Audit is specifically built for licensed AZ producers — run it quarterly to verify documentation practices, retroactive dates, and tail coverage. D&O analysis covers directors of non-profits and corporate boards.</div><div class="hs-tip">💡 Claims-made retroactive date is the most commonly overlooked E&O gap — verify it covers the full policy period</div></div></div>
-      <div class="hs"><div class="hs-num">7</div><div><div class="hs-title">AZ Risk Tab</div><div class="hs-desc">Enter ZIP code and property details for an AZ-specific risk profile. The Catastrophic Risk Map summarizes the 5 most common AZ P&C exposures. Use this tab to educate clients on why AZ has unique insurance needs that mainland carriers don't always understand.</div></div></div>
-      <div class="hs"><div class="hs-num">8</div><div><div class="hs-title">Claims ROI Tab</div><div class="hs-desc">Enter annual premium, 3-year claims, and deductible. The live calculator shows loss ratio, average annual claim cost, and net annual cost. The AI renewal strategy tool uses this data to recommend whether to increase deductibles, self-fund small claims, or negotiate renewal terms. The deductible optimization table is a client education tool.</div><div class="hs-tip">💡 A loss ratio over 60% triggers carrier scrutiny — recommend claim frequency reduction strategies proactively</div></div></div>
-    </div>
-  </div>
-</div>
-</div>
-
-</div><!-- /panels -->
-
-<!-- STATUS BAR -->
-<div class="statusbar">
-  <div class="sbi"><div class="dot"></div> P&C-BRIDGE · PORT 3031</div>
-  <div class="sbi"><div class="dot"></div> AI ENGINE READY</div>
-  <div class="sbi"><div class="dot"></div> AZ LICENSED · NPN 18818059</div>
-  <div style="margin-left:auto;font-family:var(--font-mono);font-size:.56rem;color:var(--muted);">TSM P&C ENTERPRISE · <span id="sb-time"></span></div>
-</div>
-
-</div><!-- /shell -->
+</footer>
 
 <script>
-// ── Clock ─────────────────────────────────────────────────────────────────────
-function tick(){
-  const n=new Date(),p=v=>String(v).padStart(2,'0');
-  document.getElementById('tb-clock').textContent=p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds())+' MST';
-  document.getElementById('sb-time').textContent=n.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-setInterval(tick,1000);tick();
-
-// ── Tab switcher ──────────────────────────────────────────────────────────────
-function switchTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  const t=document.getElementById('tab-'+tab);
-  const p=document.getElementById('panel-'+tab);
-  if(t)t.classList.add('active');
-  if(p)p.classList.add('active');
-}
-
-// ── AI System Prompt ──────────────────────────────────────────────────────────
-const PC_SYS = `You are the TSM P&C Enterprise Intelligence Node — an expert Property & Casualty insurance AI for Arizona-licensed producers (NPN 18818059).
-
-Specialties:
-- Homeowners (HO-3/5/6/8, DP-3, wildfire, monsoon, flood, pool liability, HOA master policy gaps)
-- Auto (personal, commercial, rideshare/TNC, classic, AZ minimum liability gaps, teen drivers)
-- Commercial Lines (CGL, commercial auto, inland marine, workers comp, products liability, completed operations)
-- Cyber Liability (standalone, BOP endorsement, PCI/HRSA / BPHC compliance, ransomware)
-- Umbrella / Excess (personal, commercial, underlying requirements, AZ pool/teen driver exposure)
-- E&O / Professional Liability (agents, realtors, attorneys, CPAs, healthcare, IT, architects)
-- D&O / EPLI (small business, non-profit, AZ employment law)
-- BOP (property, CGL, business interruption, crime, EPLI, cyber)
-- Claims ROI (loss ratio analysis, deductible optimization, renewal strategy)
-- AZ-specific risks (wildfire DFES zones, monsoon, extreme heat, rattlesnake/wildlife, slab leaks, pool)
-
-Always provide: specific dollar amounts, AZ carrier context (State Farm, Allstate, Travelers, Hartford, Farmers, Chubb, AIG, Lloyd's surplus lines), AZ statute references when relevant (ARS), and actionable recommendations. Be direct and enterprise-focused.`;
-
-// ── AI Call ───────────────────────────────────────────────────────────────────
-async function callAI(userMsg){
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[
-        {role:'system',content:PC_SYS},
-        {role:'user',content:userMsg}
-      ],
-      max_tokens:800,
-      temperature:0.4
-    })
-  });
-  if(!res.ok) throw new Error('HTTP '+res.status);
-  const raw=await res.text();
-  let d={};
-  try{d=JSON.parse(raw);}catch(e){d={content:raw};}
-  return d?.reply||d?.choices?.[0]?.message?.content||d?.response||d?.answer||d?.content||raw||'No response';
-}
-
-// ── Run AI Tool ───────────────────────────────────────────────────────────────
-async function runAI(tool){
-  const prompts = {
-    dash: ()=>document.getElementById('dash-query').value,
-    homeowners: ()=>{
-      const dwell=document.getElementById('ho-dwelling').value||'not specified';
-      const curr=document.getElementById('ho-current').value||'not specified';
-      const zip=document.getElementById('ho-zip').value||'AZ';
-      const type=document.getElementById('ho-type').value;
-      const risk=document.getElementById('ho-risk').value;
-      return `Homeowners coverage analysis: ${type}, Dwelling value $${dwell}, Current coverage $${curr}, ZIP ${zip}, Risk: ${risk}. Identify: 1) Coverage gap and recommended limit, 2) AZ-specific exclusions to verify, 3) Endorsements needed (flood, wildfire, equipment breakdown, slab leak), 4) Liability adequacy, 5) Carrier considerations for this risk profile. Include dollar amounts throughout.`;
-    },
-    'um-az': ()=>`Uninsured/underinsured motorist coverage analysis for Arizona. AZ has ~20% uninsured driver rate. Cover: 1) UM vs UIM difference and why both matter, 2) Stacking options in AZ, 3) Recommended limits based on assets, 4) Real claim scenarios where UM/UIM saved clients, 5) AZ rejection form requirements if client declines. Dollar amounts throughout.`,
-    'sr22': ()=>`SR-22 and high-risk auto insurance analysis for Arizona. Cover: 1) SR-22 vs FR-44 requirements, 2) AZ filing requirements (ARS §28-4008), 3) How SR-22 affects premium (typical increase range), 4) Duration requirements by violation type, 5) Non-owner SR-22 for clients without vehicles. AZ-specific carrier options for high-risk drivers.`,
-    auto: ()=>{
-      const val=document.getElementById('auto-value').value||'not specified';
-      const bi=document.getElementById('auto-bi').value;
-      const type=document.getElementById('auto-type').value;
-      const drivers=document.getElementById('auto-drivers').value||'not specified';
-      const viol=document.getElementById('auto-violations').value;
-      const um=document.getElementById('auto-um')?.value||'not specified';
-      const ded=document.getElementById('auto-ded')?.value||'not specified';
-      const loan=document.getElementById('auto-loan')?.value||'0';
-      const medpay=document.getElementById('auto-medpay')?.value||'None';
-      return `Auto coverage analysis: ${type}, Vehicle value $${val}, Loan balance $${loan}, BI: ${bi}, UM/UIM: ${um}, Deductible: ${ded}, MedPay: ${medpay}, Drivers: ${drivers}, Violations: ${viol}. Assess: 1) BI liability gap vs realistic AZ accident costs, 2) UM/UIM adequacy (AZ 20% uninsured rate), 3) GAP coverage need if loan>value, 4) MedPay vs health insurance coordination, 5) Overall recommended coverage package with premium impact. Dollar amounts required.`;
-    },
-    commercial: ()=>{
-      const type=document.getElementById('comm-type').value;
-      const rev=document.getElementById('comm-revenue').value||'not specified';
-      const emp=document.getElementById('comm-employees').value||'not specified';
-      const cgl=document.getElementById('comm-cgl').value;
-      const special=document.getElementById('comm-special').value;
-      return `Commercial P&C analysis: ${type}, Revenue $${rev}, ${emp} employees, CGL: ${cgl}, Special exposure: ${special}. Provide: 1) Required coverages by AZ law, 2) CGL limit adequacy, 3) Workers comp requirements and rate estimate, 4) Commercial auto needs, 5) Top 3 uninsured exposures with dollar risk. AZ-specific carrier recommendations.`;
-    },
-    wc: ()=>{
-      const type=document.getElementById('comm-type').value;
-      const emp=document.getElementById('comm-employees').value||'not specified';
-      const rev=document.getElementById('comm-revenue').value||'not specified';
-      return `Workers compensation analysis for AZ ${type} with ${emp} employees, revenue $${rev}. Cover: 1) AZ WC requirements (ARS §23-901), 2) Classification codes and rate factors for this industry, 3) Experience modification strategy, 4) 2026 rate trends, 5) Return-to-work program value. Include premium estimate range.`;
-    },
-    cyber: ()=>{
-      const size=document.getElementById('cyber-size').value;
-      const data=document.getElementById('cyber-data').value;
-      return `Cyber liability risk assessment: ${size} business handling ${data}. Analyze: 1) Specific breach scenarios and costs for this data type, 2) Regulatory requirements (HRSA / BPHC/PCI/AZ data breach law ARS §18-552), 3) Recommended standalone cyber limit, 4) What BOP cyber endorsement typically covers vs. doesn't, 5) Incident response and business interruption exposure. Dollar amounts throughout.`;
-    },
-    liability: ()=>{
-      const scenario=document.getElementById('liab-scenario').value;
-      const industry=document.getElementById('liab-industry').value||'general business';
-      const rev=document.getElementById('liab-revenue').value||'not specified';
-      return `Liability analysis for ${industry} (revenue $${rev}): ${scenario}. Assess: 1) Typical claim severity for this scenario in AZ, 2) CGL coverage applicability and exclusions, 3) Recommended limit for this exposure, 4) Risk mitigation strategies, 5) AZ-specific legal environment (comparative fault, joint/several liability). Dollar-specific analysis.`;
-    },
-    epli: ()=>{
-      const emp=document.getElementById('epli-emp').value||'not specified';
-      const risk=document.getElementById('epli-risk').value;
-      return `EPLI employment practices liability analysis: ${emp} employees, risk profile: ${risk} in Arizona. Cover: 1) Top AZ employment claim types and average settlements, 2) Recommended EPLI limit, 3) AZ-specific employment law exposure (at-will state nuances, ARS §23-1501), 4) Key policy exclusions to review, 5) Risk management practices to reduce exposure. Dollar amounts required.`;
-    },
-    umbrella: ()=>{
-      const assets=document.getElementById('umb-assets').value||'not specified';
-      const income=document.getElementById('umb-income').value||'not specified';
-      const risks=document.getElementById('umb-risks').value;
-      const autoBI=document.getElementById('umb-auto').value;
-      const hoLiab=document.getElementById('umb-ho').value;
-      return `Umbrella liability analysis: Assets $${assets}, Income $${income}/yr, Risk profile: ${risks}, Auto BI: ${autoBI}, HO liability: ${hoLiab}. Provide: 1) Recommended umbrella limit with rationale, 2) Underlying coverage requirements to qualify, 3) Specific gap scenarios for this risk profile, 4) Premium estimate, 5) Asset protection strategy. AZ pool/teen driver context if applicable.`;
-    },
-    eo: ()=>{
-      const type=document.getElementById('eo-type').value;
-      const rev=document.getElementById('eo-revenue').value||'not specified';
-      const form=document.getElementById('eo-form').value;
-      const limit=document.getElementById('eo-limit').value;
-      const claims=document.getElementById('eo-claims').value;
-      return `E&O professional liability analysis: ${type}, Revenue $${rev}, Policy form: ${form}, Current limit: ${limit}, Claims history: ${claims}. Cover: 1) Limit adequacy for this profession/revenue, 2) Common claim scenarios with dollar amounts, 3) Claims-made retroactive date importance, 4) Tail coverage needs, 5) AZ-specific professional liability considerations. ARS citations where relevant.`;
-    },
-    do: ()=>{ const type=document.getElementById('eo-type').value; return `D&O Directors & Officers liability analysis for ${type}. Cover: 1) When D&O is needed (non-profits, corporations, LLCs), 2) Typical AZ D&O claim scenarios, 3) Recommended limits by entity size, 4) Side A/B/C coverage differences, 5) Fiduciary liability considerations. Dollar amounts and AZ legal context.`; },
-    'agent-eo': ()=>`Run an E&O self-audit for an Arizona licensed insurance agent (NPN 18818059). Assess: 1) Top 5 documentation practices that prevent E&O claims, 2) Retroactive date verification checklist, 3) Common AZ agent E&O claim triggers, 4) Recommended E&O limits for an active AZ producer, 5) Immediate action items to reduce E&O exposure this week.`,
-    'az-risk': ()=>{
-      const zip=document.getElementById('az-zip').value||'Arizona';
-      const prop=document.getElementById('az-prop').value;
-      const val=document.getElementById('az-value').value||'not specified';
-      const yr=document.getElementById('az-year').value||'not specified';
-      return `AZ property risk profile: ${prop}, ZIP ${zip}, Value $${val}, Built ${yr}. Assess: 1) Wildfire risk classification for this area, 2) Monsoon/flood exposure, 3) Extreme heat risks for this property age/type, 4) AZ carrier availability and non-renewal risk, 5) Recommended coverage endorsements specific to this location. Dollar-specific risk quantification.`;
-    },
-    bop: ()=>{
-      const type=document.getElementById('bop-type').value;
-      const rev=document.getElementById('bop-revenue').value||'not specified';
-      const emp=document.getElementById('bop-emp').value||'not specified';
-      const bldg=document.getElementById('bop-building').value||'not specified';
-      const monthly=document.getElementById('bop-monthly').value||'not specified';
-      return `BOP gap analysis for AZ ${type}: Revenue $${rev}, ${emp} employees, Building $${bldg}, Monthly revenue $${monthly}. Identify: 1) BOP coverage adequacy vs. standalone policies, 2) Business interruption limit sufficiency (12-month calculation), 3) Top 3 missing endorsements with dollar exposure, 4) Cyber liability gap, 5) EPLI and crime coverage needs. Be specific about each gap dollar amount.`;
-    },
-    bi: ()=>{
-      const monthly=document.getElementById('bop-monthly').value||'150000';
-      const type=document.getElementById('bop-type').value;
-      return `Business interruption coverage analysis for AZ ${type} with $${monthly}/month revenue. Calculate: 1) Recommended BI limit (12-24 month calculation), 2) Extended period of indemnity needs, 3) Extra expense coverage, 4) AZ-specific BI triggers (wildfire evacuation, monsoon damage), 5) Common BI coverage gaps and how to close them.`;
-    },
-    crime: ()=>{ const type=document.getElementById('bop-type').value; return `Crime and employee dishonesty coverage analysis for AZ ${type}. Cover: 1) Average employee theft losses for this industry, 2) Computer fraud and funds transfer exposure, 3) Recommended crime coverage limits, 4) Social engineering fraud exposure, 5) AZ-specific crime statistics and carrier options.`; },
-    'claims-roi': ()=>{
-      const prem=document.getElementById('cr-premium').value||'8400';
-      const claims=document.getElementById('cr-claims').value||'0';
-      const ded=document.getElementById('cr-deductible').value||'2500';
-      const line=document.getElementById('cr-line').value;
-      const ratio=(parseFloat(claims)/3/parseFloat(prem)*100).toFixed(0);
-      return `P&C claims ROI and renewal strategy for ${line}: Annual premium $${prem}, 3-year claims $${claims} (${ratio}% loss ratio), Deductible $${ded}. Recommend: 1) Renewal negotiation strategy given this loss history, 2) Deductible adjustment analysis with premium savings, 3) Self-funding threshold recommendation, 4) Risk mitigation to improve loss ratio, 5) Whether to shop the coverage or stay with current carrier.`;
-    }
-  };
-
-  const outIds={
-    dash:'out-dash',homeowners:'out-homeowners',auto:'out-auto',
-    commercial:'out-commercial',wc:'out-commercial',
-    cyber:'out-cyber',liability:'out-liability',epli:'out-epli',
-    umbrella:'out-umbrella',eo:'out-eo',do:'out-eo',
-    'agent-eo':'out-agent-eo','az-risk':'out-az-risk',
-    bop:'out-bop',bi:'out-bop',crime:'out-bop',
-    'claims-roi':'out-claims-roi'
-  };
-
-  const btnIds={
-    dash:'dash-btn'
-  };
-
-  const outEl=document.getElementById(outIds[tool]);
-  if(!outEl) return;
-  const btnEl=document.getElementById(btnIds[tool]);
-  if(btnEl){btnEl.disabled=true;btnEl.textContent='⏳ Running...';}
-  outEl.className='ai-output loading';
-  outEl.textContent='Analyzing...';
-
-  try{
-    const text=await callAI(prompts[tool]());
-    outEl.className='ai-output done';
-    outEl.textContent=text;
-  }catch(err){
-    outEl.className='ai-output';
-    outEl.textContent='⚠ Error: '+err.message;
-  }
-  if(btnEl){btnEl.disabled=false;btnEl.textContent='▶ Run Intelligence Briefing';}
-}
-
-// ── Calculators ───────────────────────────────────────────────────────────────
-function calcHOGap(){
-  const dwell=parseFloat(document.getElementById('ho-dwelling').value)||0;
-  const curr=parseFloat(document.getElementById('ho-current').value)||0;
-  if(!dwell||!curr){return;}
-  const gap=Math.max(0,dwell-curr);
-  const pct=Math.round((curr/dwell)*100);
-  document.getElementById('ho-gap-amt').textContent='$'+gap.toLocaleString();
-  document.getElementById('ho-gap-result').classList.add('on');
-  document.getElementById('ho-gap-note').textContent=
-    pct<80?`⚠ Only ${pct}% covered. Most lenders require 80%+ of replacement cost. Gap: $${gap.toLocaleString()}. Recommend increasing to at least $${Math.round(dwell*.9).toLocaleString()}.`:
-    pct<100?`Coverage at ${pct}% of dwelling value. Gap of $${gap.toLocaleString()}. Consider inflation guard endorsement to maintain adequate coverage as values rise.`:
-    `✓ Coverage meets dwelling value. Verify personal property and liability limits are also adequate.`;
-}
-
-function calcUmbrella(){
-  const assets=parseFloat(document.getElementById('umb-assets').value)||0;
-  const income=parseFloat(document.getElementById('umb-income').value)||0;
-  const risks=document.getElementById('umb-risks').value;
-  if(!assets&&!income){return;}
-  
-  let baseLimit=Math.max(1000000,Math.ceil(assets/1000000)*1000000);
-  let riskAdd=0;
-  if(risks.includes('teen'))riskAdd+=1000000;
-  if(risks.includes('Rental properties (4+)'))riskAdd+=2000000;
-  else if(risks.includes('Rental'))riskAdd+=1000000;
-  if(risks.includes('Business'))riskAdd+=1000000;
-  if(risks.includes('public figure'))riskAdd+=2000000;
-  
-  const recLimit=baseLimit+riskAdd;
-  const annualCost=Math.round(recLimit/1000000*220);
-  
-  document.getElementById('umb-rec-limit').textContent='$'+recLimit.toLocaleString();
-  document.getElementById('umb-result').classList.add('on');
-  document.getElementById('umb-note').textContent=
-    `Based on $${assets.toLocaleString()} in assets + $${income.toLocaleString()}/yr income (${risks}), recommended minimum umbrella: $${recLimit.toLocaleString()}. Estimated annual cost: $${annualCost-50}–$${annualCost+80}. This protects your full asset base from a single catastrophic event.`;
-}
-
-function calcGAP(){
-  const val=parseFloat(document.getElementById('auto-value').value)||0;
-  const loan=parseFloat(document.getElementById('auto-loan').value)||0;
-  if(!val||!loan){return;}
-  const gap=loan-val;
-  const result=document.getElementById('gap-result');
-  const amt=document.getElementById('gap-amt');
-  const note=document.getElementById('gap-note');
-  result.classList.add('on');
-  if(gap>0){
-    amt.textContent='$'+gap.toLocaleString();
-    amt.style.color='var(--red)';
-    note.textContent=`⚠ GAP exposure: $${gap.toLocaleString()}. If vehicle is totaled, insurance pays $${val.toLocaleString()} but client still owes $${loan.toLocaleString()} — leaving them $${gap.toLocaleString()} in debt with no vehicle. GAP coverage costs $20-40/yr and eliminates this risk entirely.`;
-  } else {
-    amt.textContent='$0';
-    amt.style.color='var(--green)';
-    note.textContent=`✓ No GAP exposure. Vehicle value $${val.toLocaleString()} exceeds loan $${loan.toLocaleString()} by $${Math.abs(gap).toLocaleString()}. GAP coverage not needed.`;
-  }
-}
-function calcClaimsROI(){
-  const prem=parseFloat(document.getElementById('cr-premium').value)||0;
-  const claims=parseFloat(document.getElementById('cr-claims').value)||0;
-  const ded=parseFloat(document.getElementById('cr-deductible').value)||0;
-  if(!prem)return;
-  
-  const avgClaim=claims/3;
-  const lossRatio=(avgClaim/prem*100).toFixed(0);
-  const netCost=prem+avgClaim;
-  
-  document.getElementById('cr-loss-ratio').textContent=lossRatio+'%';
-  document.getElementById('cr-loss-ratio').style.color=
-    lossRatio>100?'var(--red)':lossRatio>60?'var(--orange)':'var(--green)';
-  document.getElementById('cr-avg-claim').textContent='$'+Math.round(avgClaim).toLocaleString();
-  document.getElementById('cr-net-cost').textContent='$'+Math.round(netCost).toLocaleString();
-  document.getElementById('cr-verdict').textContent=
-    lossRatio>100?`Loss ratio ${lossRatio}% — carrier will likely non-renew or surcharge heavily. Implement risk mitigation immediately. Consider shopping alternative carriers.`:
-    lossRatio>60?`Loss ratio ${lossRatio}% — above carrier threshold. Expect 15-25% rate increase at renewal. Discuss claim reduction strategies with client.`:
-    lossRatio<30?`Loss ratio ${lossRatio}% — excellent. Client is profitable for carrier. Negotiate renewal rate reduction. Consider increasing deductible to $${ded*2} for additional savings.`:
-    `Loss ratio ${lossRatio}% — acceptable range. Coverage is performing normally. Review deductible optimization at renewal.`;
-}
-</script>
-
-<script id="tsm-unified-render">
-function renderTSM(data, target){
-  try {
-    const el = document.querySelector(target) || document.body;
-
-    if (!data) {
-      el.innerHTML = "<div style='color:red'>No data</div>";
-      return;
-    }
-
-    // Normalize fallback
-    if (!data.feed && data.choices) {
-      data = {
-        report_title: "AI Response",
-        kpis: [],
-        feed: [{ message: data.choices[0].message.content }]
-      };
-    }
-
-    if (!data.feed) {
-      el.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-      return;
-    }
-
-    let htmlOut = "<div style='padding:12px;font-family:monospace'>";
-
-    if (data.report_title) {
-      htmlOut += "<h3 style='color:#00ffc3'>" + data.report_title + "</h3>";
-    }
-
-    data.feed.forEach(item => {
-      htmlOut += "<div style='margin-bottom:10px'>";
-      htmlOut += "<div style='color:#d7f7ff'>" + (item.message || "") + "</div>";
-      if (item.detail) {
-        htmlOut += "<div style='opacity:0.6;font-size:12px'>" + item.detail + "</div>";
-      }
-      htmlOut += "</div>";
-    });
-
-    htmlOut += "</div>";
-    el.innerHTML = htmlOut;
-
-  } catch(e) {
-    console.error("Render error", e);
-  }
-}
-</script>
-
-<script>
-window.safeAnalyze = async function(input, targetId="output"){
-  const el = document.getElementById(targetId) || document.querySelector("#output") || document.querySelector(".output");
-  if(!el) return;
-
-  el.innerHTML = "⚡ Running analysis...";
-
-  try {
-    const res = await fetch("https://tsm-core.fly.dev/ask", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
-    });
-
-    const text = await res.text();
-
-    if(text.startsWith("<!DOCTYPE") || text.startsWith("<html")){
-      throw new Error("HTML response (routing issue)");
-    }
-
-    const data = JSON.parse(text);
-
-    const output = data.choices?.[0]?.message?.content ||
-                   data.response ||
-                   data.analysis ||
-                   data.feed?.map(f=>f.message).join("<br>") ||
-                   "No structured output";
-
-    el.innerHTML = "<div style=\"padding:12px;line-height:1.4\">"+output+"</div>";
-
-  } catch(e){
-    console.warn("AI ERROR:", e);
-    el.innerHTML = "⚠️ AI Error — check routing / auth / rate limits";
-  }
-};
-</script>
-
-<div id="output" style="padding:12px;color:#00ffa6;font-family:monospace;"></div>
-
-  <!-- TSM AI Assistant -->
-  <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
-    <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
-    <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
-      <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
-    </div>
-  </div>
-  <script>
-(function(){
-var AI="https://tsm-core.fly.dev/ask";
-var H=[];
-async function send(){
-var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
-var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
-var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
-if(!inp||!btn)return;
-var t=inp.value.trim();if(!t)return;
-inp.value="";btn.disabled=true;btn.textContent="...";
-if(out){out.style.display="block";out.innerHTML+='<div style="text-align:right;margin:4px 0"><span style="background:#e8f0fe;padding:4px 8px;border-radius:10px;font-size:12px">'+t+'</span></div>';}
-var thinking=document.createElement("div");
-if(out){thinking.innerHTML='<em style="color:#999;font-size:12px">Thinking...</em>';out.appendChild(thinking);}
-H.push({role:"user",content:t});
-try{
-var r=await fetch(AI,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:H})});
-var d=await r.json();
-var reply=d.reply||"No response";
-H.push({role:"assistant",content:reply});
-if(thinking)thinking.innerHTML='<div style="text-align:left;margin:4px 0"><span style="background:#f4f4f4;padding:4px 8px;border-radius:10px;font-size:12px;display:inline-block;max-width:90%">'+reply.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</span></div>';
-}catch(e){if(thinking)thinking.textContent="Error: "+e.message;}
-btn.disabled=false;btn.textContent="Ask";
-if(out)out.scrollTop=out.scrollHeight;
-}
-document.addEventListener("DOMContentLoaded",function(){
-var btn=document.getElementById("tsm-widget-btn")||document.getElementById("ai-btn");
-var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
-var out=document.getElementById("tsm-widget-output")||document.getElementById("ai-output");
-if(btn)btn.addEventListener("click",send);
-if(inp)inp.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey)send();});
-if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";});
+window.PRESET = "PC_ENTERPRISE";
+window.FORCE_LOAD = true;
+console.log("🛡️ Preset Forced: P&C Enterprise");
+document.querySelectorAll(".nav-link, .tab-button").forEach(t => {
+    t.onclick = function(e) {
+        e.preventDefault();
+        const target = this.getAttribute("data-target") || this.innerText.toLowerCase().trim();
+        document.querySelectorAll(".tab-pane, .tab-content").forEach(p => p.style.display = "none");
+        const activePane = document.getElementById(target) || document.querySelector("." + target);
+        if(activePane) activePane.style.display = "block";
+    };
 });
-})();
-</script>
-  <!-- END TSM AI Assistant -->
+try { 
+    console.log("Sovereign $600k Forced"); 
+} catch(e) {}
+/*
+  TSM NEURAL ENGINE
+  Routes through: https://tsm-core.fly.dev/v1/chat  (Groq Llama 3.3-70B-Versatile)
+  Underlying model is intentionally not disclosed in the UI.
 
-<script id="tsm-core-fix">
-(function(){
-  // FIX 1: Tab switching — show first tab on load
-  window.initTabs=function initTabs(){
-    var tabs = document.querySelectorAll('[id^="tab-"]');
-    if(!tabs.length) return;
-    var btns = document.querySelectorAll('.nav-btn');
-    // Hide all
-    tabs.forEach(function(t){ t.style.setProperty('display','none','important'); });
-    // Show first
-    tabs[0].style.setProperty('display','block','important');
-    if(btns[0]) btns[0].classList.add('active');
-  }
+  Bridge expected request format:
+    POST /v1/chat
+    Content-Type: application/json
+    { "system": "...", "message": "...", "stream": true, "max_tokens": 900 }
 
-  // FIX 2: Make switchTab globally reliable
-  window.switchTab = function(tabId, btn){
-    document.querySelectorAll('[id^="tab-"]').forEach(function(el){
-      el.style.setProperty('display','none','important');
+  Bridge SSE streaming response (preferred):
+    data: {"delta": "chunk text"}
+    data: [DONE]
+
+  Bridge non-streaming JSON response (fallback):
+    { "response": "full text" }
+    or: { "content": "..." }
+    or OpenAI-shape: { "choices": [{ "message": { "content": "..." } }] }
+
+  Set useFallback: true during development if bridge is not yet running.
+  CORS: bridge must return Access-Control-Allow-Origin: * (or portal domain)
+*/
+const CONFIG = {
+  bridgeUrl: 'https://tsm-core.fly.dev/v1/chat',
+  stream: true,
+  maxTokens: 900,
+  useFallback: false
+};
+
+const SYSTEM_PROMPTS = {
+  tax: `You are the Sovereign Tax Intelligence Engine for Case-Tech, a multi-state sales tax and compliance specialist.
+Specialties: AvaTax/Avalara nexus monitoring across 15+ states, economic nexus thresholds ($100K revenue OR 200 transactions), exemption certificate lifecycle, sales tax filing calendars, product taxability rules, audit-ready reconciliation.
+Rules: Respond with precise, structured, actionable intelligence. Use short labeled sections. Format numbers as currency. Flag risks with ⚠. Give specific operational steps only — no generic advice.`,
+
+  orders: `You are the Sovereign Order-to-Label Pipeline Engine for Case-Tech, a fulfillment and operations specialist.
+Specialties: PDF intake → tracking pipeline (zero manual entry), carrier rate shopping (USPS/UPS/FedEx/DHL), label generation with optimal carrier selection, bank feed ingestion and 98%+ transaction auto-categorization, receipt digitization, fulfillment bottleneck analysis, QuickBooks sync.
+Rules: Respond with precise operational steps. Include example carrier rates and automation triggers. Flag manual-entry elimination with ✓ AUTOMATED. No generic advice.`,
+
+  ar: `You are the Sovereign AR/AP Reconciliation Engine for Case-Tech, a predictive accounts receivable and payable specialist.
+Specialties: Predictive AR (flag late payers before due date), 30-60-90 aging analysis, bank deposit auto-matching, AP auto-coding with GL classification and audit trail, QuickBooks bi-directional sync, cash flow forecasting.
+Rules: Respond with precise structured financial intelligence. Include specific dollar thresholds and timing. Flag at-risk customers with ⚠. Flag automated actions with ✓ AUTO.`,
+
+  'esd-ar': `You are the ESD-AR Node for Case-Tech. Specialties: accounts receivable management, invoice aging, customer payment history and velocity, collections queue prioritization, AR-to-cash forecasting, dispute tracking, and credit risk scoring. Provide structured, actionable AR intelligence. Flag collection risks with ⚠.`,
+
+  'esd-cashreceipts': `You are the ESD-CashReceipts Node for Case-Tech. Specialties: bank deposit logging, bank feed ingestion and parsing, receipt-to-invoice auto-matching, exception queue management, unmatched deposit investigation, daily cash position reporting. Provide structured, actionable cash receipts intelligence.`,
+
+  'esd-setup': `You are the ESD-Setup Node for Case-Tech. Specialties: client entity setup and onboarding, GL chart-of-accounts mapping, integration key management (AvaTax, QuickBooks, carriers), carrier account configuration, tax profile setup, integration health monitoring. Provide structured, step-by-step configuration guidance.`,
+
+  'esd-timesheets': `You are the ESD-Timesheets Node for Case-Tech. Specialties: staff time entry, project code allocation, approval workflows, billable vs. non-billable analysis, overtime alerts, payroll export preparation, labor cost reporting. Provide structured, actionable timesheet and labor intelligence.`,
+
+  'esd-pmi': `You are the ESD-PMI Node for Case-Tech. Specialties: project profitability analysis, milestone and deliverable tracking, budget burn-rate monitoring, resource allocation, client deliverable status, cross-project risk assessment. Provide structured project intelligence. Flag budget risks with ⚠. Include margin data where relevant.`
+};
+
+const REPORT_PROMPTS = {
+  'q1-tax': 'Generate a detailed Q1 multi-state sales tax export report. Include: per-state liability totals, filing deadlines, nexus status, economic threshold progress, exemption certificate issues, and recommended immediate actions. Make it audit-ready and export-formatted.',
+  'ar-aging': 'Generate a complete AR aging analysis in 30/60/90+ day buckets. For each bucket: typical customer profile, recommended collection action, escalation trigger, estimated recovery rate, and automated follow-up sequence. Include cash flow impact.',
+  'ap-reconcile': 'Generate a full AP reconciliation report with audit trail. Include: vendor payment status, GL coding verification, duplicate detection, unapproved payables, and recommended month-end close steps.',
+  'nexus-risk': 'Generate an economic nexus risk assessment for all 15 states. Include: current threshold progress per state, projected trigger dates based on velocity, recommended proactive registration steps, and penalty risk.',
+  'fulfillment': 'Generate a fulfillment performance summary. Include: order processing time benchmarks, carrier utilization rates, label generation speed, error rates vs. industry standard, and top 3 workflow improvements.',
+  'qb-sync': 'Generate a QuickBooks migration readiness assessment. Include: data fields that auto-map, fields requiring manual review, AR/AP balance verification steps, chart of accounts alignment, and estimated migration timeline.',
+  'exempt-cert': 'Generate an exemption certificate inventory report. Include: certificates by state, expiration timeline, at-risk expirations (60/30/7 days), customers without certificates who should have them, and automated renewal workflow.',
+  'cashflow': 'Generate a 90-day cash flow forecast. Include: expected AR collections by week, AP obligations due, projected ending balance, risk scenarios (high/medium/low collection), and recommended actions to improve cash position.',
+  'esd-timesheets': 'Generate a full timesheet utilization report for the current period. Include: billable vs. non-billable breakdown by staff, project code allocation, overtime flags, approval status, and payroll export readiness.',
+  'esd-pmi': 'Generate a project P&L summary for all active engagements. Include: revenue recognized vs. budgeted, margin by project, burn rate alerts, upcoming milestones at risk, and resource allocation recommendations.',
+  'esd-cashreceipts': 'Generate a cash receipts reconciliation report. Include: matched vs. unmatched deposits, exception queue summary, bank feed sync status, daily cash position trend, and recommended actions for unmatched items.'
+};
+
+let bridgeOk = null;
+
+async function checkBridge() {
+  const banner = document.getElementById('bridgeBanner');
+  const txt = document.getElementById('bridgeBannerText');
+  try {
+    const res = await fetch(CONFIG.bridgeUrl.replace('/v1/chat', '/health'), {
+      method: 'GET', signal: AbortSignal.timeout(4000)
     });
-    var t = document.getElementById('tab-'+tabId);
-    if(t) t.style.setProperty('display','block','important');
-    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-    if(btn) btn.classList.add('active');
-  };
+    if (res.ok) {
+      bridgeOk = true;
+      banner.className = 'bridge-banner show ok';
+      txt.textContent = '✓ TSM Neural bridge online · ai.tsmatter.com connected';
+      setTimeout(() => banner.classList.remove('show'), 4000);
+    } else { warnBridge(banner, txt); }
+  } catch(e) { warnBridge(banner, txt); }
+}
 
-  // FIX 3: Repair broken Q() function — route through TSM-AI-3200
-  window.Q = async function(prompt, btnId, resId){
-    if(!prompt || !prompt.trim()) return;
-    var btn = document.getElementById(btnId);
-    var res = document.getElementById(resId);
-    if(!btn || !res) return;
-    btn.disabled = true;
-    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
-    try {
-      var r = await fetch('https://tsm-core.fly.dev/ask', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          app: window.location.hostname.replace('.tsmatter.com',''),
-          messages: [{role:'user', content:prompt}]
-        })
-      });
-      var d = await r.json();
-      var reply = d.reply || 'No response';
-      res.style.whiteSpace = 'pre-wrap';
-      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']
+function warnBridge(banner, txt) {
+  bridgeOk = false;
+  banner.className = 'bridge-banner show';
+  if (CONFIG.useFallback) {
+    txt.textContent = '⚠ Bridge unreachable — running in simulation mode';
+    setTimeout(() => banner.classList.remove('show'), 6000);
+  } else {
+    txt.textContent = '⚠ TSM Neural bridge unreachable — check /var/www/tsm-ai config at ai.tsmatter.com';
+  }
+}
 
-' +
-        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
-    } catch(e) {
-      res.textContent = '> TSM NEURAL ERROR: ' + e.message;
-    }
-    btn.disabled = false;
-  };
+window.addEventListener('load', checkBridge);
 
-  // FIX 4: loadAI and loadPreset helpers
-  window.loadAI = function(prompt){
-    var inp = document.getElementById('dash-inp') || document.getElementById('ai-inp') ||
-              document.querySelector('.ai-inp');
-    if(inp){ inp.value = prompt; inp.focus(); }
-  };
+function animCount(el, target, suffix) {
+  const start = Date.now(), dur = 1200;
+  (function tick() {
+    const p = Math.min((Date.now()-start)/dur, 1);
+    const ease = 1-Math.pow(1-p, 3);
+    el.textContent = Math.round(ease*target) + suffix;
+    if (p<1) requestAnimationFrame(tick);
+  })();
+}
+window.addEventListener('load', () => {
+  setTimeout(()=>animCount(document.getElementById('st-orders'), 148, ''), 300);
+  setTimeout(()=>animCount(document.getElementById('st-ar'), 284, 'K'), 500);
+  setTimeout(()=>animCount(document.getElementById('st-exempt'), 63, ''), 700);
+});
 
-  window.loadPreset = function(prompt){
-    var aiTab = null;
-    document.querySelectorAll('.nav-btn').forEach(function(b){
-      if((b.getAttribute('onclick')||'').indexOf("'ai'") > -1) aiTab = b;
+const activeNodes = { tax: true, orders: true, ar: true };
+function toggleNode(n) {
+  activeNodes[n] = !activeNodes[n];
+  document.getElementById('tog-'+n).classList.toggle('active', activeNodes[n]);
+}
+
+async function callAI(systemPrompt, userMessage, onChunk, onDone) {
+  if (CONFIG.useFallback || bridgeOk === false) {
+    await simulateResponse(systemPrompt, userMessage, onChunk, onDone);
+    return;
+  }
+  try {
+    const res = await fetch(CONFIG.bridgeUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: systemPrompt,
+        message: userMessage,
+        stream: CONFIG.stream,
+        max_tokens: CONFIG.maxTokens
+      })
     });
-    if(aiTab) window.switchTab('ai', aiTab);
-    var inp = document.getElementById('ai-inp') || document.querySelector('.ai-inp');
-    if(inp){ inp.value = prompt; inp.focus(); }
-  };
-
-  // FIX 5: Rename injected widget IDs to avoid conflicts
-  function fixWidgetIds(){
-    var w = document.getElementById('ai-input');
-    var b = document.getElementById('ai-btn');
-    var o = document.getElementById('ai-output');
-    // Only rename if these are the floating widget ones (inside fixed div)
-    if(w && w.closest('[style*="position:fixed"][style*="bottom:20px"]')){
-      w.id = 'tsm-widget-input';
-      if(b) b.id = 'tsm-widget-btn';
-      if(o) o.id = 'tsm-widget-output';
-      // Re-init the widget with new IDs
-      import('/tsm-ai-client.js').then(function(m){
-        m.initAIButton('#tsm-widget-btn','#tsm-widget-input','#tsm-widget-output');
-        document.getElementById('tsm-widget-input').addEventListener('focus', function(){
-          document.getElementById('tsm-widget-output').style.display='block';
-        });
-      });
+    if (!res.ok) {
+      const errText = await res.text().catch(()=>'');
+      if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
+      else { onChunk('[Bridge error ' + res.status + ' — verify ai.tsmatter.com/v1/chat is live and CORS is open]\n' + errText.slice(0,200)); onDone(); }
+      return;
     }
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    initTabs();
-    fixWidgetIds();
-  });
-
-  // Also run immediately if DOM already loaded
-  if(document.readyState !== 'loading'){
-    initTabs();
-    fixWidgetIds();
-  }
-})();
-</script>
-
-
-<script id="tsm-pc-fix">
-(function(){
-
-  // Fix switchTab — tabs use class="tab" and IDs without "tab-" prefix
-  // panels use class="panel" with matching IDs
-  window.switchTab = function(t){
-    // Handle both patterns: elements with class "tab" and panels
-    document.querySelectorAll('.tab').forEach(function(e){ e.classList.remove('active'); });
-    document.querySelectorAll('.panel').forEach(function(e){ e.classList.remove('active'); });
-    document.querySelectorAll('.trm-tab').forEach(function(e){ e.classList.remove('active'); });
-    document.querySelectorAll('.trm-panel').forEach(function(e){ e.classList.remove('active'); });
-    // Try direct ID match first (dashboard, homeowners, etc)
-    var panel = document.getElementById(t);
-    if(panel){ panel.classList.add('active'); }
-    // Also try tab-prefixed
-    var tabEl = document.getElementById('tab-'+t);
-    if(tabEl){ tabEl.classList.add('active'); }
-    // Activate the clicked tab button
-    document.querySelectorAll('.tab').forEach(function(e){
-      if((e.getAttribute('onclick')||'').indexOf("'"+t+"'") > -1 ||
-         (e.getAttribute('onclick')||'').indexOf('"'+t+'"') > -1){
-        e.classList.add('active');
-      }
-    });
-  };
-
-  // Fix runAI — fetch was broken (d never assigned)
-  var RUNAI_OUTPUT = {
-    'dash': {out:'dash-result', btn:'dash-btn'},
-    'homeowners': {out:'ho-gap-result', btn:null},
-    'auto': {out:'gap-result', btn:null},
-    'um-az': {out:'gap-result', btn:null},
-    'sr22': {out:'gap-result', btn:null},
-    'commercial': {out:'gap-result', btn:null},
-    'wc': {out:'gap-result', btn:null},
-    'cyber': {out:'gap-result', btn:null},
-    'liability': {out:'gap-result', btn:null},
-    'epli': {out:'gap-result', btn:null},
-    'umbrella': {out:'umb-result', btn:null},
-    'eo': {out:'gap-result', btn:null},
-    'do': {out:'gap-result', btn:null},
-    'agent-eo': {out:'gap-result', btn:null},
-    'az-risk': {out:'gap-result', btn:null},
-    'bop': {out:'gap-result', btn:null},
-    'bi': {out:'gap-result', btn:null},
-    'crime': {out:'gap-result', btn:null},
-    'claims-roi': {out:'cr-result', btn:null},
-  };
-
-  // Patch the broken runAI fetch
-  var _origRunAI = window.runAI;
-  window.runAI = async function(tool){
-    // Get prompt from original function's logic by calling it but intercepting
-    // Instead re-implement the fetch portion cleanly
-    var mapping = RUNAI_OUTPUT[tool] || {out:'gap-result', btn:null};
-    var outEl = document.getElementById(mapping.out) ||
-                document.querySelector('.result-box') ||
-                document.querySelector('[id$="-result"]');
-    var btnEl = mapping.btn ? document.getElementById(mapping.btn) : null;
-
-    // Get the prompt — call original to build it, but we need to intercept
-    // So we override fetch temporarily
-    var capturedPrompt = null;
-    var origFetch = window.fetch;
-    window.fetch = function(url, opts){
-      if(opts && opts.body){
-        try{
-          var b = JSON.parse(opts.body);
-          var msgs = b.messages || [];
-          var userMsg = msgs.find(function(m){ return m.role==='user'; });
-          if(userMsg) capturedPrompt = userMsg.content;
-        }catch(e){}
-      }
-      // Return a fake resolved promise to prevent original broken call
-      return Promise.resolve({ok:true, json:function(){ return Promise.resolve({}); }, text:function(){ return Promise.resolve(''); }});
-    };
-    try{ await _origRunAI(tool); }catch(e){}
-    window.fetch = origFetch;
-
-    if(!capturedPrompt){
-      // Fallback: build prompt from tool name
-      capturedPrompt = 'Run a full ' + tool + ' analysis for this P&C insurance client. Include coverage gaps, AZ-specific risks, recommended limits with dollar amounts, and immediate action items.';
-    }
-
-    if(outEl) outEl.textContent = '⟳ Analyzing...';
-    if(btnEl){ btnEl.disabled=true; btnEl.textContent='⏳ Running...'; }
-
-    try{
-      var r = await origFetch('https://tsm-core.fly.dev/ask', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          app: 'pc-command',
-          messages:[{role:'user', content:capturedPrompt}]
-        })
-      });
-      var d = await r.json();
-      var text = d.reply || 'No response';
-      if(outEl) outEl.textContent = text;
-    }catch(e){
-      if(outEl) outEl.textContent = '⚠ Error: ' + e.message;
-    }
-    if(btnEl){ btnEl.disabled=false; btnEl.textContent='▶ Run Intelligence Briefing'; }
-  };
-
-  // Init tabs on load
-  document.addEventListener('DOMContentLoaded', function(){
-    // Show dashboard panel by default
-    var dash = document.getElementById('dashboard');
-    if(dash) dash.classList.add('active');
-  });
-  if(document.readyState !== 'loading'){
-    var dash = document.getElementById('dashboard');
-    if(dash) dash.classList.add('active');
-  }
-
-})();
-</script>
-
-
-<script id="tsm-api-fix">/* TSM API routing fixed */</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd843db443760',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script id="tsm-final-engine">
-(function() {
-    window.switchTab = function(id, btn) {
-        console.log("TSM Global Engine: Switching to", id);
-        document.querySelectorAll('[id^="tab-"]').forEach(el => {
-            el.style.setProperty('display', 'none', 'important');
-        });
-        const target = document.getElementById('tab-' + id);
-        if (target) { target.style.setProperty('display', 'block', 'important'); }
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-    };
-
-    function init() {
-        const firstBtn = document.querySelector('.nav-btn');
-        if (firstBtn) {
-            const m = (firstBtn.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
-            window.switchTab(m ? m[1] : 'dash', firstBtn);
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('text/event-stream') || CONFIG.stream) {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const json = line.slice(6).trim();
+          if (json === '[DONE]') continue;
+          try {
+            const p = JSON.parse(json);
+            const t = p.delta || p.text || p.content || p.choices?.[0]?.delta?.content || '';
+            if (t) onChunk(t);
+          } catch(e) {}
         }
+      }
+    } else {
+      const data = await res.json();
+      const text = data.response || data.content || data.text || data.choices?.[0]?.message?.content || JSON.stringify(data);
+      onChunk(text);
     }
-    window.addEventListener('DOMContentLoaded', init);
-    setTimeout(init, 150);
-})();
+    onDone();
+  } catch(err) {
+    if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
+    else { onChunk('[Connection error: ' + err.message + ']\nVerify ai.tsmatter.com is reachable and CORS headers include your portal domain.'); onDone(); }
+  }
+}
+
+const SIM = {
+  tax: ['Q1 TAX LIABILITY — ALL 15 STATES\n\nTX: $14,220 | CA: $9,810 | FL: $6,340 | NY: $5,880\nOH: $3,120 | IL: $2,940 | WA: $2,610 | PA: $2,480\nNJ: $2,200 | GA: $1,980 | NC: $1,740 | VA: $1,560\nAZ: $1,340 | CO: $1,180 | TN: $980\n\nTOTAL: $58,380\n\n⚠ OH approaching 200-transaction threshold (187 YTD). Breach in ~23 days.\n⚠ 3 exemption certs expiring in 47 days — renewal queue flagged.\n✓ AUTO: Filing profiles staged for all 15 states.'],
+  orders: ['LABEL GENERATED ✓ AUTOMATED\n\n5.0 lb → New York, NY 10001\n\nUPS Ground:   $8.42  (4 days)  ← SELECTED\nFedEx Ground: $9.17  (4 days)\nUSPS Priority: $11.30 (2 days)\nDHL Express:  $24.80 (1 day)\n\nTracking: 1Z999AA10123456784\n✓ AUTOMATED: Filed to pipeline. QB sync queued.'],
+  ar: ['AR PREDICTIVE RISK\n\n⚠ HIGH RISK:\n  Acme Logistics — INV $12,400 due 8 days, 3 prior lates\n  Vertex Supply  — INV $8,200 due 5 days, velocity slowing\n\n✓ AUTO: 3 soft reminders → T-5 days\n✓ AUTO: 2 escalations   → T+3 days\n1 hold flag — awaiting your approval\n\nPROJECTED RECOVERY THIS WEEK: $34,200'],
+  'esd-ar': ['ESD-AR ACTIVE\n\nOPEN 60d+: 8 invoices · $28,400 total\n\nPriority 1: Vertex Inc    $12,100 (87d) — formal demand\nPriority 2: Summit Co     $9,800  (72d) — escalation call\nPriority 3: Redline LLC   $6,500  (63d) — second reminder\n\nAR FORECAST 30d:\n  Expected:  $84,200\n  At-risk:   $22,300\n  Probable:  $71,400\n\n⚠ 2 accounts flagged for credit hold.'],
+  'esd-cashreceipts': ["ESD-CASHRECEIPTS ACTIVE\n\nTODAY'S DEPOSITS: $31,240 · 9 transactions\n  ✓ MATCHED: 7 deposits ($27,040)\n  ⚠ EXCEPTIONS: 2 deposits ($4,200) — no invoice match\n\n  $3,200 — Wire 'VTXS CORP' → possible Vertex Supply?\n  $1,000 — ACH 'ADV PMT' → create prepayment invoice?\n\nCASH POSITION: $142,800 · Bank feed synced 4 min ago"],
+  'esd-setup': ['ESD-SETUP ACTIVE\n\nINTEGRATION HEALTH:\n  ✓ AvaTax API    — connected (v22.6)\n  ✓ QuickBooks    — synced 12 min ago\n  ✓ UPS           — active (expires Dec 2025)\n  ✓ FedEx         — active (expires Mar 2026)\n  ✓ USPS          — active\n  ⚠ DHL           — API key rotation due in 14 days\n\nGL GAPS: 2 unmapped accounts\n  5210 "Freight Expense" — not in QB CoA\n  4320 "Misc Revenue"   — ambiguous, review needed'],
+  'esd-timesheets': ['ESD-TIMESHEETS ACTIVE\n\nPAY PERIOD Apr 1–15:\n  Total: 312 hrs\n  Billable: 274 hrs (87.8%)\n  Non-billable: 38 hrs (12.2%)\n\nAPPROVALS:\n  ✓ Approved: 8 of 11 staff\n  ⚠ Pending: Torres, McKinley, Pham — deadline today\n\n⚠ Torres: 52 hrs logged — OT authorization required\n\nPAYROLL EXPORT: Ready for 8 approved staff · QB format available'],
+  'esd-pmi': ['ESD-PMI ACTIVE\n\nACTIVE PROJECTS (8):\n  ✓ CASE-TECH Fulfillment Ops — 74% budget · on track\n  ✓ Ameris Portal Buildout    — 61% budget · on track\n  ⚠ Honor Portal Integration  — 91% budget · OVERRUN RISK\n  ⚠ HC Command Dashboard      — 88% budget · monitor\n\nDELIVERABLES THIS WEEK:\n  Mon: HC Command v2 API spec — Torres (in progress)\n  Wed: Ameris UAT             — McKinley (on track)\n  Fri: CASE-TECH Q1 report    — Pham ⚠ NOT STARTED\n\nPORTFOLIO MARGIN: 34.2%']
+};
+
+async function simulateResponse(systemPrompt, userMessage, onChunk, onDone) {
+  const key = Object.keys(SIM).find(k => systemPrompt.toLowerCase().includes(k.replace('-',''))) || 'tax';
+  const pool = SIM[key];
+  const full = pool[Math.floor(Math.random() * pool.length)];
+  for (const ch of full) { await new Promise(r => setTimeout(r, 9)); onChunk(ch); }
+  onDone();
+}
+
+async function runModule(mod, query) {
+  const input = query || document.getElementById('input-'+mod).value.trim();
+  if (!input) return;
+  const el = document.getElementById('resp-'+mod);
+  el.className = 'sov-response active';
+  el.innerHTML = '<div class="thinking-line ' + mod + '">' +
+    (mod==='tax' ? '// TSM NEURAL · NEXUS ANALYSIS…': mod==='orders' ? '// TSM NEURAL · PIPELINE PROCESSING…': '// TSM NEURAL · AR/AP RECONCILING…') + '</div>';
+  await callAI(SYSTEM_PROMPTS[mod], input, (c) => {
+    const t = el.querySelector('.thinking-line'); if (t) t.remove();
+    el.textContent += c; el.scrollTop = el.scrollHeight;
+  }, () => {});
+}
+
+function runQuick(mod, query) { document.getElementById('input-'+mod).value = query; runModule(mod, query); }
+
+async function runESDModule(node, query) {
+  const input = query || document.getElementById('input-esd-'+node).value.trim();
+  if (!input) return;
+  const el = document.getElementById('resp-esd-'+node);
+  el.className = 'esd-response active';
+  el.innerHTML = '<div class="thinking-line esd">// TSM NEURAL · ESD-' + node.toUpperCase() + ' PROCESSING…</div>';
+  await callAI(SYSTEM_PROMPTS['esd-'+node], input, (c) => {
+    const t = el.querySelector('.thinking-line'); if (t) t.remove();
+    el.textContent += c; el.scrollTop = el.scrollHeight;
+  }, () => {});
+}
+
+function runESD(node, query) { document.getElementById('input-esd-'+node).value = query; runESDModule(node, query); }
+
+async function deployMaster() {
+  const q = document.getElementById('masterQuery').value.trim();
+  if (!q) return;
+  const btn = document.getElementById('masterBtn');
+  btn.disabled = true; btn.textContent = '…';
+  const panel = document.getElementById('synthPanel');
+  document.getElementById('synthQuery').textContent = '// QUERY: ' + q;
+  panel.classList.add('active');
+  const targets = Object.keys(activeNodes).filter(n => activeNodes[n]);
+  ['tax','orders','ar'].forEach(n => {
+    document.getElementById('synth-'+n).textContent = targets.includes(n) ? '// TSM Neural analyzing…': '// Node disabled';
+  });
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  await Promise.all(targets.map(mod =>
+    callAI(SYSTEM_PROMPTS[mod], 'From your domain (' + mod + '), give targeted intelligence for: ' + q,
+      (c) => { const el = document.getElementById('synth-'+mod); if (el.textContent.includes('analyzing')) el.textContent = ''; el.textContent += c; }, () => {})
+  ));
+  btn.disabled = false; btn.textContent = '⚡ DEPLOY';
+}
+
+function closeSynth() { document.getElementById('synthPanel').classList.remove('active'); }
+
+async function buildReport() {
+  const type = document.getElementById('reportType').value;
+  const ctx = document.getElementById('reportContext').value.trim();
+  if (!type) { alert('Select a report type.'); return; }
+  const out = document.getElementById('reportOutput');
+  out.className = 'report-output active';
+  out.textContent = '// TSM NEURAL REPORT ENGINE GENERATING…\n\n';
+  const prompt = REPORT_PROMPTS[type] + (ctx ? '\n\nContext: ' + ctx: '');
+  const sys = type.includes('tax')||type.includes('nexus')||type.includes('exempt') ? SYSTEM_PROMPTS.tax
+ : type.includes('timesheets') ? SYSTEM_PROMPTS['esd-timesheets']
+ : type.includes('pmi') ? SYSTEM_PROMPTS['esd-pmi']
+ : type.includes('cashreceipts') ? SYSTEM_PROMPTS['esd-cashreceipts']
+ : type.includes('ar')||type.includes('ap')||type.includes('qb')||type.includes('cashflow') ? SYSTEM_PROMPTS.ar
+ : SYSTEM_PROMPTS.orders;
+  await callAI(sys, prompt, (c) => {
+    if (out.textContent.includes('GENERATING')) out.textContent = out.textContent.replace('// TSM NEURAL REPORT ENGINE GENERATING…\n\n','');
+    out.textContent += c; out.scrollTop = out.scrollHeight;
+  }, () => {});
+}
+
+function scrollToSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
 </script>
-</body>
+<script>if(!window.ui){ window.ui = new TSM_UI(); console.log("UI Force-Started"); }</script>
+window.PRESET = "PC_ENTERPRISE";
+window.FORCE_LOAD = true;
+console.log("🛡️ Preset Forced: P&C Enterprise");
+document.querySelectorAll(".nav-link, .tab-button").forEach(t => {
+    t.onclick = function(e) {
+        e.preventDefault();
+        const target = this.getAttribute("data-target") || this.innerText.toLowerCase().trim();
+        document.querySelectorAll(".tab-pane, .tab-content").forEach(p => p.style.display = "none");
+        const activePane = document.getElementById(target) || document.querySelector("." + target);
+        if(activePane) activePane.style.display = "block";
+    };
+});
+try { 
+    console.log("Sovereign $600k Forced"); 
+} catch(e) {}
+<script>window.ui = new TSM_UI();</script></body>
+window.PRESET = "PC_ENTERPRISE";
+window.FORCE_LOAD = true;
+console.log("🛡️ Preset Forced: P&C Enterprise");
+document.querySelectorAll(".nav-link, .tab-button").forEach(t => {
+    t.onclick = function(e) {
+        e.preventDefault();
+        const target = this.getAttribute("data-target") || this.innerText.toLowerCase().trim();
+        document.querySelectorAll(".tab-pane, .tab-content").forEach(p => p.style.display = "none");
+        const activePane = document.getElementById(target) || document.querySelector("." + target);
+        if(activePane) activePane.style.display = "block";
+    };
+});
+try { 
+    console.log("Sovereign $600k Forced"); 
+} catch(e) {}
 </html>
+<script>
+window.PRESET = "PC_ENTERPRISE";
+window.FORCE_LOAD = true;
+console.log("🛡️ Preset Forced: P&C Enterprise");
+document.querySelectorAll(".nav-link, .tab-button").forEach(t => {
+    t.onclick = function(e) {
+        e.preventDefault();
+        const target = this.getAttribute("data-target") || this.innerText.toLowerCase().trim();
+        document.querySelectorAll(".tab-pane, .tab-content").forEach(p => p.style.display = "none");
+        const activePane = document.getElementById(target) || document.querySelector("." + target);
+        if(activePane) activePane.style.display = "block";
+    };
+});
+document.querySelectorAll('.nav-link, .tab-button').forEach(button => {
+    button.addEventListener('click', function() {
+        console.log("Tab Triggered: " + this.innerText);
+        // Add your custom tab-switching logic here if the UI object fails
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+        const targetId = this.getAttribute('data-target');
+        if(document.getElementById(targetId)) {
+            document.getElementById(targetId).style.display = 'block';
+        }
+    });
+});
+</script>

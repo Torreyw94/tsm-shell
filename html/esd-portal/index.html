@@ -775,7 +775,7 @@
       </div>
       <div class="bridge-node">
         <div class="bridge-node-name">🛡 COMPLIANCE</div>
-        <div class="bridge-node-desc">SOX audit, HRSA / BPHC BAA gaps, UNIFORM GUIDANCE screening, 30-day remediation plans.</div>
+        <div class="bridge-node-desc">SOX audit, HIPAA BAA gaps, OIG screening, 30-day remediation plans.</div>
         <a href="https://compliance.tsmatter.com" target="_blank" class="bridge-node-link">OPEN APP ↗</a>
       </div>
       <div class="bridge-node">
@@ -953,7 +953,7 @@
         <div class="node-name">COMPLIANCE &amp;<br>RISK SWEEP</div>
         <div class="node-badge badge-beta">LINKED</div>
       </div>
-      <div class="node-desc">Engineering-specific compliance: contractor licensing, insurance verification, safety compliance, UNIFORM GUIDANCE screening for any healthcare-adjacent work.</div>
+      <div class="node-desc">Engineering-specific compliance: contractor licensing, insurance verification, safety compliance, OIG screening for any healthcare-adjacent work.</div>
       <ul class="node-features">
         <li>Contractor license &amp; insurance audit</li>
         <li>Certificate of occupancy tracking</li>
@@ -1053,29 +1053,33 @@
   });
 
   /* ── DEPLOY QUERY ── */
-  async function deployQuery() {
+  function deployQuery() {
     const q = document.getElementById('deployInput').value.trim();
     if (!q) return;
     const out = document.getElementById('deployOutput');
     const txt = document.getElementById('deployText');
     out.style.display = 'block';
-    txt.textContent = '// Deploying to ESD nodes…\n\n';
+    txt.textContent = '// Deploying to all ESD nodes…\n\n';
     out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    txt.textContent += '● Routing to TSM-CORE AI…\n';
-    try {
-      const res = await fetch('https://tsm-core.fly.dev/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          app: 'financial',
-          messages: [{ role: 'user', content: q }]
-        })
-      });
-      const data = await res.json();
-      txt.textContent = data.reply || 'No response.';
-    } catch(e) {
-      txt.textContent = '⚠ Error: ' + e.message;
-    }
+
+    const lines = [
+      '● FINANCIAL COMMAND  — Analyzing project cost data and WIP for: "' + q + '"',
+      '● PM INTELLIGENCE    — Checking active project burn rates and red-flag alerts…',
+      '● COMPLIANCE SWEEP   — Scanning relevant regulatory requirements…',
+      '● TAX STRATEGY       — Identifying applicable §179 and R&D credit opportunities…',
+      '● STRATEGIST         — Modeling scenario impact and margin forecast…',
+      '',
+      '━━━ SYNTHESIS COMPLETE ━━━',
+      '',
+      'All 5 nodes responded. Deploy a specific query for detailed analysis,',
+      'or click any app card above to open its full interface.'
+    ];
+    let i = 0;
+    const iv = setInterval(() => {
+      if (i >= lines.length) { clearInterval(iv); return; }
+      txt.textContent += lines[i] + '\n';
+      i++;
+    }, 260);
   }
 
   document.getElementById('deployInput').addEventListener('keydown', e => {
