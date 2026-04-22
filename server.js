@@ -6,10 +6,13 @@ const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-
 // ===============================
 // HC STATE FILTER (GLOBAL HELPER)
 // ===============================
+
+
+// ===== TSM CORE HELPERS =====
+
 function filterHCState(state = {}, system = '', location = '') {
   const out = {};
   for (const [nodeKey, node] of Object.entries(state || {})) {
@@ -27,8 +30,6 @@ function filterHCState(state = {}, system = '', location = '') {
   }
   return out;
 }
-
-
 
 function buildLayer2Summary(officeState = {}, system = '', location = '') {
   const ops = officeState.operations || {};
@@ -91,8 +92,6 @@ function buildLayer2Summary(officeState = {}, system = '', location = '') {
   };
 }
 
-
-
 function buildHCBrief({ system = '', location = '', question = '' }) {
   return {
     subject: `${location} Revenue Pressure Update`,
@@ -116,8 +115,6 @@ ${question}
 `
   };
 }
-
-
 
 function buildStrategistSystemPosture(system, officesPayload = []) {
   const ranked = (officesPayload || [])
@@ -253,7 +250,6 @@ function buildStrategistSystemPosture(system, officesPayload = []) {
     }
   };
 }
-
 
 
 app.use(express.json());
@@ -425,7 +421,6 @@ app.post('/api/hc/bnca', (req, res) => {
   });
 });
 
-
 function toNum(v, d=0) {
   const n = Number(v);
   return Number.isFinite(n) ? n : d;
@@ -502,10 +497,6 @@ function aggregateLayer2(nodesMap) {
     top: enriched.slice(0, 3)
   };
 }
-
-
-
-
 
 function buildOfficeContext(filtered = {}) {
   const ops = filtered.operations || {};
@@ -660,7 +651,6 @@ Question context:
 ${question || 'No additional question provided.'}`;
 }
 
-
 app.post('/api/hc/layer2', (req, res) => {
   try {
     const { system = '', location = '' } = req.body || {};
@@ -756,9 +746,6 @@ CONFIDENCE
   }
 });
 
-
-
-
 function buildSystemRollup(state = {}, system = '', topN = 3) {
   const grouped = {};
 
@@ -841,7 +828,6 @@ function buildSystemRollup(state = {}, system = '', topN = 3) {
   };
 }
 
-
 app.post('/api/hc/rollup', (req, res) => {
   try {
     const { system = '', top_n = 3 } = req.body || {};
@@ -857,7 +843,6 @@ app.post('/api/hc/rollup', (req, res) => {
     res.status(500).json({ ok: false, error: e.message });
   }
 });
-
 
 app.post('/api/hc/brief', (req, res) => {
   try {
@@ -914,7 +899,6 @@ app.post('/api/hc/brief', (req, res) => {
     res.status(500).json({ ok: false, error: e.message });
   }
 });
-
 
 app.post('/api/hc/ask', async (req,res)=>{
   try{
@@ -1001,26 +985,6 @@ CONFIDENCE
     return res.status(500).json({ok:false,error:e.message});
   }
 
-
-
-function filterHCState(state = {}, system = '', location = '') {
-  const out = {};
-  for (const [nodeKey, node] of Object.entries(state || {})) {
-    if (!node || typeof node !== 'object') continue;
-
-    const nodeSystem = String(node.system || '').trim();
-    const nodeLocation = String(node.location || '').trim();
-
-    const systemOk = !system || nodeSystem === system;
-    const locationOk = !location || nodeLocation === location;
-
-    if (systemOk && locationOk) {
-      out[nodeKey] = node;
-    }
-  }
-  return out;
-}
-
 function normalizeOfficeState(state = {}) {
   const ops = state.operations || {};
   const billing = state.billing || {};
@@ -1090,8 +1054,6 @@ function summarizeOfficeDriver(officeName, state = {}, officeEval = {}) {
   return `${officeName}: queue ${n.queueDepth}, backlog ${n.intakeBacklog}, staffing ${n.staffingCoverage}%`;
 }
 
-
-
 // ── STATIC ────────────────────────────────────────────────────────────────────
 app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
@@ -1101,7 +1063,6 @@ app.use('/', express.static(path.join(__dirname, 'html')));
 // catch-all LAST
 
 });
-
 
 app.post('/api/strategist/hc/system-posture', (req, res) => {
   try {
@@ -1182,12 +1143,9 @@ app.post('/api/honor/dee/dashboard', (req, res) => {
   }
 });
 
-
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`TSM Node API running on ${PORT}`);
 });
-
-
 
 app.post('/api/hc/rollup/brief', (req, res) => {
   try {
@@ -1231,8 +1189,6 @@ We will continue monitoring and provide updates as recovery progresses.
     res.status(500).json({ ok: false, error: e.message });
   }
 });
-
-
 
 app.post('/api/hc/alerts', (req, res) => {
   try {
@@ -1298,7 +1254,6 @@ app.post('/api/hc/alerts', (req, res) => {
     res.status(500).json({ ok: false, error: e.message });
   }
 });
-
 
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 app.use((req, res) => {
