@@ -21,7 +21,7 @@ window.quickAsk = async function(promptText){
     const target =
       document.getElementById('dee-content') ||
       document.getElementById('dee-command-center') ||
-      document.body;
+      document.getElementById('dee-live-output') || document.body;
 
     const html = `
       <div style="margin-top:16px;padding:16px;border:1px solid rgba(0,255,163,.2);background:#07111b;color:#00ffa3;font-family:monospace;">
@@ -1253,9 +1253,15 @@ html, body {
 
   <div id="dee-loading" style="font-size:20px;margin-bottom:20px;">
     Dee War Room Live
-  </div>
-
-  <div id="dee-content">Loading...</div>
+<div id="dee-live-output" style="
+  margin-top:12px;
+  padding:16px;
+  border:1px solid rgba(0,255,163,.15);
+  background:#07111b;
+  color:#00ffa3;
+  font-family:monospace;
+"></div>
+</div>
 
 </div>
 
