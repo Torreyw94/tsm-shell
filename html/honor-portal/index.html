@@ -1174,78 +1174,45 @@ html, body {
 
 
 
-<script>
-(function(){
-  var s = document.createElement('style');
-  s.innerHTML =
-    "html,body{height:auto!important;min-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;background:#050b14!important;}" +
-    "body>*:not(#dee-command-center):not(script){display:none!important;}" +
-    "#dee-command-center{display:block!important;position:relative!important;width:100%!important;max-width:1400px;margin:0 auto;}" +
-    "#dee-command-center *{max-height:none!important;overflow:visible!important;}";
-
-  document.head.appendChild(s);
-
-  var dee = document.getElementById('dee-command-center');
-  if (dee && document.body.firstChild !== dee) {
-    document.body.insertBefore(dee, document.body.firstChild);
-  }
-})();
-</script>
 
 
-<script>
-(function(){
-  var style = document.createElement('style');
-  style.innerHTML =
-    "html,body{margin:0;padding:0;background:#050b14;overflow-y:auto;}" +
-    "" +
-    "#dee-command-center{display:block;position:relative;width:100%;max-width:1400px;margin:0 auto;}" +
-    "#dee-command-center *{max-height:none;overflow:visible;}";
-
-  document.head.appendChild(style);
-
-  var dee = document.getElementById('dee-command-center');
-  if (dee && document.body.firstChild !== dee) {
-    document.body.insertBefore(dee, document.body.firstChild);
-  }
-})();
-</script>
 
 
-<script>
-(function(){
-  var style = document.createElement('style');
-  style.innerHTML =
-    "html,body{margin:0;padding:0;background:#050b14;overflow-y:auto;}" +
-
-    /* Hide only known legacy layers */
-    "#honor-neural-panel{display:none !important;}" +
-    ".honor-top-strip{display:none !important;}" +
-    ".portal-search{display:none !important;}" +
-
-    /* Ensure Dee is visible */
-    "#dee-command-center{display:block !important;position:relative;width:100%;max-width:1400px;margin:0 auto;}" +
-
-    "#dee-command-center *{max-height:none;overflow:visible;}";
-
-  document.head.appendChild(style);
-})();
-</script>
 
 
-<div id="dee-command-center" style="display:block;position:relative;width:100%;max-width:1400px;margin:0 auto;padding:24px;color:#00ffa3;background:#050b14;font-family:monospace;">
-  <div id="dee-loading" style="padding:24px;font-size:18px;">Dee War Room Loading...</div>
+
+
+
+
+</div>
+
+
+
+
+<div id="dee-command-center" style="
+  display:block;
+  position:relative;
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+  padding:32px;
+  background:#050b14;
+  color:#00ffa3;
+  font-family:monospace;
+">
+
+  <div id="dee-loading" style="font-size:20px;margin-bottom:20px;">
+    Dee War Room Live
+  </div>
+
+  <div id="dee-content">Loading...</div>
+
 </div>
 
 <script>
 (function(){
-  var dee = document.getElementById('dee-command-center');
-  if (!dee) return;
 
-  document.documentElement.style.background = '#050b14';
-  document.body.style.background = '#050b14';
-  document.body.style.margin = '0';
-  document.body.style.padding = '0';
+  var dee = document.getElementById('dee-content');
 
   fetch('/api/honor/dee/dashboard', {
     method: 'POST',
@@ -1254,17 +1221,17 @@ html, body {
   })
   .then(function(r){ return r.json(); })
   .then(function(d){
+
     dee.innerHTML =
-      '<div style="padding:24px;">' +
-      '<div style="font-size:22px;font-weight:700;margin-bottom:16px;">Dee War Room Live</div>' +
-      '<pre style="white-space:pre-wrap;font-size:12px;line-height:1.5;color:#00ffa3;">' +
+      '<pre style="font-size:12px;line-height:1.5;">' +
       JSON.stringify(d, null, 2) +
-      '</pre>' +
-      '</div>';
+      '</pre>';
+
   })
-  .catch(function(e){
-    dee.innerHTML = '<div style="color:#ff6b6b;padding:24px;">Dee failed to load</div>';
+  .catch(function(){
+    dee.innerHTML = '<div style="color:red;">Failed to load Dee</div>';
   });
+
 })();
 </script>
 
