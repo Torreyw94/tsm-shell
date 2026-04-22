@@ -1198,7 +1198,7 @@ html, body {
   var style = document.createElement('style');
   style.innerHTML =
     "html,body{margin:0;padding:0;background:#050b14;overflow-y:auto;}" +
-    "body>*:not(#dee-command-center):not(script){display:none;}" +
+    "" +
     "#dee-command-center{display:block;position:relative;width:100%;max-width:1400px;margin:0 auto;}" +
     "#dee-command-center *{max-height:none;overflow:visible;}";
 
@@ -1208,6 +1208,27 @@ html, body {
   if (dee && document.body.firstChild !== dee) {
     document.body.insertBefore(dee, document.body.firstChild);
   }
+})();
+</script>
+
+
+<script>
+(function(){
+  var style = document.createElement('style');
+  style.innerHTML =
+    "html,body{margin:0;padding:0;background:#050b14;overflow-y:auto;}" +
+
+    /* Hide only known legacy layers */
+    "#honor-neural-panel{display:none !important;}" +
+    ".honor-top-strip{display:none !important;}" +
+    ".portal-search{display:none !important;}" +
+
+    /* Ensure Dee is visible */
+    "#dee-command-center{display:block !important;position:relative;width:100%;max-width:1400px;margin:0 auto;}" +
+
+    "#dee-command-center *{max-height:none;overflow:visible;}";
+
+  document.head.appendChild(style);
 })();
 </script>
 
