@@ -1908,5 +1908,81 @@ setTimeout(() => {
 }, 500);
 </script>
 
+
+<script>
+(function(){
+  function applyStrategistToDee(){
+    if(!window.DEECC || window.DEECC.__tsmStrategistPatched) return;
+    window.DEECC.__tsmStrategistPatched = true;
+
+    const origLoad = window.DEECC.load.bind(window.DEECC);
+
+    window.DEECC.renderStrategistActionBoard = function(pkt){
+      if(!pkt || !pkt.ok) return;
+      const board = pkt.actionBoard || {};
+      const el = document.getElementById('dcc-action-board');
+      if(!el) return;
+
+      const stratBlock = `
+TSM STRATEGIST
+Source: ${board.source || 'TSM Strategist'}
+Office To Escalate: ${board.officeToEscalate || '—'}
+Payer Focus: ${board.payerFocus || '—'}
+Alert Count: ${board.alertCount || 0}
+
+LIVE SIGNALS
+${(board.liveSignals || []).map((s, i) => `${i+1}. ${s.title} [${String(s.urgency || '').toUpperCase()}] · ${s.source} · ${s.detail}`).join('\n')}
+
+STRATEGIST NARRATIVE
+${board.strategistNarrative || '—'}
+
+RECOMMENDED ACTIONS
+1. ${(board.actions || [])[0] || '—'}
+2. ${(board.actions || [])[1] || '—'}
+3. ${(board.actions || [])[2] || '—'}
+
+----------------------------------------
+
+`;
+
+      if(!el.dataset.baseBoard){
+        el.dataset.baseBoard = el.textContent || '';
+      }
+      el.textContent = stratBlock + el.dataset.baseBoard;
+    };
+
+    window.DEECC.load = async function(){
+      const payload = await origLoad();
+      try {
+        const strategist = await this.post('/api/strategist/hc/dee-action', {
+          system: this.system,
+          selectedOffice: this.selectedOffice,
+          offices: this.offices
+        });
+        this.renderStrategistActionBoard(strategist);
+      } catch (e) {
+        console.warn('TSM Strategist bridge failed', e);
+      }
+      return payload;
+    };
+
+    let btn = document.getElementById('dcc-open-strategist');
+    if(!btn){
+      const actions = document.querySelector('#dee-command-center .dcc-actions');
+      if(actions){
+        btn = document.createElement('button');
+        btn.id = 'dcc-open-strategist';
+        btn.className = 'dcc-btn';
+        btn.textContent = 'Open TSM Strategist';
+        btn.onclick = () => { window.location.href = '/html/main-strategist/'; };
+        actions.appendChild(btn);
+      }
+    }
+  }
+
+  setTimeout(applyStrategistToDee, 900);
+})();
+</script>
+
 </body>
 </html>

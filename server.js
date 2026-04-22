@@ -1237,6 +1237,134 @@ app.post('/api/honor/dee/dashboard', (req, res) => {
 });
 
 
+
+app.post('/api/strategist/hc/dee-action', (req, res) => {
+  try {
+    const {
+      system = 'HonorHealth',
+      selectedOffice = 'Scottsdale - Shea',
+      offices = ['Scottsdale - Shea', 'Mesa', 'Tempe', 'North Mountain']
+    } = req.body || {};
+
+    const state = readJson(HC_NODE_STATE_FILE, {});
+    const selectedState = filterHCState(state, system, selectedOffice);
+    const layer2 = buildLayer2Summary(selectedState, system, selectedOffice);
+
+    const officePayloads = offices.map(office => {
+      const officeState = filterHCState(state, system, office);
+      const officeLayer2 = buildLayer2Summary(officeState, system, office);
+      return { office, state: officeState, layer2: officeLayer2 };
+    });
+
+    const posture = buildStrategistSystemPosture(system, officePayloads);
+
+    const alerts = [];
+    Object.entries(state || {}).forEach(([nodeKey, n]) => {
+      if (!n || typeof n !== 'object') return;
+      if (system && (n.system || '') !== system) return;
+
+      if (n.denialRate != null && Number(n.denialRate) > 10) {
+        alerts.push({
+          type: 'DENIAL_SPIKE',
+          severity: 'HIGH',
+          nodeKey,
+          location: n.location || 'Unknown',
+          officeName: n.officeName || '',
+          message: `${n.location || 'Unknown'}: denial rate ${n.denialRate}%`
+        });
+      }
+
+      if (n.authDelayHours != null && Number(n.authDelayHours) > 48) {
+        alerts.push({
+          type: 'AUTH_DELAY',
+          severity: 'HIGH',
+          nodeKey,
+          location: n.location || 'Unknown',
+          officeName: n.officeName || '',
+          message: `${n.location || 'Unknown'}: auth delay ${n.authDelayHours}h`
+        });
+      }
+
+      if (n.queueDepth != null && Number(n.queueDepth) > 25) {
+        alerts.push({
+          type: 'QUEUE_PRESSURE',
+          severity: 'MEDIUM',
+          nodeKey,
+          location: n.location || 'Unknown',
+          officeName: n.officeName || '',
+          message: `${n.location || 'Unknown'}: queue depth ${n.queueDepth}`
+        });
+      }
+    });
+
+    const top = posture?.officeRanking?.[0] || {};
+    const selectedOps = selectedState.operations || {};
+    const selectedBilling = selectedState.billing || {};
+    const selectedInsurance = selectedState.insurance || {};
+
+    const liveSignals = [
+      {
+        title: 'Top Priority',
+        urgency: top.status || 'high',
+        source: top.office || selectedOffice,
+        detail: top.summary || `Intervene in ${selectedOffice}`
+      },
+      {
+        title: 'Payer Friction',
+        urgency: Number(selectedInsurance.authDelayHours || 0) > 48 ? 'urgent' : 'med',
+        source: selectedOffice,
+        detail: `Auth backlog ${selectedInsurance.authBacklog || 0} · delay ${selectedInsurance.authDelayHours || 0}h`
+      },
+      {
+        title: 'Denial Pressure',
+        urgency: Number(selectedBilling.denialRate || 0) > 10 ? 'urgent' : 'med',
+        source: selectedOffice,
+        detail: `Denial ${selectedBilling.denialRate || 0}% · lag ${selectedBilling.claimLagDays || 0}d`
+      },
+      {
+        title: 'Throughput',
+        urgency: Number(selectedOps.queueDepth || 0) > 25 ? 'high' : 'med',
+        source: selectedOffice,
+        detail: `Queue ${selectedOps.queueDepth || 0} · backlog ${selectedOps.intakeBacklog || 0} · staffing ${selectedOps.staffingCoverage || 0}%`
+      }
+    ];
+
+    const actionBoard = {
+      source: 'TSM Strategist',
+      selectedOffice,
+      posture: posture.systemPosture || {},
+      topPriorityNow: top.summary || `Intervene in ${selectedOffice}`,
+      officeToEscalate: top.office || selectedOffice,
+      payerFocus: Number(selectedInsurance.authDelayHours || 0) > 48 ? 'Prior Authorization' : 'Medicare',
+      liveSignals,
+      actions: [
+        `Run denial recovery plan for ${selectedOffice}`,
+        `Escalate payer auth blockers for ${selectedOffice}`,
+        `Compare ${selectedOffice} vs best-performing office`
+      ],
+      strategistNarrative:
+        `${system} risk is concentrated in ${top.office || selectedOffice}. ` +
+        `Highest-yield lane is ${layer2.highestYieldLane || 'Billing'}. ` +
+        `Immediate focus: ${layer2.bestNextActions?.[0] || 'Clear highest-value backlog first'}`,
+      alertCount: alerts.length
+    };
+
+    return res.json({
+      ok: true,
+      source: 'TSM Strategist',
+      generatedAt: new Date().toISOString(),
+      selectedOffice,
+      layer2,
+      posture,
+      alerts,
+      actionBoard
+    });
+  } catch (e) {
+    return res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`TSM Node API running on ${PORT}`);
 });
