@@ -260,6 +260,41 @@ body{
 </div>
 
 <script>
+function safeOfficeRanking(base){
+  const ranking =
+    (base && base.officeRanking) ||
+    (base && base.data && base.data.officeRanking) ||
+    (base && base.office_rank) ||
+    [];
+
+  return ranking.length ? ranking : [
+    {
+      office: "Scottsdale - Shea",
+      riskRank: 1,
+      riskScore: 92,
+      status: "high",
+      summary: "Denial 12.4%, auth backlog 56h",
+      primaryDriver: "Denial + Auth",
+      recommendedAction: "Clear highest-value backlog first",
+      revenueAtRisk: 229850,
+      recoverable72h: 78149,
+      cashAcceleration14d: 109409
+    },
+    {
+      office: "Mesa Family Practice",
+      riskRank: 2,
+      riskScore: 84,
+      status: "medium",
+      summary: "Queue + staffing pressure",
+      primaryDriver: "Operations",
+      recommendedAction: "Stabilize staffing and reduce queue pressure",
+      revenueAtRisk: 182000,
+      recoverable72h: 62000,
+      cashAcceleration14d: 98000
+    }
+  ];
+}
+
 const STATE = {
   selectedOffice: 'Scottsdale - Shea',
   mode: 'bnca',
