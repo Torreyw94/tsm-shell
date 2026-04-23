@@ -1,1 +1,70 @@
-<html><head><title>Dee Command Center</title></head><body style="background:#050b14;color:#fff; font-family:Arial;padding:20px"><h2>Dee Command Center (Fixed)</h2><button onclick="run('recovery')">Recovery</button><button onclick="run('payer')">Payer</button><button onclick="run('brief')">Brief</button><div id="out" style="margin-top:20px;border:1px solid #00ffa3">loading...</div><script>async function run(type){const out=document.getElementById('out');out.innerHTML='Running '+type;try{const res=await fetch('/api/strategist/hc/dee-action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'HonorHealth',prompt:type})});const data=await res.json();let output='';if(data.actionDetail&&data.actionDetail.steps){output='<h3>'+data.actionDetail.title+'</h3><ul>'+data.actionDetail.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';}else{output='<pre>'+JSON.stringify(data,null,2)+'</pre>';}out.innerHTML=output;}catch(e){out.innerHTML='Error: '+e.message;}}run('recovery');</script></body></html>
+
+<!doctype html>
+<html>
+<head>
+<title>Dee Command Center (Clean)</title>
+<style>
+body{background:#050b14;color:#00ffa3;font-family:monospace;padding:20px}
+button{margin:5px;padding:10px;border:1px solid #00ffa3;background:#0a1822;color:#fff}
+#out{margin-top:20px;border:1px solid #00ffa3;padding:20px}
+</style>
+</head>
+<body>
+
+<h2>Dee Command Center (Clean)</h2>
+
+<button onclick="run('recovery')">Recovery</button>
+<button onclick="run('payer')">Payer</button>
+<button onclick="run('brief')">Brief</button>
+
+<div id="out">Loading...</div>
+
+<script>
+async function run(mode){
+  const out = document.getElementById('out');
+  out.innerHTML = "Running " + mode + "...";
+
+  const res = await fetch('/api/strategist/hc/dee-action',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system:'HonorHealth',
+      prompt: mode
+    })
+  });
+
+  const data = await res.json();
+
+  // PAYER VIEW
+  if(data.actionDetail && data.actionDetail.steps){
+    out.innerHTML =
+      "<h3>"+data.actionDetail.title+"</h3>" +
+      "<ul>" + data.actionDetail.steps.map(s=>"<li>"+s+"</li>").join('') + "</ul>";
+    return;
+  }
+
+  // RECOVERY VIEW
+  if(data.layer2 && data.layer2.bestNextActions){
+    out.innerHTML =
+      "<h3>Recovery Plan</h3>" +
+      "<ul>" + data.layer2.bestNextActions.map(s=>"<li>"+s+"</li>").join('') + "</ul>";
+    return;
+  }
+
+  // BRIEF VIEW
+  if(data.posture && data.posture.systemPosture){
+    out.innerHTML =
+      "<h3>Executive Brief</h3>" +
+      "<pre>"+JSON.stringify(data.posture.systemPosture,null,2)+"</pre>";
+    return;
+  }
+
+  // FALLBACK
+  out.innerHTML = "<pre>"+JSON.stringify(data,null,2)+"</pre>";
+}
+
+run('recovery');
+</script>
+
+</body>
+</html>
