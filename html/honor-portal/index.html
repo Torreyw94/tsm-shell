@@ -254,7 +254,12 @@ body{
       <div class="block">
         <div class="railtitle">Alert Stack</div>
         <div id="alert-list"></div>
+      
+      <div class="block">
+        <div class="railtitle">OM Task Queue</div>
+        <div id="task-list" class="hc-list"><div class="muted" style="font-size:9px">No delegated tasks yet.</div></div>
       </div>
+
     </div>
   </div>
 </div>
@@ -479,16 +484,86 @@ async function refreshAll(){
     renderTop(STATE.base, STATE.action);
     renderHC(STATE.base, STATE.action);
     renderModes(STATE.base, STATE.action);
+    await loadTasks();
   }catch(e){
     document.getElementById('bnca-title').textContent = 'Failed to load BNCA';
     document.getElementById('bnca-why').textContent = e.message;
   }
 }
 
-function runModeAction(){ refreshAll(); }
-function delegateToOM(){ showToast('Delegate to OM: ' + STATE.selectedOffice); }
+async function runModeAction(){
+  try{
+    const res = await fetch('/api/hc/bnca', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        office: STATE.selectedOffice,
+        mode: STATE.mode
+      })
+    });
+    STATE.action = await res.json();
+    renderTop(STATE.base, STATE.action);
+    renderHC(STATE.base, STATE.action);
+    renderModes(STATE.base, STATE.action);
+    await loadTasks();
+    showToast('BNCA refreshed → ' + STATE.selectedOffice);
+  }catch(e){
+    showToast('BNCA refresh failed: ' + e.message);
+  }
+}
+async function delegateToOM(){
+  try{
+    const office = STATE.selectedOffice;
+    const ownerLane = ((STATE.action && STATE.action.layer2 && STATE.action.layer2.ownerLanes) || ['Billing','Insurance']).join('/');
+    const action = (STATE.action && STATE.action.actionBoard && STATE.action.actionBoard.topPriorityNow) || 'Execute BNCA';
 
-window.addEventListener('load', refreshAll);
+    const res = await fetch('/api/hc/delegate', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        office,
+        action,
+        ownerLane,
+        mode: STATE.mode
+      })
+    });
+
+    const data = await res.json();
+    if(data && data.ok){
+      showToast('Delegated → ' + office);
+      renderTasks(data.queue || []);
+    } else {
+      showToast('Delegate failed');
+    }
+  }catch(e){
+    showToast('Delegate failed: ' + e.message);
+  }
+}
+
+
+function renderTasks(tasks){
+  const el = document.getElementById('task-list');
+  if(!el) return;
+  const list = tasks || [];
+  el.innerHTML = list.length ? list.map(t => `
+    <div class="hcbox">
+      <div class="name" style="font-size:10px;color:var(--teal)">${esc(t.office)}</div>
+      <div class="meta">${esc(t.action)}<br>Lane: ${esc(t.ownerLane)} · ${esc(t.status)}</div>
+    </div>
+  `).join('') : '<div class="muted" style="font-size:9px">No delegated tasks yet.</div>';
+}
+
+async function loadTasks(){
+  try{
+    const res = await fetch('/api/hc/tasks');
+    const data = await res.json();
+    renderTasks((data && data.tasks) || []);
+  }catch(e){
+    renderTasks([]);
+  }
+}
+
+window.addEventListener('load', async () => { await refreshAll(); await loadTasks(); });
 </script>
 
 <script>
