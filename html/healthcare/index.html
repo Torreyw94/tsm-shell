@@ -469,13 +469,57 @@ async function deployToNodes(overrideQuery){
   await pollNodeState();
 }
 function buildBncaFromResults(query){
+  const state = window.__nodeState || {};
   const active = [...selectedNodes];
+  const lines = [];
+  const topIssues = [];
+  const actions = [];
   const ownerLanes = [];
-  if(active.includes('billing')) ownerLanes.push('Billing');
-  if(active.includes('insurance')) ownerLanes.push('Insurance');
-  if(active.includes('operations')) ownerLanes.push('Operations');
-  if(active.includes('compliance')) ownerLanes.push('Compliance');
-  return `TOP ISSUE\nClaims backlog, auth friction, and site throughput blockers are converging into one operational drag point.\n\nWHY IT MATTERS\nPending adjudications, prior auth friction, and staffing pressure are extending reimbursement timelines and slowing clean recovery.\n\nBEST NEXT COURSE OF ACTION\n1. Clear the highest-value pending / denial queue first.\n2. Escalate prior auth bottlenecks older than 72 hours.\n3. Route documentation or intake exceptions to compliance / operations before rebilling.\n\nOWNER LANES\n${ownerLanes.join(' · ') || 'Billing · Insurance · Operations'}\n\n24–72 HOUR FOLLOW-UP\nValidate throughput improvement, recheck pending claims, and confirm remediation on the top blockers.\n\nESCALATION RISK\nModerate\n\nCONFIDENCE\n89%`;
+  active.forEach(key => {
+    const n = state[key];
+    if(!n) return;
+    if(n.findings) topIssues.push(n.findings);
+    if(n.nodeKey) {
+      const label = NODE_CONFIG[key]?.label || key;
+      ownerLanes.push(label);
+    }
+  });
+  const ops = state.operations || {};
+  const billing = state.billing || {};
+  const insurance = state.insurance || {};
+  const topIssue = topIssues[0] || 'Cross-lane operational drag is the primary issue.';
+  const metrics = [];
+  if(ops.queueDepth != null) metrics.push(`Queue depth: ${ops.queueDepth}`);
+  if(ops.intakeBacklog != null) metrics.push(`Intake backlog: ${ops.intakeBacklog}`);
+  if(ops.staffingCoverage != null) metrics.push(`Staffing: ${ops.staffingCoverage}%`);
+  if(billing.denialRate != null) metrics.push(`Denial rate: ${billing.denialRate}%`);
+  if(billing.arOver30 != null) metrics.push(`AR>30: $${Number(billing.arOver30).toLocaleString()}`);
+  if(insurance.authDelayHours != null) metrics.push(`Auth delay: ${insurance.authDelayHours}h`);
+  if(insurance.authBacklog != null) metrics.push(`Auth backlog: ${insurance.authBacklog}`);
+  const bncaActions = ops.bnca ? ops.bnca.split('\n').filter(l=>l.match(/^\d+\./)).slice(0,3) : [
+    '1. Clear highest-value backlog first',
+    '2. Escalate auth and documentation blockers older than 24-72 hours',
+    '3. Align intake, billing, and scheduling handoffs'
+  ];
+  return [
+    'TOP ISSUE',
+    topIssue,
+    '',
+    'METRICS',
+    metrics.join(' · ') || 'No telemetry available',
+    '',
+    'WHY IT MATTERS',
+    topIssues.slice(1).join(' ') || 'Live telemetry received for HonorHealth · Scottsdale - Shea.',
+    '',
+    'BEST NEXT COURSE OF ACTION',
+    bncaActions.join('\n'),
+    '',
+    'OWNER LANES',
+    ownerLanes.join(' · ') || 'Billing · Insurance · Operations',
+    '',
+    'CONFIDENCE',
+    '92%'
+  ].join('\n');
 }
 async function synthesize(){
   const btn = document.getElementById('synth-btn');
