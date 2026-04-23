@@ -1653,7 +1653,7 @@ function buildBncaForOffice(office) {
       location: officeName,
       revenueAtRisk: d["revenueAtRisk"],
       recoverable72h: d["recoverable72h"],
-      recoverable30d: int(d["recoverable72h"] * 2),
+      recoverable30d: Math.round(d["recoverable72h"] * 2),
       cashAcceleration14d: d["cashAcceleration14d"],
       highestYieldLane: d["highestYieldLane"],
       rootCause: d["rootCause"],
@@ -1663,7 +1663,7 @@ function buildBncaForOffice(office) {
       summary: d["summary"]
     },
     actionBoard: {
-      topPriorityNow: f"{officeName}: denial {d['denialRate']}% and AR>30 {d['revenueAtRisk']:,}",
+      topPriorityNow: `${officeName}: denial ${d["denialRate"]}% and AR>30 ${Number(d["revenueAtRisk"]).toLocaleString()}`,
       payerFocus: "Prior Authorization",
       strategistNarrative: d["summary"],
       actions: d["bestNextActions"],
