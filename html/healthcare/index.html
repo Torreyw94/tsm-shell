@@ -564,6 +564,17 @@ function renderNodeState(state){
   const ops = state.operations || {};
   if(ops.queueDepth != null) document.getElementById('kpi-ops').textContent = ops.queueDepth;
   if(ops.bnca) document.getElementById('ops-bnca').textContent = ops.bnca;
+  // Update each node card with live state data
+  Object.entries(state).forEach(([key, n]) => {
+    const out = document.getElementById('out-' + key);
+    const status = document.getElementById('status-' + key);
+    const prog = document.getElementById('prog-' + key);
+    if(out && n.bnca) {
+      out.textContent = n.bnca;
+      if(status) { status.textContent = 'LIVE'; status.className = 'nc-status live'; }
+      if(prog) prog.style.width = '100%';
+    }
+  });
 }
 async function pollNodeState(){
   try {
