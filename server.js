@@ -1668,9 +1668,9 @@ function buildBncaForOffice(office) {
       strategistNarrative: d["summary"],
       actions: d["bestNextActions"],
       liveSignals: [
-        {"title": "Denial Pressure", "urgency": "urgent", "detail": f"Denial {d['denialRate']}% with lag"},
-        {"title": "Throughput", "urgency": "high", "detail": f"Queue {d['queueDepth']} · staffing pressure"},
-        {"title": "Auth Friction", "urgency": "high", "detail": f"Delay {d['authDelay']}h"}
+        {"title": "Denial Pressure", "urgency": "urgent", "detail": `Denial ${d["denialRate"]}% with lag`},
+        {"title": "Throughput", "urgency": "high", "detail": `Queue ${d["queueDepth"]} · staffing pressure`},
+        {"title": "Auth Friction", "urgency": "high", "detail": `Delay ${d["authDelay"]}h`}
       ]
     },
     posture: {
@@ -1710,9 +1710,9 @@ function buildBncaForOffice(office) {
       ]
     },
     alerts: [
-      {"type": "QUEUE_PRESSURE", "severity": "MEDIUM", "nodeKey": "operations", "message": f"{officeName}: queue depth {d['queueDepth']}"},
-      {"type": "DENIAL_SPIKE", "severity": "HIGH", "nodeKey": "billing", "message": f"{officeName}: denial rate {d['denialRate']}%"},
-      {"type": "AUTH_DELAY", "severity": "HIGH", "nodeKey": "insurance", "message": f"{officeName}: auth delay {d['authDelay']}h"}
+      {"type": "QUEUE_PRESSURE", "severity": "MEDIUM", "nodeKey": "operations", "message": `${officeName}: queue depth ${d["queueDepth"]}`},
+      {"type": "DENIAL_SPIKE", "severity": "HIGH", "nodeKey": "billing", "message": `${officeName}: denial rate ${d["denialRate"]}%`},
+      {"type": "AUTH_DELAY", "severity": "HIGH", "nodeKey": "insurance", "message": `${officeName}: auth delay ${d["authDelay"]}h`}
     ]
   }
 
@@ -1753,7 +1753,7 @@ app.post('/api/hc/bnca', (req, res) => {
       "view": "auth",
       "title": "Payer Auth Escalation",
       "steps": [
-        f"Pull all pending auth requests for {office} older than 24h",
+        `Pull all pending auth requests for ${office} older than 24h`,
         "Auth backlog: 27 cases · delay: 56h",
         "Call top 3 payers directly — prioritize Medicare/Prior Auth cases",
         "Submit peer-to-peer review requests for denials over $5,000",
