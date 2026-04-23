@@ -1392,10 +1392,7 @@ html, body {
   color:#00ffa3;
   font-family:monospace;
   min-height:200px;
-">
-  <div style="font-weight:bold;margin-bottom:10px;">
-    Dee Live Command Output
-  </div>
+"><div style="color:#9fdcc9;padding:10px">Loading...</div></div>
 </div>
 ></div>
 </div>
@@ -1524,7 +1521,7 @@ html, body {
   window.DEE_LAST_ACTION = 'initial load';
   window.DEE_LOADING = false;
 
-  window.addEventListener('load', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const t = document.getElementById('dee-live-output');
     if (t && !t.dataset.deeBooted) { t.dataset.deeBooted = '1'; renderDee('initial load'); }
   });
