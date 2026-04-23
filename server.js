@@ -1771,3 +1771,38 @@ app.post('/api/hc/bnca', (req, res) => {
 });
 /* ===== END BNCA EXECUTION LOOP ===== */
 
+
+
+
+// BNCA GENERATION START
+function buildBNCA(d, officeName){
+  return {
+    topPriorityNow: `${officeName}: denial ${d.denialRate}% and AR>30 ${Number(d.revenueAtRisk).toLocaleString()}`,
+
+    alerts: [
+      { title: "Denial Pressure", urgency: "urgent", detail: `Denial ${d.denialRate}% with lag` },
+      { title: "Throughput", urgency: "high", detail: `Queue ${d.queueDepth} · staffing pressure` },
+      { title: "Auth Friction", urgency: "high", detail: `Delay ${d.authDelay}h` }
+    ],
+
+    signals: [
+      { type: "QUEUE_PRESSURE", severity: "MEDIUM", nodeKey: "operations", message: `${officeName}: queue depth ${d.queueDepth}` },
+      { type: "DENIAL_SPIKE", severity: "HIGH", nodeKey: "billing", message: `${officeName}: denial rate ${d.denialRate}%` },
+      { type: "AUTH_DELAY", severity: "HIGH", nodeKey: "insurance", message: `${officeName}: auth delay ${d.authDelay}h` }
+    ],
+
+    actions: [
+      `Pull all pending auth requests for ${officeName} older than 24h`,
+      `Prioritize high-value denial backlog`,
+      `Escalate payer delays over 48h`
+    ],
+
+    metrics: {
+      authDelay: d.authDelay,
+      denialRate: d.denialRate,
+      queueDepth: d.queueDepth
+    }
+  };
+}
+// BNCA GENERATION END
+
