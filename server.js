@@ -1643,12 +1643,12 @@ function buildBncaForOffice(office) {
   const bestOffice = officeName === "Scottsdale - Shea" ? "Mesa Family Practice" : "Scottsdale - Shea";
 
   return {
-    ok: True,
+    ok: true,
     selectedOffice: officeName,
     actionView: "default",
-    actionDetail: None,
+    actionDetail: null,
     layer2: {
-      ok: True,
+      ok: true,
       system: "HonorHealth",
       location: officeName,
       revenueAtRisk: d["revenueAtRisk"],
