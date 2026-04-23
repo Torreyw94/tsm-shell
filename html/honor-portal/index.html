@@ -5,14 +5,17 @@
 <script>
 // ===== FORCE GLOBAL QUICKASK (LOAD FIRST) =====
 
+
 window.quickAsk = async function(promptText){
   try {
+    const selectedOffice = window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea';
+
     const r = await fetch('/api/strategist/hc/dee-action', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         system: 'HonorHealth',
-        selectedOffice: 'Scottsdale - Shea',
+        selectedOffice: selectedOffice,
         prompt: promptText || ''
       })
     });
@@ -23,15 +26,49 @@ window.quickAsk = async function(promptText){
     const ab = data.actionBoard || {};
     const layer2 = data.layer2 || {};
     const alerts = data.alerts || [];
+    const posture = data.posture || {};
+    const ranking = posture.officeRanking || [];
 
-    const esc = (v) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const esc = (v) => String(v ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+
     const money = (n) => '$' + Number(n || 0).toLocaleString();
+
+    const actionButtons = (ab.actions || []).map(a => `
+      <button class="dee-btn" onclick="quickAsk(${JSON.stringify(a)})">${esc(a)}</button>
+    `).join('');
+
+    const heatmap = ranking.map(o => `
+      <div class="dee-heat ${esc((o.status || 'stable').toLowerCase())}" onclick="selectDeeOffice(${JSON.stringify(o.office)})">
+        <div class="dee-heat-title">${esc(o.office)}</div>
+        <div class="dee-heat-sub">
+          Rank #${esc(o.riskRank)} · Score ${esc(o.riskScore)}<br>
+          ${esc(o.summary || '')}
+        </div>
+      </div>
+    `).join('');
 
     target.innerHTML = `
       <div class="dee-cards-wrap">
+
         <div class="dee-priority">
           <div class="dee-priority-title">Top Priority</div>
-          <div class="dee-priority-body">${esc(ab.topPriorityNow || 'Intervene in Scottsdale - Shea')}</div>
+          <div class="dee-priority-body">${esc(ab.topPriorityNow || 'Intervene in ' + selectedOffice)}</div>
+          <div class="dee-meta">Selected Office: ${esc(selectedOffice)} · Payer Focus: ${esc(ab.payerFocus || 'Prior Authorization')}</div>
+        </div>
+
+        <div class="dee-card">
+          <div class="dee-section-title">Immediate Actions</div>
+          <div class="dee-actions">
+            ${actionButtons || `
+              <button class="dee-btn" onclick="quickAsk('run denial recovery plan for ${esc(selectedOffice)}')">Run Recovery Plan</button>
+              <button class="dee-btn" onclick="quickAsk('escalate payer auth blockers for ${esc(selectedOffice)}')">Escalate Payer</button>
+              <button class="dee-btn" onclick="quickAsk('generate executive brief for ${esc(selectedOffice)}')">Generate Brief</button>
+            `}
+          </div>
         </div>
 
         <div class="dee-card-grid">
@@ -54,10 +91,10 @@ window.quickAsk = async function(promptText){
         </div>
 
         <div class="dee-card">
-          <div class="dee-card-label">Alert Stack</div>
+          <div class="dee-section-title">Alert Stack</div>
           <div class="dee-alerts">
             ${alerts.map(a => `
-              <div class="dee-alert ${String(a.severity || '').toLowerCase()}">
+              <div class="dee-alert ${esc(String(a.severity || '').toLowerCase())}">
                 <div class="dee-alert-type">${esc(a.type)} · ${esc(a.severity)}</div>
                 <div class="dee-alert-msg">${esc(a.message)}</div>
               </div>
@@ -66,17 +103,15 @@ window.quickAsk = async function(promptText){
         </div>
 
         <div class="dee-card">
-          <div class="dee-card-label">Strategist Narrative</div>
-          <div class="dee-narrative">${esc(ab.strategistNarrative || '')}</div>
+          <div class="dee-section-title">Office Heatmap</div>
+          <div class="dee-heatmap">
+            ${heatmap}
+          </div>
         </div>
 
         <div class="dee-card">
-          <div class="dee-card-label">Actions</div>
-          <div class="dee-actions">
-            <button class="dee-btn" onclick="quickAsk('run denial recovery plan for Scottsdale - Shea')">Run Recovery Plan</button>
-            <button class="dee-btn" onclick="quickAsk('escalate payer auth blockers for Scottsdale - Shea')">Escalate Payer</button>
-            <button class="dee-btn" onclick="quickAsk('generate executive brief for Dee Montee on Scottsdale Shea revenue posture')">Generate Brief</button>
-          </div>
+          <div class="dee-section-title">Strategist Narrative</div>
+          <div class="dee-narrative">${esc(ab.strategistNarrative || '')}</div>
         </div>
       </div>
     `;
@@ -470,6 +505,73 @@ body > div:first-of-type,
 }
 @media (max-width: 700px){
   .dee-card-grid,.dee-actions{grid-template-columns:1fr}
+}
+</style>
+
+
+<style id="dee-command-upgrade-style">
+.dee-section-title{
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#7decc8;
+  margin-bottom:10px;
+}
+.dee-actions{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.dee-btn{
+  appearance:none;
+  border:1px solid rgba(0,255,163,.18);
+  background:#0a1822;
+  color:#d9fff2;
+  border-radius:10px;
+  padding:12px 14px;
+  text-align:left;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+}
+.dee-btn:hover{background:#0d1d28}
+.dee-heatmap{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.dee-heat{
+  background:#09141d;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  padding:12px;
+  cursor:pointer;
+}
+.dee-heat:hover{background:#0c1922}
+.dee-heat.high{border-left:4px solid #ff6b6b}
+.dee-heat.stable{border-left:4px solid #00ffa3}
+.dee-heat.medium{border-left:4px solid #ffd166}
+.dee-heat-title{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+  margin-bottom:6px;
+}
+.dee-heat-sub{
+  font-size:12px;
+  color:#9fdcc9;
+  line-height:1.45;
+}
+.dee-meta{
+  font-size:12px;
+  color:#9fdcc9;
+  margin-top:8px;
+}
+@media (max-width:1100px){
+  .dee-actions,.dee-heatmap{grid-template-columns:1fr 1fr}
+}
+@media (max-width:700px){
+  .dee-actions,.dee-heatmap{grid-template-columns:1fr}
 }
 </style>
 
@@ -1423,6 +1525,15 @@ html, body {
 </div>
 
 
+
+
+<script>
+window.DEE_SELECTED_OFFICE = window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea';
+window.selectDeeOffice = function(office){
+  window.DEE_SELECTED_OFFICE = office;
+  return window.quickAsk('refresh command view for ' + office);
+};
+</script>
 
 </body>
 </html>
