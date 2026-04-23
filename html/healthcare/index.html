@@ -407,8 +407,10 @@ async function callNode(nodeKey, userQuery){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        system: `You are the ${NODE_CONFIG[nodeKey].label} node in a healthcare BNCA system. Return concise findings and next actions for an office manager.`,
-        message: userQuery
+        system: 'HonorHealth',
+        location: 'Scottsdale - Shea',
+        query: userQuery,
+        nodeKey: nodeKey
       })
     });
     const d = await r.json();
