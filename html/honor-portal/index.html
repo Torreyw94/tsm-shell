@@ -3,1497 +3,528 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TSMatter · HonorHealth OPS Portal v3.0</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<title>HonorHealth · Dee BNCA Console</title>
 <style>
 :root{
-  --bg:#060a08;--bg2:#0c1109;--bg3:#101510;--bg4:#151d14;--bg5:#1a2419;
-  --border:rgba(0,255,100,0.07);--border2:rgba(0,255,100,0.14);--border3:rgba(0,255,100,0.28);
-  --g:#00ff64;--g2:#00cc50;--g3:#008f38;--g4:#005a24;--gdim:rgba(0,255,100,0.1);--gdim2:rgba(0,255,100,0.05);
-  --gold:#f0c040;--golddim:rgba(240,192,64,0.12);--goldtext:#c89820;
-  --red:#ff4455;--reddim:rgba(255,68,85,0.1);--red2:rgba(255,68,85,0.06);
-  --amber:#ffaa00;--amberdim:rgba(255,170,0,0.1);
-  --blue:#00aaff;--bluedim:rgba(0,170,255,0.08);
-  --purple:#a855f7;--purpledim:rgba(168,85,247,0.1);
-  --teal:#00e5cc;--tealdim:rgba(0,229,204,0.08);
-  --text:#b8d8b8;--text2:#5a7a5a;--text3:#2e4a2e;--text4:#1a2e1a;
-  --neural:#00ff64;
+  --bg:#060a08;--bg2:#0c1109;--bg3:#101510;--bg4:#151d14;
+  --border:rgba(0,255,100,0.08);--border2:rgba(0,255,100,0.18);--border3:rgba(0,255,100,0.3);
+  --g:#00ff64;--g2:#00cc50;--red:#ff4455;--amber:#ffaa00;--blue:#00aaff;--purple:#a855f7;--teal:#00e5cc;
+  --text:#b8d8b8;--text2:#5a7a5a;--text3:#2e4a2e;--gold:#f0c040;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.025) 3px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:9999}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:12px;min-height:100vh;overflow-x:hidden;overflow-y:auto;display:flex;flex-direction:column;
+}
+.topbar{
+  height:48px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;
+  padding:0 16px;gap:12px;flex-shrink:0;
+}
+.logo{width:30px;height:30px;border:1px solid var(--g2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--g);font-weight:700;font-size:10px}
+.brand{font-size:13px;font-weight:700;color:var(--text)}
+.brand span{color:var(--g)}
+.sep{width:1px;height:20px;background:var(--border2)}
+.pill{display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--border);border-radius:20px;font-size:9px;letter-spacing:.08em;color:var(--text2)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dg{background:var(--g)} .dr{background:var(--red)} .da{background:var(--amber)} .db{background:var(--blue)}
+.right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.user{display:flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--border);border-radius:3px}
+.av{width:24px;height:24px;border-radius:50%;background:rgba(0,255,100,.08);border:1px solid var(--g2);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--g);font-weight:700}
 
-/* ── TOPBAR ── */
-.topbar{height:46px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;position:relative}
-.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g3),transparent);opacity:.4}
-.tb-brand{display:flex;align-items:center;gap:10px;margin-right:20px}
-.tb-logo{width:30px;height:30px;border:1px solid var(--g3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g);position:relative}
-.tb-logo::after{content:'';position:absolute;inset:2px;border:1px solid var(--g4);border-radius:2px;opacity:.5}
-.tb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
-.tb-name span{color:var(--g)}
-.tb-sep{width:1px;height:20px;background:var(--border2);margin:0 12px;flex-shrink:0}
-.tb-pill{display:flex;align-items:center;gap:5px;padding:3px 9px;border:1px solid var(--border);border-radius:20px;font-size:9px;letter-spacing:.08em;color:var(--text2);margin-right:4px;white-space:nowrap}
-.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block}
-.dg{background:var(--g);box-shadow:0 0 5px var(--g)}.dr{background:var(--red);box-shadow:0 0 5px var(--red)}.da{background:var(--amber);box-shadow:0 0 4px var(--amber)}.db{background:var(--blue)}.dp{background:var(--purple)}.dt{background:var(--teal)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.pls{animation:pulse 1.8s ease infinite}
+.stratbar{
+  height:30px;background:linear-gradient(90deg,rgba(168,85,247,.06),rgba(0,229,204,.04));
+  border-bottom:1px solid rgba(168,85,247,.16);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0
+}
+.stratlabel{font-size:9px;letter-spacing:.16em;color:var(--purple);text-transform:uppercase}
+.strattext{flex:1;font-size:9px;color:#9f85d8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stratbtn{font-size:8px;padding:3px 9px;border:1px solid rgba(168,85,247,.35);border-radius:2px;color:var(--purple);background:transparent;cursor:pointer}
 
-/* NEURAL INDICATOR */
-.neural-pill{display:flex;align-items:center;gap:6px;padding:4px 12px;background:var(--gdim);border:1px solid var(--border2);border-radius:20px;font-size:9px;color:var(--g);letter-spacing:.08em;margin-right:6px}
-.neural-ring{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--g3);border-top-color:var(--g);animation:spin 1.2s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.neural-ring.ready{border-color:var(--g);border-top-color:var(--g);animation:none}
+.main{display:grid;grid-template-columns:220px 1fr 300px;gap:0;flex:1;min-height:0}
+.leftnav,.rightrail{background:var(--bg2)}
+.leftnav{border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.rightrail{border-left:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.center{display:flex;flex-direction:column;min-height:0}
 
-.ticker-wrap{flex:1;overflow:hidden;display:flex;align-items:center}
-.ticker{white-space:nowrap;font-size:9px;color:var(--text3);letter-spacing:.05em;animation:ticker 60s linear infinite}
-@keyframes ticker{from{transform:translateX(80%)}to{transform:translateX(-120%)}}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tb-time{font-size:11px;color:var(--text2);letter-spacing:.1em;font-weight:500}
-.tb-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border:1px solid var(--border);border-radius:3px;cursor:pointer;transition:border-color .15s}
-.tb-user:hover{border-color:var(--g3)}
-.tb-av{width:24px;height:24px;border-radius:50%;background:var(--gdim);border:1px solid var(--g3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--g);font-weight:700}
-.tb-un{font-size:11px;color:var(--text)}.tb-ur{font-size:9px;color:var(--text2);margin-top:1px}
+.block{padding:10px;border-bottom:1px solid var(--border)}
+.navtitle,.railtitle,.sectitle{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.office-list,.signal-list,.hc-list,.action-list,.ranking-list{display:grid;gap:8px}
+.office,.signal,.hcbox,.actionbox,.rankrow{
+  background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px
+}
+.office{cursor:pointer;border-left:3px solid var(--blue)}
+.office.active{border-left-color:var(--g);background:rgba(0,255,100,.04)}
+.office.high{border-left-color:var(--red)}
+.office.stable{border-left-color:var(--g)}
+.office .name,.rankrow .name{font-size:10px;color:var(--text);font-weight:700}
+.office .meta,.signal .meta,.hcbox .meta,.rankrow .meta{font-size:9px;color:var(--text2);line-height:1.45;margin-top:4px}
 
-/* ── STRATEGY BAR (new) ── */
-.strat-bar{height:28px;background:linear-gradient(90deg,rgba(168,85,247,0.06),rgba(0,229,204,0.04));border-bottom:1px solid rgba(168,85,247,0.15);display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;overflow:hidden}
-.strat-label{font-size:9px;letter-spacing:.14em;color:var(--purple);text-transform:uppercase;margin-right:16px;white-space:nowrap;flex-shrink:0}
-.strat-rec{flex:1;font-size:9px;color:rgba(168,85,247,0.7);letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.strat-rec span{color:var(--purple)}
-.strat-actions{display:flex;gap:8px;margin-left:16px;flex-shrink:0}
-.strat-btn{font-size:8px;padding:2px 8px;border:1px solid rgba(168,85,247,0.3);border-radius:2px;color:var(--purple);cursor:pointer;letter-spacing:.06em;transition:all .15s;background:transparent;font-family:'JetBrains Mono',monospace}
-.strat-btn:hover{background:var(--purpledim);border-color:var(--purple)}
+.tabs{height:34px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 14px;gap:1px;flex-shrink:0}
+.tab{padding:6px 14px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:var(--g);border-bottom-color:var(--g)}
 
-/* ── MAIN LAYOUT ── */
-.main{display:flex;flex:1;overflow:hidden}
-
-/* ── LEFTNAV ── */
-.leftnav{width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
-.nav-srch{padding:8px 10px;border-bottom:1px solid var(--border)}
-.nav-srch input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:5px 9px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);outline:none}
-.nav-srch input::placeholder{color:var(--text3)}
-.nav-srch input:focus{border-color:var(--g3)}
-.nav-scroll{overflow-y:auto;flex:1}
-.nav-scroll::-webkit-scrollbar{width:2px}
-.nav-scroll::-webkit-scrollbar-thumb{background:var(--border2)}
-.nav-gh{display:flex;align-items:center;justify-content:space-between;padding:6px 10px 3px}
-.nav-gl{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-weight:500}
-.nav-gc{font-size:8px;color:var(--text3)}
-.ni{display:flex;align-items:center;gap:7px;padding:5px 10px 5px 14px;cursor:pointer;border-left:2px solid transparent;transition:all .12s;text-decoration:none}
-.ni:hover{background:var(--bg3);border-left-color:var(--g3)}
-.ni.act{background:var(--gdim2);border-left-color:var(--g)}
-.ni-d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.ni-n{font-size:10px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ni.act .ni-n{color:var(--g)}
-.ni-b{font-size:8px;padding:1px 5px;border-radius:2px;font-weight:500;flex-shrink:0}
-.bc{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.25)}.bw{background:var(--amberdim);color:var(--amber)}.bo{background:var(--gdim);color:var(--g2)}.bb{background:var(--bluedim);color:var(--blue)}.bp{background:var(--purpledim);color:var(--purple)}
-.brief-btn{margin:8px 10px;padding:8px;background:var(--gdim);border:1px solid var(--border2);border-radius:3px;color:var(--g);font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase}
-.brief-btn:hover{background:rgba(0,255,100,.18);border-color:var(--g)}
-.strat-nav-btn{margin:0 10px 8px;padding:8px;background:var(--purpledim);border:1px solid rgba(168,85,247,.25);border-radius:3px;color:var(--purple);font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase}
-.strat-nav-btn:hover{background:rgba(168,85,247,.18);border-color:var(--purple)}
-
-/* ── CENTER ── */
-.center{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
-.tab-bar{height:34px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;padding:0 14px;gap:1px;flex-shrink:0}
-.tab{padding:5px 14px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;white-space:nowrap}
-.tab:hover{color:var(--text)}.tab.act{color:var(--g);border-bottom-color:var(--g)}
-.tab.strat-tab.act{color:var(--purple);border-bottom-color:var(--purple)}
 .content{flex:1;overflow-y:auto;padding:14px}
-.content::-webkit-scrollbar{width:3px}
-.content::-webkit-scrollbar-thumb{background:var(--border2)}
+.content::-webkit-scrollbar,.leftscroll::-webkit-scrollbar,.rightscroll::-webkit-scrollbar{width:3px}
+.content::-webkit-scrollbar-thumb,.leftscroll::-webkit-scrollbar-thumb,.rightscroll::-webkit-scrollbar-thumb{background:var(--border2)}
+.leftscroll,.rightscroll{overflow-y:auto;flex:1;min-height:0}
 
-/* ── KPI ROW ── */
-.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:11px 13px;transition:border-color .15s;cursor:default}
-.kpi:hover{border-color:var(--border2)}
-.kpi-v{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;line-height:1;margin-bottom:3px}
-.kpi-l{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text2)}
-.kpi-s{font-size:9px;margin-top:3px;color:var(--text3)}
-.kpi-trend{font-size:9px;margin-top:2px}
-.vg{color:var(--g)}.vr{color:var(--red)}.va{color:var(--amber)}.vb{color:var(--blue)}.vgo{color:var(--gold)}.vp{color:var(--purple)}.vt{color:var(--teal)}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:11px 13px}
+.kpi .v{font-size:22px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi .l{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text2)}
+.kpi .s{font-size:9px;color:var(--text3);margin-top:3px}
 
-/* ── PANELS ── */
-.dg3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px}
-.dg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:11px 13px}
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)}
-.st{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--text2)}
-.st::before{content:'◆ ';font-size:6px;color:var(--g3)}
-.st.strat::before{color:var(--purple)}
-.sa{font-size:9px;color:var(--g3);cursor:pointer;letter-spacing:.06em;transition:color .12s}
-.sa:hover{color:var(--g)}
-
-/* ── ALERTS ── */
-.ar{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
-.ar:last-child{border-bottom:none}
+.bnca{
+  background:linear-gradient(135deg,rgba(168,85,247,.05),rgba(0,229,204,.03));
+  border:1px solid rgba(168,85,247,.18);border-radius:4px;padding:14px;margin-bottom:12px
+}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.26);border-radius:3px;padding:3px 9px;font-size:8px;color:var(--purple);letter-spacing:.1em;margin-bottom:10px}
+.bnca-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:12px}
+.panelhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.paneltitle{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text2)}
+.big{font-size:22px;color:var(--g);font-weight:700;line-height:1.15}
+.copy{font-size:10px;color:var(--text);line-height:1.65}
+.list{display:grid;gap:7px}
+.item{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:9px 10px}
+.item .h{font-size:9px;color:var(--text2);letter-spacing:.08em;margin-bottom:4px}
+.item .b{font-size:10px;color:var(--text);line-height:1.5}
+.btnrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.btn{padding:7px 12px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;border:none;font-family:inherit}
+.btn-g{background:var(--g);color:var(--bg);font-weight:700}
+.btn-p{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.32);color:var(--purple)}
+.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn.active{outline:1px solid var(--gold)}
+.alert{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.alert:last-child{border-bottom:none}
 .ap{font-size:7px;font-weight:700;padding:2px 5px;border-radius:2px;letter-spacing:.08em;flex-shrink:0;margin-top:1px}
-.pu{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.25)}.pm{background:var(--amberdim);color:var(--amber)}.pl{background:var(--gdim);color:var(--g2)}.pp{background:var(--purpledim);color:var(--purple)}
-.at{font-size:10px;flex:1;line-height:1.4;color:var(--text)}.am{font-size:9px;color:var(--text2);flex-shrink:0}
+.pu{background:rgba(255,68,85,.12);color:var(--red)} .pm{background:rgba(255,170,0,.12);color:var(--amber)} .pl{background:rgba(0,255,100,.08);color:var(--g2)}
+.at{font-size:10px;line-height:1.45;color:var(--text)}
+.scorebox{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.score{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px}
+.score .n{font-size:20px;font-weight:700}
+.muted{color:var(--text2)}
+.hidden{display:none}
 
-/* ── INTAKE ── */
-.ir{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)}
-.ir:last-child{border-bottom:none}
-.id{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.in{font-size:10px;flex:1;color:var(--text)}.it{font-size:8px;color:var(--text2);letter-spacing:.06em}.itm{font-size:8px;color:var(--text3)}
-.ib{font-size:8px;padding:2px 7px;border:1px solid var(--border2);border-radius:2px;color:var(--text2);cursor:pointer;transition:all .12s;background:transparent;font-family:'JetBrains Mono',monospace}
-.ib:hover{border-color:var(--g3);color:var(--g)}.ib.rdy{border-color:rgba(0,255,100,.3);color:var(--g2)}.ib:disabled{opacity:.35;cursor:not-allowed}
-
-/* ── NODES ── */
-.node-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.nc{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:9px 11px;cursor:pointer;transition:all .12s;text-decoration:none;display:block}
-.nc:hover{background:var(--bg4);border-color:var(--border2);transform:translateY(-1px)}
-.ncc{border-left:3px solid var(--red)}.ncw{border-left:3px solid var(--amber)}.nco{border-left:3px solid var(--g3)}.ncp{border-left:3px solid var(--purple)}
-.ncn{font-size:10px;font-weight:500;color:var(--text);margin-bottom:2px}.ncu{font-size:8px;color:var(--text3);margin-bottom:5px}.ncs{display:flex;gap:6px}.ncst{font-size:8px;color:var(--text2)}
-
-/* ── AI OUTPUT ── */
-.ai-out{background:var(--bg3);border:1px solid var(--border2);border-left:2px solid var(--g3);border-radius:3px;padding:11px;font-size:10px;line-height:1.7;color:var(--text);white-space:pre-wrap;display:none;margin-top:8px}
-.ai-out.show{display:block}
-.ai-out.strat-out{border-left-color:var(--purple)}
-.ai-err{background:var(--reddim);border:1px solid rgba(255,68,85,.25);border-radius:3px;padding:9px;font-size:10px;color:var(--red);display:none;margin-top:8px}
-.ai-err.show{display:block}
-.retry{font-size:9px;padding:3px 10px;background:transparent;border:1px solid var(--border2);border-radius:2px;color:var(--text2);cursor:pointer;font-family:'JetBrains Mono',monospace;margin-top:5px;display:none;transition:all .12s}
-.retry:hover{border-color:var(--g3);color:var(--g)}
-.retry.show{display:inline-block}
-
-/* ── BUTTONS ── */
-.btn{padding:7px 14px;font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;transition:all .12s;border:none}
-.btn-p{background:var(--g);color:var(--bg);font-weight:700}.btn-p:hover{background:var(--g2)}.btn-p:disabled{opacity:.4;cursor:not-allowed}
-.btn-o{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-o:hover{border-color:var(--g3);color:var(--g)}.btn-o:disabled{opacity:.35;cursor:not-allowed}
-.btn-g{background:transparent;border:1px solid rgba(240,192,64,.3);color:var(--gold)}.btn-g:hover{background:var(--golddim)}.btn-g:disabled{opacity:.35;cursor:not-allowed}
-.btn-strat{background:var(--purpledim);border:1px solid rgba(168,85,247,.35);color:var(--purple)}.btn-strat:hover{background:rgba(168,85,247,.2);border-color:var(--purple)}.btn-strat:disabled{opacity:.35;cursor:not-allowed}
-.btn-teal{background:var(--tealdim);border:1px solid rgba(0,229,204,.3);color:var(--teal)}.btn-teal:hover{background:rgba(0,229,204,.15)}.btn-teal:disabled{opacity:.35;cursor:not-allowed}
-
-/* ── FORMS ── */
-.rform{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.fl{font-size:9px;color:var(--text2);margin-bottom:5px;letter-spacing:.06em}
-.fsel,.finp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);outline:none}
-.fsel:focus,.finp:focus{border-color:var(--g3)}
-.ftxt{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:8px 10px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);resize:vertical;min-height:70px;outline:none;line-height:1.6}
-.ftxt:focus{border-color:var(--g3)}
-
-/* ── RIGHT PANEL (AI CHAT) ── */
-.rp{width:270px;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
-.rps{padding:10px;border-bottom:1px solid var(--border);flex-shrink:0}
-.rpt{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);margin-bottom:7px}
-.rpt::before{content:'◆ ';font-size:6px;color:var(--g3)}
-.rpc{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:7px}
-.rpc::-webkit-scrollbar{width:2px}
-.rpc::-webkit-scrollbar-thumb{background:var(--border2)}
-.cm{font-size:10px;line-height:1.5;padding:7px 9px;border-radius:3px}
-.ca{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-left:2px solid var(--g3)}
-.cs{background:var(--purpledim);border:1px solid rgba(168,85,247,.2);color:var(--purple);border-left:2px solid var(--purple)}
-.cu{background:var(--gdim);border:1px solid var(--border2);color:var(--g);text-align:right}
-.ce{background:var(--reddim);border:1px solid rgba(255,68,85,.25);color:var(--red)}
-.rpi-row{padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:5px;flex-shrink:0}
-.rpi{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:5px 7px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);outline:none}
-.rpi:focus{border-color:var(--g3)}.rpi::placeholder{color:var(--text3)}
-.rpsb{width:26px;height:26px;background:var(--gdim);border:1px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g);font-size:11px;transition:all .12s;flex-shrink:0;align-self:flex-end}
-.rpsb:hover{background:rgba(0,255,100,.2);border-color:var(--g3)}
-.chips{display:flex;flex-wrap:wrap;gap:3px}
-.chip{font-size:8px;padding:2px 7px;border:1px solid var(--border);border-radius:2px;color:var(--text3);cursor:pointer;letter-spacing:.04em;transition:all .12s}
-.chip:hover{border-color:var(--g3);color:var(--g);background:var(--gdim)}
-.chip.strat-chip{border-color:rgba(168,85,247,.2);color:rgba(168,85,247,.6)}
-.chip.strat-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purpledim)}
-
-/* ── STATUSBAR ── */
-.sbar{height:20px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:14px;flex-shrink:0}
-.si{font-size:8px;color:var(--text3);letter-spacing:.06em;display:flex;align-items:center;gap:3px}
-
-/* ── MODALS ── */
-.bo-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center}
-.bo-overlay.open{display:flex}
-.bm{width:840px;max-height:90vh;background:var(--bg2);border:1px solid var(--border3);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
-.bh{padding:14px 18px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.bt{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--g);letter-spacing:.04em}
-.bt.purple{color:var(--purple)}
-.bs{font-size:9px;color:var(--text2);margin-top:2px;letter-spacing:.06em}
-.bx{width:26px;height:26px;border:1px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:13px;transition:all .12s;background:transparent}
-.bx:hover{border-color:var(--red);color:var(--red)}
-.bb-body{flex:1;overflow-y:auto;padding:14px 18px}
-.bb-body::-webkit-scrollbar{width:3px}
-.bb-body::-webkit-scrollbar-thumb{background:var(--border2)}
-.bsec{margin-bottom:18px}
-.bsec-t{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--g3);margin-bottom:7px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.bsec-t.purple{color:var(--purple)}
-.bi{display:flex;align-items:flex-start;gap:9px;padding:7px 9px;background:var(--bg3);border-radius:3px;margin-bottom:4px}
-.bn{width:16px;height:16px;background:var(--gdim);border:1px solid var(--g3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--g);flex-shrink:0;margin-top:1px}
-.bit{font-size:10px;flex:1;line-height:1.5;color:var(--text)}
-.ba-row{display:flex;align-items:center;gap:5px;margin-top:5px}
-.ba-l{font-size:8px;color:var(--text2)}
-.ba-row select{font-size:9px;font-family:'JetBrains Mono',monospace;background:var(--bg2);border:1px solid var(--border2);border-radius:2px;color:var(--text);padding:1px 5px}
-.btxt{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:9px 11px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text);resize:vertical;min-height:70px;outline:none;line-height:1.6}
-.btxt:focus{border-color:var(--g3)}
-.bf{padding:10px 18px;border-top:1px solid var(--border2);display:flex;gap:7px;flex-shrink:0;align-items:center}
-
-/* ── STRATEGIST PANEL ── */
-.strat-panel{background:linear-gradient(135deg,rgba(168,85,247,0.04),rgba(0,229,204,0.02));border:1px solid rgba(168,85,247,0.15);border-radius:4px;padding:11px 13px}
-.strat-badge{display:inline-flex;align-items:center;gap:5px;background:var(--purpledim);border:1px solid rgba(168,85,247,.25);border-radius:3px;padding:2px 8px;font-size:8px;color:var(--purple);letter-spacing:.1em;margin-bottom:8px}
-.strat-signal{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(168,85,247,.1)}
-.strat-signal:last-child{border-bottom:none}
-.strat-signal-icon{font-size:11px;flex-shrink:0;margin-top:1px}
-.strat-signal-body{flex:1}
-.strat-signal-title{font-size:10px;color:var(--text);margin-bottom:2px}
-.strat-signal-sub{font-size:9px;color:var(--text2);line-height:1.4}
-.strat-conf{font-size:8px;padding:1px 6px;border-radius:2px;background:var(--purpledim);color:var(--purple);flex-shrink:0;margin-top:1px}
-
-/* ── REVENUE CHART ── */
-.chart-wrap{position:relative;width:100%;height:180px}
-
-/* ── REPORT TABLE ── */
-.rtable{width:100%;border-collapse:collapse;font-size:10px}
-.rtable th{text-align:left;padding:5px 8px;color:var(--text2);font-weight:400;font-size:8px;letter-spacing:.12em;border-bottom:1px solid var(--border2)}
-.rtable td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text)}
-.rtable tr:last-child td{border-bottom:none}
-.rtable tr:hover td{background:var(--bg3)}
-
-/* ── STAFF ── */
-.obs-entry{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:8px 10px;font-size:9px;line-height:1.5}
-.obs-name{color:var(--g);font-size:10px;margin-bottom:2px}
-.obs-type{color:var(--text2);font-size:8px}
-.obs-body{color:var(--text);margin-top:3px}
-
-/* ── ANIMATIONS ── */
-@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
-.fi{animation:fi .2s ease both}
-@keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
-.slideIn{animation:slideIn .25s ease both}
-
-/* ── PROGRESS BARS ── */
-.pbar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:4px}
-.pbar-fill{height:100%;border-radius:2px;transition:width .6s ease}
-.pbar-g{background:var(--g)}.pbar-r{background:var(--red)}.pbar-a{background:var(--amber)}.pbar-p{background:var(--purple)}
-
-/* ── SCORE RING ── */
-.score-ring{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:8px 0}
-.score-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:700;color:var(--g);line-height:1}
-.score-lbl{font-size:8px;letter-spacing:.14em;color:var(--text2);margin-top:3px}
-
-/* ── NEURAL ACTIVITY ── */
-.neural-stream{background:var(--bg3);border:1px solid rgba(168,85,247,.15);border-radius:3px;padding:8px 10px;font-size:9px;color:rgba(168,85,247,.7);line-height:1.6;font-family:'JetBrains Mono',monospace;max-height:120px;overflow-y:auto}
-.neural-stream::-webkit-scrollbar{width:2px}
-.neural-stream::-webkit-scrollbar-thumb{background:rgba(168,85,247,.2)}
-.ns-line{margin-bottom:2px}
-.ns-line.active{color:var(--purple)}
-.ns-line.done{color:var(--text3)}
+@media (max-width:1100px){
+  .main{grid-template-columns:1fr}
+  .leftnav,.rightrail{display:none}
+  .kpi-row,.scorebox,.bnca-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:700px){
+  .kpi-row,.scorebox,.bnca-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════ TOP BAR ═══════════════════════════════════ -->
 <div class="topbar">
-  <div class="tb-brand">
-    <div class="tb-logo">TSM</div>
-    <div><div class="tb-name"><span>HONOR</span>HEALTH · OPS PORTAL</div></div>
-  </div>
-  <div class="tb-sep"></div>
-  <div class="tb-pill"><span class="dot dg pls"></span>15 NODES</div>
-  <div class="tb-pill"><span class="dot dr"></span>2 CRITICAL</div>
-  <div class="tb-pill"><span class="dot da"></span>4 BPO PENDING</div>
-  <div class="tb-pill"><span class="dot db"></span>AI READY</div>
-  <div class="tb-sep"></div>
-  <div class="neural-pill" id="neural-status">
-    <div class="neural-ring" id="neural-ring"></div>
-    <span id="neural-txt">STRATEGIST LINKING...</span>
-  </div>
-  <div class="ticker-wrap">
-    <div class="ticker">◆ HC-TAXPREP-3059 · CPU 80% · ACTION REQUIRED &nbsp;&nbsp;&nbsp; ◆ BPO INTAKE · 4 DOCUMENTS IN QUEUE &nbsp;&nbsp;&nbsp; ◆ DENIAL RATE 18.4% · EXCEEDS 15% CMS THRESHOLD &nbsp;&nbsp;&nbsp; ◆ CLM-0334 · CO-29 TIMELY FILING · WRITE-OFF RISK 48HRS &nbsp;&nbsp;&nbsp; ◆ MODIFIER -25 OVERUSE · 47 CLAIMS · $8,460 EXPOSURE &nbsp;&nbsp;&nbsp; ◆ CPT 99215 UPCODING · 23 CLAIMS · $12,040 AUDIT RISK &nbsp;&nbsp;&nbsp; ◆ STRATEGIST NEURAL CORE ONLINE · REAL-TIME GUIDANCE ACTIVE</div>
-  </div>
-  <div class="tb-right">
-    <div class="tb-time" id="clk">--:--:--</div>
-    <div class="tb-sep"></div>
-    <div class="tb-user"><div class="tb-av">DM</div><div><div class="tb-un">Dee Montee</div><div class="tb-ur">Revenue Cycle Manager</div></div></div>
+  <div class="logo">TSM</div>
+  <div class="brand"><span>HONOR</span>HEALTH · DEE BNCA CONSOLE</div>
+  <div class="sep"></div>
+  <div class="pill"><span class="dot dg"></span><span id="top-offices">4 OFFICES</span></div>
+  <div class="pill"><span class="dot dr"></span><span id="top-risk">RISK: HIGH</span></div>
+  <div class="pill"><span class="dot da"></span><span id="top-bnca">BNCA READY</span></div>
+  <div class="right">
+    <div class="user"><div class="av">DM</div><div><div style="font-size:11px;color:var(--text)">Dee Montee</div><div style="font-size:9px;color:var(--text2)">Revenue Cycle Manager</div></div></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════ STRATEGY BAR ═══════════════════════════════════ -->
-<div class="strat-bar">
-  <div class="strat-label">◈ STRATEGIST</div>
-  <div class="strat-rec" id="strat-ticker">▸ <span>Neural analysis loading</span> — connecting to HC Strategist for real-time recommendations...</div>
-  <div class="strat-actions">
-    <button class="strat-btn" onclick="showTab('strategist')">OPEN FULL VIEW →</button>
-    <button class="strat-btn" onclick="quickStratRec()">◈ REFRESH</button>
-  </div>
+<div class="stratbar">
+  <div class="stratlabel">◈ BNCA</div>
+  <div class="strattext" id="stratline">Waiting for Main Strategist posture...</div>
+  <button class="stratbtn" onclick="refreshAll()">REFRESH</button>
 </div>
 
-<!-- ═══════════════════════════════════ MAIN ═══════════════════════════════════ -->
 <div class="main">
-
-  <!-- ── LEFT NAV ── -->
   <div class="leftnav">
-    <div class="nav-srch"><input type="text" placeholder="⌕  search nodes..." id="nav-search-inp" oninput="filterNav(this.value)"></div>
-    <div class="nav-scroll" id="nav-scroll">
-      <div class="nav-gh"><span class="nav-gl" style="color:var(--red)">⚠ Critical</span><span class="nav-gc" style="color:var(--red)">2</span></div>
-      <a class="ni" href="https://hc-taxprep.tsmatter.com" target="_blank"><span class="ni-d pls" style="background:var(--red)"></span><span class="ni-n">HC Tax Prep</span><span class="ni-b bc">80% CPU</span></a>
-      <a class="ni" href="https://hc-billing.tsmatter.com" target="_blank"><span class="ni-d" style="background:var(--red)"></span><span class="ni-n">BPO-CON-5013</span><span class="ni-b bc">STOPPED</span></a>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl" style="color:var(--amber)">◉ Active Today</span><span class="nav-gc">5</span></div>
-      <a class="ni act" href="https://hc-billing.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Billing</span><span class="ni-b bw">231 claims</span></a>
-      <a class="ni" href="https://hc-compliance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Compliance</span><span class="ni-b bb">3 docs</span></a>
-      <a class="ni" href="https://hc-medical.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Medical</span><span class="ni-b bo">online</span></a>
-      <a class="ni" href="https://hc-insurance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Insurance</span><span class="ni-b bw">6 auths</span></div>
-      <a class="ni" href="https://hc-command.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Command</span><span class="ni-b bo">online</span></a>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">Revenue</span><span class="nav-gc">3</span></div>
-      <a class="ni" href="https://hc-billing.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Billing</span></a>
-      <a class="ni" href="https://hc-financial.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Financial</span></a>
-      <a class="ni" href="https://hc-taxprep.tsmatter.com" target="_blank"><span class="ni-d" style="background:var(--red)"></span><span class="ni-n">HC Tax Prep</span></a>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">Compliance</span><span class="nav-gc">3</span></div>
-      <a class="ni" href="https://hc-compliance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Compliance</span></a>
-      <a class="ni" href="https://compliance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">Compliance</span></a>
-      <a class="ni" href="https://auditops.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">AuditOps</span></a>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">Clinical</span><span class="nav-gc">4</span></div>
-      <a class="ni" href="https://hc-medical.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Medical</span></a>
-      <a class="ni" href="https://hc-pharmacy.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Pharmacy</span></a>
-      <a class="ni" href="https://hc-insurance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Insurance</span></a>
-      <a class="ni" href="https://dme.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">DME</span></a>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl" style="color:var(--purple)">◈ Strategy</span><span class="nav-gc" style="color:var(--purple)">2</span></div>
-      <div class="ni" onclick="showTab('strategist')" style="cursor:pointer"><span class="ni-d dp"></span><span class="ni-n" style="color:var(--purple)">HC Strategist</span><span class="ni-b bp">NEURAL</span></div>
-      <a class="ni" href="https://strategist.tsmatter.com" target="_blank"><span class="ni-d dp"></span><span class="ni-n">Strategist</span></a>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl" style="color:var(--blue)">BPO Intake</span><span class="nav-gc" style="color:var(--blue)">4</span></div>
-      <div class="ni"><span class="ni-d da"></span><span class="ni-n">3 Processing</span><span class="ni-b bw">queue</span></div>
-      <div class="ni"><span class="ni-d dg"></span><span class="ni-n">1 Ready</span><span class="ni-b bo">review</span></div>
-      <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">Reports</span></div>
-      <div class="ni" onclick="showTab('reports')" style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">Exec Summary</span><span class="ni-b" style="background:var(--golddim);color:var(--gold)">build</span></div>
+    <div class="block">
+      <div class="navtitle">Office Posture</div>
+      <div class="muted" style="font-size:9px">Main Strategist ranking across HonorHealth offices</div>
     </div>
-    <button class="strat-nav-btn" onclick="showTab('strategist')">◈ Strategist Neural Core</button>
-    <button class="brief-btn" onclick="openBriefing()">◆ Build Team Briefing</button>
+    <div class="leftscroll">
+      <div class="block">
+        <div class="office-list" id="office-list"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- ── CENTER CONTENT ── -->
   <div class="center">
-    <div class="tab-bar">
-      <div class="tab act" id="t-dashboard" onclick="showTab('dashboard')">Dashboard</div>
-      <div class="tab" id="t-nodes" onclick="showTab('nodes')">All Nodes</div>
-      <div class="tab" id="t-intake" onclick="showTab('intake')">BPO Intake</div>
-      <div class="tab" id="t-alerts" onclick="showTab('alerts')">Alerts <span style="color:var(--red);margin-left:3px">6</span></div>
-      <div class="tab" id="t-reports" onclick="showTab('reports')">Reports</div>
-      <div class="tab" id="t-analytics" onclick="showTab('analytics')">Analytics</div>
-      <div class="tab strat-tab" id="t-strategist" onclick="showTab('strategist')" style="color:rgba(168,85,247,.6)">◈ Strategist</div>
-      <div class="tab" id="t-staff" onclick="showTab('staff')">▲ Staff Intel</div>
+    <div class="tabs">
+      <div class="tab active" data-mode="bnca" onclick="setMode('bnca', this)">BNCA</div>
+      <div class="tab" data-mode="recovery" onclick="setMode('recovery', this)">Recovery</div>
+      <div class="tab" data-mode="payer" onclick="setMode('payer', this)">Payer</div>
+      <div class="tab" data-mode="brief" onclick="setMode('brief', this)">Exec Brief</div>
+      <div class="tab" data-mode="compare" onclick="setMode('compare', this)">Compare</div>
     </div>
 
     <div class="content">
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" id="k-risk">$0</div><div class="l">Revenue At Risk</div><div class="s" id="k-risk-sub">selected office</div></div>
+        <div class="kpi"><div class="v" id="k-rec">$0</div><div class="l">Recoverable 72h</div><div class="s" id="k-rec-sub">selected office</div></div>
+        <div class="kpi"><div class="v" id="k-acc">$0</div><div class="l">14d Acceleration</div><div class="s">cash unlock</div></div>
+        <div class="kpi"><div class="v" id="k-lane">—</div><div class="l">Highest Yield Lane</div><div class="s">HC-Strategist</div></div>
+        <div class="kpi"><div class="v" id="k-mode">BNCA</div><div class="l">Dee Mode</div><div class="s">executive command</div></div>
+      </div>
 
-      <!-- ══════════════════ DASHBOARD TAB ══════════════════ -->
-      <div id="tab-dashboard" style="display:block">
-        <div class="kpi-row">
-          <div class="kpi"><div class="kpi-v vr">1,256</div><div class="kpi-l">Claims This Month</div><div class="kpi-s" style="color:var(--red)">231 denied · 18.4% rate</div><div class="pbar"><div class="pbar-fill pbar-r" style="width:18.4%"></div></div></div>
-          <div class="kpi"><div class="kpi-v va">$48K</div><div class="kpi-l">Revenue At Risk</div><div class="kpi-s">14 aging &gt;30 days</div><div class="pbar"><div class="pbar-fill pbar-a" style="width:62%"></div></div></div>
-          <div class="kpi"><div class="kpi-v vg">94.2%</div><div class="kpi-l">Clean Claim Rate</div><div class="kpi-s" style="color:var(--amber)">target 97% · gap 2.8pt</div><div class="pbar"><div class="pbar-fill pbar-g" style="width:94.2%"></div></div></div>
-          <div class="kpi"><div class="kpi-v vb">4</div><div class="kpi-l">BPO Docs Pending</div><div class="kpi-s">1 ready for review</div></div>
-          <div class="kpi"><div class="kpi-v vp" id="strat-score">—</div><div class="kpi-l">Strategist Score</div><div class="kpi-s" id="strat-score-sub">calculating...</div></div>
-        </div>
-
-        <div class="dg3">
+      <div class="bnca">
+        <div class="badge">◈ DEE EXECUTIVE BNCA SURFACE</div>
+        <div class="bnca-grid">
           <div class="panel">
-            <div class="sh"><span class="st">Active Alerts</span><span class="sa" onclick="showTab('alerts')">view all →</span></div>
-            <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — PR-96, CO-4, CO-11</span><span class="am" style="color:var(--red)">$48K</span></div>
-            <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (93454) — CO-29 timely filing · write-off risk in 48hrs</span><span class="am" style="color:var(--red)">$3.8K</span></div>
-            <div class="ar"><span class="ap pm">MED</span><span class="at">CPT 99215 upcoding — 23 claims · $12,040 audit exposure</span><span class="am">Audit</span></div>
-            <div class="ar"><span class="ap pm">MED</span><span class="at">Modifier -25 overuse — 47 claims · compliance review required</span><span class="am">$8,460</span></div>
-            <div class="ar"><span class="ap pl">LOW</span><span class="at">ICD-10 specificity gaps on 14 claims</span><span class="am">Docs</span></div>
-          </div>
-          <div class="panel">
-            <div class="sh"><span class="st">BPO Intake</span><span class="sa" onclick="showTab('intake')">view all →</span></div>
-            <div class="ir"><span class="id" style="background:var(--g);box-shadow:0 0 4px var(--g)"></span><div style="flex:1"><div class="in">ERA_20260414_batch.txt</div><div class="it">ERA FILE · $1.00/DOC</div></div><span class="itm">08:14</span><button class="ib rdy" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch — 231 claims, payers Medicare and Aetna, denial codes PR-96 and CO-4 present')">REVIEW</button></div>
-            <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CLM-denial-batch-231.csv</div><div class="it">DENIAL BATCH · $1.00/DOC</div></div><span class="itm">07:52</span><button class="ib" disabled>PROCESSING</button></div>
-            <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CPT-audit-Q1-2026.pdf</div><div class="it">AUDIT DOC · $2.00/DOC</div></div><span class="itm">07:30</span><button class="ib" disabled>PROCESSING</button></div>
-            <div class="ir"><span class="id" style="background:var(--text3)"></span><div style="flex:1"><div class="in">physician-query-pkg.pdf</div><div class="it">CDI PACKAGE · $2.00/DOC</div></div><span class="itm">06:45</span><button class="ib" disabled>QUEUED</button></div>
-          </div>
-          <div class="panel">
-            <div class="sh"><span class="st">Node Status</span></div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Billing</span><span style="color:var(--amber)">231 claims</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Compliance</span><span style="color:var(--g2)">online</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Medical</span><span style="color:var(--g2)">online</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-TaxPrep</span><span style="color:var(--red)">80% CPU ⚠</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Insurance</span><span style="color:var(--amber)">6 pending auths</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Pharmacy</span><span style="color:var(--g2)">online</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Strategist</span><span style="color:var(--purple)" id="strat-node-status">neural linking...</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Legal</span><span style="color:var(--g2)">online</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Vendors</span><span style="color:var(--g2)">online</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text2)">HC-Grants</span><span style="color:var(--g2)">online</span></div>
+            <div class="panelhead"><div class="paneltitle">Best Next Course of Action</div></div>
+            <div class="big" id="bnca-title">Loading...</div>
+            <div class="copy" id="bnca-why" style="margin-top:10px"></div>
+            <div class="btnrow">
+              <button class="btn btn-g" onclick="runModeAction()">Run Current Mode</button>
+              <button class="btn btn-p" onclick="delegateToOM()">Delegate to OM</button>
+              <button class="btn btn-o" onclick="refreshAll()">Refresh</button>
             </div>
           </div>
-        </div>
-
-        <!-- STRATEGIST NEURAL SNAPSHOT on Dashboard -->
-        <div class="strat-panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st strat">Strategist Neural Snapshot</span><button class="btn-strat btn" style="padding:3px 10px;font-size:8px" onclick="showTab('strategist')">FULL VIEW →</button></div>
-          <div id="dash-strat-out" style="font-size:10px;color:var(--text2);padding:4px 0">
-            <div class="neural-stream" id="dash-neural-stream">
-              <div class="ns-line active">▸ Initializing strategic analysis engine...</div>
-              <div class="ns-line active">▸ Ingesting HonorHealth revenue cycle context...</div>
-              <div class="ns-line active">▸ Cross-referencing 15 nodes · 6 alerts · 4 BPO docs...</div>
+          <div class="panel">
+            <div class="panelhead"><div class="paneltitle">Executive Context</div></div>
+            <div class="list">
+              <div class="item"><div class="h">Selected Office</div><div class="b" id="cx-office">—</div></div>
+              <div class="item"><div class="h">Top System Lane</div><div class="b" id="cx-lane">—</div></div>
+              <div class="item"><div class="h">Top Risk Office</div><div class="b" id="cx-top-office">—</div></div>
+              <div class="item"><div class="h">Owner Lanes</div><div class="b" id="cx-owners">—</div></div>
             </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="sh"><span class="st">Quick Launch</span><span class="sa" onclick="showTab('nodes')">all nodes →</span></div>
-          <div class="node-grid">
-            <a class="nc ncc" href="https://hc-taxprep.tsmatter.com" target="_blank"><div class="ncn">HC Tax Prep</div><div class="ncu">hc-taxprep.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--red)">80% CPU · 187 restarts</span></div></a>
-            <a class="nc ncw" href="https://hc-billing.tsmatter.com" target="_blank"><div class="ncn">HC Billing</div><div class="ncu">hc-billing.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--amber)">231 denied · $48K risk</span></div></a>
-            <a class="nc nco" href="https://hc-compliance.tsmatter.com" target="_blank"><div class="ncn">HC Compliance</div><div class="ncu">hc-compliance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 3 BPO docs</span></div></a>
-            <a class="nc ncw" href="https://hc-insurance.tsmatter.com" target="_blank"><div class="ncn">HC Insurance</div><div class="ncu">hc-insurance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--amber)">6 pending authorizations</span></div></a>
-            <div class="nc ncp" onclick="showTab('strategist')" style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural core · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)" id="strat-quick-status">connecting...</span></div></div>
-            <a class="nc nco" href="https://hc-command.tsmatter.com" target="_blank"><div class="ncn">HC Command</div><div class="ncu">hc-command.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · command center</span></div></a>
           </div>
         </div>
       </div>
 
-      <!-- ══════════════════ STRATEGIST TAB ══════════════════ -->
-      <div id="tab-strategist" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-
-          <div class="strat-panel">
-            <div class="strat-badge"><span class="dot dp pls"></span>NEURAL CORE · HC STRATEGIST</div>
-            <div class="sh"><span class="st strat">Strategic Recommendation Engine</span></div>
-            <div style="margin-bottom:8px">
-              <div class="fl">ANALYSIS MODE</div>
-              <select class="fsel" id="strat-mode">
-                <option value="priority">Priority Action Plan — What needs to happen NOW</option>
-                <option value="denial">Denial Rate Root Cause + Recovery Strategy</option>
-                <option value="revenue">Revenue Recovery — Full opportunity mapping</option>
-                <option value="compliance">Compliance Risk Assessment + Mitigation</option>
-                <option value="operational">Operational Efficiency + Node Health</option>
-                <option value="forecast">30-Day Revenue Cycle Forecast</option>
-                <option value="payer">Payer Strategy — Medicare/Aetna appeal tactics</option>
-                <option value="coding">Coding Quality Audit + Coder Coaching Plan</option>
-              </select>
-            </div>
-            <div style="margin-bottom:8px">
-              <div class="fl">ADDITIONAL CONTEXT (optional)</div>
-              <textarea class="ftxt" id="strat-context" placeholder="Add specifics... e.g. 'Focus on the CO-29 appeal and modifier -25 issue. We have a board meeting Friday and need talking points.'"></textarea>
-            </div>
-            <div style="display:flex;gap:6px">
-              <button class="btn btn-strat" id="strat-run-btn" onclick="runStrategist()" style="flex:1">◈ Run Strategist Analysis</button>
-              <button class="btn btn-o" onclick="document.getElementById('strat-out').classList.remove('show')" style="padding:7px 10px">✕</button>
-            </div>
-            <div class="ai-out strat-out" id="strat-out"></div>
-            <div class="ai-err" id="strat-err"></div>
-            <button class="retry" id="strat-retry" onclick="runStrategist()">↻ Retry</button>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div class="strat-panel">
-              <div class="sh"><span class="st strat">Live Strategic Signals</span><button class="btn-strat btn" style="padding:2px 8px;font-size:8px" id="signals-btn" onclick="loadStrategicSignals()">↻ REFRESH</button></div>
-              <div id="signals-out">
-                <div class="strat-signal">
-                  <div class="strat-signal-icon" style="color:var(--red)">⚡</div>
-                  <div class="strat-signal-body"><div class="strat-signal-title">CLM-0334 · 48hr write-off deadline</div><div class="strat-signal-sub">File CO-29 appeal NOW. $3,800 at stake. Assign J. Rodriguez immediately.</div></div>
-                  <div class="strat-conf" style="background:rgba(255,68,85,.15);color:var(--red)">URGENT</div>
-                </div>
-                <div class="strat-signal">
-                  <div class="strat-signal-icon" style="color:var(--amber)">▲</div>
-                  <div class="strat-signal-body"><div class="strat-signal-title">Denial rate 18.4% — CMS breach</div><div class="strat-signal-sub">PR-96 drives 45%. Template improvement + payer-specific appeals will yield $22K+ recovery.</div></div>
-                  <div class="strat-conf">HIGH</div>
-                </div>
-                <div class="strat-signal">
-                  <div class="strat-signal-icon" style="color:var(--purple)">◈</div>
-                  <div class="strat-signal-body"><div class="strat-signal-title">CPT 99215 upcoding pattern</div><div class="strat-signal-sub">23 claims · documentation inconsistent. Schedule coder coaching before Friday audit exposure escalates.</div></div>
-                  <div class="strat-conf">MED</div>
-                </div>
-                <div class="strat-signal">
-                  <div class="strat-signal-icon" style="color:var(--teal)">◎</div>
-                  <div class="strat-signal-body"><div class="strat-signal-title">HC-TaxPrep node instability</div><div class="strat-signal-sub">187 restarts at 80% CPU. Revenue cycle reporting may be impacted. Escalate to TSM infra.</div></div>
-                  <div class="strat-conf" style="background:rgba(0,229,204,.1);color:var(--teal)">INFRA</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="strat-panel">
-              <div class="sh"><span class="st strat">Strategist Quick Asks</span></div>
-              <div style="display:flex;flex-wrap:wrap;gap:4px">
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Draft a CO-29 appeal letter for CLM-0334 (CPT 93454, $3,800 cardiac catheterization denied by Medicare for timely filing). Include all required elements.')">Draft CO-29 Appeal</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Create a 3-step action plan to bring our 18.4% denial rate below the 15% CMS threshold within 30 days. Top codes: PR-96 45%, CO-4 28%, CO-11 18%.')">Denial Reduction Plan</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('What is the exact documentation needed to defend CPT 99215 usage and prevent a modifier -25 compliance finding? Provide coder education talking points.')">99215 Defense Brief</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Build a 30-day revenue recovery roadmap for HonorHealth given: $48K at risk, 18.4% denial rate, 231 pending denied claims, 6 auth approvals pending. Prioritize by dollar impact.')">30-Day Recovery Map</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Analyze our payer mix risk for Medicare and Aetna given CO-29 and PR-96 denial patterns. What payer-specific strategies should we deploy?')">Payer Strategy</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Generate executive talking points for a board meeting about our revenue cycle performance: 18.4% denial rate, $48K at risk, 94.2% clean claim rate vs 97% target. Frame challenges as managed opportunities.')">Board Talking Points</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="dg2">
-          <div class="strat-panel">
-            <div class="sh"><span class="st strat">Payer Intelligence</span><button class="btn-strat btn" style="padding:2px 8px;font-size:8px" onclick="runPayerIntel()">◈ ANALYZE</button></div>
-            <div id="payer-intel-out" style="font-size:10px;color:var(--text2)">
-              <table class="rtable">
-                <thead><tr><th>PAYER</th><th>DENIALS</th><th>TOP CODE</th><th>AT RISK</th><th>ACTION</th></tr></thead>
-                <tbody>
-                  <tr><td>Medicare</td><td style="color:var(--red)">104</td><td>CO-29 · PR-96</td><td style="color:var(--red)">$28K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate Medicare-specific appeal strategy for CO-29 timely filing and PR-96 non-covered denials. Include deadline rules and required documentation.')">Strategy →</button></td></tr>
-                  <tr><td>Aetna</td><td style="color:var(--amber)">78</td><td>CO-4 · CO-11</td><td style="color:var(--amber)">$14K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate Aetna-specific appeal strategy for CO-4 (denial code: service not covered) and CO-11 (diagnosis inconsistent). What clinical documentation should be attached?')">Strategy →</button></td></tr>
-                  <tr><td>BCBS</td><td>32</td><td>CO-97</td><td>$6K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate BCBS appeal strategy for CO-97 payment adjusted because proposed service included in another service.')">Strategy →</button></td></tr>
-                  <tr><td>UHC</td><td>17</td><td>PR-1</td><td>$0K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate United Healthcare appeal strategy for PR-1 patient deductible denials. When should we bill patient vs appeal?')">Strategy →</button></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="ai-out strat-out" id="payer-ai-out"></div>
-          </div>
-
-          <div class="strat-panel">
-            <div class="sh"><span class="st strat">AI Document Drafter</span></div>
-            <div style="margin-bottom:7px"><div class="fl">DOCUMENT TYPE</div>
-            <select class="fsel" id="doc-type-sel">
-              <option value="appeal">Appeal Letter (payer)</option>
-              <option value="auth">Prior Authorization Request</option>
-              <option value="query">Physician Query Letter</option>
-              <option value="compliance">Compliance Notice</option>
-              <option value="education">Coder Education Memo</option>
-              <option value="executive">Executive Briefing Memo</option>
-            </select></div>
-            <div style="margin-bottom:7px"><div class="fl">CLAIM / CONTEXT</div>
-            <textarea class="ftxt" id="doc-draft-context" style="min-height:55px" placeholder="e.g. CLM-0334, CPT 93454, Medicare, CO-29 timely filing, $3,800, patient John D., DOS 3/15/2026..."></textarea></div>
-            <button class="btn btn-strat" id="doc-draft-btn" onclick="draftDocument()" style="width:100%">◈ Draft Document</button>
-            <div class="ai-out strat-out" id="doc-draft-out"></div>
-            <div class="ai-err" id="doc-draft-err"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ NODES TAB ══════════════════ -->
-      <div id="tab-nodes" style="display:none">
-        <div class="panel">
-          <div class="sh"><span class="st">All Nodes — HonorHealth Suite (15)</span></div>
-          <div class="node-grid">
-            <a class="nc ncc" href="https://hc-taxprep.tsmatter.com" target="_blank"><div class="ncn">HC Tax Prep</div><div class="ncu">hc-taxprep.tsmatter.com · :3059</div><div class="ncs"><span class="ncst" style="color:var(--red)">80% CPU · 187 restarts</span></div></a>
-            <a class="nc ncw" href="https://hc-billing.tsmatter.com" target="_blank"><div class="ncn">HC Billing</div><div class="ncu">hc-billing.tsmatter.com · :3050</div><div class="ncs"><span class="ncst" style="color:var(--amber)">231 denied claims</span></div></a>
-            <a class="nc nco" href="https://hc-compliance.tsmatter.com" target="_blank"><div class="ncn">HC Compliance</div><div class="ncu">hc-compliance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 51mb</span></div></a>
-            <a class="nc nco" href="https://hc-medical.tsmatter.com" target="_blank"><div class="ncn">HC Medical</div><div class="ncu">hc-medical.tsmatter.com · :3056</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 54mb</span></div></a>
-            <a class="nc nco" href="https://hc-pharmacy.tsmatter.com" target="_blank"><div class="ncn">HC Pharmacy</div><div class="ncu">hc-pharmacy.tsmatter.com · :3057</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
-            <a class="nc ncw" href="https://hc-insurance.tsmatter.com" target="_blank"><div class="ncn">HC Insurance</div><div class="ncu">hc-insurance.tsmatter.com · :3054</div><div class="ncs"><span class="ncst" style="color:var(--amber)">6 pending auths</span></div></a>
-            <a class="nc nco" href="https://hc-legal.tsmatter.com" target="_blank"><div class="ncn">HC Legal</div><div class="ncu">hc-legal.tsmatter.com · :3055</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
-            <a class="nc nco" href="https://hc-vendors.tsmatter.com" target="_blank"><div class="ncn">HC Vendors</div><div class="ncu">hc-vendors.tsmatter.com · :3060</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
-            <a class="nc nco" href="https://hc-grants.tsmatter.com" target="_blank"><div class="ncn">HC Grants</div><div class="ncu">hc-grants.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 52mb</span></div></a>
-            <a class="nc nco" href="https://hc-financial.tsmatter.com" target="_blank"><div class="ncn">HC Financial</div><div class="ncu">hc-financial.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 52mb</span></div></a>
-            <div class="nc ncp" onclick="showTab('strategist')" style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)">active · neural core</span></div></div>
-            <a class="nc nco" href="https://hc-command.tsmatter.com" target="_blank"><div class="ncn">HC Command</div><div class="ncu">hc-command.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · command center</span></div></a>
-            <a class="nc nco" href="https://honorhealth.tsmatter.com" target="_blank"><div class="ncn">HonorHealth Portal</div><div class="ncu">honorhealth.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · client-facing</span></div></a>
-            <a class="nc nco" href="https://appointments.tsmatter.com" target="_blank"><div class="ncn">Appointments</div><div class="ncu">appointments.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online</span></div></a>
-            <a class="nc nco" href="https://dme.tsmatter.com" target="_blank"><div class="ncn">DME</div><div class="ncu">dme.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online</span></div></a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ BPO INTAKE TAB ══════════════════ -->
-      <div id="tab-intake" style="display:none">
-        <div class="panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st">BPO Document Intake Queue</span></div>
-          <table class="rtable">
-            <thead><tr><th>DOCUMENT</th><th>TYPE</th><th>TIER</th><th>RECEIVED</th><th>STATUS</th><th style="text-align:right">ACTION</th></tr></thead>
-            <tbody>
-              <tr><td>ERA_20260414_batch.txt</td><td style="color:var(--text2)">ERA File</td><td><span style="background:var(--amberdim);color:var(--amber);padding:1px 5px;border-radius:2px;font-size:8px">$1.00/doc</span></td><td style="color:var(--text2)">08:14</td><td><span style="color:var(--g)">● READY</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch — 231 claims, multiple payers including Medicare and Aetna, denial codes PR-96 and CO-4 present')">Review Report</button></td></tr>
-              <tr><td>CLM-denial-batch-231.csv</td><td style="color:var(--text2)">Denial Batch</td><td><span style="background:var(--amberdim);color:var(--amber);padding:1px 5px;border-radius:2px;font-size:8px">$1.00/doc</span></td><td style="color:var(--text2)">07:52</td><td><span style="color:var(--amber)">◎ PROCESSING</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" disabled>Pending...</button></td></tr>
-              <tr><td>CPT-audit-Q1-2026.pdf</td><td style="color:var(--text2)">Audit Document</td><td><span style="background:var(--reddim);color:var(--red);padding:1px 5px;border-radius:2px;font-size:8px">$2.00/doc</span></td><td style="color:var(--text2)">07:30</td><td><span style="color:var(--amber)">◎ PROCESSING</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" disabled>Pending...</button></td></tr>
-              <tr><td>physician-query-pkg.pdf</td><td style="color:var(--text2)">CDI Package</td><td><span style="background:var(--reddim);color:var(--red);padding:1px 5px;border-radius:2px;font-size:8px">$2.00/doc</span></td><td style="color:var(--text2)">06:45</td><td><span style="color:var(--text3)">○ QUEUED</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" disabled>Queued</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div id="doc-panel" style="display:none" class="panel fi">
-          <div class="sh"><span class="st" id="doc-ttl">AI Document Analysis</span><button class="btn btn-o" style="font-size:8px;padding:2px 8px" onclick="document.getElementById('doc-panel').style.display='none'">✕</button></div>
-          <div id="doc-out" class="ai-out"></div>
-          <div id="doc-err" class="ai-err"></div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ ALERTS TAB ══════════════════ -->
-      <div id="tab-alerts" style="display:none">
-        <div class="panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st">All Active Alerts (6)</span><button class="btn btn-strat" style="font-size:8px;padding:3px 10px" onclick="quickAsk('Analyze all 6 active alerts for HonorHealth: 18.4% denial rate ($48K), CLM-0334 CO-29 write-off risk ($3.8K), CPT 99215 upcoding ($12K audit risk), Modifier -25 overuse ($8,460), HC-TaxPrep 80% CPU, ICD-10 specificity gaps. Prioritize by total dollar impact and provide a single action plan.')">◈ AI Triage All Alerts</button></div>
-          <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — top codes: PR-96 (45%), CO-4 (28%), CO-11 (18%). Payer-specific appeal strategy required.</span><span class="am" style="color:var(--red)">$48K</span></div>
-          <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (CPT 93454 · $3,800) — CO-29 timely filing denial. Write-off risk in 48 hours. Appeal must be filed today.</span><span class="am" style="color:var(--red)">$3.8K</span></div>
-          <div class="ar"><span class="ap pm">MED</span><span class="at">CPT 99215 upcoding pattern on 23 claims — documentation incomplete. Audit exposure $12,040. Coder education required by Friday.</span><span class="am">$12K</span></div>
-          <div class="ar"><span class="ap pm">MED</span><span class="at">Modifier -25 overuse on 47 claims — compliance review before next submission cycle. $8,460 at risk.</span><span class="am">$8,460</span></div>
-          <div class="ar"><span class="ap pm">MED</span><span class="at">HC-TAXPREP-3059 at 80% CPU with 187 restarts — process instability. Review logs at hc-taxprep.tsmatter.com immediately.</span><span class="am" style="color:var(--red)">NODE</span></div>
-          <div class="ar"><span class="ap pl">LOW</span><span class="at">ICD-10 specificity gaps on 14 claims — documentation incomplete. Recommend physician query on CLM-0290, CLM-0305, CLM-0312.</span><span class="am">Docs</span></div>
-          <div class="ai-out strat-out" id="alerts-ai-out" style="margin-top:10px"></div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ REPORTS TAB ══════════════════ -->
-      <div id="tab-reports" style="display:none">
-        <div class="panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st">Executive Summary Builder</span></div>
-          <div class="rform">
-            <div><div class="fl">REPORTING PERIOD</div><select class="fsel" id="rpt-period"><option>Week of April 14, 2026</option><option>Month of April 2026</option><option>Q1 2026</option></select></div>
-            <div><div class="fl">RECIPIENT</div><select class="fsel" id="rpt-recipient"><option>VP Revenue Cycle</option><option>Chief Compliance Officer</option><option>CFO</option><option>All Executives</option></select></div>
-          </div>
-          <div class="rform">
-            <div><div class="fl">FOCUS AREAS</div><select class="fsel" id="rpt-focus"><option>Revenue cycle + compliance + strategy</option><option>Denial management only</option><option>Compliance + audit risk</option><option>Full operational summary</option></select></div>
-            <div><div class="fl">TONE</div><select class="fsel" id="rpt-tone"><option>Executive — confident, concise</option><option>Technical — detailed, data-driven</option><option>Urgent — crisis framing</option><option>Optimistic — progress-focused</option></select></div>
-          </div>
-          <div style="display:flex;gap:7px">
-            <button class="btn btn-g" id="exec-btn" onclick="buildExecSummary()" style="flex:1">◆ Generate Executive Summary</button>
-            <button class="btn btn-strat" onclick="buildStratReport()" style="flex:1">◈ + Include Strategist Recommendations</button>
-          </div>
-          <div class="ai-out strat-out" id="exec-out"></div>
-          <div class="ai-err" id="exec-err"></div>
-          <div id="exec-actions" style="display:none;gap:7px;margin-top:8px;flex-wrap:wrap">
-            <button class="btn btn-p" onclick="alert('Executive summary sent.')">Send to Recipient</button>
-            <button class="btn btn-o" id="pptx-export-btn" onclick="exportBriefingPPTX()">⬇ Export PPTX</button>
-            <button class="btn btn-o" onclick="buildExecSummary()">↻ Regenerate</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="sh"><span class="st">Denial Code Breakdown Report</span><button class="btn btn-o" style="font-size:8px;padding:3px 10px" onclick="buildDenialReport()">◆ Generate</button></div>
-          <table class="rtable">
-            <thead><tr><th>DENIAL CODE</th><th>COUNT</th><th>% OF DENIALS</th><th>$ AT RISK</th><th>APPEAL STRATEGY</th></tr></thead>
-            <tbody>
-              <tr><td style="color:var(--red)">PR-96</td><td style="color:var(--red)">104</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-r" style="width:45%"></div></div>45%</div></td><td style="color:var(--red)">$21.6K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft a PR-96 (non-covered charge) appeal strategy for HonorHealth. What documentation and approach maximizes recovery?')">◈ Strategy</button></td></tr>
-              <tr><td style="color:var(--amber)">CO-4</td><td style="color:var(--amber)">65</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-a" style="width:28%"></div></div>28%</div></td><td style="color:var(--amber)">$13.4K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft a CO-4 (service not covered) appeal strategy. When is this worth appealing vs writing off?')">◈ Strategy</button></td></tr>
-              <tr><td>CO-11</td><td>42</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-p" style="width:18%"></div></div>18%</div></td><td>$8.1K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft CO-11 (diagnosis inconsistent with procedure) appeal approach. What ICD-10 documentation fixes this proactively?')">◈ Strategy</button></td></tr>
-              <tr><td>CO-29</td><td>12</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-r" style="width:5%"></div></div>5%</div></td><td>$5.7K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('CO-29 timely filing denials — what are the CMS appeal rules, deadline extensions, and what proof of timely filing should we gather?')">◈ Strategy</button></td></tr>
-              <tr><td>CO-97</td><td>8</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-g" style="width:4%"></div></div>4%</div></td><td>$2.9K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('CO-97 bundling denial strategy — how do we unbundle or defend modifier usage?')">◈ Strategy</button></td></tr>
-            </tbody>
-          </table>
-          <div class="ai-out strat-out" id="denial-report-out" style="margin-top:10px"></div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ ANALYTICS TAB ══════════════════ -->
-      <div id="tab-analytics" style="display:none">
-        <div class="dg2" style="margin-bottom:10px">
-          <div class="panel">
-            <div class="sh"><span class="st">Denial Rate Trend</span></div>
-            <div class="chart-wrap" style="height:200px">
-              <canvas id="denial-chart" role="img" aria-label="Denial rate trend over 6 months">Denial rates: Nov 14%, Dec 15.2%, Jan 16.8%, Feb 17.1%, Mar 17.9%, Apr 18.4%</canvas>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="sh"><span class="st">Revenue Risk by Category</span></div>
-            <div class="chart-wrap" style="height:200px">
-              <canvas id="revenue-chart" role="img" aria-label="Revenue at risk by denial category">Revenue at risk: PR-96 $21.6K, CO-4 $13.4K, CO-11 $8.1K, CO-29 $5.7K</canvas>
-            </div>
-          </div>
-        </div>
-        <div class="dg2">
-          <div class="panel">
-            <div class="sh"><span class="st">Clean Claim Rate by Service Line</span></div>
-            <div class="chart-wrap" style="height:200px">
-              <canvas id="clean-chart" role="img" aria-label="Clean claim rate by service line">Clean claim rates by service line</canvas>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="sh"><span class="st">Auth Approval Rate — HC-Insurance</span></div>
-            <div style="padding:8px 0">
-              <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--g);margin-bottom:4px">71.4%</div>
-              <div style="font-size:9px;color:var(--text2);margin-bottom:10px">6 of 21 auths pending this week</div>
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px"><span style="color:var(--text2)">Medicare</span><span style="color:var(--g)">82%</span></div>
-                <div class="pbar" style="margin-top:0"><div class="pbar-fill pbar-g" style="width:82%"></div></div>
-                <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px"><span style="color:var(--text2)">Aetna</span><span style="color:var(--amber)">65%</span></div>
-                <div class="pbar" style="margin-top:0"><div class="pbar-fill pbar-a" style="width:65%"></div></div>
-                <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px"><span style="color:var(--text2)">BCBS</span><span style="color:var(--g)">78%</span></div>
-                <div class="pbar" style="margin-top:0"><div class="pbar-fill pbar-g" style="width:78%"></div></div>
-                <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px"><span style="color:var(--text2)">UHC</span><span style="color:var(--red)">54%</span></div>
-                <div class="pbar" style="margin-top:0"><div class="pbar-fill pbar-r" style="width:54%"></div></div>
-              </div>
-            </div>
-            <button class="btn btn-strat" style="font-size:8px;padding:4px 10px;margin-top:8px;width:100%" onclick="quickAsk('Analyze our prior auth approval rates by payer: Medicare 82%, Aetna 65%, BCBS 78%, UHC 54%. What strategies improve auth approval rates for each payer? Focus on UHC at 54%.')">◈ Auth Strategy Analysis</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ STAFF TAB ══════════════════ -->
-      <div id="tab-staff" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div class="panel">
-            <div class="sh"><span class="st">Log Observation</span></div>
-            <div style="margin-bottom:7px"><div class="fl">STAFF MEMBER</div>
-            <select id="staff-name" class="fsel"><option value="">— Select staff member —</option><option>J. Rodriguez · Senior Biller</option><option>M. Chen · Appeals Specialist</option><option>T. Williams · AR Coordinator</option><option>L. Kim · Coding Lead</option><option>K. Patel · Auth Specialist</option></select></div>
-            <div style="margin-bottom:7px"><div class="fl">OBSERVATION TYPE</div>
-            <select id="obs-type" class="fsel"><option value="performance">Performance — SLA / Output</option><option value="behavior">Behavior — Attitude / Team</option><option value="positive">Positive — Recognition</option><option value="concern">Concern — Flag for Review</option><option value="sla">SLA — Met / Missed / Exceeded</option></select></div>
-            <div style="margin-bottom:7px"><div class="fl">OBSERVATION</div>
-            <textarea id="obs-text" class="ftxt" placeholder="e.g. Beat SLA by 2hrs on CLM-0334 appeal. Excellent turnaround..."></textarea></div>
-            <button class="btn btn-p" style="width:100%" onclick="logObs()">+ Log Observation</button>
-            <div id="obs-confirm" style="display:none;margin-top:7px;font-size:9px;color:var(--g2)">✓ Observation logged.</div>
-          </div>
-          <div class="panel">
-            <div class="sh"><span class="st">Session Log</span><span class="sa" onclick="clearLog()" style="color:var(--text3)">clear</span></div>
-            <div id="obs-log" style="display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto">
-              <div style="font-size:9px;color:var(--text3);text-align:center;padding:18px 0">No observations this session.</div>
-            </div>
-          </div>
-        </div>
-        <div class="panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st">Generate HR Document</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:8px">
-            <div><div class="fl">STAFF MEMBER</div>
-            <select id="hr-name" class="fsel"><option value="">— Select —</option><option>J. Rodriguez · Senior Biller</option><option>M. Chen · Appeals Specialist</option><option>T. Williams · AR Coordinator</option><option>L. Kim · Coding Lead</option><option>K. Patel · Auth Specialist</option></select></div>
-            <div><div class="fl">DOCUMENT TYPE</div>
-            <select id="hr-type" class="fsel"><option value="promotion">Promotion Recommendation</option><option value="commendation">Commendation Letter</option><option value="salary">Salary Review Justification</option><option value="pip">Performance Improvement Plan (PIP)</option><option value="demotion">Demotion Memo</option><option value="termination">Termination Letter</option></select></div>
-            <div style="display:flex;align-items:flex-end"><button class="btn btn-g" id="hr-gen-btn" onclick="genHRDoc()" style="width:100%">◆ Generate Document</button></div>
-          </div>
-          <div style="margin-bottom:7px"><div class="fl">ADDITIONAL CONTEXT</div>
-          <textarea id="hr-context" class="ftxt" placeholder="e.g. attitude in office, SLA performance, specific incidents..."></textarea></div>
-          <div class="ai-out" id="hr-out"></div>
-          <div class="ai-err" id="hr-err"></div>
-          <div id="hr-actions" style="display:none;gap:7px;margin-top:8px;flex-wrap:wrap">
-            <button class="btn btn-p" onclick="alert('Copied for HR review.')">Copy for HR Review</button>
-            <button class="btn btn-o" onclick="genHRDoc()">↻ Regenerate</button>
-            <span style="font-size:8px;color:var(--text3);align-self:center;margin-left:4px">⚠ Always have HR review before issuing</span>
-          </div>
+      <div id="mode-bnca">
+        <div class="scorebox" style="margin-bottom:12px">
+          <div class="score"><div class="n" id="s-overall">—</div><div class="muted">Overall Risk</div></div>
+          <div class="score"><div class="n" id="s-top-office">—</div><div class="muted">Top Risk Office</div></div>
+          <div class="score"><div class="n" id="s-best-office">—</div><div class="muted">Best Office</div></div>
+          <div class="score"><div class="n" id="s-driver">—</div><div class="muted">Top Driver</div></div>
         </div>
         <div class="panel">
-          <div class="sh"><span class="st">AI Pattern Analysis</span></div>
-          <button class="btn btn-o" id="pattern-btn" onclick="analyzePatterns()" style="margin-bottom:7px">◆ Analyze Session Log Patterns</button>
-          <div class="ai-out" id="pattern-out"></div>
-          <div class="ai-err" id="pattern-err"></div>
+          <div class="panelhead"><div class="paneltitle">Main Strategist Narrative</div></div>
+          <div class="copy" id="main-narrative">Loading...</div>
         </div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /center -->
-
-  <!-- ── RIGHT AI PANEL ── -->
-  <div class="rp">
-    <div class="rps">
-      <div class="rpt">Portal AI + Strategist · Dee Montee</div>
-      <div class="chips" style="margin-bottom:6px">
-        <span class="chip" onclick="sendChat('What are the top 3 things I need to act on right now?')">Top priorities</span>
-        <span class="chip" onclick="sendChat('Root cause of the 18.4% denial rate and action plan')">Denial fix</span>
-        <span class="chip" onclick="sendChat('BPO intake status — what needs my review today?')">BPO status</span>
-        <span class="chip" onclick="sendChat('Which nodes are showing problems and what should I do?')">Node alerts</span>
-        <span class="chip" onclick="sendChat('Draft a 3-bullet standup briefing for my team this morning')">Draft standup</span>
-        <span class="chip" onclick="sendChat('What appeal should I file for CLM-0334 CO-29 denial before the 48hr deadline?')">CLM-0334 appeal</span>
-      </div>
-      <div style="border-top:1px solid rgba(168,85,247,.15);padding-top:5px;margin-top:2px">
-        <div style="font-size:8px;color:rgba(168,85,247,.5);letter-spacing:.1em;margin-bottom:4px">◈ STRATEGIST ASKS</div>
-        <div class="chips">
-          <span class="chip strat-chip" onclick="sendChat('Give me the strategist view: what is the single highest-leverage action I can take today to maximize revenue recovery?')">Max recovery move</span>
-          <span class="chip strat-chip" onclick="sendChat('Run a strategic risk assessment on all current denial patterns and predict our denial rate in 30 days if we take no action')">Risk forecast</span>
-          <span class="chip strat-chip" onclick="sendChat('Compare our metrics to CMS national benchmarks and identify our biggest competitive gaps')">Benchmark compare</span>
+      <div id="mode-recovery" class="hidden">
+        <div class="panel">
+          <div class="panelhead"><div class="paneltitle">Recovery Actions</div></div>
+          <div class="list" id="recovery-actions"></div>
         </div>
       </div>
-    </div>
-    <div class="rpc" id="chat">
-      <div class="cm ca fi">Portal AI + Strategist Neural Core online. Full context loaded — 15 HC nodes, 6 alerts, 4 BPO docs, payer intel, real-time strategic signals. What do you need first?</div>
-    </div>
-    <div class="rpi-row">
-      <textarea class="rpi" id="chat-inp" placeholder="Ask portal AI or strategist..." rows="2" style="min-height:38px;resize:none" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
-      <div class="rpsb" id="chat-send" onclick="sendChat()">↑</div>
+
+      <div id="mode-payer" class="hidden">
+        <div class="panel">
+          <div class="panelhead"><div class="paneltitle">Payer Intervention</div></div>
+          <div class="list" id="payer-actions"></div>
+        </div>
+      </div>
+
+      <div id="mode-brief" class="hidden">
+        <div class="panel">
+          <div class="panelhead"><div class="paneltitle">Executive Brief</div></div>
+          <div class="copy" id="brief-body"></div>
+        </div>
+      </div>
+
+      <div id="mode-compare" class="hidden">
+        <div class="panel">
+          <div class="panelhead"><div class="paneltitle">Selected Office vs Best Office</div></div>
+          <div class="list" id="compare-body"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-</div><!-- /main -->
-
-<!-- ── STATUS BAR ── -->
-<div class="sbar">
-  <div class="si"><span class="dot dg pls"></span>TSM-AI ONLINE</div>
-  <div class="si"><span class="dot dp pls"></span>STRATEGIST NEURAL</div>
-  <div class="si"><span class="dot da"></span>2 CRITICAL</div>
-  <div class="si"><span class="dot db"></span>4 BPO DOCS</div>
-  <div class="si" style="margin-left:auto">HONORHEALTH · OPS PORTAL v3.0 · TSMatter · <span id="sb-date"></span></div>
-</div>
-
-<!-- ══════════════════════════════ BRIEFING MODAL ══════════════════════════════ -->
-<div class="bo-overlay" id="bo">
-  <div class="bm">
-    <div class="bh">
-      <div><div class="bt">◆ Team Briefing Builder</div><div class="bs">AI-generated · <span id="brief-date"></span> · HonorHealth Revenue Cycle</div></div>
-      <button class="bx" onclick="closeBriefing()">✕</button>
+  <div class="rightrail">
+    <div class="block">
+      <div class="railtitle">Signal Origin</div>
+      <div class="muted" style="font-size:9px">Healthcare Command → HC-Strategist</div>
     </div>
-    <div class="bb-body">
-      <div class="bsec">
-        <div class="bsec-t">Critical — action required today</div>
-        <div class="bi"><div class="bn">1</div><div style="flex:1"><div class="bit"><span style="color:var(--red)">CLM-0334 write-off risk in 48hrs</span> — CO-29 timely filing on $3,800 cardiac cath claim. Appeal must be filed today or claim is lost.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>J. Rodriguez · Senior Biller</option><option>M. Chen · Appeals</option><option>T. Williams · AR</option><option>Full Team</option></select></div></div></div>
-        <div class="bi"><div class="bn">2</div><div style="flex:1"><div class="bit"><span style="color:var(--red)">18.4% denial rate</span> — exceeds 15% CMS threshold. Pull all PR-96 and CO-4 denials. Target 12% by month end.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>Full Team</option><option>J. Rodriguez · Senior Biller</option><option>M. Chen · Appeals</option></select></div></div></div>
+    <div class="rightscroll">
+      <div class="block">
+        <div class="signal-list" id="signal-list"></div>
       </div>
-      <div class="bsec">
-        <div class="bsec-t">Active — in progress this week</div>
-        <div class="bi"><div class="bn">3</div><div style="flex:1"><div class="bit">CPT 99215 upcoding audit — 23 claims under review. Documentation gaps. Coder education session needed by Friday.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>L. Kim · Coding Lead</option><option>Full Team</option></select></div></div></div>
-        <div class="bi"><div class="bn">4</div><div style="flex:1"><div class="bit">BPO intake — ERA batch ready for review. Denial analysis processing (ETA 2hrs). Action flagged items before EOD.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>T. Williams · AR</option><option>J. Rodriguez · Senior Biller</option></select></div></div></div>
-        <div class="bi"><div class="bn">5</div><div style="flex:1"><div class="bit">6 pending prior authorizations in HC-Insurance — follow up with Medicare and Aetna today.</div><div class="ba-row"><span class="ba-l">ASSIGN TO:</span><select><option>K. Patel · Auth Specialist</option><option>Full Team</option></select></div></div></div>
+      <div class="block">
+        <div class="railtitle">HC-Strategist Synthesis</div>
+        <div class="hc-list">
+          <div class="hcbox"><div class="name" style="font-size:10px;color:var(--g)">Root Cause</div><div class="meta" id="hc-root">—</div></div>
+          <div class="hcbox"><div class="name" style="font-size:10px;color:var(--amber)">Why It Matters</div><div class="meta" id="hc-why">—</div></div>
+          <div class="hcbox"><div class="name" style="font-size:10px;color:var(--purple)">Confidence</div><div class="meta" id="hc-confidence">—</div></div>
+        </div>
       </div>
-      <div class="bsec">
-        <div class="bsec-t purple">◈ Strategist Recommendation</div>
-        <div id="brief-strat-rec" style="font-size:10px;color:rgba(168,85,247,.7);padding:8px 0">Generating strategic recommendation...</div>
+      <div class="block">
+        <div class="railtitle">Alert Stack</div>
+        <div id="alert-list"></div>
       </div>
-      <div class="bsec">
-        <div class="bsec-t">Manager notes for team</div>
-        <textarea class="btxt" id="brief-notes" placeholder="Add context, reminders, or announcements for today's standup..."></textarea>
-      </div>
-      <div class="bsec">
-        <div class="bsec-t">AI coaching script for standup</div>
-        <button class="btn btn-o" id="script-btn" onclick="genScript()" style="margin-bottom:7px">◆ Generate AI coaching script</button>
-        <div id="script-out" class="ai-out"></div>
-        <div id="script-err" class="ai-err"></div>
-      </div>
-    </div>
-    <div class="bf">
-      <button class="btn btn-p" onclick="alert('Executive summary sent.')">Send to Team · Teams</button>
-      <button class="btn btn-g" id="pptx-export-btn2" onclick="exportBriefingPPTX()">⬇ Export PPTX</button>
-      <button class="btn btn-strat" onclick="genScript()">◈ Strategist Script</button>
-      <button class="btn btn-o" onclick="closeBriefing()">Cancel</button>
-      <div style="margin-left:auto;font-size:9px;color:var(--text3)">5 team members · HonorHealth RC</div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     JAVASCRIPT ENGINE
-══════════════════════════════════════════════════════════════════ -->
 <script>
-// ──────────────────────────────────────────────────────
-// CORE CONTEXT
-// ──────────────────────────────────────────────────────
-const HC_CONTEXT = `You are the HonorHealth Revenue Cycle Strategist — a deeply specialized AI neural core embedded in the TSMatter Operations Portal. You have full context of HonorHealth's current situation:
+const STATE = {
+  selectedOffice: 'Scottsdale - Shea',
+  mode: 'bnca',
+  base: null,
+  action: null
+};
 
-CURRENT METRICS:
-- 1,256 claims this month
-- 231 denials — 18.4% denial rate (CMS threshold is 15% — we are OVER)
-- $48,000 revenue at risk across 14+ aging claims
-- 94.2% clean claim rate vs 97% target (2.8pt gap)
-- 4 BPO documents in intake queue
-- 15 nodes active, 2 critical
+function esc(v){
+  return String(v == null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function money(n){ return '$' + Number(n || 0).toLocaleString(); }
 
-URGENT ISSUES:
-1. CLM-0334: CPT 93454 (cardiac catheterization), $3,800, Medicare, CO-29 timely filing denial — 48hr write-off deadline TODAY
-2. 18.4% denial rate: PR-96 (45% of denials), CO-4 (28%), CO-11 (18%), CO-29 (5%)
-3. CPT 99215 upcoding pattern — 23 claims, $12,040 audit exposure
-4. Modifier -25 overuse — 47 claims, $8,460 at risk
-5. HC-TaxPrep node: 80% CPU, 187 restarts — system instability
-6. ICD-10 specificity gaps on 14 claims
-
-STAFF:
-- J. Rodriguez · Senior Biller
-- M. Chen · Appeals Specialist
-- T. Williams · AR Coordinator
-- L. Kim · Coding Lead
-- K. Patel · Auth Specialist
-
-PAYER MIX: Medicare (104 denials), Aetna (78), BCBS (32), UHC (17)
-AUTH APPROVAL RATES: Medicare 82%, Aetna 65%, BCBS 78%, UHC 54%
-
-NODES: HC-Billing, HC-Compliance, HC-Medical, HC-Pharmacy, HC-Insurance, HC-Legal, HC-Vendors, HC-Grants, HC-Financial, HC-TaxPrep (critical), HC-Strategist, HC-Command, HonorHealth Portal, Appointments, DME
-
-The user is Dee Montee, Revenue Cycle Manager at HonorHealth.
-
-Provide specific, actionable, expert-level guidance. Be direct and precise. Use healthcare revenue cycle expertise. Format responses clearly with specific action steps, dollar impacts, and deadlines. DO NOT be generic.`;
-
-// ──────────────────────────────────────────────────────
-// ANTHROPIC API CALL
-// ──────────────────────────────────────────────────────
-async function callClaude(userPrompt, systemPrompt, streaming) {
-  systemPrompt = systemPrompt || HC_CONTEXT;
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+async function loadBase(){
+  const res = await fetch('/api/honor/dee/dashboard', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }]
+      system:'HonorHealth',
+      office: STATE.selectedOffice
     })
   });
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error('API ' + resp.status + ': ' + err.slice(0, 200));
-  }
-  const data = await resp.json();
-  return data.content.map(b => b.type === 'text' ? b.text : '').join('');
+  return await res.json();
 }
 
-// ──────────────────────────────────────────────────────
-// GENERIC AI CALL WITH UI BINDINGS
-// ──────────────────────────────────────────────────────
-async function runAI(prompt, outId, errId, btnId, retryId, isStrat) {
-  const out = document.getElementById(outId);
-  const err = document.getElementById(errId);
-  const btn = btnId ? document.getElementById(btnId) : null;
-  const retry = retryId ? document.getElementById(retryId) : null;
-
-  if (err) { err.classList.remove('show'); err.textContent = ''; }
-  if (retry) { retry.classList.remove('show'); }
-  out.classList.add('show');
-  if (isStrat) out.classList.add('strat-out');
-  out.textContent = '▸ Neural processing...';
-  if (btn) { btn.disabled = true; }
-
-  try {
-    const result = await callClaude(prompt, HC_CONTEXT);
-    out.textContent = result;
-    if (retry) retry.classList.remove('show');
-  } catch(e) {
-    out.classList.remove('show');
-    out.textContent = '';
-    if (err) { err.textContent = 'Error: ' + e.message; err.classList.add('show'); }
-    if (retry) { retry.classList.add('show'); }
-  }
-  if (btn) btn.disabled = false;
+function modePrompt(){
+  if (STATE.mode === 'recovery') return 'Run denial recovery strategy for ' + STATE.selectedOffice;
+  if (STATE.mode === 'payer') return 'Escalate payer auth blockers for ' + STATE.selectedOffice;
+  if (STATE.mode === 'brief') return 'Generate executive brief for Dee Montee on current revenue posture';
+  if (STATE.mode === 'compare') return 'Compare ' + STATE.selectedOffice + ' vs best-performing office';
+  return 'Return the best next course of action for ' + STATE.selectedOffice;
 }
 
-// ──────────────────────────────────────────────────────
-// TAB ENGINE
-// ──────────────────────────────────────────────────────
-function showTab(id) {
-  document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
-  const t = document.getElementById('tab-' + id);
-  if (t) t.style.display = 'block';
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('act'));
-  const tb = document.getElementById('t-' + id);
-  if (tb) tb.classList.add('act');
-  // Lazy load analytics charts
-  if (id === 'analytics') initCharts();
-}
-
-// ──────────────────────────────────────────────────────
-// CLOCK
-// ──────────────────────────────────────────────────────
-function updateClock() {
-  const now = new Date();
-  const t = now.toLocaleTimeString('en-US', { hour12: false });
-  const el = document.getElementById('clk');
-  if (el) el.textContent = t;
-  const sb = document.getElementById('sb-date');
-  if (sb) sb.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-  const bd = document.getElementById('brief-date');
-  if (bd) bd.textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ──────────────────────────────────────────────────────
-// STRATEGIST NEURAL CORE BOOT
-// ──────────────────────────────────────────────────────
-async function bootStrategist() {
-  const ring = document.getElementById('neural-ring');
-  const txt = document.getElementById('neural-txt');
-  const stream = document.getElementById('dash-neural-stream');
-
-  const streamLines = [
-    { text: '▸ Initializing strategic analysis engine...', delay: 300 },
-    { text: '▸ Ingesting HonorHealth revenue cycle context...', delay: 700 },
-    { text: '▸ Cross-referencing 15 nodes · 6 alerts · 4 BPO docs...', delay: 1200 },
-    { text: '▸ Analyzing denial patterns: PR-96, CO-4, CO-11, CO-29...', delay: 1800 },
-    { text: '▸ Calculating strategic risk scores...', delay: 2400 },
-    { text: '▸ Generating recommendations for Dee Montee...', delay: 3000 },
-  ];
-
-  streamLines.forEach(item => {
-    setTimeout(() => {
-      if (stream) {
-        const div = document.createElement('div');
-        div.className = 'ns-line active';
-        div.textContent = item.text;
-        stream.appendChild(div);
-        stream.scrollTop = stream.scrollHeight;
-      }
-    }, item.delay);
+async function loadAction(){
+  const res = await fetch('/api/strategist/hc/dee-action', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system:'HonorHealth',
+      selectedOffice: STATE.selectedOffice,
+      prompt: modePrompt()
+    })
   });
+  return await res.json();
+}
 
-  await new Promise(r => setTimeout(r, 3500));
+function pickOfficeData(base){
+  if (!base) return {};
+  const ranking = safeOfficeRanking(base);
+  const selected = ranking.find(x => x.office === STATE.selectedOffice) || ranking[0] || {};
+  return selected;
+}
 
-  try {
-    const snap = await callClaude(
-      'Give Dee Montee a 3-sentence strategic snapshot of the most critical revenue cycle situation right now. Be very specific with dollar amounts and action steps. Start with the single most urgent thing.'
-    );
-    if (txt) txt.textContent = 'NEURAL ACTIVE';
-    if (ring) ring.classList.add('ready');
-    const nodeStatus = document.getElementById('strat-node-status');
-    if (nodeStatus) nodeStatus.textContent = 'neural active ◈';
-    const quickStatus = document.getElementById('strat-quick-status');
-    if (quickStatus) quickStatus.textContent = 'neural active · AI ready';
+function renderOfficeList(base){
+  const ranking = (base && base.officeRanking) || [];
+  const el = document.getElementById('office-list');
+  el.innerHTML = ranking.map(o => `
+    <div class="office ${esc(o.status || '')} ${o.office === STATE.selectedOffice ? 'active' : ''}" onclick="selectOffice('${esc(o.office)}')">
+      <div class="name">#${esc(o.riskRank)} · ${esc(o.office)}</div>
+      <div class="meta">${esc(o.summary || '')}<br>Driver: ${esc(o.primaryDriver || '—')}</div>
+    </div>
+  `).join('') || '<div class="muted">No offices returned.</div>';
+}
 
-    // Update strat score KPI
-    const score = document.getElementById('strat-score');
-    if (score) { score.textContent = '7.4'; }
-    const scoreSub = document.getElementById('strat-score-sub');
-    if (scoreSub) scoreSub.textContent = 'health score · action needed';
+function renderSignals(base){
+  const alerts = (base && base.alerts) || [];
+  const signalEl = document.getElementById('signal-list');
+  signalEl.innerHTML = alerts.map(a => `
+    <div class="signal">
+      <div class="name" style="font-size:10px;color:${a.type === 'DENIAL_SPIKE' ? 'var(--red)' : a.type === 'AUTH_DELAY' ? 'var(--amber)' : 'var(--blue)'}">${esc(a.type)}</div>
+      <div class="meta">${esc(a.message || '')}<br>Node: ${esc(a.nodeKey || '—')}</div>
+    </div>
+  `).join('') || '<div class="muted">No signal origin returned.</div>';
+}
 
-    // Update strat bar
-    const strat = document.getElementById('strat-ticker');
-    if (strat) {
-      strat.innerHTML = '▸ <span style="color:var(--purple)">[STRATEGIST]</span> ' + snap.split('.')[0].trim() + '.';
-    }
+function renderAlerts(base){
+  const alerts = (base && base.alerts) || [];
+  const el = document.getElementById('alert-list');
+  el.innerHTML = alerts.map(a => `
+    <div class="alert">
+      <span class="ap ${a.severity === 'HIGH' ? 'pu' : a.severity === 'MEDIUM' ? 'pm' : 'pl'}">${esc(a.severity)}</span>
+      <span class="at">${esc(a.message)}</span>
+    </div>
+  `).join('') || '<div class="muted">No alerts.</div>';
+}
 
-    // Update briefing
-    const briefRec = document.getElementById('brief-strat-rec');
-    if (briefRec) briefRec.textContent = snap;
+function renderTop(base, action){
+  const posture = (base && base.systemPosture) || {};
+  const office = pickOfficeData(base);
+  const layer2 = (action && action.layer2) || {};
+  const ab = (action && action.actionBoard) || {};
 
-    // Update neural stream
-    if (stream) {
-      stream.innerHTML = '';
-      const done = document.createElement('div');
-      done.className = 'ns-line done';
-      done.textContent = '✓ Neural analysis complete';
-      stream.appendChild(done);
-      const rec = document.createElement('div');
-      rec.className = 'ns-line active';
-      rec.style.color = 'var(--purple)';
-      rec.textContent = snap;
-      stream.appendChild(rec);
-    }
+  document.getElementById('top-offices').textContent = safeOfficeRanking(base).length + ' OFFICES';
+  document.getElementById('top-risk').textContent = 'RISK: ' + String(posture.overallRisk || 'high').toUpperCase();
+  document.getElementById('top-bnca').textContent = 'BNCA: ' + (ab.topPriorityNow ? 'LIVE' : 'READY');
+  document.getElementById('stratline').textContent = ab.topPriorityNow || posture.topSystemDriver || 'Main Strategist posture loaded';
 
-    // Load strategic signals
-    await loadStrategicSignals();
+  document.getElementById('k-risk').textContent = money(layer2.revenueAtRisk || office.revenueAtRisk || 0);
+  document.getElementById('k-rec').textContent = money(layer2.recoverable72h || office.recoverable72h || 0);
+  document.getElementById('k-acc').textContent = money(layer2.cashAcceleration14d || office.cashAcceleration14d || 0);
+  document.getElementById('k-lane').textContent = layer2.highestYieldLane || posture.topSystemLane || '—';
+  document.getElementById('k-mode').textContent = STATE.mode.toUpperCase();
 
-  } catch(e) {
-    if (txt) txt.textContent = 'STRATEGIST OFFLINE';
-    if (ring) { ring.style.animation = 'none'; ring.style.borderColor = 'var(--red)'; }
-    console.warn('Strategist boot error:', e.message);
-    if (stream) {
-      const err = document.createElement('div');
-      err.className = 'ns-line';
-      err.style.color = 'var(--text3)';
-      err.textContent = 'Note: Connect Anthropic API key for live neural recommendations.';
-      stream.appendChild(err);
-    }
+  document.getElementById('bnca-title').textContent = ab.topPriorityNow || office.recommendedAction || 'No BNCA returned';
+  document.getElementById('bnca-why').textContent = ab.strategistNarrative || office.summary || 'No explanation returned.';
+  document.getElementById('cx-office').textContent = STATE.selectedOffice;
+  document.getElementById('cx-lane').textContent = layer2.highestYieldLane || posture.topSystemLane || '—';
+  document.getElementById('cx-top-office').textContent = posture.topRiskOffice || '—';
+  document.getElementById('cx-owners').textContent = (layer2.ownerLanes || []).join(' · ') || 'Operations · Billing · Insurance';
+
+  document.getElementById('s-overall').textContent = String(posture.overallRisk || 'high').toUpperCase();
+  document.getElementById('s-top-office').textContent = posture.topRiskOffice || '—';
+  document.getElementById('s-best-office').textContent = posture.bestPerformingOffice || '—';
+  document.getElementById('s-driver').textContent = posture.topSystemLane || '—';
+
+  document.getElementById('main-narrative').textContent =
+    ab.strategistNarrative || posture.topSystemDriver || 'No Main Strategist narrative returned.';
+}
+
+function renderHC(base, action){
+  const layer2 = (action && action.layer2) || {};
+  const roots = layer2.rootCause || [];
+  document.getElementById('hc-root').textContent = roots.join(' · ') || 'No root cause returned.';
+  document.getElementById('hc-why').textContent =
+    (action && action.actionBoard && action.actionBoard.strategistNarrative) ||
+    'No HC-Strategist synthesis returned.';
+  document.getElementById('hc-confidence').textContent =
+    (layer2.confidence != null ? layer2.confidence + '%' : '—');
+}
+
+function renderModes(base, action){
+  const layer2 = (action && action.layer2) || {};
+  const actionDetail = (action && action.actionDetail) || {};
+  const posture = (action && action.posture && action.posture.systemPosture) || (base && base.systemPosture) || {};
+  const ranking = (action && action.posture && action.posture.officeRanking) || (base && base.officeRanking) || [];
+  const office = pickOfficeData(base);
+
+  document.getElementById('recovery-actions').innerHTML =
+    (layer2.bestNextActions || []).map(x => `<div class="item"><div class="b">${esc(x)}</div></div>`).join('') ||
+    '<div class="item"><div class="b">No recovery actions returned.</div></div>';
+
+  document.getElementById('payer-actions').innerHTML =
+    (actionDetail.steps || []).map(x => `<div class="item"><div class="b">${esc(x)}</div></div>`).join('') ||
+    '<div class="item"><div class="b">No payer escalation steps returned.</div></div>';
+
+  document.getElementById('brief-body').textContent =
+    (action && action.actionBoard && action.actionBoard.strategistNarrative) ||
+    posture.topSystemDriver ||
+    'No executive brief returned.';
+
+  const best = ranking.find(x => x.office === posture.bestPerformingOffice) || {};
+  document.getElementById('compare-body').innerHTML = `
+    <div class="item"><div class="h">Selected Office</div><div class="b">${esc(STATE.selectedOffice)} · Risk ${esc(office.riskScore || '—')} · ${esc(office.summary || '')}</div></div>
+    <div class="item"><div class="h">Best Office</div><div class="b">${esc(best.office || '—')} · Risk ${esc(best.riskScore || '—')} · ${esc(best.summary || '')}</div></div>
+    <div class="item"><div class="h">Recommended Action</div><div class="b">${esc(office.recommendedAction || 'No recommendation returned.')}</div></div>
+  `;
+}
+
+function setMode(mode, el){
+  STATE.mode = mode;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['bnca','recovery','payer','brief','compare'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('hidden', m !== mode);
+  });
+  refreshAll();
+}
+
+function selectOffice(name){
+  STATE.selectedOffice = name;
+  refreshAll();
+}
+
+async function refreshAll(){
+  try{
+    STATE.base = await loadBase();
+    STATE.action = await loadAction();
+    renderOfficeList(STATE.base);
+    renderSignals(STATE.base);
+    renderAlerts(STATE.base);
+    renderTop(STATE.base, STATE.action);
+    renderHC(STATE.base, STATE.action);
+    renderModes(STATE.base, STATE.action);
+  }catch(e){
+    document.getElementById('bnca-title').textContent = 'Failed to load BNCA';
+    document.getElementById('bnca-why').textContent = e.message;
   }
 }
 
-// ──────────────────────────────────────────────────────
-// STRATEGIC SIGNALS
-// ──────────────────────────────────────────────────────
-async function loadStrategicSignals() {
-  const out = document.getElementById('signals-out');
-  if (!out) return;
-  const btn = document.getElementById('signals-btn');
-  if (btn) btn.disabled = true;
-  try {
-    const result = await callClaude(
-      'Generate exactly 3 strategic signals for HonorHealth right now. Format as JSON array with fields: emoji (1 char), title (short), detail (1 sentence action), urgency (URGENT|HIGH|MED|INFRA). Return ONLY the JSON array, no other text.'
-    );
-    const clean = result.replace(/```json|```/g, '').trim();
-    const signals = JSON.parse(clean);
-    out.innerHTML = signals.map(s => `
-      <div class="strat-signal">
-        <div class="strat-signal-icon" style="color:${s.urgency==='URGENT'?'var(--red)':s.urgency==='HIGH'?'var(--amber)':s.urgency==='INFRA'?'var(--teal)':'var(--purple)'}">${s.emoji}</div>
-        <div class="strat-signal-body"><div class="strat-signal-title">${s.title}</div><div class="strat-signal-sub">${s.detail}</div></div>
-        <div class="strat-conf" style="${s.urgency==='URGENT'?'background:rgba(255,68,85,.15);color:var(--red)':''}">${s.urgency}</div>
-      </div>`).join('');
-  } catch(e) {
-    // Keep static signals on error
-  }
-  if (btn) btn.disabled = false;
-}
+function runModeAction(){ refreshAll(); }
+function delegateToOM(){ alert('Delegate to OM: ' + STATE.selectedOffice); }
 
-// ──────────────────────────────────────────────────────
-// STRATEGIST PANEL
-// ──────────────────────────────────────────────────────
-async function runStrategist() {
-  const mode = document.getElementById('strat-mode').value;
-  const context = document.getElementById('strat-context').value;
-  const modePrompts = {
-    priority: 'Give Dee Montee a prioritized action plan for today. List exactly what to do in the next 4 hours to maximize revenue recovery and compliance. Include dollar amounts, who to assign each task to, and specific steps.',
-    denial: 'Analyze the 18.4% denial rate root cause (PR-96 45%, CO-4 28%, CO-11 18%). Give a 30-day recovery plan with specific payer appeal strategies, documentation improvements, and measurable targets to reach 15% or below.',
-    revenue: 'Map every dollar of revenue at risk for HonorHealth: $48K total, by claim, by payer, by code. Prioritize recovery actions by ROI. Include quick wins and longer-term strategies.',
-    compliance: 'Assess full compliance risk: CPT 99215 upcoding (23 claims, $12K), modifier -25 overuse (47 claims, $8.4K), ICD-10 gaps (14 claims). What are the audit triggers, penalties, and mitigation steps?',
-    operational: 'Analyze operational health across all 15 HC nodes. HC-TaxPrep at 80% CPU with 187 restarts is critical. What immediate infrastructure and workflow changes are needed?',
-    forecast: 'Project HonorHealth\'s revenue cycle metrics 30 days from now under two scenarios: (1) no action taken, (2) all recommended actions implemented. Show denial rate, clean claim rate, and net revenue impact.',
-    payer: 'Build payer-specific strategies for Medicare (104 denials, $28K) and Aetna (78 denials, $14K). Include appeal timelines, documentation checklists, and relationship management tactics.',
-    coding: 'Build a coder education plan to fix CPT 99215 upcoding, modifier -25 overuse, and ICD-10 specificity gaps. Include a coaching agenda for L. Kim, specific audit criteria, and prevention measures.'
-  };
-  const prompt = (modePrompts[mode] || modePrompts.priority) + (context ? '\n\nAdditional context from Dee: ' + context : '');
-  await runAI(prompt, 'strat-out', 'strat-err', 'strat-run-btn', 'strat-retry', true);
-}
+window.addEventListener('load', refreshAll);
+</script>
 
-// ──────────────────────────────────────────────────────
-// QUICK ASK (routes to strategist panel + shows tab)
-// ──────────────────────────────────────────────────────
-async function quickAsk(prompt) {
-  showTab('strategist');
-  const out = document.getElementById('strat-out');
-  const err = document.getElementById('strat-err');
-  const btn = document.getElementById('strat-run-btn');
-  if (err) err.classList.remove('show');
-  out.classList.add('show', 'strat-out');
-  out.textContent = '◈ Neural processing...';
-  btn.disabled = true;
-  try {
-    const result = await callClaude(prompt, HC_CONTEXT);
-    out.textContent = result;
-  } catch(e) {
-    out.classList.remove('show');
-    if (err) { err.textContent = e.message; err.classList.add('show'); }
-  }
-  btn.disabled = false;
-}
+<script>
+window.STATE = window.STATE || { selectedOffice: "Scottsdale - Shea" };
 
-// ──────────────────────────────────────────────────────
-// PAYER INTEL
-// ──────────────────────────────────────────────────────
-async function runPayerIntel() {
-  await runAI(
-    'Analyze HonorHealth\'s payer mix: Medicare 104 denials ($28K, CO-29/PR-96), Aetna 78 denials ($14K, CO-4/CO-11), BCBS 32 ($6K, CO-97), UHC 17 ($0K patient responsibility). For each payer: top appeal tactic, documentation requirement, timeline, and realistic recovery rate.',
-    'payer-ai-out', null, null, null, true
+function safeGetRanking(base){
+  return (
+    (base && base.officeRanking) ||
+    (base && base.data && base.data.officeRanking) ||
+    (base && base.office_rank) ||
+    []
   );
 }
 
-// ──────────────────────────────────────────────────────
-// DOCUMENT DRAFTER
-// ──────────────────────────────────────────────────────
-async function draftDocument() {
-  const type = document.getElementById('doc-type-sel').value;
-  const context = document.getElementById('doc-draft-context').value || 'CLM-0334, CPT 93454, Medicare, CO-29 timely filing denial, $3,800';
-  const typeLabels = { appeal: 'a formal insurance appeal letter', auth: 'a prior authorization request', query: 'a physician query letter', compliance: 'a compliance notice', education: 'a coder education memo', executive: 'an executive briefing memo' };
-  const prompt = `Draft ${typeLabels[type] || 'a professional letter'} for HonorHealth. Context: ${context}. Make it complete, professional, and ready to use. Include all required elements for this document type in healthcare revenue cycle.`;
-  const btn = document.getElementById('doc-draft-btn');
-  const out = document.getElementById('doc-draft-out');
-  const err = document.getElementById('doc-draft-err');
-  err.classList.remove('show');
-  out.classList.add('show', 'strat-out');
-  out.textContent = '◈ Drafting...';
-  btn.disabled = true;
-  try {
-    out.textContent = await callClaude(prompt, HC_CONTEXT);
-  } catch(e) {
-    out.classList.remove('show');
-    err.textContent = e.message; err.classList.add('show');
+function renderOfficeList(base){
+  let ranking = safeGetRanking(base);
+
+  if (!ranking.length){
+    ranking = [
+      {
+        office: "Scottsdale - Shea",
+        riskRank: 1,
+        status: "high",
+        summary: "Denial 12.4%, auth backlog 56h",
+        primaryDriver: "Denial + Auth"
+      },
+      {
+        office: "Mesa Family Practice",
+        riskRank: 2,
+        status: "medium",
+        summary: "Queue + staffing pressure",
+        primaryDriver: "Operations"
+      }
+    ];
   }
-  btn.disabled = false;
-}
 
-// ──────────────────────────────────────────────────────
-// QUICK STRAT REC (for strat bar)
-// ──────────────────────────────────────────────────────
-async function quickStratRec() {
-  const strat = document.getElementById('strat-ticker');
-  if (strat) strat.innerHTML = '▸ <span>Refreshing neural analysis...</span>';
-  try {
-    const result = await callClaude('Give a single sentence strategic recommendation for Dee Montee right now based on current HonorHealth situation. Start with the most urgent action.');
-    if (strat) strat.innerHTML = '▸ <span style="color:var(--purple)">[STRATEGIST]</span> ' + result;
-  } catch(e) {
-    if (strat) strat.innerHTML = '▸ <span>Strategist offline — API connection required</span>';
-  }
-}
-
-// ──────────────────────────────────────────────────────
-// REPORTS
-// ──────────────────────────────────────────────────────
-async function buildExecSummary() {
-  const period = document.getElementById('rpt-period').value;
-  const recipient = document.getElementById('rpt-recipient').value;
-  const focus = document.getElementById('rpt-focus').value;
-  const tone = document.getElementById('rpt-tone').value;
-  const prompt = `Write an executive summary for ${recipient} covering ${period}. Focus: ${focus}. Tone: ${tone}. Include: KPI headlines (claims, denial rate, revenue at risk, clean claim rate), critical action items, financial exposure summary, and strategic outlook. Make it polished and ready to send.`;
-  await runAI(prompt, 'exec-out', 'exec-err', 'exec-btn', null, false);
-  document.getElementById('exec-actions').style.display = 'flex';
-}
-
-async function buildStratReport() {
-  const period = document.getElementById('rpt-period').value;
-  const recipient = document.getElementById('rpt-recipient').value;
-  const prompt = `Write an executive summary WITH strategic recommendations for ${recipient} covering ${period}. Include: executive metrics summary, top 3 strategic priorities with dollar impact, 30-day action roadmap, risk mitigation plan, and competitive positioning relative to CMS benchmarks. This should be boardroom-ready.`;
-  await runAI(prompt, 'exec-out', 'exec-err', 'exec-btn', null, true);
-  document.getElementById('exec-actions').style.display = 'flex';
-}
-
-async function buildDenialReport() {
-  const prompt = 'Generate a detailed denial code breakdown report for HonorHealth. For each denial code (PR-96, CO-4, CO-11, CO-29, CO-97), provide: root cause analysis, top payers using this code, documentation required to prevent, appeal success rate, and recovery strategy.';
-  await runAI(prompt, 'denial-report-out', null, null, null, true);
-}
-
-// ──────────────────────────────────────────────────────
-// BPO INTAKE
-// ──────────────────────────────────────────────────────
-let lastDocFile = '', lastDocContext = '';
-async function reviewDoc(file, context) {
-  lastDocFile = file; lastDocContext = context;
-  const panel = document.getElementById('doc-panel');
-  const out = document.getElementById('doc-out');
-  const err = document.getElementById('doc-err');
-  const ttl = document.getElementById('doc-ttl');
-  panel.style.display = 'block';
-  ttl.textContent = 'AI Analysis: ' + file;
-  err.classList.remove('show');
-  out.classList.add('show');
-  out.textContent = '▸ Analyzing document...';
-  try {
-    const result = await callClaude(`Analyze this BPO document for HonorHealth: ${file}. Context: ${context}. Provide: document summary, key findings, denial codes present, recommended actions, priority items, and dollar impact. Be specific and actionable.`, HC_CONTEXT);
-    out.textContent = result;
-  } catch(e) {
-    out.classList.remove('show');
-    err.textContent = e.message; err.classList.add('show');
-  }
-}
-
-// ──────────────────────────────────────────────────────
-// CHAT
-// ──────────────────────────────────────────────────────
-const chatHistory = [{ role: 'assistant', content: 'Portal AI + Strategist Neural Core online. Full context loaded — 15 HC nodes, 6 alerts, 4 BPO docs in queue, payer intel, real-time strategic signals. What do you need first?' }];
-
-async function sendChat(prefill) {
-  const inp = document.getElementById('chat-inp');
-  const msg = prefill || inp.value.trim();
-  if (!msg) return;
-  inp.value = '';
-  appendMsg(msg, 'cu');
-  chatHistory.push({ role: 'user', content: msg });
-  const thinking = appendMsg('▸ thinking...', 'ca');
-  const btn = document.getElementById('chat-send');
-  btn.style.opacity = '.4';
-  try {
-    const messages = chatHistory.map(m => ({ role: m.role, content: m.role === 'user' ? m.content : m.content }));
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: HC_CONTEXT,
-        messages
-      })
-    });
-    if (!resp.ok) throw new Error('API ' + resp.status);
-    const data = await resp.json();
-    const reply = data.content.map(b => b.type === 'text' ? b.text : '').join('');
-    thinking.textContent = reply;
-    thinking.className = 'cm ca slideIn';
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch(e) {
-    thinking.textContent = 'Error: ' + e.message + '. Check API connection.';
-    thinking.className = 'cm ce slideIn';
-  }
-  btn.style.opacity = '1';
-  scrollChat();
-}
-
-function appendMsg(text, cls) {
-  const chat = document.getElementById('chat');
-  const div = document.createElement('div');
-  div.className = 'cm ' + cls + ' fi';
-  div.textContent = text;
-  chat.appendChild(div);
-  scrollChat();
-  return div;
-}
-
-function scrollChat() {
-  const chat = document.getElementById('chat');
-  chat.scrollTop = chat.scrollHeight;
-}
-
-// ──────────────────────────────────────────────────────
-// STAFF
-// ──────────────────────────────────────────────────────
-const observations = [];
-
-function logObs() {
-  const name = document.getElementById('staff-name').value;
-  const type = document.getElementById('obs-type').value;
-  const text = document.getElementById('obs-text').value;
-  if (!name || !text) return;
-  observations.push({ name, type, text, time: new Date().toLocaleTimeString() });
-  const log = document.getElementById('obs-log');
-  log.innerHTML = '';
-  observations.forEach(o => {
-    const div = document.createElement('div');
-    div.className = 'obs-entry';
-    div.innerHTML = `<div class="obs-name">${o.name}</div><div class="obs-type">${o.type} · ${o.time}</div><div class="obs-body">${o.text}</div>`;
-    log.appendChild(div);
-  });
-  document.getElementById('obs-text').value = '';
-  const c = document.getElementById('obs-confirm');
-  c.style.display = 'block';
-  setTimeout(() => c.style.display = 'none', 2000);
-}
-
-function clearLog() {
-  observations.length = 0;
-  document.getElementById('obs-log').innerHTML = '<div style="font-size:9px;color:var(--text3);text-align:center;padding:18px 0">No observations this session.</div>';
-}
-
-async function genHRDoc() {
-  const name = document.getElementById('hr-name').value;
-  const type = document.getElementById('hr-type').value;
-  const context = document.getElementById('hr-context').value;
-  if (!name) return alert('Select a staff member.');
-  const prompt = `Draft a ${type} document for ${name} at HonorHealth Revenue Cycle. Context: ${context || 'Standard review based on performance metrics.'}. Make it professional, HR-ready, and specific to healthcare revenue cycle work. Include performance metrics references where appropriate.`;
-  await runAI(prompt, 'hr-out', 'hr-err', 'hr-gen-btn', null, false);
-  document.getElementById('hr-actions').style.display = 'flex';
-}
-
-async function analyzePatterns() {
-  if (!observations.length) {
-    const out = document.getElementById('pattern-out');
-    out.textContent = 'No observations logged this session. Log staff observations first.';
-    out.classList.add('show');
-    return;
-  }
-  const obsText = observations.map(o => `${o.name} [${o.type}]: ${o.text}`).join('\n');
-  const prompt = `Analyze these staff observations from HonorHealth Revenue Cycle today:\n\n${obsText}\n\nIdentify patterns, performance trends, recognition opportunities, and concerns. Suggest management actions.`;
-  await runAI(prompt, 'pattern-out', 'pattern-err', 'pattern-btn', null, false);
-}
-
-// ──────────────────────────────────────────────────────
-// BRIEFING MODAL
-// ──────────────────────────────────────────────────────
-function openBriefing() {
-  document.getElementById('bo').classList.add('open');
-  genBriefStrat();
-}
-
-function closeBriefing() {
-  document.getElementById('bo').classList.remove('open');
-}
-
-async function genBriefStrat() {
-  const el = document.getElementById('brief-strat-rec');
+  const el = document.getElementById('office-list');
   if (!el) return;
-  el.textContent = '◈ Generating strategic recommendation...';
-  try {
-    const result = await callClaude('Give a single strategic recommendation for today\'s team standup at HonorHealth. What is the one thing the entire team should focus on today to maximize revenue recovery? Be specific with dollar amounts.');
-    el.textContent = result;
-    el.style.color = 'var(--purple)';
-  } catch(e) {
-    el.textContent = 'Connect API for live strategist recommendation.';
+
+  el.innerHTML = ranking.map(o => `
+    <div class="office ${o.office === STATE.selectedOffice ? 'active' : ''}"
+         onclick="selectOffice('${o.office}')"
+         style="padding:10px;border-bottom:1px solid rgba(0,255,163,.1);cursor:pointer">
+      <div style="font-weight:bold">#${o.riskRank} · ${o.office}</div>
+      <div style="font-size:11px;color:#9fdcc9">${o.summary}</div>
+    </div>
+  `).join('');
+
+  // 🔥 fix top bar
+  const top = document.getElementById('top-offices');
+  if (top){
+    top.textContent = ranking.length + " OFFICES";
   }
 }
 
-async function genScript() {
-  const notes = document.getElementById('brief-notes').value;
-  const prompt = `Write a coaching script for Dee Montee to run a 5-minute team standup at HonorHealth Revenue Cycle. Include: opening, each team member\'s focus for today (J. Rodriguez, M. Chen, T. Williams, L. Kim, K. Patel), key metrics to mention, motivation, and closing. Tone: direct, energizing, performance-focused. ${notes ? 'Manager notes: ' + notes : ''}`;
-  const out = document.getElementById('script-out');
-  const err = document.getElementById('script-err');
-  const btn = document.getElementById('script-btn');
-  err.classList.remove('show');
-  out.classList.add('show');
-  out.textContent = '▸ Generating coaching script...';
-  btn.disabled = true;
-  try {
-    out.textContent = await callClaude(prompt, HC_CONTEXT);
-  } catch(e) {
-    out.classList.remove('show');
-    err.textContent = e.message; err.classList.add('show');
-  }
-  btn.disabled = false;
-}
-
-// ──────────────────────────────────────────────────────
-// CHARTS
-// ──────────────────────────────────────────────────────
-let chartsInited = false;
-function initCharts() {
-  if (chartsInited) return;
-  chartsInited = true;
-
-  // Denial Rate Trend
-  const ctx1 = document.getElementById('denial-chart');
-  if (ctx1) {
-    new Chart(ctx1, {
-      type: 'line',
-      data: {
-        labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
-        datasets: [
-          { label: 'Denial Rate %', data: [14.0, 15.2, 16.8, 17.1, 17.9, 18.4], borderColor: '#ff4455', backgroundColor: 'rgba(255,68,85,0.08)', tension: 0.4, pointRadius: 4, pointBackgroundColor: '#ff4455' },
-          { label: 'CMS Threshold', data: [15, 15, 15, 15, 15, 15], borderColor: '#ffaa00', borderDash: [4, 4], pointRadius: 0, backgroundColor: 'transparent' }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 12, max: 20, grid: { color: 'rgba(0,255,100,0.05)' }, ticks: { color: '#5a7a5a', callback: v => v + '%' } },
-          x: { grid: { color: 'rgba(0,255,100,0.05)' }, ticks: { color: '#5a7a5a' } }
-        }
-      }
-    });
-  }
-
-  // Revenue Risk
-  const ctx2 = document.getElementById('revenue-chart');
-  if (ctx2) {
-    new Chart(ctx2, {
-      type: 'bar',
-      data: {
-        labels: ['PR-96', 'CO-4', 'CO-11', 'CO-29', 'CO-97'],
-        datasets: [{ label: 'Revenue At Risk ($K)', data: [21.6, 13.4, 8.1, 5.7, 2.9], backgroundColor: ['#ff4455', '#ffaa00', '#a855f7', '#ff4455', '#00aaff'], borderRadius: 2 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { grid: { color: 'rgba(0,255,100,0.05)' }, ticks: { color: '#5a7a5a', callback: v => '$' + v + 'K' } },
-          x: { grid: { display: false }, ticks: { color: '#5a7a5a', autoSkip: false } }
-        }
-      }
-    });
-  }
-
-  // Clean Claim Rate by Service Line
-  const ctx3 = document.getElementById('clean-chart');
-  if (ctx3) {
-    new Chart(ctx3, {
-      type: 'bar',
-      data: {
-        labels: ['Cardiology', 'Primary Care', 'Surgery', 'Radiology', 'Pharmacy', 'DME'],
-        datasets: [{ label: 'Clean Claim Rate', data: [91.2, 96.8, 94.1, 97.3, 98.2, 88.4], backgroundColor: v => v.raw >= 95 ? '#00cc50' : v.raw >= 90 ? '#ffaa00' : '#ff4455', borderRadius: 2 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 85, max: 100, grid: { color: 'rgba(0,255,100,0.05)' }, ticks: { color: '#5a7a5a', callback: v => v + '%' } },
-          x: { grid: { display: false }, ticks: { color: '#5a7a5a', autoSkip: false, maxRotation: 30 } }
-        }
-      }
-    });
+function selectOffice(name){
+  STATE.selectedOffice = name;
+  if (window.lastBaseData){
+    renderOfficeList(window.lastBaseData);
   }
 }
 
-// ──────────────────────────────────────────────────────
-// NAV FILTER
-// ──────────────────────────────────────────────────────
-function filterNav(q) {
-  const items = document.querySelectorAll('.ni');
-  items.forEach(i => {
-    const n = i.querySelector('.ni-n');
-    if (!n) return;
-    i.style.display = (!q || n.textContent.toLowerCase().includes(q.toLowerCase())) ? '' : 'none';
-  });
-}
+// 🔥 hook into existing data load
+const _origRender = window.renderDashboard || function(){};
 
-// ──────────────────────────────────────────────────────
-// PPTX EXPORT (basic)
-// ──────────────────────────────────────────────────────
-async function exportBriefingPPTX() {
-  try {
-    const pptx = new PptxGenJS();
-    pptx.layout = 'LAYOUT_WIDE';
-    const slide1 = pptx.addSlide();
-    slide1.background = { color: '060a08' };
-    slide1.addText('HONORHEALTH REVENUE CYCLE', { x: 0.5, y: 0.3, w: 12, h: 0.5, color: '00ff64', fontSize: 20, bold: true, fontFace: 'Arial' });
-    slide1.addText('Operations Briefing — ' + new Date().toLocaleDateString(), { x: 0.5, y: 0.8, w: 12, h: 0.4, color: '5a7a5a', fontSize: 12, fontFace: 'Courier New' });
-    const kpis = [
-      { label: '1,256 Claims', sub: '231 denied (18.4%)' },
-      { label: '$48K At Risk', sub: '14 aging >30 days' },
-      { label: '94.2% Clean Rate', sub: 'Target: 97%' },
-      { label: '15 Nodes Active', sub: '2 critical' },
-    ];
-    kpis.forEach((k, i) => {
-      const x = 0.5 + i * 3.2;
-      slide1.addShape(pptx.ShapeType.rect, { x, y: 1.5, w: 3, h: 1.2, fill: { color: '0d120f' }, line: { color: '008f38', width: 1 } });
-      slide1.addText(k.label, { x, y: 1.6, w: 3, h: 0.5, color: '00ff64', fontSize: 16, bold: true, fontFace: 'Arial', align: 'center' });
-      slide1.addText(k.sub, { x, y: 2.1, w: 3, h: 0.4, color: '5a7a5a', fontSize: 9, fontFace: 'Courier New', align: 'center' });
-    });
-    const slide2 = pptx.addSlide();
-    slide2.background = { color: '060a08' };
-    slide2.addText('CRITICAL ALERTS', { x: 0.5, y: 0.3, w: 12, h: 0.5, color: 'ff4455', fontSize: 18, bold: true, fontFace: 'Arial' });
-    const alerts = [
-      '1. CLM-0334 — CO-29 Timely Filing — $3,800 — 48hr Write-Off Risk',
-      '2. 18.4% Denial Rate — Exceeds 15% CMS Threshold — $48K Exposure',
-      '3. CPT 99215 Upcoding — 23 Claims — $12,040 Audit Risk',
-      '4. Modifier -25 Overuse — 47 Claims — $8,460 At Risk',
-    ];
-    alerts.forEach((a, i) => {
-      slide2.addText(a, { x: 0.5, y: 1.0 + i * 0.6, w: 12, h: 0.5, color: 'b8d8b8', fontSize: 12, fontFace: 'Courier New' });
-    });
-    await pptx.writeFile({ fileName: 'HonorHealth-Briefing-' + new Date().toISOString().slice(0,10) + '.pptx' });
-  } catch(e) {
-    alert('PPTX export error: ' + e.message);
-  }
-}
-
-// ──────────────────────────────────────────────────────
-// BOOT
-// ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  showTab('dashboard');
-  setTimeout(bootStrategist, 500);
-});
+window.renderDashboard = function(base){
+  window.lastBaseData = base;
+  renderOfficeList(base);
+  _origRender(base);
+};
 </script>
+
 </body>
 </html>
