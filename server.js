@@ -1,5 +1,20 @@
 const express = require('express');
 const path = require('path');
+
+const os = require('os');
+
+function resolveWritableStore(preferredPath) {
+  try {
+    fs.mkdirSync(preferredPath, { recursive: true });
+    fs.accessSync(preferredPath, fs.constants.W_OK);
+    return preferredPath;
+  } catch (_e) {
+    const fallback = path.join(process.cwd(), 'data', 'hc-strategist');
+    fs.mkdirSync(fallback, { recursive: true });
+    return fallback;
+  }
+}
+
 const fs = require('fs');
 const https = require('https');
 
@@ -272,17 +287,10 @@ const HC_REPORTS_FILE = path.join(HC_DATA_DIR, 'reports.json');
 const HC_NODE_STATE_FILE = path.join(HC_DATA_DIR, 'node-state.json');
 const HC_PROFILES_FILE = path.join(HC_DATA_DIR, 'profiles.json');
 
-function ensureStore() {
-  fs.mkdirSync(HC_DATA_DIR, { recursive: true });
-  if (!fs.existsSync(HC_REPORTS_FILE)) fs.writeFileSync(HC_REPORTS_FILE, '[]', 'utf8');
-  if (!fs.existsSync(HC_NODE_STATE_FILE)) fs.writeFileSync(HC_NODE_STATE_FILE, '{}', 'utf8');
-  if (!fs.existsSync(HC_PROFILES_FILE)) {
-    fs.writeFileSync(HC_PROFILES_FILE, JSON.stringify([
-      { id: "honor", name: "HonorHealth", system: "HonorHealth", locations: ["All", "Scottsdale - Shea", "Osborn"] },
-      { id: "banner", name: "Banner", system: "Banner", locations: ["All"] },
-      { id: "dignity", name: "Dignity", system: "Dignity", locations: ["All"] }
-    ], null, 2), 'utf8');
-  }
+function ensureStore(dir) {
+  const target = resolveWritableStore(dir);
+  fs.mkdirSync(target, { recursive: true });
+  return target;
 }
 ensureStore();
 
@@ -1449,13 +1457,6 @@ app.post('/api/strategist/hc/dee-action', (req, res) => {
   }
 });
 
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`TSM Node API running on ${PORT}`);
-});
-
-
-
 app.post('/api/hc/rollup/brief', (req, res) => {
   try {
     const { system = '', audience = 'cfo', format = 'email', top_n = 3 } = req.body || {};
@@ -1587,3 +1588,8 @@ app.use((req, res) => {
 
 
 require('./api/hc-execution')(app);
+
+// ✅ FORCE LISTEN FOR FLY.IO
+app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
+  console.log('TSM Shell running on port', process.env.PORT || 8080);
+});

@@ -493,28 +493,20 @@ async function refreshAll(){
 
 async function runModeAction(){
   try{
-    const res = await fetch('/api/hc/bnca', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        office: STATE.selectedOffice,
-        mode: STATE.mode
-      })
-    });
-    STATE.action = await res.json();
+    STATE.action = await loadBNCA();
     renderTop(STATE.base, STATE.action);
     renderHC(STATE.base, STATE.action);
     renderModes(STATE.base, STATE.action);
     await loadTasks();
-    showToast('BNCA refreshed → ' + STATE.selectedOffice);
+    showToast('BNCA refreshed');
   }catch(e){
-    showToast('BNCA refresh failed: ' + e.message);
+    showToast('BNCA refresh failed');
   }
 }
 async function delegateToOM(){
   try{
     const office = STATE.selectedOffice;
-    const ownerLane = ((STATE.action && STATE.action.layer2 && STATE.action.layer2.ownerLanes) || ['Billing','Insurance']).join('/');
+    const ownerLane = ((STATE.action && STATE.action.layer2 && STATE.action.layer2.ownerLanes) || ['Operations','Billing','Insurance']).join('/');
     const action = (STATE.action && STATE.action.actionBoard && STATE.action.actionBoard.topPriorityNow) || 'Execute BNCA';
 
     const res = await fetch('/api/hc/delegate', {
@@ -536,7 +528,7 @@ async function delegateToOM(){
       showToast('Delegate failed');
     }
   }catch(e){
-    showToast('Delegate failed: ' + e.message);
+    showToast('Delegate failed');
   }
 }
 
