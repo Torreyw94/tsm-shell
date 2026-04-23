@@ -1571,7 +1571,7 @@ app.post('/api/hc/alerts', (req, res) => {
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
-    return require('./api/hc-execution')(app);
+    require('./api/hc-execution')(app);
 
 res.status(404).json({ ok: false, error: 'API route not found' });
   }
