@@ -1571,7 +1571,9 @@ app.post('/api/hc/alerts', (req, res) => {
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ ok: false, error: 'API route not found' });
+    return require('./api/hc-execution')(app);
+
+res.status(404).json({ ok: false, error: 'API route not found' });
   }
 
   // serve exact frontend file/path when present, otherwise launcher
@@ -1587,7 +1589,7 @@ app.use((req, res) => {
 
 
 
-require('./api/hc-execution')(app);
+
 
 // ✅ FORCE LISTEN FOR FLY.IO
 app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
