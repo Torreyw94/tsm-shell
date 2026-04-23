@@ -288,7 +288,18 @@ body > div:first-of-type,
   display:none !important;
 }
 
+
+.dee-btn.loading{
+  opacity:.65;
+  pointer-events:none;
+}
+.dee-last-action{
+  font-size:12px;
+  color:#9fdcc9;
+  margin-top:8px;
+}
 </style>
+
 
 
 
@@ -1417,28 +1428,50 @@ window.selectDeeOffice = function(office){
   return window.quickAsk('refresh command view for ' + office);
 };
 
-window.quickAsk = async function(promptText){
-  try {
-    const selectedOffice = window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea';
 
-    const r = await fetch('/api/strategist/hc/dee-action', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
+window.DEE_SELECTED_OFFICE = window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea';
+window.DEE_LAST_ACTION = window.DEE_LAST_ACTION || '';
+window.DEE_LOADING = false;
+
+window.quickAsk = async function(promptText){
+  if (window.DEE_LOADING) return;
+  window.DEE_LOADING = true;
+  window.DEE_LAST_ACTION = promptText || '';
+
+  const target = document.getElementById('dee-live-output');
+  if (target) {
+    Array.prototype.forEach.call(target.querySelectorAll('.dee-btn'), function(btn){
+      btn.classList.add('loading');
+      btn.disabled = true;
+    });
+  }
+
+  try {
+    const res = await fetch('/api/strategist/hc/dee-action', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        system: 'HonorHealth',
-        selectedOffice: selectedOffice,
+        system:'HonorHealth',
+        selectedOffice: window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea',
         prompt: promptText || ''
       })
     });
 
-    const data = await r.json();
+    const data = await res.json();
+    const t = document.getElementById('dee-live-output');
+    if (!t) {
+      window.DEE_LOADING = false;
+      return data;
+    }
 
-    const target = document.getElementById('dee-live-output') || document.body;
     const ab = data.actionBoard || {};
-    const layer2 = data.layer2 || {};
+    const l = data.layer2 || {};
     const alerts = data.alerts || [];
-    const posture = data.posture || {};
-    const ranking = posture.officeRanking || [];
+    const actions = (ab.actions && ab.actions.length) ? ab.actions : [
+      'Run denial recovery plan for ' + (window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea'),
+      'Escalate payer auth blockers for ' + (window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea'),
+      'Compare ' + (window.DEE_SELECTED_OFFICE || 'Scottsdale - Shea') + ' vs best-performing office'
+    ];
 
     const esc = function(v){
       return String(v == null ? '' : v)
@@ -1452,78 +1485,34 @@ window.quickAsk = async function(promptText){
       return '$' + Number(n || 0).toLocaleString();
     };
 
-    const actions = (ab.actions && ab.actions.length) ? ab.actions : [
-      'Run denial recovery plan for ' + selectedOffice,
-      'Escalate payer auth blockers for ' + selectedOffice,
-      'Generate executive brief for ' + selectedOffice
-    ];
+    t.innerHTML = `
+      <div class="dee-priority">
+        ${esc(ab.topPriorityNow || 'Intervene in Scottsdale - Shea')}
+        <div class="dee-last-action">Last action: ${esc(window.DEE_LAST_ACTION || 'initial load')}</div>
+      </div>
 
-    const actionButtons = actions.map(function(a){
-      return '<button class="dee-btn" data-action="' + esc(a) + '">' + esc(a) + '</button>';
-    }).join('');
+      <div class="dee-card-grid">
+        <div class="dee-card">${money(l.revenueAtRisk)}<br>Risk</div>
+        <div class="dee-card">${money(l.recoverable72h)}<br>Recoverable</div>
+        <div class="dee-card">${money(l.cashAcceleration14d)}<br>14d</div>
+        <div class="dee-card">${esc(l.highestYieldLane || 'Insurance')}<br>Lane</div>
+      </div>
 
-    const alertHtml = alerts.length ? alerts.map(function(a){
-      const sev = String(a.severity || '').toLowerCase();
-      return '<div class="dee-alert ' + esc(sev) + '">' +
-        '<div class="dee-alert-type">' + esc(a.type) + ' · ' + esc(a.severity) + '</div>' +
-        '<div class="dee-alert-msg">' + esc(a.message) + '</div>' +
-      '</div>';
-    }).join('') : '<div class="dee-alert low"><div class="dee-alert-msg">No active alerts</div></div>';
+      ${alerts.map(function(a){
+        const sev = String(a.severity || '').toLowerCase();
+        return '<div class="dee-alert ' + esc(sev) + '">' + esc(a.type) + ': ' + esc(a.message) + '</div>';
+      }).join('')}
 
-    const heatmap = ranking.map(function(o){
-      return '<div class="dee-heat ' + esc(String(o.status || 'stable').toLowerCase()) + '" data-office="' + esc(o.office) + '">' +
-        '<div class="dee-heat-title">' + esc(o.office) + '</div>' +
-        '<div class="dee-heat-sub">Rank #' + esc(o.riskRank) + ' · Score ' + esc(o.riskScore) + '<br>' + esc(o.summary || '') + '</div>' +
-      '</div>';
-    }).join('');
+      <div class="dee-actions">
+        ${actions.map(function(a){
+          return '<button class="dee-btn" data-action="' + esc(a) + '">' + esc(a) + '</button>';
+        }).join('')}
+      </div>
+    `;
 
-    target.innerHTML =
-      '<div class="dee-cards-wrap">' +
-
-        '<div class="dee-priority">' +
-          '<div class="dee-priority-title">Top Priority</div>' +
-          '<div class="dee-priority-body">' + esc(ab.topPriorityNow || ('Intervene in ' + selectedOffice)) + '</div>' +
-          '<div class="dee-meta">Selected Office: ' + esc(selectedOffice) + ' · Payer Focus: ' + esc(ab.payerFocus || 'Prior Authorization') + '</div>' +
-        '</div>' +
-
-        '<div class="dee-card">' +
-          '<div class="dee-section-title">Immediate Actions</div>' +
-          '<div class="dee-actions">' + actionButtons + '</div>' +
-        '</div>' +
-
-        '<div class="dee-card-grid">' +
-          '<div class="dee-card"><div class="dee-card-label">Revenue At Risk</div><div class="dee-card-value">' + money(layer2.revenueAtRisk) + '</div></div>' +
-          '<div class="dee-card"><div class="dee-card-label">Recoverable 72h</div><div class="dee-card-value">' + money(layer2.recoverable72h) + '</div></div>' +
-          '<div class="dee-card"><div class="dee-card-label">14d Acceleration</div><div class="dee-card-value">' + money(layer2.cashAcceleration14d) + '</div></div>' +
-          '<div class="dee-card"><div class="dee-card-label">Highest Yield Lane</div><div class="dee-card-value" style="font-size:22px">' + esc(layer2.highestYieldLane || 'Insurance') + '</div></div>' +
-        '</div>' +
-
-        '<div class="dee-card">' +
-          '<div class="dee-section-title">Alert Stack</div>' +
-          '<div class="dee-alerts">' + alertHtml + '</div>' +
-        '</div>' +
-
-        '<div class="dee-card">' +
-          '<div class="dee-section-title">Office Heatmap</div>' +
-          '<div class="dee-heatmap">' + heatmap + '</div>' +
-        '</div>' +
-
-        '<div class="dee-card">' +
-          '<div class="dee-section-title">Strategist Narrative</div>' +
-          '<div class="dee-narrative">' + esc(ab.strategistNarrative || '') + '</div>' +
-        '</div>' +
-
-      '</div>';
-
-    Array.prototype.forEach.call(target.querySelectorAll('[data-action]'), function(btn){
+    Array.prototype.forEach.call(t.querySelectorAll('[data-action]'), function(btn){
       btn.onclick = function(){
         return window.quickAsk(btn.getAttribute('data-action'));
-      };
-    });
-
-    Array.prototype.forEach.call(target.querySelectorAll('[data-office]'), function(tile){
-      tile.onclick = function(){
-        return window.selectDeeOffice(tile.getAttribute('data-office'));
       };
     });
 
@@ -1531,6 +1520,15 @@ window.quickAsk = async function(promptText){
   } catch(e){
     console.error('quickAsk failed', e);
     return { ok:false, error:e.message };
+  } finally {
+    window.DEE_LOADING = false;
+    const t = document.getElementById('dee-live-output');
+    if (t) {
+      Array.prototype.forEach.call(t.querySelectorAll('.dee-btn'), function(btn){
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      });
+    }
   }
 };
 </script>
