@@ -486,7 +486,7 @@ async function refreshAll(){
 }
 
 function runModeAction(){ refreshAll(); }
-function delegateToOM(){ alert('Delegate to OM: ' + STATE.selectedOffice); }
+function delegateToOM(){ showToast('Delegate to OM: ' + STATE.selectedOffice); }
 
 window.addEventListener('load', refreshAll);
 </script>
@@ -559,6 +559,35 @@ window.renderDashboard = function(base){
   renderOfficeList(base);
   _origRender(base);
 };
+</script>
+
+
+<script>
+function showToast(msg){
+  let t = document.getElementById('tsm-toast');
+  if (!t){
+    t = document.createElement('div');
+    t.id = 'tsm-toast';
+    t.style.position = 'fixed';
+    t.style.top = '20px';
+    t.style.right = '20px';
+    t.style.background = '#06121c';
+    t.style.border = '1px solid rgba(0,255,163,.3)';
+    t.style.color = '#00ffa3';
+    t.style.padding = '12px 16px';
+    t.style.borderRadius = '8px';
+    t.style.fontFamily = 'monospace';
+    t.style.zIndex = '9999';
+    document.body.appendChild(t);
+  }
+
+  t.innerText = msg;
+  t.style.opacity = '1';
+
+  setTimeout(() => {
+    t.style.opacity = '0';
+  }, 2500);
+}
 </script>
 
 </body>
