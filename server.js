@@ -919,6 +919,30 @@ app.post('/api/hc/brief', (req, res) => {
 });
 
 
+async function callGroq(systemPrompt, userMessage) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+      body: JSON.stringify({
+        model: 'llama3-8b-8192',
+        max_tokens: 400,
+        messages: [
+          {role:'system', content: systemPrompt},
+          {role:'user', content: userMessage}
+        ]
+      })
+    });
+    const d = await res.json();
+    return d.choices?.[0]?.message?.content || null;
+  } catch(e) {
+    console.error('Groq error:', e.message);
+    return null;
+  }
+}
+
 app.post('/api/hc/ask', async (req,res)=>{
   try{
     const {query='',system='',location='',nodeKey=''} = req.body||{};
