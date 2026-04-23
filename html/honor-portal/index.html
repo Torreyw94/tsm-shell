@@ -311,8 +311,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="strat-label">◈ STRATEGIST</div>
   <div class="strat-rec" id="strat-ticker">▸ <span>Neural analysis loading</span> — connecting to HC Strategist for real-time recommendations...</div>
   <div class="strat-actions">
-    <button class="strat-btn" onclick="showTab('strategist')">OPEN FULL VIEW →</button>
-    <button class="strat-btn" onclick="quickStratRec()">◈ REFRESH</button>
+    <button class="strat-btn" >OPEN FULL VIEW →</button>
+    <button class="strat-btn" >◈ REFRESH</button>
   </div>
 </div>
 
@@ -346,29 +346,29 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <a class="ni" href="https://hc-insurance.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">HC Insurance</span></a>
       <a class="ni" href="https://dme.tsmatter.com" target="_blank"><span class="ni-d dg"></span><span class="ni-n">DME</span></a>
       <div class="nav-gh" style="margin-top:5px"><span class="nav-gl" style="color:var(--purple)">◈ Strategy</span><span class="nav-gc" style="color:var(--purple)">2</span></div>
-      <div class="ni" onclick="showTab('strategist')" style="cursor:pointer"><span class="ni-d dp"></span><span class="ni-n" style="color:var(--purple)">HC Strategist</span><span class="ni-b bp">NEURAL</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d dp"></span><span class="ni-n" style="color:var(--purple)">HC Strategist</span><span class="ni-b bp">NEURAL</span></div>
       <a class="ni" href="https://strategist.tsmatter.com" target="_blank"><span class="ni-d dp"></span><span class="ni-n">Strategist</span></a>
       <div class="nav-gh" style="margin-top:5px"><span class="nav-gl" style="color:var(--blue)">BPO Intake</span><span class="nav-gc" style="color:var(--blue)">4</span></div>
       <div class="ni"><span class="ni-d da"></span><span class="ni-n">3 Processing</span><span class="ni-b bw">queue</span></div>
       <div class="ni"><span class="ni-d dg"></span><span class="ni-n">1 Ready</span><span class="ni-b bo">review</span></div>
       <div class="nav-gh" style="margin-top:5px"><span class="nav-gl">Reports</span></div>
-      <div class="ni" onclick="showTab('reports')" style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">Exec Summary</span><span class="ni-b" style="background:var(--golddim);color:var(--gold)">build</span></div>
+      <div class="ni"  style="cursor:pointer"><span class="ni-d dg"></span><span class="ni-n">Exec Summary</span><span class="ni-b" style="background:var(--golddim);color:var(--gold)">build</span></div>
     </div>
-    <button class="strat-nav-btn" onclick="showTab('strategist')">◈ Strategist Neural Core</button>
-    <button class="brief-btn" onclick="openBriefing()">◆ Build Team Briefing</button>
+    <button class="strat-nav-btn" >◈ Strategist Neural Core</button>
+    <button class="brief-btn" >◆ Build Team Briefing</button>
   </div>
 
   <!-- ── CENTER CONTENT ── -->
   <div class="center">
     <div class="tab-bar">
-      <div class="tab act" id="t-dashboard" onclick="showTab('dashboard')">Dashboard</div>
-      <div class="tab" id="t-nodes" onclick="showTab('nodes')">All Nodes</div>
-      <div class="tab" id="t-intake" onclick="showTab('intake')">BPO Intake</div>
-      <div class="tab" id="t-alerts" onclick="showTab('alerts')">Alerts <span style="color:var(--red);margin-left:3px">6</span></div>
-      <div class="tab" id="t-reports" onclick="showTab('reports')">Reports</div>
-      <div class="tab" id="t-analytics" onclick="showTab('analytics')">Analytics</div>
-      <div class="tab strat-tab" id="t-strategist" onclick="showTab('strategist')" style="color:rgba(168,85,247,.6)">◈ Strategist</div>
-      <div class="tab" id="t-staff" onclick="showTab('staff')">▲ Staff Intel</div>
+      <div class="tab act" id="t-dashboard" >Dashboard</div>
+      <div class="tab" id="t-nodes" >All Nodes</div>
+      <div class="tab" id="t-intake" >BPO Intake</div>
+      <div class="tab" id="t-alerts" >Alerts <span style="color:var(--red);margin-left:3px">6</span></div>
+      <div class="tab" id="t-reports" >Reports</div>
+      <div class="tab" id="t-analytics" >Analytics</div>
+      <div class="tab strat-tab" id="t-strategist"  style="color:rgba(168,85,247,.6)">◈ Strategist</div>
+      <div class="tab" id="t-staff" >▲ Staff Intel</div>
     </div>
 
     <div class="content">
@@ -385,7 +385,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
         <div class="dg3">
           <div class="panel">
-            <div class="sh"><span class="st">Active Alerts</span><span class="sa" onclick="showTab('alerts')">view all →</span></div>
+            <div class="sh"><span class="st">Active Alerts</span><span class="sa" >view all →</span></div>
             <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — PR-96, CO-4, CO-11</span><span class="am" style="color:var(--red)">$48K</span></div>
             <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (93454) — CO-29 timely filing · write-off risk in 48hrs</span><span class="am" style="color:var(--red)">$3.8K</span></div>
             <div class="ar"><span class="ap pm">MED</span><span class="at">CPT 99215 upcoding — 23 claims · $12,040 audit exposure</span><span class="am">Audit</span></div>
@@ -393,8 +393,8 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             <div class="ar"><span class="ap pl">LOW</span><span class="at">ICD-10 specificity gaps on 14 claims</span><span class="am">Docs</span></div>
           </div>
           <div class="panel">
-            <div class="sh"><span class="st">BPO Intake</span><span class="sa" onclick="showTab('intake')">view all →</span></div>
-            <div class="ir"><span class="id" style="background:var(--g);box-shadow:0 0 4px var(--g)"></span><div style="flex:1"><div class="in">ERA_20260414_batch.txt</div><div class="it">ERA FILE · $1.00/DOC</div></div><span class="itm">08:14</span><button class="ib rdy" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch — 231 claims, payers Medicare and Aetna, denial codes PR-96 and CO-4 present')">REVIEW</button></div>
+            <div class="sh"><span class="st">BPO Intake</span><span class="sa" >view all →</span></div>
+            <div class="ir"><span class="id" style="background:var(--g);box-shadow:0 0 4px var(--g)"></span><div style="flex:1"><div class="in">ERA_20260414_batch.txt</div><div class="it">ERA FILE · $1.00/DOC</div></div><span class="itm">08:14</span><button class="ib rdy" >REVIEW</button></div>
             <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CLM-denial-batch-231.csv</div><div class="it">DENIAL BATCH · $1.00/DOC</div></div><span class="itm">07:52</span><button class="ib" disabled>PROCESSING</button></div>
             <div class="ir"><span class="id da"></span><div style="flex:1"><div class="in">CPT-audit-Q1-2026.pdf</div><div class="it">AUDIT DOC · $2.00/DOC</div></div><span class="itm">07:30</span><button class="ib" disabled>PROCESSING</button></div>
             <div class="ir"><span class="id" style="background:var(--text3)"></span><div style="flex:1"><div class="in">physician-query-pkg.pdf</div><div class="it">CDI PACKAGE · $2.00/DOC</div></div><span class="itm">06:45</span><button class="ib" disabled>QUEUED</button></div>
@@ -418,7 +418,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
         <!-- STRATEGIST NEURAL SNAPSHOT on Dashboard -->
         <div class="strat-panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st strat">Strategist Neural Snapshot</span><button class="btn-strat btn" style="padding:3px 10px;font-size:8px" onclick="showTab('strategist')">FULL VIEW →</button></div>
+          <div class="sh"><span class="st strat">Strategist Neural Snapshot</span><button class="btn-strat btn" style="padding:3px 10px;font-size:8px" >FULL VIEW →</button></div>
           <div id="dash-strat-out" style="font-size:10px;color:var(--text2);padding:4px 0">
             <div class="neural-stream" id="dash-neural-stream">
               <div class="ns-line active">▸ Initializing strategic analysis engine...</div>
@@ -429,13 +429,13 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
         </div>
 
         <div class="panel">
-          <div class="sh"><span class="st">Quick Launch</span><span class="sa" onclick="showTab('nodes')">all nodes →</span></div>
+          <div class="sh"><span class="st">Quick Launch</span><span class="sa" >all nodes →</span></div>
           <div class="node-grid">
             <a class="nc ncc" href="https://hc-taxprep.tsmatter.com" target="_blank"><div class="ncn">HC Tax Prep</div><div class="ncu">hc-taxprep.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--red)">80% CPU · 187 restarts</span></div></a>
             <a class="nc ncw" href="https://hc-billing.tsmatter.com" target="_blank"><div class="ncn">HC Billing</div><div class="ncu">hc-billing.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--amber)">231 denied · $48K risk</span></div></a>
             <a class="nc nco" href="https://hc-compliance.tsmatter.com" target="_blank"><div class="ncn">HC Compliance</div><div class="ncu">hc-compliance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 3 BPO docs</span></div></a>
             <a class="nc ncw" href="https://hc-insurance.tsmatter.com" target="_blank"><div class="ncn">HC Insurance</div><div class="ncu">hc-insurance.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--amber)">6 pending authorizations</span></div></a>
-            <div class="nc ncp" onclick="showTab('strategist')" style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural core · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)" id="strat-quick-status">connecting...</span></div></div>
+            <div class="nc ncp"  style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural core · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)" id="strat-quick-status">connecting...</span></div></div>
             <a class="nc nco" href="https://hc-command.tsmatter.com" target="_blank"><div class="ncn">HC Command</div><div class="ncu">hc-command.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · command center</span></div></a>
           </div>
         </div>
@@ -466,17 +466,17 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
               <textarea class="ftxt" id="strat-context" placeholder="Add specifics... e.g. 'Focus on the CO-29 appeal and modifier -25 issue. We have a board meeting Friday and need talking points.'"></textarea>
             </div>
             <div style="display:flex;gap:6px">
-              <button class="btn btn-strat" id="strat-run-btn" onclick="runStrategist()" style="flex:1">◈ Run Strategist Analysis</button>
-              <button class="btn btn-o" onclick="document.getElementById('strat-out').classList.remove('show')" style="padding:7px 10px">✕</button>
+              <button class="btn btn-strat" id="strat-run-btn"  style="flex:1">◈ Run Strategist Analysis</button>
+              <button class="btn btn-o"  style="padding:7px 10px">✕</button>
             </div>
             <div class="ai-out strat-out" id="strat-out"></div>
             <div class="ai-err" id="strat-err"></div>
-            <button class="retry" id="strat-retry" onclick="runStrategist()">↻ Retry</button>
+            <button class="retry" id="strat-retry" >↻ Retry</button>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:10px">
             <div class="strat-panel">
-              <div class="sh"><span class="st strat">Live Strategic Signals</span><button class="btn-strat btn" style="padding:2px 8px;font-size:8px" id="signals-btn" onclick="loadStrategicSignals()">↻ REFRESH</button></div>
+              <div class="sh"><span class="st strat">Live Strategic Signals</span><button class="btn-strat btn" style="padding:2px 8px;font-size:8px" id="signals-btn" >↻ REFRESH</button></div>
               <div id="signals-out">
                 <div class="strat-signal">
                   <div class="strat-signal-icon" style="color:var(--red)">⚡</div>
@@ -504,12 +504,12 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             <div class="strat-panel">
               <div class="sh"><span class="st strat">Strategist Quick Asks</span></div>
               <div style="display:flex;flex-wrap:wrap;gap:4px">
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Draft a CO-29 appeal letter for CLM-0334 (CPT 93454, $3,800 cardiac catheterization denied by Medicare for timely filing). Include all required elements.')">Draft CO-29 Appeal</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Create a 3-step action plan to bring our 18.4% denial rate below the 15% CMS threshold within 30 days. Top codes: PR-96 45%, CO-4 28%, CO-11 18%.')">Denial Reduction Plan</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('What is the exact documentation needed to defend CPT 99215 usage and prevent a modifier -25 compliance finding? Provide coder education talking points.')">99215 Defense Brief</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Build a 30-day revenue recovery roadmap for HonorHealth given: $48K at risk, 18.4% denial rate, 231 pending denied claims, 6 auth approvals pending. Prioritize by dollar impact.')">30-Day Recovery Map</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Analyze our payer mix risk for Medicare and Aetna given CO-29 and PR-96 denial patterns. What payer-specific strategies should we deploy?')">Payer Strategy</button>
-                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" onclick="quickAsk('Generate executive talking points for a board meeting about our revenue cycle performance: 18.4% denial rate, $48K at risk, 94.2% clean claim rate vs 97% target. Frame challenges as managed opportunities.')">Board Talking Points</button>
+                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" >Draft CO-29 Appeal</button>
+                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" >Denial Reduction Plan</button>
+                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" >99215 Defense Brief</button>
+                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" >30-Day Recovery Map</button>
+                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" >Payer Strategy</button>
+                <button class="btn btn-strat" style="font-size:8px;padding:4px 8px" >Board Talking Points</button>
               </div>
             </div>
           </div>
@@ -517,15 +517,15 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
         <div class="dg2">
           <div class="strat-panel">
-            <div class="sh"><span class="st strat">Payer Intelligence</span><button class="btn-strat btn" style="padding:2px 8px;font-size:8px" onclick="runPayerIntel()">◈ ANALYZE</button></div>
+            <div class="sh"><span class="st strat">Payer Intelligence</span><button class="btn-strat btn" style="padding:2px 8px;font-size:8px" >◈ ANALYZE</button></div>
             <div id="payer-intel-out" style="font-size:10px;color:var(--text2)">
               <table class="rtable">
                 <thead><tr><th>PAYER</th><th>DENIALS</th><th>TOP CODE</th><th>AT RISK</th><th>ACTION</th></tr></thead>
                 <tbody>
-                  <tr><td>Medicare</td><td style="color:var(--red)">104</td><td>CO-29 · PR-96</td><td style="color:var(--red)">$28K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate Medicare-specific appeal strategy for CO-29 timely filing and PR-96 non-covered denials. Include deadline rules and required documentation.')">Strategy →</button></td></tr>
-                  <tr><td>Aetna</td><td style="color:var(--amber)">78</td><td>CO-4 · CO-11</td><td style="color:var(--amber)">$14K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate Aetna-specific appeal strategy for CO-4 (denial code: service not covered) and CO-11 (diagnosis inconsistent). What clinical documentation should be attached?')">Strategy →</button></td></tr>
-                  <tr><td>BCBS</td><td>32</td><td>CO-97</td><td>$6K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate BCBS appeal strategy for CO-97 payment adjusted because proposed service included in another service.')">Strategy →</button></td></tr>
-                  <tr><td>UHC</td><td>17</td><td>PR-1</td><td>$0K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Generate United Healthcare appeal strategy for PR-1 patient deductible denials. When should we bill patient vs appeal?')">Strategy →</button></td></tr>
+                  <tr><td>Medicare</td><td style="color:var(--red)">104</td><td>CO-29 · PR-96</td><td style="color:var(--red)">$28K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >Strategy →</button></td></tr>
+                  <tr><td>Aetna</td><td style="color:var(--amber)">78</td><td>CO-4 · CO-11</td><td style="color:var(--amber)">$14K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >Strategy →</button></td></tr>
+                  <tr><td>BCBS</td><td>32</td><td>CO-97</td><td>$6K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >Strategy →</button></td></tr>
+                  <tr><td>UHC</td><td>17</td><td>PR-1</td><td>$0K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >Strategy →</button></td></tr>
                 </tbody>
               </table>
             </div>
@@ -545,7 +545,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             </select></div>
             <div style="margin-bottom:7px"><div class="fl">CLAIM / CONTEXT</div>
             <textarea class="ftxt" id="doc-draft-context" style="min-height:55px" placeholder="e.g. CLM-0334, CPT 93454, Medicare, CO-29 timely filing, $3,800, patient John D., DOS 3/15/2026..."></textarea></div>
-            <button class="btn btn-strat" id="doc-draft-btn" onclick="draftDocument()" style="width:100%">◈ Draft Document</button>
+            <button class="btn btn-strat" id="doc-draft-btn"  style="width:100%">◈ Draft Document</button>
             <div class="ai-out strat-out" id="doc-draft-out"></div>
             <div class="ai-err" id="doc-draft-err"></div>
           </div>
@@ -567,7 +567,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             <a class="nc nco" href="https://hc-vendors.tsmatter.com" target="_blank"><div class="ncn">HC Vendors</div><div class="ncu">hc-vendors.tsmatter.com · :3060</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 67mb</span></div></a>
             <a class="nc nco" href="https://hc-grants.tsmatter.com" target="_blank"><div class="ncn">HC Grants</div><div class="ncu">hc-grants.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 52mb</span></div></a>
             <a class="nc nco" href="https://hc-financial.tsmatter.com" target="_blank"><div class="ncn">HC Financial</div><div class="ncu">hc-financial.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · 52mb</span></div></a>
-            <div class="nc ncp" onclick="showTab('strategist')" style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)">active · neural core</span></div></div>
+            <div class="nc ncp"  style="cursor:pointer"><div class="ncn" style="color:var(--purple)">◈ HC Strategist</div><div class="ncu">neural · real-time AI</div><div class="ncs"><span class="ncst" style="color:var(--purple)">active · neural core</span></div></div>
             <a class="nc nco" href="https://hc-command.tsmatter.com" target="_blank"><div class="ncn">HC Command</div><div class="ncu">hc-command.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · command center</span></div></a>
             <a class="nc nco" href="https://honorhealth.tsmatter.com" target="_blank"><div class="ncn">HonorHealth Portal</div><div class="ncu">honorhealth.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online · client-facing</span></div></a>
             <a class="nc nco" href="https://appointments.tsmatter.com" target="_blank"><div class="ncn">Appointments</div><div class="ncu">appointments.tsmatter.com</div><div class="ncs"><span class="ncst" style="color:var(--g2)">online</span></div></a>
@@ -583,7 +583,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
           <table class="rtable">
             <thead><tr><th>DOCUMENT</th><th>TYPE</th><th>TIER</th><th>RECEIVED</th><th>STATUS</th><th style="text-align:right">ACTION</th></tr></thead>
             <tbody>
-              <tr><td>ERA_20260414_batch.txt</td><td style="color:var(--text2)">ERA File</td><td><span style="background:var(--amberdim);color:var(--amber);padding:1px 5px;border-radius:2px;font-size:8px">$1.00/doc</span></td><td style="color:var(--text2)">08:14</td><td><span style="color:var(--g)">● READY</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" onclick="reviewDoc('ERA_20260414_batch.txt','ERA remittance batch — 231 claims, multiple payers including Medicare and Aetna, denial codes PR-96 and CO-4 present')">Review Report</button></td></tr>
+              <tr><td>ERA_20260414_batch.txt</td><td style="color:var(--text2)">ERA File</td><td><span style="background:var(--amberdim);color:var(--amber);padding:1px 5px;border-radius:2px;font-size:8px">$1.00/doc</span></td><td style="color:var(--text2)">08:14</td><td><span style="color:var(--g)">● READY</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" >Review Report</button></td></tr>
               <tr><td>CLM-denial-batch-231.csv</td><td style="color:var(--text2)">Denial Batch</td><td><span style="background:var(--amberdim);color:var(--amber);padding:1px 5px;border-radius:2px;font-size:8px">$1.00/doc</span></td><td style="color:var(--text2)">07:52</td><td><span style="color:var(--amber)">◎ PROCESSING</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" disabled>Pending...</button></td></tr>
               <tr><td>CPT-audit-Q1-2026.pdf</td><td style="color:var(--text2)">Audit Document</td><td><span style="background:var(--reddim);color:var(--red);padding:1px 5px;border-radius:2px;font-size:8px">$2.00/doc</span></td><td style="color:var(--text2)">07:30</td><td><span style="color:var(--amber)">◎ PROCESSING</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" disabled>Pending...</button></td></tr>
               <tr><td>physician-query-pkg.pdf</td><td style="color:var(--text2)">CDI Package</td><td><span style="background:var(--reddim);color:var(--red);padding:1px 5px;border-radius:2px;font-size:8px">$2.00/doc</span></td><td style="color:var(--text2)">06:45</td><td><span style="color:var(--text3)">○ QUEUED</span></td><td style="text-align:right"><button class="btn btn-o" style="font-size:8px;padding:3px 10px" disabled>Queued</button></td></tr>
@@ -591,7 +591,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
           </table>
         </div>
         <div id="doc-panel" style="display:none" class="panel fi">
-          <div class="sh"><span class="st" id="doc-ttl">AI Document Analysis</span><button class="btn btn-o" style="font-size:8px;padding:2px 8px" onclick="document.getElementById('doc-panel').style.display='none'">✕</button></div>
+          <div class="sh"><span class="st" id="doc-ttl">AI Document Analysis</span><button class="btn btn-o" style="font-size:8px;padding:2px 8px" >✕</button></div>
           <div id="doc-out" class="ai-out"></div>
           <div id="doc-err" class="ai-err"></div>
         </div>
@@ -600,7 +600,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <!-- ══════════════════ ALERTS TAB ══════════════════ -->
       <div id="tab-alerts" style="display:none">
         <div class="panel" style="margin-bottom:10px">
-          <div class="sh"><span class="st">All Active Alerts (6)</span><button class="btn btn-strat" style="font-size:8px;padding:3px 10px" onclick="quickAsk('Analyze all 6 active alerts for HonorHealth: 18.4% denial rate ($48K), CLM-0334 CO-29 write-off risk ($3.8K), CPT 99215 upcoding ($12K audit risk), Modifier -25 overuse ($8,460), HC-TaxPrep 80% CPU, ICD-10 specificity gaps. Prioritize by total dollar impact and provide a single action plan.')">◈ AI Triage All Alerts</button></div>
+          <div class="sh"><span class="st">All Active Alerts (6)</span><button class="btn btn-strat" style="font-size:8px;padding:3px 10px" >◈ AI Triage All Alerts</button></div>
           <div class="ar"><span class="ap pu">URGENT</span><span class="at">18.4% denial rate exceeds 15% CMS threshold — top codes: PR-96 (45%), CO-4 (28%), CO-11 (18%). Payer-specific appeal strategy required.</span><span class="am" style="color:var(--red)">$48K</span></div>
           <div class="ar"><span class="ap pu">URGENT</span><span class="at">CLM-0334 (CPT 93454 · $3,800) — CO-29 timely filing denial. Write-off risk in 48 hours. Appeal must be filed today.</span><span class="am" style="color:var(--red)">$3.8K</span></div>
           <div class="ar"><span class="ap pm">MED</span><span class="at">CPT 99215 upcoding pattern on 23 claims — documentation incomplete. Audit exposure $12,040. Coder education required by Friday.</span><span class="am">$12K</span></div>
@@ -624,25 +624,25 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
             <div><div class="fl">TONE</div><select class="fsel" id="rpt-tone"><option>Executive — confident, concise</option><option>Technical — detailed, data-driven</option><option>Urgent — crisis framing</option><option>Optimistic — progress-focused</option></select></div>
           </div>
           <div style="display:flex;gap:7px">
-            <button class="btn btn-g" id="exec-btn" onclick="buildExecSummary()" style="flex:1">◆ Generate Executive Summary</button>
-            <button class="btn btn-strat" onclick="buildStratReport()" style="flex:1">◈ + Include Strategist Recommendations</button>
+            <button class="btn btn-g" id="exec-btn"  style="flex:1">◆ Generate Executive Summary</button>
+            <button class="btn btn-strat"  style="flex:1">◈ + Include Strategist Recommendations</button>
           </div>
           <div class="ai-out strat-out" id="exec-out"></div>
           <div class="ai-err" id="exec-err"></div>
           <div id="exec-actions" style="display:none;gap:7px;margin-top:8px;flex-wrap:wrap">
-            <button class="btn btn-p" onclick="alert('Executive summary sent.')">Send to Recipient</button>
-            <button class="btn btn-o" id="pptx-export-btn" onclick="exportBriefingPPTX()">⬇ Export PPTX</button>
-            <button class="btn btn-o" onclick="buildExecSummary()">↻ Regenerate</button>
+            <button class="btn btn-p" >Send to Recipient</button>
+            <button class="btn btn-o" id="pptx-export-btn" >⬇ Export PPTX</button>
+            <button class="btn btn-o" >↻ Regenerate</button>
           </div>
         </div>
 
         <div class="panel">
-          <div class="sh"><span class="st">Denial Code Breakdown Report</span><button class="btn btn-o" style="font-size:8px;padding:3px 10px" onclick="buildDenialReport()">◆ Generate</button></div>
+          <div class="sh"><span class="st">Denial Code Breakdown Report</span><button class="btn btn-o" style="font-size:8px;padding:3px 10px" >◆ Generate</button></div>
           <table class="rtable">
             <thead><tr><th>DENIAL CODE</th><th>COUNT</th><th>% OF DENIALS</th><th>$ AT RISK</th><th>APPEAL STRATEGY</th></tr></thead>
             <tbody>
-              <tr><td style="color:var(--red)">PR-96</td><td style="color:var(--red)">104</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-r" style="width:45%"></div></div>45%</div></td><td style="color:var(--red)">$21.6K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft a PR-96 (non-covered charge) appeal strategy for HonorHealth. What documentation and approach maximizes recovery?')">◈ Strategy</button></td></tr>
-              <tr><td style="color:var(--amber)">CO-4</td><td style="color:var(--amber)">65</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-a" style="width:28%"></div></div>28%</div></td><td style="color:var(--amber)">$13.4K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft a CO-4 (service not covered) appeal strategy. When is this worth appealing vs writing off?')">◈ Strategy</button></td></tr>
-              <tr><td>CO-11</td><td>42</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-p" style="width:18%"></div></div>18%</div></td><td>$8.1K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickAsk('Draft CO-11 (diagnosis inconsistent with procedure) appeal approach. What ICD-10 documentation fixes this proactively?')">◈ Strategy</button></td></tr>
+              <tr><td style="color:var(--red)">PR-96</td><td style="color:var(--red)">104</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-r" style="width:45%"></div></div>45%</div></td><td style="color:var(--red)">$21.6K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >◈ Strategy</button></td></tr>
+              <tr><td style="color:var(--amber)">CO-4</td><td style="color:var(--amber)">65</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-a" style="width:28%"></div></div>28%</div></td><td style="color:var(--amber)">$13.4K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >◈ Strategy</button></td></tr>
+              <tr><td>CO-11</td><td>42</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-p" style="width:18%"></div></div>18%</div></td><td>$8.1K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" >◈ Strategy</button></td></tr>
               <tr><td>CO-29</td><td>12</td><td><div style="display:flex;align-items:center;gap:6px"><div class="pbar" style="width:80px"><div class="pbar-fill pbar-r" style="width:5%"></div></div>5%</div></td><td>$5.7K</td><td><button class="btn btn-strat" style="font-size:8px;padding:2px 6px" onclick="quickA
 ...
