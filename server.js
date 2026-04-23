@@ -921,8 +921,16 @@ app.post('/api/hc/brief', (req, res) => {
 
 app.post('/api/hc/ask', async (req,res)=>{
   try{
-    const {query='',system='',location=''} = req.body||{};
+    const {query='',system='',location='',nodeKey=''} = req.body||{};
     const state = readJson(HC_NODE_STATE_FILE,{});
+    // Groq persona analysis for specific node
+    if(nodeKey && state[nodeKey]) {
+      const n = state[nodeKey];
+      const sp = `You are the ${nodeKey.toUpperCase()} specialist for HonorHealth Scottsdale - Shea. Use the actual metrics. Be specific and actionable. Max 8 lines.`;
+      const um = `QUERY: ${query||'Provide BNCA analysis'}\nDATA: ${JSON.stringify({findings:n.findings,...n})}`;
+      const gr = await callGroq(sp, um);
+      return res.json({ok:true, content: gr || n.bnca || n.findings || 'No data'});
+    }
 
     const nodes = Object.values(state).filter(n=>
       (!system || n.system===system) &&
