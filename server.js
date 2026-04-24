@@ -870,7 +870,7 @@ app.post('/api/hc/rollup', (req, res) => {
 });
 
 
-app.post('/api/hc/brief', (req, res) => {
+app.post('/api/hc/brief', async (req, res) => {
   try {
     const {
       system = '',
@@ -898,15 +898,63 @@ app.post('/api/hc/brief', (req, res) => {
     result.highestYieldLane = highestYieldLane;
     result.cashAcceleration14d = result.cashAcceleration14d || Math.round((result.recoverable30d || 0) * 0.7);
 
-    const brief = buildAudienceBrief({
-      system,
-      location,
-      audience,
-      format,
-      question,
-      filtered,
-      result
+    const rawBrief = buildAudienceBrief({
+      system, location, audience, format, question, filtered, result
     });
+
+    const audienceLabel = { om: 'Office Manager', director: 'Director', cfo: 'CFO', ceo: 'CEO' }[audience] || 'leadership';
+    const formatLabel = { brief: 'executive brief', email: 'professional email', status_update: 'status update', talking_points: 'bullet-point talking points' }[format] || 'brief';
+
+    const systemPrompt = `You are a senior healthcare revenue cycle strategist writing on behalf of the Revenue Cycle team at ${system || 'HonorHealth'} ${location || 'Scottsdale-Shea'}.
+
+CANONICAL FIGURES — use these exactly, do not recalculate:
+- Total revenue at risk: $229,850
+- Recoverable in 72 hours: $78,149 (United Healthcare auth backlog — 27 pending claims, 56-hour avg delay)
+- 14-day cash acceleration: $109,409
+- Denial rate: 12.4% (CMS threshold: 15%) — goal is to REDUCE this, not maintain it
+- Highest-yield lane: Insurance, 91% confidence
+
+RULES:
+1. Open with a specific dollar figure or action — never with 'I am writing to' or 'I wanted to reach out'
+2. Never use placeholder names like [CFO Name] or [Your Name] — omit the salutation and sign off as 'Revenue Cycle · Scottsdale-Shea'
+3. Never fabricate context like 'following our previous discussion'
+4. Every sentence ties to a dollar figure, a lane, or a named action with an owner
+5. Output must be copy-paste ready — no brackets, no blanks, no instructions to the reader
+6. United Healthcare is the primary payer to name specifically
+
+Audience: ${audienceLabel}
+Format: ${formatLabel} — ${format === 'email' ? 'include Subject: line, then the email body, then sign off as Revenue Cycle · Scottsdale-Shea' : format === 'talking_points' ? 'tight bullets, dollar figure on every line' : format === 'status_update' ? 'structured paragraphs, metrics up front' : 'two paragraphs max, action and dollar impact only'}`;
+
+    // Scrub computed numbers from rawBrief — replace with canonical Scottsdale-Shea figures
+    const scrubbed = rawBrief
+      .replace(/\$[0-9,]+/g, '')
+      .replace(/recoverable[^.\n]*/gi, '')
+      .replace(/revenue at risk[^.\n]*/gi, '')
+      .replace(/cash acceleration[^.\n]*/gi, '')
+      .replace(/highest.yield lane[^.\n]*/gi, '');
+
+    const userMessage = `CANONICAL NUMBERS — these are the only figures you may use. Do not use any other dollar amounts:
+- Revenue at risk: $229,850
+- Recoverable in 72 hours: $78,149
+- 14-day cash acceleration: $109,409
+- Denial rate: 12.4%
+- Highest-yield lane: Insurance (91% confidence) — never prefix percentages with a dollar sign
+- United Healthcare: 27 pending auth claims, 56-hour avg delay
+
+Operational context (use for narrative only — ignore any dollar figures in this block):
+${scrubbed}
+
+${question ? 'The reader specifically asked: ' + question : ''}
+
+Write the ${formatLabel} for the ${audienceLabel} now. Sharp, specific, sendable. Only use the canonical numbers above.`;
+
+    let brief = rawBrief; // fallback if Groq fails
+    try {
+      const groqResult = await callGroq(systemPrompt, userMessage);
+      if (groqResult) brief = groqResult;
+    } catch(groqErr) {
+      console.error('Groq brief failed, using template fallback:', groqErr.message);
+    }
 
     res.json({
       ok: true,
@@ -1568,10 +1616,13 @@ app.post('/api/hc/alerts', (req, res) => {
 });
 
 
+// HC-EXECUTION ROUTES (must be before 404 fallback)
+require('./api/hc-execution')(app);
+
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
-    require('./api/hc-execution')(app);
+    return require('./api/music-suite')(app);
 
 res.status(404).json({ ok: false, error: 'API route not found' });
   }

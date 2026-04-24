@@ -972,5 +972,53 @@ async function aiStreamingAnalysis() {
 document.getElementById('chatIn').addEventListener('keydown', e => { if(e.key==='Enter') sendChat(); });
 document.getElementById('stratInput').addEventListener('keydown', e => { if(e.key==='Enter') aiStrategy(e.target.value); });
 </script>
+
+<script>
+window.MusicSuite = {
+  async state(){
+    return fetch('/api/music/state').then(r=>r.json());
+  },
+  async agentPass(payload){
+    return fetch('/api/music/agent-pass',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload||{})
+    }).then(r=>r.json());
+  },
+  async strategy(prompt){
+    return fetch('/api/music/strategy',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt})
+    }).then(r=>r.json());
+  },
+  async saveSong(payload){
+    return fetch('/api/music/song',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload||{})
+    }).then(r=>r.json());
+  }
+};
+
+async function musicSuiteBoot(){
+  try{
+    const data = await MusicSuite.state();
+    console.log('Music Suite Online', data);
+    const badge = document.querySelector('.pill.purple, .header-pills .pill, [id="keyStatus"]');
+    if(badge && data.ok){
+      if(badge.id === 'keyStatus'){
+        badge.textContent = 'SUITE ONLINE';
+        badge.className = 'key-status ok';
+      }
+    }
+  }catch(e){
+    console.warn('Music Suite backend unavailable', e);
+  }
+}
+
+window.addEventListener('load', musicSuiteBoot);
+</script>
+
 </body>
 </html>
