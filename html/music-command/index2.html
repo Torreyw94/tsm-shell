@@ -1002,19 +1002,14 @@ window.MusicSuite = {
 };
 
 async function musicSuiteBoot(){
-  try{
-    const data = await MusicSuite.state();
-    console.log('Music Suite Online', data);
-    const badge = document.querySelector('.pill.purple, .header-pills .pill, [id="keyStatus"]');
-    if(badge && data.ok){
-      if(badge.id === 'keyStatus'){
-        badge.textContent = 'SUITE ONLINE';
-        badge.className = 'key-status ok';
-      }
-    }
-  }catch(e){
-    console.warn('Music Suite backend unavailable', e);
+  const data = await musicSafeFetch('/api/music/state');
+
+  if(!data.ok){
+    console.warn('Music backend fallback');
+    return;
   }
+
+  console.log('Music Suite State Ready', data);
 }
 
 window.addEventListener('load', musicSuiteBoot);
