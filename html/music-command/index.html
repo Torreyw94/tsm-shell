@@ -973,6 +973,81 @@
   .tool-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
   .tool-desc { font-size: 11px; color: var(--text3); line-height: 1.5; }
 </style>
+
+<style id="tsm-music-viewport-scroll-fix">
+  html, body {
+    height: 100%;
+    overflow: hidden !important;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .app,
+  .shell,
+  .layout,
+  .main,
+  main {
+    min-height: 0 !important;
+  }
+
+  main,
+  .main,
+  #mainContent,
+  .content,
+  .workspace,
+  .page,
+  .view {
+    max-height: calc(100vh - 92px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: 120px !important;
+    scroll-behavior: smooth;
+  }
+
+  #music-evolution-panel,
+  #music-commerce-panel,
+  #music-pricing-panel {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #music-evolution-panel {
+    margin-top: 10px !important;
+  }
+
+  #music-commerce-panel,
+  #music-pricing-panel {
+    margin-bottom: 90px !important;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  main::-webkit-scrollbar,
+  .main::-webkit-scrollbar,
+  #mainContent::-webkit-scrollbar,
+  .content::-webkit-scrollbar,
+  .workspace::-webkit-scrollbar,
+  .page::-webkit-scrollbar,
+  .view::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  main::-webkit-scrollbar-thumb,
+  .main::-webkit-scrollbar-thumb,
+  #mainContent::-webkit-scrollbar-thumb,
+  .content::-webkit-scrollbar-thumb,
+  .workspace::-webkit-scrollbar-thumb,
+  .page::-webkit-scrollbar-thumb,
+  .view::-webkit-scrollbar-thumb {
+    background: rgba(168,85,247,.45);
+    border-radius: 999px;
+  }
+</style>
+
 </head>
 <body>
 
