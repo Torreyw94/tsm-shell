@@ -2086,6 +2086,168 @@ app.get('/api/music/evolution', (_req, res) => {
 });
 // ===== END MUSIC EVOLUTION TIMELINE =====
 
+
+// ===== MUSIC MONETIZATION + EXPORT + SESSIONS =====
+global.MUSIC_SESSIONS = global.MUSIC_SESSIONS || {
+  artists: {},
+  exports: [],
+  upsells: [],
+  tiers: {
+    free: { name:"Free Trial", price:0, hooks:5, exports:false, sessions:1 },
+    tier1: { name:"Tier 1", price:99, hooks:25, exports:true, sessions:5 },
+    tier2: { name:"Tier 2", price:249, hooks:100, exports:true, sessions:25 },
+    tier3: { name:"Tier 3", price:499, hooks:500, exports:true, sessions:100 }
+  }
+};
+
+function musicArtistKey(name){
+  return String(name || "Current Artist").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "current-artist";
+}
+
+function ensureMusicArtist(name){
+  const key = musicArtistKey(name);
+  if(!global.MUSIC_SESSIONS.artists[key]){
+    global.MUSIC_SESSIONS.artists[key] = {
+      key,
+      artist:name || "Current Artist",
+      tier:"tier1",
+      sessions:[],
+      createdAt:new Date().toISOString(),
+      updatedAt:new Date().toISOString()
+    };
+  }
+  return global.MUSIC_SESSIONS.artists[key];
+}
+
+function cleanCreativeOutput(text){
+  return String(text || "")
+    .replace(/\[(ZAY|RIYA|DJ)[^\]]*\]/g, "")
+    .replace(/^Agent move:.*$/gm, "")
+    .replace(/^DNA influence:.*$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+app.post('/api/music/session/save', (req, res) => {
+  const body = req.body || {};
+  const artist = ensureMusicArtist(body.artist || "Current Artist");
+
+  const session = {
+    id:Date.now(),
+    title:body.title || "Untitled Session",
+    draft:body.draft || "",
+    output:body.output || "",
+    score:body.score || null,
+    notes:body.notes || "",
+    createdAt:new Date().toISOString()
+  };
+
+  artist.sessions.unshift(session);
+  artist.sessions = artist.sessions.slice(0, global.MUSIC_SESSIONS.tiers[artist.tier].sessions);
+  artist.updatedAt = new Date().toISOString();
+
+  return res.json({ ok:true, artist, session });
+});
+
+app.get('/api/music/session/:artist', (req, res) => {
+  const artist = ensureMusicArtist(req.params.artist || "Current Artist");
+  return res.json({ ok:true, artist });
+});
+
+app.post('/api/music/hooks/generate10', (req, res) => {
+  const body = req.body || {};
+  const draft = cleanCreativeOutput(body.draft || "");
+  const artist = ensureMusicArtist(body.artist || "Current Artist");
+
+  const hooks = Array.from({length:10}).map((_, i) => ({
+    id:i+1,
+    title:"Hook Option " + (i+1),
+    text:
+      i % 3 === 0 ? "Still I rise when the night get heavy" :
+      i % 3 === 1 ? "Wrong all around me, but I still move right" :
+      "Turn the pain into light when the pressure get tight",
+    angle:
+      i % 3 === 0 ? "resilience" :
+      i % 3 === 1 ? "conflict" :
+      "release"
+  }));
+
+  global.MUSIC_SESSIONS.upsells.unshift({
+    id:Date.now(),
+    artist:artist.artist,
+    type:"generate10hooks",
+    price:25,
+    createdAt:new Date().toISOString()
+  });
+
+  return res.json({
+    ok:true,
+    upsell:{ name:"Generate 10 Hooks", price:25 },
+    hooks,
+    source:draft
+  });
+});
+
+app.post('/api/music/export', (req, res) => {
+  const body = req.body || {};
+  const artist = body.artist || "Current Artist";
+  const title = body.title || "Music Export";
+  const output = cleanCreativeOutput(body.output || body.draft || "");
+  const score = body.score || null;
+
+  const doc = [
+    "TSM MUSIC COMMAND EXPORT",
+    "Artist: " + artist,
+    "Title: " + title,
+    "Date: " + new Date().toISOString(),
+    "",
+    "OUTPUT",
+    "------",
+    output,
+    "",
+    "SCORE",
+    "-----",
+    score ? JSON.stringify(score, null, 2) : "No score attached.",
+    "",
+    "DAW NOTES",
+    "---------",
+    "Paste the output into Pro Tools, FL Studio, Ableton, Logic, or your writing doc.",
+    "Use ZAY for cadence, RIYA for emotion, and DJ for hook/structure refinement."
+  ].join("\n");
+
+  const item = {
+    id:Date.now(),
+    artist,
+    title,
+    format:"txt",
+    content:doc,
+    createdAt:new Date().toISOString()
+  };
+
+  global.MUSIC_SESSIONS.exports.unshift(item);
+  global.MUSIC_SESSIONS.exports = global.MUSIC_SESSIONS.exports.slice(0,50);
+
+  return res.json({ ok:true, export:item });
+});
+
+app.get('/api/music/monetization/state', (_req, res) => {
+  return res.json({
+    ok:true,
+    monetization:{
+      tiers:global.MUSIC_SESSIONS.tiers,
+      upsells:[
+        { name:"Generate 10 hooks", price:25 },
+        { name:"Commercial rewrite pack", price:30 },
+        { name:"Radio-ready polish", price:25 }
+      ],
+      recentUpsells:global.MUSIC_SESSIONS.upsells,
+      exports:global.MUSIC_SESSIONS.exports.slice(0,10)
+    },
+    sessions:global.MUSIC_SESSIONS
+  });
+});
+// ===== END MUSIC MONETIZATION + EXPORT + SESSIONS =====
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
 

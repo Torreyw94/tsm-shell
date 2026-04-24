@@ -1551,5 +1551,144 @@ window.addEventListener('load', musicSuiteBoot);
 })();
 </script>
 
+
+<script id="tsm-music-monetization-ui">
+(function(){
+  if(window.__TSM_MUSIC_MONETIZATION_UI__) return;
+  window.__TSM_MUSIC_MONETIZATION_UI__ = true;
+
+  window.musicCommerce = {
+    saveSession(payload){
+      return musicSafeFetch('/api/music/session/save', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    generate10Hooks(payload){
+      return musicSafeFetch('/api/music/hooks/generate10', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    exportText(payload){
+      return musicSafeFetch('/api/music/export', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    monetization(){
+      return musicSafeFetch('/api/music/monetization/state');
+    }
+  };
+
+  window.exportCurrentMusicSession = async function(){
+    const outputEl = document.getElementById('stratOutput') || document.querySelector('[data-agent-output]');
+    const inputEl = document.querySelector('textarea') || document.getElementById('stratInput');
+    const output = outputEl ? (outputEl.innerText || outputEl.textContent || '') : '';
+    const draft = inputEl ? (inputEl.value || inputEl.innerText || '') : '';
+
+    const data = await musicCommerce.exportText({
+      artist:'Current Artist',
+      title:'Working Export',
+      output: output || draft
+    });
+
+    console.log('Music Export Ready', data);
+
+    if(data.ok){
+      const blob = new Blob([data.export.content], { type:'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'TSM_Music_Export.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    return data;
+  };
+
+  window.generateTenHooksUpsell = async function(){
+    const inputEl = document.querySelector('textarea') || document.getElementById('stratInput');
+    const draft = inputEl ? (inputEl.value || inputEl.innerText || '') : '';
+    const data = await musicCommerce.generate10Hooks({ artist:'Current Artist', draft });
+    console.log('10 Hook Pack Generated', data);
+
+    const out = document.getElementById('stratOutput') || document.querySelector('[data-agent-output]') || document.getElementById('mainContent');
+    if(out && data.ok){
+      out.style.display = 'block';
+      out.innerHTML = `
+        <div style="padding:14px;border:1px solid rgba(168,85,247,.35);border-radius:10px;background:rgba(5,10,20,.96)">
+          <div style="font-family:var(--mono);font-size:.58rem;color:#a855f7;text-transform:uppercase;letter-spacing:.14em">Upsell · Generate 10 Hooks · $25</div>
+          <div style="margin-top:10px;display:grid;gap:8px">
+            ${data.hooks.map(h => `<div style="padding:9px;border:1px solid rgba(255,255,255,.08);border-radius:6px;color:var(--text2)"><b>${h.title}</b><br>${h.text}<br><span style="font-family:var(--mono);font-size:.55rem;color:#14f195">${h.angle}</span></div>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    return data;
+  };
+
+  window.saveCurrentArtistSession = async function(){
+    const outputEl = document.getElementById('stratOutput') || document.querySelector('[data-agent-output]');
+    const inputEl = document.querySelector('textarea') || document.getElementById('stratInput');
+    const output = outputEl ? (outputEl.innerText || outputEl.textContent || '') : '';
+    const draft = inputEl ? (inputEl.value || inputEl.innerText || '') : '';
+
+    const data = await musicCommerce.saveSession({
+      artist:'Current Artist',
+      title:'Working Session',
+      draft,
+      output
+    });
+
+    console.log('Artist Session Saved', data);
+    return data;
+  };
+
+  window.renderMusicCommercePanel = async function(){
+    const data = await musicCommerce.monetization();
+    let panel = document.getElementById('music-commerce-panel');
+
+    if(!panel){
+      panel = document.createElement('section');
+      panel.id = 'music-commerce-panel';
+      panel.style.cssText = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
+      const target = document.getElementById('mainContent') || document.querySelector('main') || document.body;
+      target.appendChild(panel);
+    }
+
+    const tiers = data.monetization.tiers;
+    panel.innerHTML = `
+      <div style="font-family:var(--mono);font-size:.58rem;color:#a855f7;text-transform:uppercase;letter-spacing:.14em">Monetization Layer</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+        ${Object.values(tiers).map(t => `
+          <div style="border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px;background:rgba(255,255,255,.03)">
+            <div style="color:var(--text);font-weight:700">${t.name}</div>
+            <div style="font-family:var(--mono);color:#14f195;margin-top:4px">$${t.price}/mo</div>
+            <div style="font-size:.7rem;color:var(--text2);margin-top:4px">${t.hooks} hooks · ${t.sessions} sessions</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-purple" onclick="generateTenHooksUpsell()">Generate 10 Hooks · $25</button>
+        <button class="btn" onclick="exportCurrentMusicSession()">Export TXT</button>
+        <button class="btn" onclick="saveCurrentArtistSession()">Save Artist Session</button>
+      </div>
+    `;
+
+    console.log('Music Commerce State', data);
+    return data;
+  };
+
+  window.addEventListener('load', function(){
+    setTimeout(renderMusicCommercePanel, 1200);
+  });
+})();
+</script>
+
 </body>
 </html>
