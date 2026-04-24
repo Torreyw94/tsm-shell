@@ -1678,6 +1678,8 @@ app.post('/api/music/strategy', (req, res) => {
 // ===== END MUSIC SUITE API INLINE =====
 
 
+
+
 // ===== MUSIC PLATFORM EXECUTION LOOP =====
 global.MUSIC_PLATFORM = global.MUSIC_PLATFORM || {
   artistDNA: {
