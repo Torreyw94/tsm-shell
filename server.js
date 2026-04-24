@@ -1208,6 +1208,10 @@ function summarizeOfficeDriver(officeName, state = {}, officeEval = {}) {
 app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
 app.use('/html/hc-strategist', express.static(path.join(__dirname, 'html', 'hc-strategist')));
+app.use('/html/slug-presentation', express.static(path.join(__dirname, 'html', 'slug-presentation')));
+app.use('/html/slug-strategist', express.static(path.join(__dirname, 'html', 'slug-strategist')));
+app.use('/html/slug', express.static(path.join(__dirname, 'html', 'slug')));
+app.use('/html/slug-portal', express.static(path.join(__dirname, 'html', 'slug-portal')));
 app.use('/html/dignity-presentation', express.static(path.join(__dirname, 'html', 'dignity-presentation')));
 app.use('/html/dignity-strategist', express.static(path.join(__dirname, 'html', 'dignity-strategist')));
 app.use('/html/dignity', express.static(path.join(__dirname, 'html', 'dignity')));
@@ -1739,6 +1743,7 @@ function cleanAgentText(text){
   return String(text || "")
     .replace(/\[(ZAY|RIYA|DJ)[^\]]*\]/g, "")
     .replace(/^Agent move:.*$/gm, "")
+    .replace(/^DNA influence:.*$/gm, "")
     .replace(/^Cadence note:.*$/gm, "")
     .replace(/^Tone note:.*$/gm, "")
     .replace(/^Arrangement note:.*$/gm, "")
@@ -1822,9 +1827,10 @@ app.post('/api/music/agent/chain', (req, res) => {
   const draft = body.draft || "";
   const request = body.request || "Run full ZAY → RIYA → DJ chain";
 
-  const zay = agentPass("ZAY", draft, request);
-  const riya = agentPass("RIYA", zay, request);
-  const dj = agentPass("DJ", riya, request);
+  const baseDraft = cleanAgentText(draft);
+  const zay = agentPass("ZAY", baseDraft, request);
+  const riya = agentPass("RIYA", cleanAgentText(zay), request);
+  const dj = agentPass("DJ", cleanAgentText(riya), request);
   const score = scoreMusicDraft(dj);
 
   const run = {
@@ -1979,8 +1985,8 @@ app.post('/api/music/revision/pick-rerun', (req, res) => {
 
   const cleanSelected = cleanAgentText(option.output);
   const rerunZay = agentPass("ZAY", cleanSelected, "Pick + rerun");
-  const rerunRiya = agentPass("RIYA", rerunZay, "Pick + rerun");
-  const rerunOutput = agentPass("DJ", rerunRiya, "Pick + rerun");
+  const rerunRiya = agentPass("RIYA", cleanAgentText(rerunZay), "Pick + rerun");
+  const rerunOutput = agentPass("DJ", cleanAgentText(rerunRiya), "Pick + rerun");
   const score = scoreMusicDraft(rerunOutput);
   const hit = hitPotential(score);
 
@@ -2037,24 +2043,30 @@ app.get('/api/music/dashboard-sync', (_req, res) => {
 // ===== END MUSIC PRODUCT LAYER =====
 
 
+
 // ===== MUSIC EVOLUTION TIMELINE =====
 app.get('/api/music/evolution', (_req, res) => {
   const runs = global.MUSIC_ENGINE && global.MUSIC_ENGINE.runs ? global.MUSIC_ENGINE.runs : [];
-  const selected = global.MUSIC_PRODUCT && global.MUSIC_PRODUCT.selectedHistory ? global.MUSIC_PRODUCT.selectedHistory : [];
+  const product = global.MUSIC_PRODUCT || {};
+  const dna = global.MUSIC_ENGINE && global.MUSIC_ENGINE.dna ? global.MUSIC_ENGINE.dna : null;
 
   const timeline = runs.slice(0, 12).map((r, i) => ({
+    index: i,
     label: r.mode || "run",
-    score: r.score || {},
     overall: r.score && r.score.overall ? r.score.overall : 0,
+    score: r.score || {},
     hitPotential: r.hitPotential || null,
-    createdAt: r.createdAt,
-    index: i
+    createdAt: r.createdAt
   })).reverse();
 
   const latest = timeline[timeline.length - 1] || null;
   const previous = timeline[timeline.length - 2] || null;
   const delta = latest && previous ? Number((latest.overall - previous.overall).toFixed(2)) : 0;
-  const hit = latest && latest.hitPotential ? latest.hitPotential : (typeof hitPotential === "function" ? hitPotential(latest ? latest.score : {}) : null);
+
+  let hit = latest && latest.hitPotential ? latest.hitPotential : null;
+  if(!hit && typeof hitPotential === "function"){
+    hit = hitPotential(latest ? latest.score : {});
+  }
 
   let decision = "Iterate Again";
   if(hit && hit.percent >= 86) decision = "Release";
@@ -2068,8 +2080,8 @@ app.get('/api/music/evolution', (_req, res) => {
     delta,
     hit,
     decision,
-    selected,
-    dna: global.MUSIC_ENGINE ? global.MUSIC_ENGINE.dna : null
+    dna,
+    product
   });
 });
 // ===== END MUSIC EVOLUTION TIMELINE =====
