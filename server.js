@@ -36,6 +36,25 @@ app.get('/api/music/state', (_req, res) => {
   console.log("🎵 /api/music/state HIT");
   return res.json({ ok: true, state: global.MUSIC_SUITE_STATE });
 });
+
+app.post('/api/music/agent/run', (req, res) => {
+  const body = req.body || {};
+  const agent = body.agent || 'ZAY';
+  const draft = body.draft || '';
+  const request = body.request || 'Improve draft';
+
+  return res.json({
+    ok: true,
+    run: {
+      id: Date.now(),
+      agent,
+      request,
+      output: '[' + agent + ']\n\n' + request + '\n\n' + draft,
+      createdAt: new Date().toISOString()
+    }
+  });
+});
+
 // ===== END MUSIC ROUTE =====
 
 ;
@@ -1735,53 +1754,6 @@ app.post('/api/music/song/learn', (req, res) => {
 
   pushMusicActivity("learn", "Song learned into DNA", song.title);
   return res.json({ ok:true, song, dna:global.MUSIC_PLATFORM.artistDNA });
-});
-
-app.post('/api/music/agent/run', (req, res) => {
-  const body = req.body || {};
-  const agent = (body.agent || "ZAY").toUpperCase();
-  const draft = body.draft || "";
-  const request = body.request || "Improve this song";
-  const dna = global.MUSIC_PLATFORM.artistDNA;
-
-  const agentMap = {
-    ZAY: "Cadence, bounce, pocket, and live feel",
-    RIYA: "Word choice, imagery, vulnerability, and emotional tone",
-    DJ: "Structure, hook placement, transitions, and replay value"
-  };
-
-  const output = [
-    agent + " AGENT PASS",
-    "",
-    "Focus: " + (agentMap[agent] || "Full song improvement"),
-    "DNA Match: " + Math.round(((dna.weights.cadence + dna.weights.emotion + dna.weights.structure + dna.weights.imagery) / 4) * 100) + "%",
-    "",
-    "Recommended move:",
-    agent === "ZAY" ? "Tighten the bounce and make the second line land harder." :
-    agent === "RIYA" ? "Make the emotional image more specific while keeping the plain-spoken voice." :
-    agent === "DJ" ? "Move the strongest phrase into hook position and create a cleaner transition." :
-    "Run ZAY, RIYA, then DJ for a complete pass.",
-    "",
-    "Reworked draft:",
-    draft
-      ? draft.replace("trying to stay right is a fight", "tryna stay right in the middle of the fight")
-             .replace("Every day's a battle", "Every day a battle")
-      : "Paste a draft first, then run the agent pass."
-  ].join("\\n");
-
-  const run = {
-    id: Date.now(),
-    agent,
-    request,
-    output,
-    createdAt: musicStamp()
-  };
-
-  global.MUSIC_PLATFORM.agentRuns.unshift(run);
-  global.MUSIC_PLATFORM.agentRuns = global.MUSIC_PLATFORM.agentRuns.slice(0, 25);
-
-  pushMusicActivity("agent", agent + " completed agent pass", request);
-  return res.json({ ok:true, run, platform:global.MUSIC_PLATFORM });
 });
 
 app.get('/api/music/activity', (_req, res) => {
