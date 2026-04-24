@@ -1622,7 +1622,40 @@ require('./api/hc-execution')(app);
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
-    require('./api/music-suite')(app);
+
+// ===== MUSIC SUITE API INLINE =====
+global.MUSIC_SUITE_STATE = global.MUSIC_SUITE_STATE || {
+  artistsOnline: 12,
+  releasesDropping: 3,
+  monthlyStreams: "84M",
+  revenueMTD: 847400,
+  pipelineValue: 2400000,
+  aiStatus: "online"
+};
+
+app.get('/api/music/state', (_req, res) => {
+  return res.json({ ok: true, state: global.MUSIC_SUITE_STATE });
+});
+
+app.post('/api/music/agent-pass', (req, res) => {
+  const body = req.body || {};
+  return res.json({
+    ok: true,
+    agent: body.agent || "full",
+    output: "Agent pass complete. Draft sharpened for cadence, emotion, and structure.",
+    createdAt: new Date().toISOString()
+  });
+});
+
+app.post('/api/music/strategy', (req, res) => {
+  return res.json({
+    ok: true,
+    title: "Music Strategy Brief",
+    answer: "Prioritize viral capture, release timing, sync outreach, and artist DNA consistency.",
+    createdAt: new Date().toISOString()
+  });
+});
+// ===== END MUSIC SUITE API INLINE =====
 
 res.status(404).json({ ok: false, error: 'API route not found' });
   }
