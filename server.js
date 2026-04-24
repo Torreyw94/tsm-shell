@@ -1208,6 +1208,61 @@ function summarizeOfficeDriver(officeName, state = {}, officeEval = {}) {
 app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
 app.use('/html/hc-strategist', express.static(path.join(__dirname, 'html', 'hc-strategist')));
+app.use('/html/dignity-presentation', express.static(path.join(__dirname, 'html', 'dignity-presentation')));
+app.use('/html/dignity-strategist', express.static(path.join(__dirname, 'html', 'dignity-strategist')));
+app.use('/html/dignity', express.static(path.join(__dirname, 'html', 'dignity')));
+app.use('/html/dignity-portal', express.static(path.join(__dirname, 'html', 'dignity-portal')));
+app.use('/html/banner-presentation', express.static(path.join(__dirname, 'html', 'banner-presentation')));
+app.use('/html/banner-strategist', express.static(path.join(__dirname, 'html', 'banner-strategist')));
+app.use('/html/banner', express.static(path.join(__dirname, 'html', 'banner')));
+app.use('/html/banner-portal', express.static(path.join(__dirname, 'html', 'banner-portal')));
+app.use('/html/agents-ins', express.static(path.join(__dirname, 'html', 'agents-ins')));
+app.use('/html/ameris-construction', express.static(path.join(__dirname, 'html', 'ameris-construction')));
+app.use('/html/ameris-portal', express.static(path.join(__dirname, 'html', 'ameris-portal')));
+app.use('/html/az-ins', express.static(path.join(__dirname, 'html', 'az-ins')));
+app.use('/html/bpo-legal', express.static(path.join(__dirname, 'html', 'bpo-legal')));
+app.use('/html/bpo-realty', express.static(path.join(__dirname, 'html', 'bpo-realty')));
+app.use('/html/bpo-tax', express.static(path.join(__dirname, 'html', 'bpo-tax')));
+app.use('/html/case-tech', express.static(path.join(__dirname, 'html', 'case-tech')));
+app.use('/html/construction-command', express.static(path.join(__dirname, 'html', 'construction-command')));
+app.use('/html/demo', express.static(path.join(__dirname, 'html', 'demo')));
+app.use('/html/desert-financial', express.static(path.join(__dirname, 'html', 'desert-financial')));
+app.use('/html/dme', express.static(path.join(__dirname, 'html', 'dme')));
+app.use('/html/esd-portal', express.static(path.join(__dirname, 'html', 'esd-portal')));
+app.use('/html/financial-command', express.static(path.join(__dirname, 'html', 'financial-command')));
+app.use('/html/general-portal', express.static(path.join(__dirname, 'html', 'general-portal')));
+app.use('/html/ghs', express.static(path.join(__dirname, 'html', 'ghs')));
+app.use('/html/ghs-presentation', express.static(path.join(__dirname, 'html', 'ghs-presentation')));
+app.use('/html/ghs-strategist', express.static(path.join(__dirname, 'html', 'ghs-strategist')));
+app.use('/html/hc-billing', express.static(path.join(__dirname, 'html', 'hc-billing')));
+app.use('/html/hc-command', express.static(path.join(__dirname, 'html', 'hc-command')));
+app.use('/html/hc-compliance', express.static(path.join(__dirname, 'html', 'hc-compliance')));
+app.use('/html/hc-financial', express.static(path.join(__dirname, 'html', 'hc-financial')));
+app.use('/html/hc-grants', express.static(path.join(__dirname, 'html', 'hc-grants')));
+app.use('/html/hc-insurance', express.static(path.join(__dirname, 'html', 'hc-insurance')));
+app.use('/html/hc-legal', express.static(path.join(__dirname, 'html', 'hc-legal')));
+app.use('/html/hc-medical', express.static(path.join(__dirname, 'html', 'hc-medical')));
+app.use('/html/hc-pharmacy', express.static(path.join(__dirname, 'html', 'hc-pharmacy')));
+app.use('/html/hc-presentation', express.static(path.join(__dirname, 'html', 'hc-presentation')));
+app.use('/html/hc-taxprep', express.static(path.join(__dirname, 'html', 'hc-taxprep')));
+app.use('/html/hc-vendors', express.static(path.join(__dirname, 'html', 'hc-vendors')));
+app.use('/html/honor-portal', express.static(path.join(__dirname, 'html', 'honor-portal')));
+app.use('/html/honorhealth', express.static(path.join(__dirname, 'html', 'honorhealth')));
+app.use('/html/honorhealth-dee', express.static(path.join(__dirname, 'html', 'honorhealth-dee')));
+app.use('/html/hub', express.static(path.join(__dirname, 'html', 'hub')));
+app.use('/html/legal-analyst-pro', express.static(path.join(__dirname, 'html', 'legal-analyst-pro')));
+app.use('/html/mayo', express.static(path.join(__dirname, 'html', 'mayo')));
+app.use('/html/mayo-portal', express.static(path.join(__dirname, 'html', 'mayo-portal')));
+app.use('/html/mayo-presentation', express.static(path.join(__dirname, 'html', 'mayo-presentation')));
+app.use('/html/mayo-strategist', express.static(path.join(__dirname, 'html', 'mayo-strategist')));
+app.use('/html/music-command', express.static(path.join(__dirname, 'html', 'music-command')));
+app.use('/html/pc-command', express.static(path.join(__dirname, 'html', 'pc-command')));
+app.use('/html/reo-pro', express.static(path.join(__dirname, 'html', 'reo-pro')));
+app.use('/html/rrd-command', express.static(path.join(__dirname, 'html', 'rrd-command')));
+app.use('/html/shared', express.static(path.join(__dirname, 'html', 'shared')));
+app.use('/html/strategist', express.static(path.join(__dirname, 'html', 'strategist')));
+app.use('/html/suite-builder', express.static(path.join(__dirname, 'html', 'suite-builder')));
+app.use('/html/tsm-strategy', express.static(path.join(__dirname, 'html', 'tsm-strategy')));
 app.use('/html/main-strategist', express.static(path.join(__dirname, 'html', 'main-strategist')));
 app.use('/', express.static(path.join(__dirname, 'html')));
 
@@ -1679,27 +1734,55 @@ function scoreMusicDraft(text){
   };
 }
 
+
+function cleanAgentText(text){
+  return String(text || "")
+    .replace(/\[(ZAY|RIYA|DJ)[^\]]*\]/g, "")
+    .replace(/^Agent move:.*$/gm, "")
+    .replace(/^Cadence note:.*$/gm, "")
+    .replace(/^Tone note:.*$/gm, "")
+    .replace(/^Arrangement note:.*$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function agentPass(agent, draft, request){
   const a = String(agent || "ZAY").toUpperCase();
-  const base = String(draft || "");
+  const base = cleanAgentText(draft || "");
+  const dna = global.MUSIC_ENGINE && global.MUSIC_ENGINE.dna ? global.MUSIC_ENGINE.dna : {};
+  const weights = dna.weights || { cadence:.8, emotion:.8, structure:.8, imagery:.8 };
+  const terms = (dna.styleTerms || []).join(", ");
 
   if (a === "ZAY") {
-    return "[ZAY — CADENCE / BOUNCE]\n\n" + base +
-      "\n\nAgent move: tighten rhythm, shorten heavy phrasing, and make the last phrase hit in-pocket.";
+    return `[ZAY — CADENCE / BOUNCE]
+
+${base}
+
+Agent move: tighten rhythm, shorten heavy phrasing, and make the last phrase hit in-pocket.
+DNA influence: cadence ${weights.cadence} · style terms ${terms}`;
   }
 
   if (a === "RIYA") {
-    return "[RIYA — EMOTION / IMAGERY]\n\n" + base +
-      "\n\nAgent move: make the emotional image more specific while keeping the artist voice plain-spoken.";
+    return `[RIYA — EMOTION / IMAGERY]
+
+${base}
+
+Agent move: make the emotional image more specific while keeping the artist voice plain-spoken.
+DNA influence: emotion ${weights.emotion} · imagery ${weights.imagery}`;
   }
 
   if (a === "DJ") {
-    return "[DJ — STRUCTURE / HOOK]\n\n" + base +
-      "\n\nAgent move: move the strongest repeatable phrase into hook position and clean the transition.";
+    return `[DJ — STRUCTURE / HOOK]
+
+${base}
+
+Agent move: move the strongest repeatable phrase into hook position and clean the transition.
+DNA influence: structure ${weights.structure}`;
   }
 
   return base;
 }
+
 
 function musicActivity(type, title, detail){
   const item = { id: Date.now(), type, title, detail, createdAt: musicNow() };
@@ -1894,7 +1977,10 @@ app.post('/api/music/revision/pick-rerun', (req, res) => {
   const option = session.options.find(o => o.id === body.optionId);
   if(!option) return res.status(404).json({ ok:false, error:"Revision option not found" });
 
-  const rerunOutput = agentPass("DJ", agentPass("RIYA", agentPass("ZAY", option.output, "Pick + rerun"), "Pick + rerun"), "Pick + rerun");
+  const cleanSelected = cleanAgentText(option.output);
+  const rerunZay = agentPass("ZAY", cleanSelected, "Pick + rerun");
+  const rerunRiya = agentPass("RIYA", rerunZay, "Pick + rerun");
+  const rerunOutput = agentPass("DJ", rerunRiya, "Pick + rerun");
   const score = scoreMusicDraft(rerunOutput);
   const hit = hitPotential(score);
 
@@ -1949,6 +2035,44 @@ app.get('/api/music/dashboard-sync', (_req, res) => {
   });
 });
 // ===== END MUSIC PRODUCT LAYER =====
+
+
+// ===== MUSIC EVOLUTION TIMELINE =====
+app.get('/api/music/evolution', (_req, res) => {
+  const runs = global.MUSIC_ENGINE && global.MUSIC_ENGINE.runs ? global.MUSIC_ENGINE.runs : [];
+  const selected = global.MUSIC_PRODUCT && global.MUSIC_PRODUCT.selectedHistory ? global.MUSIC_PRODUCT.selectedHistory : [];
+
+  const timeline = runs.slice(0, 12).map((r, i) => ({
+    label: r.mode || "run",
+    score: r.score || {},
+    overall: r.score && r.score.overall ? r.score.overall : 0,
+    hitPotential: r.hitPotential || null,
+    createdAt: r.createdAt,
+    index: i
+  })).reverse();
+
+  const latest = timeline[timeline.length - 1] || null;
+  const previous = timeline[timeline.length - 2] || null;
+  const delta = latest && previous ? Number((latest.overall - previous.overall).toFixed(2)) : 0;
+  const hit = latest && latest.hitPotential ? latest.hitPotential : (typeof hitPotential === "function" ? hitPotential(latest ? latest.score : {}) : null);
+
+  let decision = "Iterate Again";
+  if(hit && hit.percent >= 86) decision = "Release";
+  else if(hit && hit.percent < 74) decision = "Scrap / Rework Hook";
+
+  return res.json({
+    ok:true,
+    timeline,
+    latest,
+    previous,
+    delta,
+    hit,
+    decision,
+    selected,
+    dna: global.MUSIC_ENGINE ? global.MUSIC_ENGINE.dna : null
+  });
+});
+// ===== END MUSIC EVOLUTION TIMELINE =====
 
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
