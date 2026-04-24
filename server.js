@@ -1642,6 +1642,163 @@ require('./api/hc-execution')(app);
 
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 
+
+// ===== MUSIC MULTI-AGENT ENGINE =====
+global.MUSIC_ENGINE = global.MUSIC_ENGINE || {
+  dna: {
+    artist: "Current Artist",
+    styleTerms: ["pain", "resilience", "late-night", "pressure", "bounce"],
+    weights: { cadence: 0.88, emotion: 0.91, structure: 0.76, imagery: 0.82 },
+    learnedSongs: []
+  },
+  runs: [],
+  activity: []
+};
+
+function musicNow(){ return new Date().toISOString(); }
+
+function scoreMusicDraft(text){
+  const body = String(text || "");
+  const lines = body.split(/\n+/).filter(Boolean).length;
+  const lower = body.toLowerCase();
+  const terms = global.MUSIC_ENGINE.dna.styleTerms || [];
+  const matches = terms.filter(t => lower.includes(String(t).toLowerCase())).length;
+
+  const cadence = Math.min(.99, .72 + (lines >= 2 ? .08 : 0) + (body.length > 60 ? .06 : 0));
+  const emotion = Math.min(.99, .70 + matches * .04 + (lower.includes("fight") ? .07 : 0));
+  const structure = Math.min(.99, .68 + (lines >= 4 ? .12 : .05));
+  const imagery = Math.min(.99, .66 + matches * .04 + (lower.includes("light") ? .08 : 0));
+  const overall = (cadence + emotion + structure + imagery) / 4;
+
+  return {
+    cadence: Number(cadence.toFixed(2)),
+    emotion: Number(emotion.toFixed(2)),
+    structure: Number(structure.toFixed(2)),
+    imagery: Number(imagery.toFixed(2)),
+    overall: Number(overall.toFixed(2))
+  };
+}
+
+function agentPass(agent, draft, request){
+  const a = String(agent || "ZAY").toUpperCase();
+  const base = String(draft || "");
+
+  if (a === "ZAY") {
+    return "[ZAY — CADENCE / BOUNCE]\n\n" + base +
+      "\n\nAgent move: tighten rhythm, shorten heavy phrasing, and make the last phrase hit in-pocket.";
+  }
+
+  if (a === "RIYA") {
+    return "[RIYA — EMOTION / IMAGERY]\n\n" + base +
+      "\n\nAgent move: make the emotional image more specific while keeping the artist voice plain-spoken.";
+  }
+
+  if (a === "DJ") {
+    return "[DJ — STRUCTURE / HOOK]\n\n" + base +
+      "\n\nAgent move: move the strongest repeatable phrase into hook position and clean the transition.";
+  }
+
+  return base;
+}
+
+function musicActivity(type, title, detail){
+  const item = { id: Date.now(), type, title, detail, createdAt: musicNow() };
+  global.MUSIC_ENGINE.activity.unshift(item);
+  global.MUSIC_ENGINE.activity = global.MUSIC_ENGINE.activity.slice(0, 50);
+  return item;
+}
+
+app.post('/api/music/agent/run', (req, res) => {
+  const body = req.body || {};
+  const agent = String(body.agent || "ZAY").toUpperCase();
+  const draft = body.draft || "";
+  const request = body.request || "Improve draft";
+  const output = agentPass(agent, draft, request);
+  const score = scoreMusicDraft(output);
+
+  const run = {
+    id: Date.now(),
+    mode: "single",
+    agent,
+    request,
+    input: draft,
+    output,
+    score,
+    createdAt: musicNow()
+  };
+
+  global.MUSIC_ENGINE.runs.unshift(run);
+  global.MUSIC_ENGINE.runs = global.MUSIC_ENGINE.runs.slice(0, 25);
+  musicActivity("agent", agent + " pass complete", request);
+
+  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE });
+});
+
+app.post('/api/music/agent/chain', (req, res) => {
+  const body = req.body || {};
+  const draft = body.draft || "";
+  const request = body.request || "Run full ZAY → RIYA → DJ chain";
+
+  const zay = agentPass("ZAY", draft, request);
+  const riya = agentPass("RIYA", zay, request);
+  const dj = agentPass("DJ", riya, request);
+  const score = scoreMusicDraft(dj);
+
+  const run = {
+    id: Date.now(),
+    mode: "chain",
+    agents: ["ZAY", "RIYA", "DJ"],
+    request,
+    input: draft,
+    output: dj,
+    pipeline: [
+      { agent: "ZAY", output: zay, score: scoreMusicDraft(zay) },
+      { agent: "RIYA", output: riya, score: scoreMusicDraft(riya) },
+      { agent: "DJ", output: dj, score }
+    ],
+    score,
+    createdAt: musicNow()
+  };
+
+  global.MUSIC_ENGINE.runs.unshift(run);
+  global.MUSIC_ENGINE.runs = global.MUSIC_ENGINE.runs.slice(0, 25);
+  global.MUSIC_ENGINE.dna.learnedSongs.unshift({
+    title: body.title || "Working Draft",
+    draft,
+    output: dj,
+    score,
+    learnedAt: musicNow()
+  });
+  global.MUSIC_ENGINE.dna.learnedSongs = global.MUSIC_ENGINE.dna.learnedSongs.slice(0, 12);
+
+  musicActivity("chain", "Multi-agent chain complete", "ZAY → RIYA → DJ score " + score.overall);
+
+  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE });
+});
+
+app.post('/api/music/dna/learn', (req, res) => {
+  const body = req.body || {};
+  const draft = body.draft || body.lyrics || "";
+  const score = scoreMusicDraft(draft);
+
+  global.MUSIC_ENGINE.dna.learnedSongs.unshift({
+    id: Date.now(),
+    title: body.title || "Learned Song",
+    lyrics: draft,
+    score,
+    learnedAt: musicNow()
+  });
+  global.MUSIC_ENGINE.dna.learnedSongs = global.MUSIC_ENGINE.dna.learnedSongs.slice(0, 12);
+
+  musicActivity("dna", "Artist DNA learned new song", body.title || "Learned Song");
+  return res.json({ ok: true, dna: global.MUSIC_ENGINE.dna, score });
+});
+
+app.get('/api/music/engine', (_req, res) => {
+  return res.json({ ok: true, engine: global.MUSIC_ENGINE });
+});
+// ===== END MUSIC MULTI-AGENT ENGINE =====
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
 
@@ -1748,182 +1905,6 @@ app.get('/api/music/platform', (_req, res) => {
 });
 // ===== END MUSIC PLATFORM EXECUTION LOOP =====
 
-
-// ===== MUSIC MULTI-AGENT ENGINE =====
-global.MUSIC_ENGINE = global.MUSIC_ENGINE || {
-  dna: {
-    artist: "Current Artist",
-    styleTerms: ["pain", "resilience", "late-night", "pressure", "bounce"],
-    weights: { cadence: 0.88, emotion: 0.91, structure: 0.76, imagery: 0.82 },
-    learnedSongs: []
-  },
-  runs: [],
-  activity: []
-};
-
-function musicNow(){ return new Date().toISOString(); }
-
-function musicScore(text, dna){
-  const len = (text || "").length;
-  const lines = (text || "").split(/\n+/).filter(Boolean).length;
-  const terms = dna.styleTerms || [];
-  const match = terms.filter(t => (text || "").toLowerCase().includes(String(t).toLowerCase())).length;
-
-  const cadence = Math.min(0.99, 0.70 + (lines >= 2 ? 0.10 : 0) + (len > 60 ? 0.08 : 0) + (dna.weights.cadence || 0) * 0.08);
-  const emotion = Math.min(0.99, 0.70 + match * 0.035 + (dna.weights.emotion || 0) * 0.12);
-  const structure = Math.min(0.99, 0.68 + (lines >= 4 ? 0.12 : 0.05) + (dna.weights.structure || 0) * 0.12);
-  const imagery = Math.min(0.99, 0.66 + match * 0.04 + (dna.weights.imagery || 0) * 0.13);
-  const overall = (cadence + emotion + structure + imagery) / 4;
-
-  return {
-    cadence: Number(cadence.toFixed(2)),
-    emotion: Number(emotion.toFixed(2)),
-    structure: Number(structure.toFixed(2)),
-    imagery: Number(imagery.toFixed(2)),
-    overall: Number(overall.toFixed(2))
-  };
-}
-
-function runMusicAgent(agent, draft, request, dna){
-  const a = String(agent || "ZAY").toUpperCase();
-  const base = draft || "";
-
-  if(a === "ZAY"){
-    return [
-      "[ZAY — CADENCE / BOUNCE]",
-      "",
-      base,
-      "",
-      "Agent move: tighten the rhythm, shorten heavy phrasing, and make the line land harder in the pocket.",
-      "Cadence note: push the strongest phrase to the end of the bar."
-    ].join("\n");
-  }
-
-  if(a === "RIYA"){
-    return [
-      "[RIYA — EMOTION / IMAGERY]",
-      "",
-      base,
-      "",
-      "Agent move: sharpen emotional imagery while keeping the artist voice plain-spoken.",
-      "Tone note: make pain specific, not generic."
-    ].join("\n");
-  }
-
-  if(a === "DJ"){
-    return [
-      "[DJ — STRUCTURE / HOOK]",
-      "",
-      base,
-      "",
-      "Agent move: move the strongest repeatable phrase into hook position.",
-      "Arrangement note: create a cleaner transition from verse pressure into hook release."
-    ].join("\n");
-  }
-
-  return base;
-}
-
-function pushMusicEngineActivity(type, title, detail){
-  const item = { id: Date.now(), type, title, detail, createdAt: musicNow() };
-  global.MUSIC_ENGINE.activity.unshift(item);
-  global.MUSIC_ENGINE.activity = global.MUSIC_ENGINE.activity.slice(0, 50);
-  return item;
-}
-
-app.post('/api/music/agent/chain', (req, res) => {
-  const body = req.body || {};
-  const draft = body.draft || "";
-  const request = body.request || "Run full ZAY → RIYA → DJ pass";
-  const dna = global.MUSIC_ENGINE.dna;
-
-  const zay = runMusicAgent("ZAY", draft, request, dna);
-  const riya = runMusicAgent("RIYA", zay, request, dna);
-  const dj = runMusicAgent("DJ", riya, request, dna);
-  const score = musicScore(dj, dna);
-
-  const run = {
-    id: Date.now(),
-    mode: "chain",
-    request,
-    agents: ["ZAY", "RIYA", "DJ"],
-    input: draft,
-    output: dj,
-    pipeline: [
-      { agent: "ZAY", output: zay, score: musicScore(zay, dna) },
-      { agent: "RIYA", output: riya, score: musicScore(riya, dna) },
-      { agent: "DJ", output: dj, score }
-    ],
-    score,
-    createdAt: musicNow()
-  };
-
-  global.MUSIC_ENGINE.runs.unshift(run);
-  global.MUSIC_ENGINE.runs = global.MUSIC_ENGINE.runs.slice(0, 25);
-  global.MUSIC_ENGINE.dna.learnedSongs.unshift({ title: body.title || "Working Draft", draft, output: dj, score, learnedAt: musicNow() });
-  global.MUSIC_ENGINE.dna.learnedSongs = global.MUSIC_ENGINE.dna.learnedSongs.slice(0, 12);
-
-  pushMusicEngineActivity("chain", "Multi-agent chain complete", "ZAY → RIYA → DJ completed with score " + score.overall);
-
-  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE });
-});
-
-app.post('/api/music/agent/run', (req, res) => {
-  const body = req.body || {};
-  const agent = String(body.agent || "ZAY").toUpperCase();
-  const draft = body.draft || "";
-  const request = body.request || "Improve draft";
-  const dna = global.MUSIC_ENGINE.dna;
-
-  const output = runMusicAgent(agent, draft, request, dna);
-  const score = musicScore(output, dna);
-
-  const run = {
-    id: Date.now(),
-    mode: "single",
-    agent,
-    request,
-    input: draft,
-    output,
-    score,
-    createdAt: musicNow()
-  };
-
-  global.MUSIC_ENGINE.runs.unshift(run);
-  global.MUSIC_ENGINE.runs = global.MUSIC_ENGINE.runs.slice(0, 25);
-  pushMusicEngineActivity("agent", agent + " agent pass complete", request);
-
-  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE });
-});
-
-app.post('/api/music/dna/learn', (req, res) => {
-  const body = req.body || {};
-  const dna = global.MUSIC_ENGINE.dna;
-  const draft = body.draft || body.lyrics || "";
-  const score = musicScore(draft, dna);
-
-  dna.artist = body.artist || dna.artist;
-  dna.learnedSongs.unshift({
-    id: Date.now(),
-    title: body.title || "Learned Song",
-    lyrics: draft,
-    score,
-    learnedAt: musicNow()
-  });
-  dna.learnedSongs = dna.learnedSongs.slice(0, 12);
-
-  if((draft || "").toLowerCase().includes("fight")) dna.weights.emotion = 0.94;
-  if((draft || "").toLowerCase().includes("light")) dna.weights.imagery = 0.90;
-  if((draft || "").split(/\n+/).length >= 4) dna.weights.structure = 0.86;
-
-  pushMusicEngineActivity("dna", "Artist DNA learned new song", body.title || "Learned Song");
-  return res.json({ ok: true, dna, score });
-});
-
-app.get('/api/music/engine', (_req, res) => {
-  return res.json({ ok: true, engine: global.MUSIC_ENGINE });
-});
-// ===== END MUSIC MULTI-AGENT ENGINE =====
 
 res.status(404).json({ ok: false, error: 'API route not found' });
   }
