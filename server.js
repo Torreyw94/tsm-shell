@@ -1677,6 +1677,120 @@ app.post('/api/music/strategy', (req, res) => {
 });
 // ===== END MUSIC SUITE API INLINE =====
 
+
+// ===== MUSIC PLATFORM EXECUTION LOOP =====
+global.MUSIC_PLATFORM = global.MUSIC_PLATFORM || {
+  artistDNA: {
+    status: "active",
+    artist: "Current Artist",
+    styleTerms: ["pain", "resilience", "late-night", "pressure", "bounce"],
+    weights: { cadence: 0.88, emotion: 0.91, structure: 0.76, imagery: 0.82 },
+    learnedSongs: []
+  },
+  agentRuns: [],
+  activity: []
+};
+
+function musicStamp(){ return new Date().toISOString(); }
+
+function pushMusicActivity(type, title, detail){
+  const item = { id: Date.now(), type, title, detail, createdAt: musicStamp() };
+  global.MUSIC_PLATFORM.activity.unshift(item);
+  global.MUSIC_PLATFORM.activity = global.MUSIC_PLATFORM.activity.slice(0, 50);
+  return item;
+}
+
+app.post('/api/music/dna/save', (req, res) => {
+  const body = req.body || {};
+  const dna = global.MUSIC_PLATFORM.artistDNA;
+  dna.artist = body.artist || dna.artist;
+  dna.notes = body.notes || dna.notes || "";
+  dna.styleTerms = Array.isArray(body.styleTerms) ? body.styleTerms : dna.styleTerms;
+  dna.weights = Object.assign({}, dna.weights, body.weights || {});
+  dna.updatedAt = musicStamp();
+  pushMusicActivity("dna", "Artist DNA updated", dna.artist + " DNA memory refreshed");
+  return res.json({ ok:true, dna });
+});
+
+app.post('/api/music/song/learn', (req, res) => {
+  const body = req.body || {};
+  const song = {
+    id: Date.now(),
+    title: body.title || "Untitled Song",
+    lyrics: body.lyrics || body.draft || "",
+    tags: body.tags || [],
+    learnedAt: musicStamp()
+  };
+
+  global.MUSIC_PLATFORM.artistDNA.learnedSongs.unshift(song);
+  global.MUSIC_PLATFORM.artistDNA.learnedSongs =
+    global.MUSIC_PLATFORM.artistDNA.learnedSongs.slice(0, 12);
+
+  const lyric = song.lyrics.toLowerCase();
+  if (lyric.includes("fight") || lyric.includes("pain")) global.MUSIC_PLATFORM.artistDNA.weights.emotion = 0.94;
+  if (lyric.includes("night") || lyric.includes("light")) global.MUSIC_PLATFORM.artistDNA.weights.imagery = 0.88;
+  if (lyric.split("\n").length >= 4) global.MUSIC_PLATFORM.artistDNA.weights.structure = 0.84;
+
+  pushMusicActivity("learn", "Song learned into DNA", song.title);
+  return res.json({ ok:true, song, dna:global.MUSIC_PLATFORM.artistDNA });
+});
+
+app.post('/api/music/agent/run', (req, res) => {
+  const body = req.body || {};
+  const agent = (body.agent || "ZAY").toUpperCase();
+  const draft = body.draft || "";
+  const request = body.request || "Improve this song";
+  const dna = global.MUSIC_PLATFORM.artistDNA;
+
+  const agentMap = {
+    ZAY: "Cadence, bounce, pocket, and live feel",
+    RIYA: "Word choice, imagery, vulnerability, and emotional tone",
+    DJ: "Structure, hook placement, transitions, and replay value"
+  };
+
+  const output = [
+    agent + " AGENT PASS",
+    "",
+    "Focus: " + (agentMap[agent] || "Full song improvement"),
+    "DNA Match: " + Math.round(((dna.weights.cadence + dna.weights.emotion + dna.weights.structure + dna.weights.imagery) / 4) * 100) + "%",
+    "",
+    "Recommended move:",
+    agent === "ZAY" ? "Tighten the bounce and make the second line land harder." :
+    agent === "RIYA" ? "Make the emotional image more specific while keeping the plain-spoken voice." :
+    agent === "DJ" ? "Move the strongest phrase into hook position and create a cleaner transition." :
+    "Run ZAY, RIYA, then DJ for a complete pass.",
+    "",
+    "Reworked draft:",
+    draft
+      ? draft.replace("trying to stay right is a fight", "tryna stay right in the middle of the fight")
+             .replace("Every day's a battle", "Every day a battle")
+      : "Paste a draft first, then run the agent pass."
+  ].join("\\n");
+
+  const run = {
+    id: Date.now(),
+    agent,
+    request,
+    output,
+    createdAt: musicStamp()
+  };
+
+  global.MUSIC_PLATFORM.agentRuns.unshift(run);
+  global.MUSIC_PLATFORM.agentRuns = global.MUSIC_PLATFORM.agentRuns.slice(0, 25);
+
+  pushMusicActivity("agent", agent + " completed agent pass", request);
+  return res.json({ ok:true, run, platform:global.MUSIC_PLATFORM });
+});
+
+app.get('/api/music/activity', (_req, res) => {
+  return res.json({ ok:true, activity:global.MUSIC_PLATFORM.activity, platform:global.MUSIC_PLATFORM });
+});
+
+app.get('/api/music/platform', (_req, res) => {
+  return res.json({ ok:true, platform:global.MUSIC_PLATFORM });
+});
+// ===== END MUSIC PLATFORM EXECUTION LOOP =====
+
 res.status(404).json({ ok: false, error: 'API route not found' });
   }
 

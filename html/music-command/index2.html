@@ -1103,5 +1103,81 @@ window.addEventListener('load', musicSuiteBoot);
 })();
 </script>
 
+
+<script id="tsm-music-platform-client">
+(function(){
+  if(window.__TSM_MUSIC_PLATFORM_CLIENT__) return;
+  window.__TSM_MUSIC_PLATFORM_CLIENT__ = true;
+
+  window.musicPlatform = {
+    dnaSave(payload){
+      return musicSafeFetch('/api/music/dna/save', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload||{})
+      });
+    },
+    learnSong(payload){
+      return musicSafeFetch('/api/music/song/learn', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload||{})
+      });
+    },
+    runAgent(payload){
+      return musicSafeFetch('/api/music/agent/run', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload||{})
+      });
+    },
+    activity(){
+      return musicSafeFetch('/api/music/activity');
+    },
+    platform(){
+      return musicSafeFetch('/api/music/platform');
+    }
+  };
+
+  window.runMusicAgentFromUI = async function(agent){
+    const draftEl =
+      document.querySelector('textarea') ||
+      document.querySelector('[contenteditable="true"]');
+
+    const draft = draftEl ? (draftEl.value || draftEl.innerText || '') : '';
+    const data = await musicPlatform.runAgent({
+      agent: agent || 'ZAY',
+      draft,
+      request: 'Improve draft using Artist DNA'
+    });
+
+    console.log('Agent Run Complete', data);
+
+    const output =
+      document.getElementById('stratOutput') ||
+      document.querySelector('[data-agent-output]');
+
+    if(output && data.ok){
+      output.style.display = 'block';
+      output.textContent = data.run.output;
+    }
+
+    return data;
+  };
+
+  window.learnCurrentDraft = async function(){
+    const draftEl = document.querySelector('textarea');
+    const draft = draftEl ? draftEl.value : '';
+    const data = await musicPlatform.learnSong({
+      title: 'Working Draft',
+      lyrics: draft,
+      tags: ['working', 'artist-dna']
+    });
+    console.log('Draft learned into DNA', data);
+    return data;
+  };
+})();
+</script>
+
 </body>
 </html>
