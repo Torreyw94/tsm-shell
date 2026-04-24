@@ -2198,5 +2198,69 @@ window.addEventListener('load', musicSuiteBoot);
 })();
 </script>
 
+
+<script id="tsm-music-agent-ui-client">
+(function(){
+  if(window.__TSM_MUSIC_AGENT_UI__) return;
+  window.__TSM_MUSIC_AGENT_UI__ = true;
+
+  window.musicEngine = {
+    runAgent(payload){
+      return musicSafeFetch('/api/music/agent/run', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    runChain(payload){
+      return musicSafeFetch('/api/music/agent/chain', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    learnDNA(payload){
+      return musicSafeFetch('/api/music/dna/learn', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    state(){
+      return musicSafeFetch('/api/music/engine');
+    }
+  };
+
+  window.runFullMusicChainFromUI = async function(){
+    const input =
+      document.querySelector('textarea') ||
+      document.getElementById('stratInput') ||
+      document.querySelector('input[type="text"]');
+
+    const draft = input ? (input.value || input.innerText || '') : '';
+
+    const data = await musicEngine.runChain({
+      title:'Working Draft',
+      draft,
+      request:'Run full ZAY RIYA DJ chain'
+    });
+
+    const out =
+      document.getElementById('stratOutput') ||
+      document.querySelector('[data-agent-output]');
+
+    if(out && data.ok){
+      out.style.display = 'block';
+      out.textContent =
+        data.run.output +
+        '\n\nSCORE: ' + JSON.stringify(data.run.score, null, 2);
+    }
+
+    console.log('Full Music Chain Complete', data);
+    return data;
+  };
+})();
+</script>
+
 </body>
 </html>
