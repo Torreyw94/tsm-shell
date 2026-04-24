@@ -1995,7 +1995,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 window.MusicSuite = {
   async state(){
-    return musicSafeFetch('/api/music/state').then(r=>r.json());
+    return musicSafeFetch;
   },
   async agentPass(payload){
     return fetch('/api/music/agent-pass',{
