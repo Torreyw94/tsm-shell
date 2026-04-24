@@ -2307,8 +2307,8 @@ window.addEventListener('load', musicSuiteBoot);
               </div>
               <pre style="white-space:pre-wrap;max-height:180px;overflow:auto;font-size:.7rem;color:var(--text2);background:var(--bg3);padding:8px;border-radius:3px">${o.output}</pre>
               <button class="btn btn-purple" style="margin-top:8px;width:100%;justify-content:center"
-                onclick="selectRevisionOption('${session.id}','${o.id}')">
-                Pick ${o.id}
+                onclick="pickRevisionAndRerun('${session.id}','${o.id}')">
+                Pick + Run Again ${o.id}
               </button>
             </div>
           `).join('')}
@@ -2348,6 +2348,59 @@ window.addEventListener('load', musicSuiteBoot);
     const data = await musicRevision.select({ sessionId, optionId });
     console.log('Revision Selected', data);
     alert('Selected revision ' + optionId + ' and saved into Artist DNA');
+    return data;
+  };
+})();
+</script>
+
+
+<script id="tsm-music-product-ui">
+(function(){
+  if(window.__TSM_MUSIC_PRODUCT_UI__) return;
+  window.__TSM_MUSIC_PRODUCT_UI__ = true;
+
+  window.musicProduct = {
+    pickRerun(payload){
+      return musicSafeFetch('/api/music/revision/pick-rerun', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload || {})
+      });
+    },
+    dashboard(){
+      return musicSafeFetch('/api/music/dashboard-sync');
+    }
+  };
+
+  window.pickRevisionAndRerun = async function(sessionId, optionId){
+    const data = await musicProduct.pickRerun({ sessionId, optionId });
+    console.log('Pick + Rerun Complete', data);
+
+    const out =
+      document.getElementById('stratOutput') ||
+      document.querySelector('[data-agent-output]') ||
+      document.getElementById('mainContent');
+
+    if(out && data.ok){
+      out.style.display = 'block';
+      out.innerHTML = `
+        <div style="padding:14px;border:1px solid rgba(16,185,129,.35);background:rgba(6,13,24,.96);border-radius:6px">
+          <div style="font-family:var(--mono);font-size:.6rem;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">
+            Selected ${data.selected.id} · ${data.rerun.hitPotential.label} · ${data.rerun.hitPotential.percent}%
+          </div>
+          <pre style="white-space:pre-wrap;max-height:320px;overflow:auto;color:var(--text2);background:var(--bg3);padding:10px;border-radius:4px">${data.rerun.output}</pre>
+          <div style="font-family:var(--mono);font-size:.55rem;color:var(--purple);margin-top:8px">
+            DNA updated: cadence ${data.dna.weights.cadence} · emotion ${data.dna.weights.emotion} · structure ${data.dna.weights.structure} · imagery ${data.dna.weights.imagery}
+          </div>
+        </div>`;
+    }
+
+    return data;
+  };
+
+  window.refreshMusicDashboardSync = async function(){
+    const data = await musicProduct.dashboard();
+    console.log('Music Dashboard Sync', data);
     return data;
   };
 })();
