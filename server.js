@@ -37,24 +37,6 @@ app.get('/api/music/state', (_req, res) => {
   return res.json({ ok: true, state: global.MUSIC_SUITE_STATE });
 });
 
-app.post('/api/music/agent/run', (req, res) => {
-  const body = req.body || {};
-  const agent = body.agent || 'ZAY';
-  const draft = body.draft || '';
-  const request = body.request || 'Improve draft';
-
-  return res.json({
-    ok: true,
-    run: {
-      id: Date.now(),
-      agent,
-      request,
-      output: '[' + agent + ']\n\n' + request + '\n\n' + draft,
-      createdAt: new Date().toISOString()
-    }
-  });
-});
-
 // ===== END MUSIC ROUTE =====
 
 ;
@@ -1659,6 +1641,27 @@ app.post('/api/hc/alerts', (req, res) => {
 require('./api/hc-execution')(app);
 
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
+
+// ===== MUSIC AGENT ROUTE =====
+app.post('/api/music/agent/run', (req, res) => {
+  const body = req.body || {};
+  const agent = body.agent || 'ZAY';
+  const draft = body.draft || '';
+  const request = body.request || 'Improve draft';
+
+  return res.json({
+    ok: true,
+    run: {
+      id: Date.now(),
+      agent,
+      request,
+      output: '[' + agent + ']\n\n' + request + '\n\n' + draft,
+      createdAt: new Date().toISOString()
+    }
+  });
+});
+// ===== END MUSIC AGENT ROUTE =====
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
 
