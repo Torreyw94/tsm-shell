@@ -18,7 +18,27 @@ function resolveWritableStore(preferredPath) {
 const fs = require('fs');
 const https = require('https');
 
-const app = express();
+const app = express()
+
+// ===== FORCE MUSIC ROUTE (TOP LEVEL) =====
+console.log("🚀 Registering MUSIC routes...");
+
+global.MUSIC_SUITE_STATE = {
+  artistsOnline: 12,
+  releasesDropping: 3,
+  monthlyStreams: "84M",
+  revenueMTD: 847400,
+  pipelineValue: 2400000,
+  aiStatus: "online"
+};
+
+app.get('/api/music/state', (_req, res) => {
+  console.log("🎵 /api/music/state HIT");
+  return res.json({ ok: true, state: global.MUSIC_SUITE_STATE });
+});
+// ===== END MUSIC ROUTE =====
+
+;
 const PORT = process.env.PORT || 8080;
 
 
