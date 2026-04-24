@@ -1622,7 +1622,7 @@ require('./api/hc-execution')(app);
 // ===== FRONTEND FALLBACK (KEEP LAST) =====
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
-    return require('./api/music-suite')(app);
+    require('./api/music-suite')(app);
 
 res.status(404).json({ ok: false, error: 'API route not found' });
   }
