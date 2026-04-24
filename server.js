@@ -1819,7 +1819,8 @@ app.post('/api/music/agent/run', (req, res) => {
   global.MUSIC_ENGINE.runs = global.MUSIC_ENGINE.runs.slice(0, 25);
   musicActivity("agent", agent + " pass complete", request);
 
-  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE });
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.aiRuns += 1);
+  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE, billing: global.MUSIC_BILLING || null });
 });
 
 app.post('/api/music/agent/chain', (req, res) => {
@@ -1862,7 +1863,8 @@ app.post('/api/music/agent/chain', (req, res) => {
 
   musicActivity("chain", "Multi-agent chain complete", "ZAY → RIYA → DJ score " + score.overall);
 
-  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE });
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.aiRuns += 1);
+  return res.json({ ok: true, run, engine: global.MUSIC_ENGINE, billing: global.MUSIC_BILLING || null });
 });
 
 app.post('/api/music/dna/learn', (req, res) => {
@@ -1919,7 +1921,8 @@ app.post('/api/music/revision/generate', (req, res) => {
   global.MUSIC_REVISIONS.sessions.unshift(session);
   global.MUSIC_REVISIONS.sessions = global.MUSIC_REVISIONS.sessions.slice(0,20);
 
-  return res.json({ ok:true, session });
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.aiRuns += 1);
+  return res.json({ ok:true, session, billing: global.MUSIC_BILLING || null });
 });
 
 app.post('/api/music/revision/select', (req, res) => {
@@ -2029,7 +2032,8 @@ app.post('/api/music/revision/pick-rerun', (req, res) => {
   global.MUSIC_PRODUCT.dashboard.lastHitPotential = hit;
   global.MUSIC_PRODUCT.dashboard.status = "iterated";
 
-  return res.json({ ok:true, selected:option, rerun, product:global.MUSIC_PRODUCT, engine:global.MUSIC_ENGINE });
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.aiRuns += 1);
+  return res.json({ ok:true, selected:option, rerun, product:global.MUSIC_PRODUCT, engine:global.MUSIC_ENGINE, billing: global.MUSIC_BILLING || null });
 });
 
 app.get('/api/music/dashboard-sync', (_req, res) => {
@@ -2146,7 +2150,8 @@ app.post('/api/music/session/save', (req, res) => {
   artist.sessions = artist.sessions.slice(0, global.MUSIC_SESSIONS.tiers[artist.tier].sessions);
   artist.updatedAt = new Date().toISOString();
 
-  return res.json({ ok:true, artist, session });
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.sessions += 1);
+  return res.json({ ok:true, artist, session, billing: global.MUSIC_BILLING || null });
 });
 
 app.get('/api/music/session/:artist', (req, res) => {
@@ -2180,6 +2185,7 @@ app.post('/api/music/hooks/generate10', (req, res) => {
     createdAt:new Date().toISOString()
   });
 
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.hookPacks += 1);
   return res.json({
     ok:true,
     upsell:{ name:"Generate 10 Hooks", price:25 },
@@ -2227,7 +2233,8 @@ app.post('/api/music/export', (req, res) => {
   global.MUSIC_SESSIONS.exports.unshift(item);
   global.MUSIC_SESSIONS.exports = global.MUSIC_SESSIONS.exports.slice(0,50);
 
-  return res.json({ ok:true, export:item });
+  global.MUSIC_BILLING && (global.MUSIC_BILLING.usage.exports += 1);
+  return res.json({ ok:true, export:item, billing: global.MUSIC_BILLING || null });
 });
 
 app.get('/api/music/monetization/state', (_req, res) => {
@@ -2247,6 +2254,142 @@ app.get('/api/music/monetization/state', (_req, res) => {
   });
 });
 // ===== END MUSIC MONETIZATION + EXPORT + SESSIONS =====
+
+
+// ===== MUSIC TIER + PAYWALL + USAGE LAYER =====
+global.MUSIC_BILLING = global.MUSIC_BILLING || {
+  currentTier: "free",
+  usage: {
+    aiRuns: 0,
+    exports: 0,
+    hookPacks: 0,
+    sessions: 0
+  },
+  tiers: {
+    free: {
+      name:"Free Trial",
+      price:0,
+      aiRuns:5,
+      sessions:1,
+      exports:false,
+      dna:"Preview only",
+      label:"Test the system. See how it thinks.",
+      bestFor:"Trying the engine before committing."
+    },
+    tier1: {
+      name:"Creator Mode",
+      price:99,
+      aiRuns:25,
+      sessions:5,
+      exports:true,
+      dna:"Basic Artist DNA",
+      label:"Turn rough ideas into structured, polished drafts fast.",
+      bestFor:"Independent artists writing consistently."
+    },
+    tier2: {
+      name:"Studio Mode",
+      price:249,
+      aiRuns:100,
+      sessions:25,
+      exports:true,
+      dna:"Advanced Artist DNA + evolution timeline",
+      label:"Know which version is actually better. Stop guessing what works.",
+      bestFor:"Artists serious about releasing music."
+    },
+    tier3: {
+      name:"Label Mode",
+      price:499,
+      aiRuns:500,
+      sessions:100,
+      exports:true,
+      dna:"Deep catalog memory + release decision engine",
+      label:"Build a catalog. Not just songs. Operate like a label.",
+      bestFor:"Teams, producers, and catalog builders."
+    }
+  },
+  upgradeEvents: []
+};
+
+function musicTier(){
+  return global.MUSIC_BILLING.tiers[global.MUSIC_BILLING.currentTier] || global.MUSIC_BILLING.tiers.free;
+}
+
+function musicCanUse(kind){
+  const tier = musicTier();
+  const usage = global.MUSIC_BILLING.usage;
+
+  if(kind === "aiRuns" && usage.aiRuns >= tier.aiRuns){
+    return { ok:false, reason:"AI run limit reached", upgrade:true, tier };
+  }
+
+  if(kind === "sessions" && usage.sessions >= tier.sessions){
+    return { ok:false, reason:"Session limit reached", upgrade:true, tier };
+  }
+
+  if(kind === "exports" && !tier.exports){
+    return { ok:false, reason:"Exports require Creator Mode", upgrade:true, tier };
+  }
+
+  return { ok:true, tier };
+}
+
+app.get('/api/music/billing/state', (_req, res) => {
+  const tier = musicTier();
+  return res.json({
+    ok:true,
+    billing:global.MUSIC_BILLING,
+    current:tier,
+    remaining:{
+      aiRuns:Math.max(0, tier.aiRuns - global.MUSIC_BILLING.usage.aiRuns),
+      sessions:Math.max(0, tier.sessions - global.MUSIC_BILLING.usage.sessions),
+      exports:tier.exports
+    }
+  });
+});
+
+app.post('/api/music/billing/upgrade-intent', (req, res) => {
+  const body = req.body || {};
+  const targetTier = body.tier || "tier1";
+
+  if(!global.MUSIC_BILLING.tiers[targetTier]){
+    return res.status(400).json({ ok:false, error:"Invalid tier" });
+  }
+
+  const event = {
+    id:Date.now(),
+    from:global.MUSIC_BILLING.currentTier,
+    to:targetTier,
+    reason:body.reason || "manual upgrade intent",
+    createdAt:new Date().toISOString(),
+    stripeReady:true
+  };
+
+  global.MUSIC_BILLING.upgradeEvents.unshift(event);
+
+  return res.json({
+    ok:true,
+    upgrade:event,
+    checkout:{
+      provider:"stripe-ready",
+      tier:targetTier,
+      price:global.MUSIC_BILLING.tiers[targetTier].price,
+      note:"Connect Stripe checkout URL here."
+    }
+  });
+});
+
+app.post('/api/music/billing/set-tier-dev', (req, res) => {
+  const body = req.body || {};
+  const tier = body.tier || "free";
+
+  if(!global.MUSIC_BILLING.tiers[tier]){
+    return res.status(400).json({ ok:false, error:"Invalid tier" });
+  }
+
+  global.MUSIC_BILLING.currentTier = tier;
+  return res.json({ ok:true, billing:global.MUSIC_BILLING });
+});
+// ===== END MUSIC TIER + PAYWALL + USAGE LAYER =====
 
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
