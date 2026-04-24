@@ -31,7 +31,7 @@ body{font-family:'ui-monospace',SFMono-Regular,Menlo,monospace;background:#0b112
 .dot{width:6px;height:6px;border-radius:50%;background:#1e3a5f;border:1px solid #2563eb44;flex-shrink:0;transition:all .15s}
 .item.active .dot{background:#3b82f6;box-shadow:0 0 6px #3b82f680}
 .item:hover .dot{background:#1e40af}
-.ext-icon{font-size:9px;color:#374151;margin-left:auto;flex-shrink:0}
+.ext-icon{font-size:9px;color:#6b7280;margin-left:auto;flex-shrink:0}
 .item.active .ext-icon{color:#2563eb}
 .main{display:flex;flex-direction:column;background:#060d1a}
 .bar{padding:8px 14px;border-bottom:1px solid #1a2540;display:flex;align-items:center;gap:6px;background:#0a1628}
@@ -74,8 +74,8 @@ iframe{flex:1;border:none;background:#fff}
 const HC_NODES = new Set([
   'hc-billing','hc-compliance','hc-financial','hc-grants',
   'hc-insurance','hc-legal','hc-medical','hc-pharmacy',
-  'hc-strategist','hc-taxprep','hc-vendors',
-  'healthcare','honor-portal','honorhealth'
+  'hc-command','hc-strategist','hc-taxprep','hc-vendors','hc-presentation',
+  'healthcare','honor-portal','honorhealth','honorhealth-dee','main-strategist','music-command','ameris-construction'
 ]);
 
 function appUrl(key, url) {
@@ -89,7 +89,9 @@ function appUrl(key, url) {
 // ── LOCAL APPS (served from /html/) ──────────────────────────────────────────
 const LOCAL_APPS = [
   // Healthcare
+  { sector:'Healthcare', name:'Healthcare',           key:'healthcare' },
   { sector:'Healthcare', name:'HonorHealth Command',  key:'honorhealth' },
+  { sector:'Healthcare', name:'HC Command',           key:'hc-command' },
   { sector:'Healthcare', name:'HC Billing',           key:'hc-billing' },
   { sector:'Healthcare', name:'HC Compliance',        key:'hc-compliance' },
   { sector:'Healthcare', name:'HC Financial',         key:'hc-financial' },
@@ -101,8 +103,10 @@ const LOCAL_APPS = [
   { sector:'Healthcare', name:'HC Strategist',        key:'hc-strategist' },
   { sector:'Healthcare', name:'HC Tax Prep',          key:'hc-taxprep' },
   { sector:'Healthcare', name:'HC Vendors',           key:'hc-vendors' },
-  { sector:'Healthcare', name:'HonorHealth Dee', key:'tsm-honorhealth-dee', url:'https://tsm-honorhealth-dee.fly.dev/' },
   { sector:'Healthcare', name:'Honor Portal',          key:'honor-portal' },
+  { sector:'Healthcare', name:'HonorHealth DEE',       key:'honorhealth-dee' },
+  { sector:'Healthcare', name:'HC Presentation',       key:'hc-presentation' },
+  { sector:'Healthcare', name:'Main Strategist',       key:'main-strategist' },
   { sector:'Healthcare', name:'DME',                  key:'dme' },
   // BPO
   { sector:'BPO', name:'BPO Legal',                   key:'bpo-legal' },
@@ -115,6 +119,7 @@ const LOCAL_APPS = [
   // Construction
   { sector:'Construction', name:'Construction Command', key:'construction-command' },
   { sector:'Construction', name:'Ameris Portal',         key:'ameris-portal' },
+  { sector:'Construction', name:'Ameris Construction',   key:'ameris-construction' },
   { sector:'Enterprise',    name:'ESD Portal',          key:'esd-portal' },
   { sector:'Enterprise',    name:'TSM Strategy',        key:'tsm-strategy' },
   { sector:'Enterprise',    name:'Suite Builder',        key:'suite-builder' },
@@ -184,7 +189,7 @@ const SECTORS = [
     {name:'RRD Command',          url:'/html/rrd-command/'},
     {name:'Appointments',         url:'https://appointments.tsmatter.com'},
     {name:'AuditOps',             url:'https://auditops.tsmatter.com'},
-    {name:'Music Command',        url:'https://music-command.tsmatter.com'},
+    {name:'Music Command',        url:'/html/music-command/'},
     {name:'Zero Trust',           url:'https://zero-trust.tsmatter.com'},
   ]},
   {label:'Demo Decks', apps:[
@@ -290,7 +295,8 @@ function loadApp(el) {
   const id = el.dataset.id;
   currentApp = id;
   document.querySelectorAll('.item').forEach(e => e.classList.toggle('active', e.dataset.id === id));
-  const url = id.startsWith('http') ? id : appUrl(id);
+  const url = id.startsWith('http') || id.startsWith('/') ? id : appUrl(id);
+  if (id.startsWith('http')) { window.open(id, '_blank'); return; }
   document.getElementById('url').textContent = url;
   document.getElementById('frame').src = url;
   document.getElementById('active-label').textContent = el.querySelector('span:nth-child(2)').textContent;

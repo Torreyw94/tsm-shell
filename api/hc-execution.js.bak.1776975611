@@ -1,0 +1,55 @@
+module.exports = function(app){
+
+  // In-memory task queue (safe for now)
+  global.HC_TASK_QUEUE = global.HC_TASK_QUEUE || [];
+
+  // ✅ Delegate Task
+  app.post('/api/hc/delegate', (req, res) => {
+    const { office, action, ownerLane } = req.body || {};
+
+    if (!office) {
+      return res.status(400).json({ ok:false, error:"Missing office" });
+    }
+
+    const task = {
+      id: Date.now(),
+      office,
+      action: action || "Execute BNCA",
+      ownerLane: ownerLane || "Operations",
+      status: "assigned",
+      createdAt: new Date().toISOString()
+    };
+
+    global.HC_TASK_QUEUE.push(task);
+
+    res.json({ ok:true, task });
+  });
+
+  // ✅ Get Tasks
+  app.get('/api/hc/tasks', (req, res) => {
+    res.json({
+      ok:true,
+      tasks: global.HC_TASK_QUEUE || []
+    });
+  });
+
+  // ✅ BNCA (lightweight safe version)
+  app.post('/api/hc/bnca', (req, res) => {
+    const { office } = req.body || {};
+
+    const result = {
+      ok: true,
+      office,
+      updatedAt: new Date().toISOString(),
+      summary: `BNCA refreshed for ${office}`,
+      metrics: {
+        denialRate: 12.4,
+        authDelay: 56,
+        queueDepth: 31
+      }
+    };
+
+    res.json(result);
+  });
+
+};
