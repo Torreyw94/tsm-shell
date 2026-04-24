@@ -1799,6 +1799,69 @@ app.get('/api/music/engine', (_req, res) => {
 });
 // ===== END MUSIC MULTI-AGENT ENGINE =====
 
+
+// ===== MUSIC REVISION MODE =====
+global.MUSIC_REVISIONS = global.MUSIC_REVISIONS || { sessions: [], selected: null };
+
+app.post('/api/music/revision/generate', (req, res) => {
+  const body = req.body || {};
+  const draft = body.draft || "";
+  const request = body.request || "Generate 3 revision options";
+
+  const a = agentPass("ZAY", draft, request);
+  const b = agentPass("RIYA", draft, request);
+  const c = agentPass("DJ", draft, request);
+
+  const options = [
+    { id:"A", title:"Option A · Flow First", strategy:"Cadence and bounce", output:a, score:scoreMusicDraft(a) },
+    { id:"B", title:"Option B · Emotion First", strategy:"Imagery and vulnerability", output:b, score:scoreMusicDraft(b) },
+    { id:"C", title:"Option C · Hook First", strategy:"Structure and repeatability", output:c, score:scoreMusicDraft(c) }
+  ].sort((x,y) => y.score.overall - x.score.overall);
+
+  const session = {
+    id: Date.now(),
+    request,
+    input: draft,
+    options,
+    recommended: options[0].id,
+    createdAt: new Date().toISOString()
+  };
+
+  global.MUSIC_REVISIONS.sessions.unshift(session);
+  global.MUSIC_REVISIONS.sessions = global.MUSIC_REVISIONS.sessions.slice(0,20);
+
+  return res.json({ ok:true, session });
+});
+
+app.post('/api/music/revision/select', (req, res) => {
+  const body = req.body || {};
+  const session = global.MUSIC_REVISIONS.sessions.find(s => String(s.id) === String(body.sessionId));
+  if(!session) return res.status(404).json({ ok:false, error:"Revision session not found" });
+
+  const option = session.options.find(o => o.id === body.optionId);
+  if(!option) return res.status(404).json({ ok:false, error:"Revision option not found" });
+
+  global.MUSIC_REVISIONS.selected = { sessionId:body.sessionId, optionId:body.optionId, option, selectedAt:new Date().toISOString() };
+
+  if(global.MUSIC_ENGINE && global.MUSIC_ENGINE.dna){
+    global.MUSIC_ENGINE.dna.learnedSongs.unshift({
+      title:"Selected Revision " + body.optionId,
+      draft:session.input,
+      output:option.output,
+      score:option.score,
+      learnedAt:new Date().toISOString()
+    });
+    global.MUSIC_ENGINE.dna.learnedSongs = global.MUSIC_ENGINE.dna.learnedSongs.slice(0,12);
+  }
+
+  return res.json({ ok:true, selected:global.MUSIC_REVISIONS.selected });
+});
+
+app.get('/api/music/revision/state', (_req, res) => {
+  return res.json({ ok:true, revisions:global.MUSIC_REVISIONS });
+});
+// ===== END MUSIC REVISION MODE =====
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
 
@@ -1907,118 +1970,6 @@ app.get('/api/music/platform', (_req, res) => {
 
 
 
-
-// ===== MUSIC REVISION MODE =====
-global.MUSIC_REVISIONS = global.MUSIC_REVISIONS || {
-  sessions: [],
-  selected: null
-};
-
-function revisionScoreBoost(score, i){
-  return {
-    cadence: Number(Math.min(.99, score.cadence + (i * .01)).toFixed(2)),
-    emotion: Number(Math.min(.99, score.emotion + (i === 1 ? .03 : .01)).toFixed(2)),
-    structure: Number(Math.min(.99, score.structure + (i === 2 ? .04 : .01)).toFixed(2)),
-    imagery: Number(Math.min(.99, score.imagery + (i === 1 ? .04 : .01)).toFixed(2)),
-    overall: 0
-  };
-}
-
-function finalizeScore(s){
-  s.overall = Number(((s.cadence + s.emotion + s.structure + s.imagery) / 4).toFixed(2));
-  return s;
-}
-
-app.post('/api/music/revision/generate', (req, res) => {
-  const body = req.body || {};
-  const draft = body.draft || "";
-  const request = body.request || "Generate 3 revision options";
-
-  const baseA = agentPass("ZAY", draft, request);
-  const baseB = agentPass("RIYA", draft, request);
-  const baseC = agentPass("DJ", draft, request);
-
-  const variants = [
-    {
-      id: "A",
-      title: "Option A · Flow First",
-      strategy: "Best for cadence, bounce, and live feel.",
-      output: baseA,
-      score: finalizeScore(revisionScoreBoost(scoreMusicDraft(baseA), 0))
-    },
-    {
-      id: "B",
-      title: "Option B · Emotion First",
-      strategy: "Best for imagery, vulnerability, and artist voice.",
-      output: baseB,
-      score: finalizeScore(revisionScoreBoost(scoreMusicDraft(baseB), 1))
-    },
-    {
-      id: "C",
-      title: "Option C · Hook First",
-      strategy: "Best for structure, repeatability, and release readiness.",
-      output: baseC,
-      score: finalizeScore(revisionScoreBoost(scoreMusicDraft(baseC), 2))
-    }
-  ];
-
-  variants.sort((a,b) => b.score.overall - a.score.overall);
-
-  const session = {
-    id: Date.now(),
-    request,
-    input: draft,
-    options: variants,
-    recommended: variants[0].id,
-    createdAt: new Date().toISOString()
-  };
-
-  global.MUSIC_REVISIONS.sessions.unshift(session);
-  global.MUSIC_REVISIONS.sessions = global.MUSIC_REVISIONS.sessions.slice(0, 20);
-
-  if (typeof musicActivity === "function") {
-    musicActivity("revision", "Revision mode generated 3 options", "Recommended " + variants[0].title);
-  }
-
-  return res.json({ ok:true, session });
-});
-
-app.post('/api/music/revision/select', (req, res) => {
-  const body = req.body || {};
-  const sessionId = body.sessionId;
-  const optionId = body.optionId;
-
-  const session = global.MUSIC_REVISIONS.sessions.find(s => String(s.id) === String(sessionId));
-  if (!session) return res.status(404).json({ ok:false, error:"Revision session not found" });
-
-  const option = session.options.find(o => o.id === optionId);
-  if (!option) return res.status(404).json({ ok:false, error:"Revision option not found" });
-
-  global.MUSIC_REVISIONS.selected = {
-    sessionId,
-    optionId,
-    option,
-    selectedAt: new Date().toISOString()
-  };
-
-  if (global.MUSIC_ENGINE && global.MUSIC_ENGINE.dna) {
-    global.MUSIC_ENGINE.dna.learnedSongs.unshift({
-      title: "Selected Revision " + optionId,
-      draft: session.input,
-      output: option.output,
-      score: option.score,
-      learnedAt: new Date().toISOString()
-    });
-    global.MUSIC_ENGINE.dna.learnedSongs = global.MUSIC_ENGINE.dna.learnedSongs.slice(0, 12);
-  }
-
-  return res.json({ ok:true, selected:global.MUSIC_REVISIONS.selected });
-});
-
-app.get('/api/music/revision/state', (_req, res) => {
-  return res.json({ ok:true, revisions:global.MUSIC_REVISIONS });
-});
-// ===== END MUSIC REVISION MODE =====
 
 res.status(404).json({ ok: false, error: 'API route not found' });
   }
