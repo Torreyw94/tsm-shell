@@ -215,15 +215,13 @@ function render(data,draft){
   document.getElementById('agentProgress').classList.remove('visible'); document.getElementById('resultsPanel').classList.add('visible');
   const s=scoreObj(data), overall=pct(s.overall);
   document.getElementById('hitScore').textContent=overall+'%';
-  const decision=overall>=86?'Release Ready':overall>=74?'This isn’t the best version yet.
-Let’s improve it.':'Scrap / Rework Hook';
+  const decision=overall>=86?'Release Ready':overall>=74?'Not the best version yet. Let us improve it.':'Scrap / Rework Hook';
   document.getElementById('decisionLabel').textContent=decision;
   document.getElementById('decisionSub').textContent='Score Delta '+(runCount>1?'+4':'+0');
   [['cad',s.cadence],['emo',s.emotion],['str',s.structure],['img',s.imagery]].forEach(([k,v])=>{document.getElementById('bar-'+k).style.width=pct(v)+'%';document.getElementById('val-'+k).textContent=pct(v)+'%'});
   document.getElementById('dna-cad').textContent=Number(s.cadence).toFixed(2); document.getElementById('dna-emo').textContent=Number(s.emotion).toFixed(2); document.getElementById('dna-str').textContent=Number(s.structure).toFixed(2); document.getElementById('dna-img').textContent=Number(s.imagery).toFixed(2); document.getElementById('dna-songs').textContent=runCount; document.getElementById('styleMatch').textContent=overall>=80?'High':'Medium';
   document.getElementById('trajectoryBox').textContent=`${overall>=74?'Rising':'Developing'} · Score Delta ${runCount>1?'+4':'+0'}`;
-  document.getElementById('releaseBox').textContent= overall>=86?'Strong enough to move toward recording or release planning.': overall>=74?'Not ready yet.
-One more pass could make this a strong release.':'Hook needs rework before release consideration.';
+  document.getElementById('releaseBox').textContent= overall>=86?'Strong enough to move toward recording or release planning.': overall>=74?'Not ready yet. One more pass could make this a strong release.':'Hook needs rework before release consideration.';
   const opts=data.session?.options || [
     {id:'A',title:'Flow First',strategy:'Cadence and bounce',output:data.run?.output || draft,score:s},
     {id:'B',title:'Emotion First',strategy:'Imagery and vulnerability',output:draft+'\n\n[Emotion pass] Make the image more specific and personal.',score:s},
@@ -569,8 +567,8 @@ I'm building an empire nobody chose to see`;
       el.id = 'ai-coach-box';
       el.style.cssText = `
         position:fixed;
-        bottom:90px;
-        right:20px;
+        bottom:20px;
+        left:20px;
         width:260px;
         background:rgba(11,18,32,.96);
         border:1px solid rgba(57,217,138,.35);
