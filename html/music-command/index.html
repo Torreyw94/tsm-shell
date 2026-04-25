@@ -127,7 +127,7 @@ You’re not writing alone. You’re refining with a system.
       <div class="modal-feat"><div>🤖</div><div class="modal-feat-label">ZAY → RIYA → DJ</div><div class="modal-feat-sub">Full agent chain</div></div>
     </div>
     <div style="display:flex;gap:10px">
-      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="startWithSample()">Load Sample & Run →</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="startWithSample();setTimeout(function(){var b=document.getElementById('runBtn');if(b)b.click();},1200)">Load Sample &amp; Run →</button>
       <button class="btn btn-ghost" onclick="closeModal()">Start Blank</button>
     </div>
   </div>
@@ -367,7 +367,7 @@ window.addEventListener('load',()=>document.getElementById('onboardingModal').cl
           <div class="card-title">Start From a Concept</div>
           <div class="card-sub">Load the sample or paste a rough idea, then run the full ZAY → RIYA → DJ chain.</div>
           <div style="margin-top:14px">
-            <button class="btn btn-primary" onclick="startWithSample()">Load Sample & Run</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="startWithSample();setTimeout(function(){var b=document.getElementById('runBtn');if(b)b.click();},1200)">Load Sample &amp; Run →</button>
           </div>
         </div>
 
