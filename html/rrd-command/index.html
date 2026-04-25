@@ -1257,7 +1257,7 @@ h2{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#888;margi
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev/ask";
+var AI="/api/strategist/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -1326,7 +1326,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev/ask', {
+      var r = await fetch('/api/strategist/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -1416,7 +1416,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("https://tsm-core.fly.dev/ask", {
+    const res = await fetch("/api/strategist/query", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),

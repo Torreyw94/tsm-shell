@@ -1,0 +1,267 @@
+/*
+ * tsm_cards.css — TSM Hub Live Card Styles
+ * Import alongside tsm_hub_integration.js
+ * Matches the dark terminal aesthetic from your TSM Hub screenshot.
+ */
+
+/* ── Base card ─────────────────────────────────────────────────────────────── */
+.tsm-card {
+  background:    #0d1f0d;
+  border:        1px solid #1a4a1a;
+  border-radius: 6px;
+  color:         #7fff7f;
+  font-family:   "Courier New", Courier, monospace;
+  font-size:     13px;
+  padding:       20px 24px;
+  position:      relative;
+  overflow:      hidden;
+}
+
+.tsm-card::before {
+  content:    "";
+  position:   absolute;
+  inset:      0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,255,0,0.015) 2px,
+    rgba(0,255,0,0.015) 4px
+  );
+  pointer-events: none;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.tsm-card__header {
+  display:         flex;
+  align-items:     center;
+  gap:             12px;
+  margin-bottom:   16px;
+  border-bottom:   1px solid #1a4a1a;
+  padding-bottom:  12px;
+}
+
+.tsm-card__title {
+  flex:       1;
+  font-size:  14px;
+  font-weight: 700;
+  color:      #00ff41;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin:     0;
+}
+
+.tsm-badge {
+  font-size:     10px;
+  padding:       2px 8px;
+  border-radius: 2px;
+  font-weight:   700;
+  letter-spacing: 0.1em;
+}
+
+.tsm-badge--live {
+  background: rgba(0, 255, 65, 0.15);
+  border:     1px solid #00ff41;
+  color:      #00ff41;
+  animation:  tsm-pulse 2s infinite;
+}
+
+@keyframes tsm-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.tsm-card__refresh {
+  background:    transparent;
+  border:        1px solid #1a4a1a;
+  color:         #7fff7f;
+  cursor:        pointer;
+  font-family:   inherit;
+  font-size:     11px;
+  padding:       3px 10px;
+  border-radius: 3px;
+  transition:    border-color 0.2s, color 0.2s;
+}
+.tsm-card__refresh:hover {
+  border-color: #00ff41;
+  color:        #00ff41;
+}
+
+/* ── Metrics grid ──────────────────────────────────────────────────────────── */
+.tsm-card__metrics {
+  display:               grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap:                   12px;
+  margin-bottom:         16px;
+}
+
+.tsm-metric {
+  background:    rgba(0, 255, 65, 0.04);
+  border:        1px solid #1a4a1a;
+  border-radius: 4px;
+  padding:       10px 12px;
+}
+
+.tsm-metric--risk {
+  border-color: #ff6b00;
+  background:   rgba(255, 107, 0, 0.07);
+}
+
+.tsm-metric--alert {
+  border-color: #ff3333;
+  background:   rgba(255, 51, 51, 0.07);
+}
+
+.tsm-metric__label {
+  display:     block;
+  font-size:   10px;
+  color:       #4a8a4a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.tsm-metric__value {
+  display:     block;
+  font-size:   18px;
+  font-weight: 700;
+  color:       #00ff41;
+}
+
+.tsm-metric--risk  .tsm-metric__value { color: #ff6b00; }
+.tsm-metric--alert .tsm-metric__value { color: #ff3333; }
+
+/* ── Gaps list ─────────────────────────────────────────────────────────────── */
+.tsm-card__gaps {
+  margin-bottom: 16px;
+}
+
+.tsm-card__gaps h3 {
+  font-size:  11px;
+  color:      #4a8a4a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin:     0 0 8px 0;
+}
+
+.tsm-card__gaps ul {
+  list-style: none;
+  margin:     0;
+  padding:    0;
+}
+
+.tsm-gap {
+  padding:       6px 10px;
+  border-left:   3px solid #ff6b00;
+  background:    rgba(255, 107, 0, 0.05);
+  margin-bottom: 4px;
+  font-size:     12px;
+  color:         #ffaa55;
+  border-radius: 0 3px 3px 0;
+}
+
+/* ── AI Analysis ───────────────────────────────────────────────────────────── */
+.tsm-card__analysis {
+  border-top:   1px solid #1a4a1a;
+  padding-top:  14px;
+  margin-bottom: 12px;
+}
+
+.tsm-card__analysis h3 {
+  font-size:  11px;
+  color:      #4a8a4a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin:     0 0 8px 0;
+  display:    flex;
+  align-items: center;
+  gap:        8px;
+}
+
+.tsm-model-tag {
+  background:    rgba(0, 255, 65, 0.1);
+  border:        1px solid #1a4a1a;
+  border-radius: 2px;
+  color:         #4a8a4a;
+  font-size:     9px;
+  padding:       1px 5px;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+
+.tsm-analysis-text {
+  white-space:  pre-wrap;
+  word-break:   break-word;
+  font-family:  inherit;
+  font-size:    12px;
+  color:        #9fcf9f;
+  line-height:  1.6;
+  margin:       0;
+  max-height:   320px;
+  overflow-y:   auto;
+  padding-right: 4px;
+}
+
+.tsm-analysis-text::-webkit-scrollbar       { width: 4px; }
+.tsm-analysis-text::-webkit-scrollbar-track { background: transparent; }
+.tsm-analysis-text::-webkit-scrollbar-thumb { background: #1a4a1a; border-radius: 2px; }
+
+/* ── Footer ────────────────────────────────────────────────────────────────── */
+.tsm-card__footer {
+  font-size:  10px;
+  color:      #2a5a2a;
+  border-top: 1px solid #1a4a1a;
+  padding-top: 8px;
+  margin-top:  4px;
+}
+
+/* ── Loading state ─────────────────────────────────────────────────────────── */
+.tsm-card--loading {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  min-height:      200px;
+  color:           #4a8a4a;
+  gap:             16px;
+}
+
+.tsm-spinner {
+  width:  28px;
+  height: 28px;
+  border: 2px solid #1a4a1a;
+  border-top-color: #00ff41;
+  border-radius: 50%;
+  animation: tsm-spin 0.8s linear infinite;
+}
+
+@keyframes tsm-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error state ───────────────────────────────────────────────────────────── */
+.tsm-card--error {
+  border-color: #660000;
+  color:        #ff6666;
+}
+
+.tsm-card--error h3 { color: #ff3333; margin: 0 0 10px 0; }
+.tsm-card--error pre {
+  font-family: inherit;
+  font-size:   11px;
+  color:       #ff9999;
+  white-space: pre-wrap;
+  margin:      0 0 12px 0;
+}
+
+.tsm-card--error button {
+  background:    transparent;
+  border:        1px solid #660000;
+  color:         #ff6666;
+  cursor:        pointer;
+  font-family:   inherit;
+  font-size:     12px;
+  padding:       5px 14px;
+  border-radius: 3px;
+}
+.tsm-card--error button:hover { border-color: #ff3333; color: #ff3333; }

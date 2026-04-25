@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CASE-TECH | SOVEREIGN COMMAND · TSM Intelligence Platform</title>
+  <title>BPO Realty Command</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -572,7 +572,7 @@
   CORS: bridge must return Access-Control-Allow-Origin: * (or portal domain)
 */
 const CONFIG = {
-  bridgeUrl: 'https://tsm-core.fly.dev/v1/chat',
+  bridgeUrl: '/api/mortgage/query',
   stream: true,
   maxTokens: 900,
   useFallback: false
@@ -622,7 +622,7 @@ async function checkBridge() {
   const banner = document.getElementById('bridgeBanner');
   const txt = document.getElementById('bridgeBannerText');
   try {
-    const res = await fetch(CONFIG.bridgeUrl.replace('/v1/chat', '/health'), {
+    const res = await fetch('/api/mortgage/query'.replace('/v1/chat', '/health'), {
       method: 'GET', signal: AbortSignal.timeout(4000)
     });
     if (res.ok) {
@@ -674,7 +674,7 @@ async function callAI(systemPrompt, userMessage, onChunk, onDone) {
     return;
   }
   try {
-    const res = await fetch(CONFIG.bridgeUrl, {
+    const res = await fetch('/api/mortgage/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

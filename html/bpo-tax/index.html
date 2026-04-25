@@ -421,7 +421,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("/api/v1/bridge",{
+    const res = await fetch('/api/financial/query',{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({messages:[{role:"user",content:input}]})
@@ -505,7 +505,7 @@ setInterval(pollTaxIntake, 30000);
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev/ask";
+var AI="/api/financial/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -574,7 +574,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev/ask', {
+      var r = await fetch('/api/financial/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({

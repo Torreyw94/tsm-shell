@@ -252,11 +252,11 @@ body{padding-bottom:52px!important}
 
 <script>
 const NODES = {
-    fin: { url: '/api/v1/bridge', label: 'Financial Intelligence' },
-  tax: { url: '/api/v1/bridge', label: 'Tax Intelligence' },
-  comp: { url: '/api/v1/bridge', label: 'Compliance Shield' },
-  zt: { url: '/api/v1/bridge', label: 'Zero Trust' },
-  strat: { url: '/api/v1/bridge', label: 'Strategist' }
+    fin: { url: '/api/financial/query', label: 'Financial Intelligence' },
+  tax: { url: '/api/financial/query', label: 'Tax Intelligence' },
+  comp: { url: '/api/financial/query', label: 'Compliance Shield' },
+  zt: { url: '/api/financial/query', label: 'Zero Trust' },
+  strat: { url: '/api/financial/query', label: 'Strategist' }
 };
 
 const PLAYBOOKS = {
@@ -926,7 +926,7 @@ function runSafeAnalysis() {
   </div>
   <script>
   (function(){
-    var AI_ENDPOINT = 'https://tsm-core.fly.dev/ask';
+    var AI_ENDPOINT = '/api/financial/query';
     function getSlug(){ return window.location.hostname.replace('.tsmatter.com',''); }
     var history = [];
     function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

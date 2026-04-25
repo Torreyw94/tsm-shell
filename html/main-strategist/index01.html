@@ -985,7 +985,7 @@ RRD ✓</div>
     window.addEventListener('load', function(){
       const VERTICAL_ENDPOINTS = {
         healthcare: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize highest-severity healthcare issue, BNCA, and 3 immediate leadership actions.',
             mode: 'healthcare',
@@ -997,7 +997,7 @@ RRD ✓</div>
           }
         },
         schools: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize highest-severity schools issue, deadlines, and 3 immediate leadership actions.',
             mode: 'schools',
@@ -1008,7 +1008,7 @@ RRD ✓</div>
           }
         },
         legal: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top legal exposure, compliance risk, and 3 immediate leadership actions.',
             mode: 'legal',
@@ -1019,7 +1019,7 @@ RRD ✓</div>
           }
         },
         mortgage: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize mortgage risk, borrower/revenue pressure, and 3 immediate leadership actions.',
             mode: 'mortgage',
@@ -1030,7 +1030,7 @@ RRD ✓</div>
           }
         },
         reo: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top reo portfolio/deal risk and 3 immediate leadership actions.',
             mode: 'reo',
@@ -1041,7 +1041,7 @@ RRD ✓</div>
           }
         },
         construction: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top construction operational/lien/schedule risk and 3 immediate leadership actions.',
             mode: 'construction',
@@ -1052,7 +1052,7 @@ RRD ✓</div>
           }
         },
         financial: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top financial revenue/compliance risk and 3 immediate leadership actions.',
             mode: 'financial',
@@ -1063,7 +1063,7 @@ RRD ✓</div>
           }
         },
         tax: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top tax optimization/compliance timing issue and 3 immediate leadership actions.',
             mode: 'tax',
@@ -1074,7 +1074,7 @@ RRD ✓</div>
           }
         },
         hotelops: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top hotel operations/revenue issue and 3 immediate leadership actions.',
             mode: 'hotelops',
@@ -1085,7 +1085,7 @@ RRD ✓</div>
           }
         },
         compliance: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top compliance/control exposure and 3 immediate leadership actions.',
             mode: 'compliance',
@@ -1096,7 +1096,7 @@ RRD ✓</div>
           }
         },
         zerotrust: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: {
             message: 'Summarize top zero-trust security posture issue and 3 immediate leadership actions.',
             mode: 'zerotrust',
@@ -1107,7 +1107,7 @@ RRD ✓</div>
           }
         },
         rrd: {
-          url: '/api/v1/bridge',
+          url: '/api/strategist/query',
           payload: async function() {
             // Fetch live intake queue from RRD intake API
             let intakeContext = '';
@@ -1424,7 +1424,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("https://tsm-core.fly.dev/ask", {
+    const res = await fetch("/api/strategist/query", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
@@ -1465,7 +1465,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev/ask";
+var AI="/api/strategist/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -1534,7 +1534,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev/ask', {
+      var r = await fetch('/api/strategist/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({

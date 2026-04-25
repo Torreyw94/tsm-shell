@@ -408,7 +408,7 @@ async function Q(prompt, btnId, resId) {
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev/v1/chat', {
+      var r = await fetch('/api/hc/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

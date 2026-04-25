@@ -1978,7 +1978,7 @@ setInterval(pollReoIntake, 30000);
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev/ask";
+var AI="/api/mortgage/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -2047,7 +2047,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev/ask', {
+      var r = await fetch('/api/mortgage/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({

@@ -4,7 +4,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CASE-TECH | SOVEREIGN COMMAND · TSM Intelligence Platform</title>
+  <title>PC Command</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -240,7 +240,7 @@
     .footer-r a:hover { color: var(--cyan); }
     @media (max-width: 600px) { main { padding: 20px 14px 60px; } header { padding: 0 14px; } .hdr-pills { display: none; } }
   </style>
-<script>const TSM_BRIDGE = 'https://glowing-journey-jj5p9g9gwjqfvpv69-3200.app.github.dev?t=1776482846'; console.log('🛡️ TSM-Core Linked');</script>
+<script>const TSM_BRIDGE = 'https://tsm-shell.fly.dev';
 <script>window.showTab = function(id, el) {document.querySelectorAll(".tab-content").forEach(c=>c.style.display="none");document.getElementById(id).style.display="block";document.querySelectorAll(".nav-tab").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}</script></head>
 <body>
 
@@ -575,7 +575,7 @@
   CORS: bridge must return Access-Control-Allow-Origin: * (or portal domain)
 */
 const CONFIG = {
-  bridgeUrl: 'https://tsm-core.fly.dev/v1/chat',
+  bridgeUrl: '/api/insurance/query',
   stream: true,
   maxTokens: 900,
   useFallback: false
@@ -625,7 +625,7 @@ async function checkBridge() {
   const banner = document.getElementById('bridgeBanner');
   const txt = document.getElementById('bridgeBannerText');
   try {
-    const res = await fetch(CONFIG.bridgeUrl.replace('/v1/chat', '/health'), {
+    const res = await fetch('/api/insurance/query'.replace('/v1/chat', '/health'), {
       method: 'GET', signal: AbortSignal.timeout(4000)
     });
     if (res.ok) {
@@ -677,7 +677,7 @@ async function callAI(systemPrompt, userMessage, onChunk, onDone) {
     return;
   }
   try {
-    const res = await fetch(CONFIG.bridgeUrl, {
+    const res = await fetch('/api/insurance/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -1908,7 +1908,7 @@ function generateReport(type='full') {
     ? reportItems.map((r,i) => `<div style="margin-bottom:18px;padding:14px;border:1px solid #d4a84c;border-radius:5px;background:#fafaf7"><div style="font-size:12px;color:#888;font-family:monospace;margin-bottom:5px">${r.time} · ${r.icon} ${r.category}</div><div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:6px">${i+1}. ${r.title}</div><div style="font-size:13px;color:#333;line-height:1.7">${r.content}</div></div>`).join('')
     : '<p style="color:#888">No saved report items. Run calculations in the app and click "Save to Report" to populate this report.</p>';
 
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AZ Insurance Report · ${now}</title>
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AZ Insurance Command · NPN 18818059</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Libre+Franklin:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}

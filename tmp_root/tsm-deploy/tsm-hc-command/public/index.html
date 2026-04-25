@@ -1927,7 +1927,7 @@ function switchTab(name, el) {
 <<<<<<< HEAD
 const GROQ_API_KEY_VAR = 'tsm_fin_groq_key';
 =======
-const API='/api/v1/bridge';
+const API='/api/hc/query';
 const SYS=`You are the TSM HotelOps Neural Processor, an elite hospitality intelligence system managing hotels, Airbnbs, and motels. You analyze operations, financials, IoT systems, concierge workflows, compliance, and guest experience. Be concise, professional, and actionable. Never reference underlying AI models or vendors. 2-4 sentences max.`;
 >>>>>>> 8a66e8109ac5a0f8672e944529352c563a02286f
 
@@ -1987,7 +1987,7 @@ async function runAnalysis() {
   const contextPrompt = `[Analysis Type: ${analysisType} | Report Format: ${reportType}]\n\n${query}`;
 
   try {
-    const res = await safeFetch('/api/v1/bridge', {
+    const res = await safeFetch('/api/hc/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: [{ role: "user", content: contextPrompt
@@ -2100,7 +2100,7 @@ function runReconAI(){
   var prompt='Perform a complete account reconciliation analysis for: Account: '+acct+', GL Balance: $'+gl+', Bank/Statement Balance: $'+bank+', Notes: '+notes+'. Identify the variance, explain possible causes, list required reconciling items, and provide any necessary correcting journal entries in DR/CR format.';
   var el=document.getElementById('recon-ai');
   el.style.display='block';el.textContent='Analyzing...';
-  safeFetch('/api/v1/bridge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a senior corporate accountant and CPA with expertise in account reconciliation, GAAP, and internal controls. Provide precise, actionable accounting guidance with journal entries in DR/CR format. Use ► for section headers.'},{role:'user',content:prompt}]})})
+  safeFetch('/api/hc/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a senior corporate accountant and CPA with expertise in account reconciliation, GAAP, and internal controls. Provide precise, actionable accounting guidance with journal entries in DR/CR format. Use ► for section headers.'},{role:'user',content:prompt}]})})
 }
 function calcJE(){
   var drs=Array.from(document.querySelectorAll('#je-rows input[type=number]:nth-child(odd)')).map(i=>parseFloat(i.value)||0);
@@ -2134,7 +2134,7 @@ function runJEAI(){
   var prompt='Review this '+type+': '+rows.join(', ')+'. Description: '+memo+'. Verify the entry follows double-entry bookkeeping rules, confirm it is balanced, check GAAP compliance, identify any issues, and explain the business purpose and financial statement impact.';
   var el=document.getElementById('je-ai');
   el.style.display='block';el.textContent='Analyzing...';
-  safeFetch('/api/v1/bridge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a senior corporate accountant and CPA. Review journal entries for accuracy, GAAP compliance, and proper double-entry bookkeeping. Use ► for section headers.'},{role:'user',content:prompt}]})})
+  safeFetch('/api/hc/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a senior corporate accountant and CPA. Review journal entries for accuracy, GAAP compliance, and proper double-entry bookkeeping. Use ► for section headers.'},{role:'user',content:prompt}]})})
 }
 function calcTB(){
   var totalDR=0,totalCR=0;
@@ -2156,7 +2156,7 @@ function runTBAI(){
   var prompt='Analyze this trial balance: Total Debits $'+totalDR+', Total Credits $'+totalCR+'. '+(Math.abs(totalDR-totalCR)<1?'The trial balance is balanced.':'ALERT: Trial balance is out of balance by $'+Math.abs(totalDR-totalCR)+'.')+' Explain what this means, common causes of trial balance errors, and next steps for the month-end close.';
   var el=document.getElementById('tb-ai');
   el.style.display='block';el.textContent='Analyzing...';
-  safeFetch('/api/v1/bridge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a senior corporate accountant. Analyze trial balances and provide accounting guidance. Use ► for section headers.'},{role:'user',content:prompt}]})})
+  safeFetch('/api/hc/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:'You are a senior corporate accountant. Analyze trial balances and provide accounting guidance. Use ► for section headers.'},{role:'user',content:prompt}]})})
 }
 function askAI(prompt){
   switchTab('journal',document.querySelectorAll('.tab-btn')[7]);

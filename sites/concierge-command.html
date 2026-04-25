@@ -215,11 +215,11 @@ body{font-family:var(--body);background:var(--bg);color:var(--white);display:fle
 
 <script>
 const NODES = {
-    hotel: { url: '/api/v1/bridge', label: 'HotelOps' },
-  tax: { url: '/api/v1/bridge', label: 'Tax Intelligence' },
-  comp: { url: '/api/v1/bridge', label: 'Compliance Shield' },
-  fin: { url: '/api/v1/bridge', label: 'Financial' },
-  strat: { url: '/api/v1/bridge', label: 'Strategist' }
+    hotel: { url: '/api/ai/query', label: 'HotelOps' },
+  tax: { url: '/api/ai/query', label: 'Tax Intelligence' },
+  comp: { url: '/api/ai/query', label: 'Compliance Shield' },
+  fin: { url: '/api/ai/query', label: 'Financial' },
+  strat: { url: '/api/ai/query', label: 'Strategist' }
 };
 
 const PLAYBOOKS = {
@@ -245,7 +245,7 @@ function loadPreviews() {
 }
 
 function pingNode(id) {
-  fetch('/api/v1/bridge', {method:'POST', headers:{'Content-Type':'application/json'},
+  fetch('/api/ai/query', {method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({app:'ping', messages:[{role:'user',content:'ping'}]})
   })
   .then(r => {
@@ -262,7 +262,7 @@ async function queryNode(id, query) {
   body.innerHTML = '<span class="cursor-blink">▌</span>';
   statusEl.textContent = 'PROCESSING';
   try {
-    const r = await fetch('https://tsm-core.fly.dev:3000/ask', {
+    const r = await fetch('/api/ai/query', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''), messages: [
@@ -432,7 +432,7 @@ window.safeAnalyze = async function(input, targetId="analysis_output.log"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("https://tsm-core.fly.dev:3000/ask", {
+    const res = await fetch("/api/ai/query", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
@@ -517,7 +517,7 @@ setInterval(pollConcierge, 30000);
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev:3000/ask";
+var AI="/api/ai/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -586,7 +586,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev:3000/ask', {
+      var r = await fetch('/api/ai/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({

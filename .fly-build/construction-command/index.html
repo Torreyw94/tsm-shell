@@ -402,11 +402,11 @@ body{font-family:var(--body);background:var(--bg);color:var(--white);display:fle
 
 <script>
 const NODES = {
-  con:  { url: '/api/v1/bridge', label: 'Construction Core' },
-  zt:   { url: '/api/v1/bridge', label: 'Zero Trust' },
-  tax:  { url: '/api/v1/bridge', label: 'Tax Intelligence' },
-  comp: { url: '/api/v1/bridge', label: 'Compliance Shield' },
-  strat:{ url: '/api/v1/bridge', label: 'Strategist' },
+  con:  { url: '/api/construction/query', label: 'Construction Core' },
+  zt:   { url: '/api/construction/query', label: 'Zero Trust' },
+  tax:  { url: '/api/construction/query', label: 'Tax Intelligence' },
+  comp: { url: '/api/construction/query', label: 'Compliance Shield' },
+  strat:{ url: '/api/construction/query', label: 'Strategist' },
 };
 
 const SYSTEM_PROMPTS = {
@@ -739,7 +739,7 @@ function openHowTo(){var m=document.getElementById("howto-modal");if(m)m.style.d
   </div>
   <script>
 (function(){
-var AI="https://ai.tsmatter.com/ask";
+var AI="/api/construction/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -808,7 +808,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://ai.tsmatter.com/ask', {
+      var r = await fetch('/api/construction/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({

@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function(){
+  document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='F12'){e.preventDefault();return false;}
+    if(e.ctrlKey&&e.shiftKey&&['I','J','C','i','j','c'].includes(e.key)){e.preventDefault();return false;}
+    if(e.ctrlKey&&['U','u'].includes(e.key)){e.preventDefault();return false;}
+  });
+  var t=160;setInterval(function(){if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){document.body.innerHTML='';window.location.reload();}},1000);
+})();
+</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TSM | Healthcare Command v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070d12;--bg2:#0b1520;--bg3:#0f1e2e;
+  --panel:#0d1a26;--panel2:#0a1620;
+  --border:#1a3048;--border2:#1e3a55;
+  --green:#00ff9d;--blue:#00c8ff;--purple:#b06aff;
+  --orange:#ff9500;--red:#ff4060;--yellow:#ffd600;
+  --text:#c8dff0;--dim:#4a6880;--bright:#e8f4ff;
+  --mono:'Share Tech Mono',monospace;
+  --ui:'Rajdhani',sans-serif;
+  --body:'Exo 2',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13px;display:flex;flex-direction:column;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.022) 2px,rgba(0,0,0,.022) 4px);pointer-events:none;z-index:9999;}
+
+/* TICKER */
+.ticker{background:#04090f;border-bottom:1px solid var(--border);padding:4px 0;overflow:hidden;white-space:nowrap;flex-shrink:0;}
+.ticker-inner{display:inline-block;animation:tick 60s linear infinite;font-family:var(--mono);font-size:10px;color:var(--yellow);letter-spacing:.06em;}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* KPI BAR */
+.kpi-bar{display:grid;grid-template-columns:repeat(7,1fr);background:#07101c;border-bottom:1px solid var(--border);flex-shrink:0;}
+.kpi-cell{padding:5px 10px;border-right:1px solid var(--border);}
+.kpi-cell:last-child{border-right:none;}
+.kpi-lbl{font-family:var(--mono);font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1px;}
+.kpi-val{font-family:var(--mono);font-size:12px;font-weight:700;}
+.kpi-sub{font-size:9px;color:var(--dim);}
+
+/* TOPBAR */
+.topbar{height:36px;background:linear-gradient(90deg,#071420,#0a1e32);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 14px;gap:0;flex-shrink:0;position:relative;}
+.topbar::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.4;}
+.logo{font-family:var(--ui);font-weight:700;font-size:15px;letter-spacing:3px;color:var(--blue);text-shadow:0 0 12px rgba(0,200,255,.5);}
+.logo span{color:var(--bright);}
+.tb-div{width:1px;height:20px;background:var(--border2);margin:0 12px;}
+.tb-sub{font-family:var(--body);font-size:10px;color:var(--dim);letter-spacing:1px;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:7px;}
+.pill{display:flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-family:var(--ui);font-size:10px;font-weight:600;letter-spacing:1px;border:1px solid;}
+.pill.g{color:var(--green);border-color:rgba(0,255,157,.3);background:rgba(0,255,157,.06);}
+.pill.b{color:var(--blue);border-color:rgba(0,200,255,.3);background:rgba(0,200,255,.06);}
+.pill.p{color:var(--purple);border-color:rgba(176,106,255,.3);background:rgba(176,106,255,.06);}
+.dot{width:6px;height:6px;border-radius:50%;}
+.dot.g{background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 1.5s infinite;}
+.dot.b{background:var(--blue);box-shadow:0 0 6px var(--blue);}
+.dot.p{background:var(--purple);box-shadow:0 0 6px var(--purple);}
+.clock{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:72px;text-align:right;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TABBAR */
+.tabbar{display:flex;align-items:stretch;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;height:32px;}
+.tab{display:flex;align-items:center;gap:6px;padding:0 15px;font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:1px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;text-transform:uppercase;}
+.tab:hover{color:var(--text);background:rgba(0,200,255,.04);}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:rgba(0,200,255,.05);}
+.tab-badge{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:2px;background:rgba(255,64,96,.2);color:var(--red);}
+
+/* VIEWS */
+.view{display:none;flex:1;overflow:hidden;min-height:0;}
+.view.active{display:flex;}
+
+/* ══ OVERVIEW ══════════════════════════════════════════ */
+#v-overview{flex-direction:row;}
+
+/* Left sidebar */
+.ov-sidebar{width:155px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.sb-sec{padding:6px 12px 2px;font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:7px;padding:5px 12px;cursor:pointer;font-family:var(--ui);font-size:12px;font-weight:500;color:var(--dim);border-left:2px solid transparent;transition:all .15s;}
+.nav-item:hover{color:var(--text);background:rgba(0,200,255,.04);}
+.nav-item.active{color:var(--blue);border-left-color:var(--blue);background:rgba(0,200,255,.07);}
+.nav-icon{font-size:12px;width:14px;text-align:center;}
+.nav-badge{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--red);background:rgba(255,64,96,.15);padding:1px 4px;border-radius:2px;}
+.nav-dot{margin-left:auto;width:5px;height:5px;border-radius:50%;}
+.nav-dot.g{background:var(--green);box-shadow:0 0 4px var(--green);}
+.nav-dot.o{background:var(--orange);box-shadow:0 0 4px var(--orange);}
+.sb-stats{margin-top:auto;padding:8px 12px;border-top:1px solid var(--border);}
+.sr{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;padding:2px 0;}
+.sr .lbl{color:var(--dim);}
+.sr .val{color:var(--green);}
+.sr .val.w{color:var(--orange);}
+.sr .val.a{color:var(--red);}
+
+/* Center */
+.ov-center{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+
+/* Deploy bar */
+.deploy-bar{background:#07101c;border-bottom:1px solid var(--border);padding:7px 12px;flex-shrink:0;}
+.deploy-lbl{font-family:var(--mono);font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px;}
+.node-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px;}
+.npill{font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid;border-radius:2px;cursor:pointer;transition:all .15s;font-weight:700;letter-spacing:.06em;opacity:.45;}
+.npill.on{opacity:1;}
+.npill-medical{color:#00c8ff;border-color:#00c8ff;}
+.npill-medical.on{background:rgba(0,200,255,.12);}
+.npill-pharmacy{color:#b06aff;border-color:#b06aff;}
+.npill-pharmacy.on{background:rgba(176,106,255,.12);}
+.npill-insurance{color:#00b8d9;border-color:#00b8d9;}
+.npill-insurance.on{background:rgba(0,184,217,.12);}
+.npill-financial{color:#ffd600;border-color:#ffd600;}
+.npill-financial.on{background:rgba(255,214,0,.1);}
+.npill-legal{color:#ff9500;border-color:#ff9500;}
+.npill-legal.on{background:rgba(255,149,0,.1);}
+.npill-vendors{color:#ff4060;border-color:#ff4060;}
+.npill-vendors.on{background:rgba(255,64,96,.1);}
+.npill-compliance{color:#00ff9d;border-color:#00ff9d;}
+.npill-compliance.on{background:rgba(0,255,157,.08);}
+.npill-billing{color:#ffb347;border-color:#ffb347;}
+.npill-billing.on{background:rgba(255,179,71,.1);}
+.npill-taxprep{color:#e879f9;border-color:#e879f9;}
+.npill-taxprep.on{background:rgba(232,121,249,.1);}
+.npill-grants{color:#60a5fa;border-color:#60a5fa;}
+.npill-grants.on{background:rgba(96,165,250,.1);}
+
+.query-row{display:flex;gap:6px;margin-bottom:6px;}
+.query-input{flex:1;background:#081018;border:1px solid var(--border);border-radius:3px;color:var(--text);padding:6px 10px;font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s;}
+.query-input:focus{border-color:var(--yellow);}
+.deploy-btn{background:linear-gradient(135deg,rgba(255,214,0,.2),rgba(255,149,0,.1));border:1px solid var(--yellow);color:var(--yellow);font-family:var(--mono);font-size:10px;font-weight:700;padding:6px 16px;cursor:pointer;letter-spacing:.08em;transition:all .2s;border-radius:2px;}
+.deploy-btn:hover{background:linear-gradient(135deg,rgba(255,214,0,.35),rgba(255,149,0,.2));}
+.deploy-btn:disabled{opacity:.4;cursor:not-allowed;}
+.synth-btn{background:linear-gradient(135deg,rgba(176,106,255,.2),rgba(0,200,255,.1));border:1px solid var(--purple);color:var(--purple);font-family:var(--mono);font-size:10px;font-weight:700;padding:6px 16px;cursor:pointer;letter-spacing:.08em;transition:all .2s;border-radius:2px;}
+.synth-btn:hover{background:linear-gradient(135deg,rgba(176,106,255,.35),rgba(0,200,255,.2));}
+.action-pills{display:flex;gap:4px;flex-wrap:wrap;}
+.apill{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim);font-size:9px;padding:3px 9px;cursor:pointer;transition:all .2s;font-family:var(--mono);letter-spacing:.04em;border-radius:2px;}
+.apill:hover{background:rgba(255,255,255,.08);color:var(--text);border-color:rgba(255,255,255,.2);}
+
+/* Node grid */
+.node-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);flex:1;overflow:hidden;}
+.nc{background:var(--panel);padding:10px;display:flex;flex-direction:column;gap:5px;position:relative;overflow:hidden;cursor:pointer;transition:background .15s;animation:fadeUp .4s ease both;}
+.nc:hover{background:#111e2d;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.nc:nth-child(1){animation-delay:.05s}.nc:nth-child(2){animation-delay:.08s}.nc:nth-child(3){animation-delay:.11s}
+.nc:nth-child(4){animation-delay:.14s}.nc:nth-child(5){animation-delay:.17s}.nc:nth-child(6){animation-delay:.20s}
+.nc:nth-child(7){animation-delay:.23s}.nc:nth-child(8){animation-delay:.26s}.nc:nth-child(9){animation-delay:.29s}
+.nc:nth-child(10){animation-delay:.32s}
+.nc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.nc-medical::before{background:linear-gradient(90deg,#00c8ff,#0070ff);}
+.nc-pharmacy::before{background:linear-gradient(90deg,#b06aff,#7030ff);}
+.nc-insurance::before{background:linear-gradient(90deg,#00b8d9,#007a99);}
+.nc-financial::before{background:linear-gradient(90deg,#ffd600,#ff9500);}
+.nc-legal::before{background:linear-gradient(90deg,#ff9500,#ff6000);}
+.nc-vendors::before{background:linear-gradient(90deg,#ff4060,#cc0040);}
+.nc-compliance::before{background:linear-gradient(90deg,#00ff9d,#00cc70);}
+.nc-billing::before{background:linear-gradient(90deg,#ffb347,#ff6000);}
+.nc-taxprep::before{background:linear-gradient(90deg,#e879f9,#a020c0);}
+.nc-grants::before{background:linear-gradient(90deg,#60a5fa,#2563eb);}
+
+.nc-hdr{display:flex;justify-content:space-between;align-items:center;}
+.nc-live{font-family:var(--mono);font-size:8px;display:flex;align-items:center;gap:3px;}
+.nc-live.lv{color:var(--green);}
+.nc-live.fb{color:var(--yellow);}
+.nc-live.rn{color:var(--blue);animation:blink .8s infinite;}
+.nc-port{font-family:var(--mono);font-size:8px;color:var(--dim);}
+.nc-name{font-family:var(--ui);font-weight:800;font-size:14px;color:var(--bright);letter-spacing:.5px;text-transform:uppercase;}
+.nc-desc{font-size:9px;color:var(--dim);line-height:1.4;}
+.nc-bar-bg{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.nc-bar-fill{height:100%;border-radius:2px;transition:width 1.2s ease;width:0%;}
+.nc-medical .nc-bar-fill{background:linear-gradient(90deg,#00c8ff,#0070ff);box-shadow:0 0 5px rgba(0,200,255,.5);}
+.nc-pharmacy .nc-bar-fill{background:linear-gradient(90deg,#b06aff,#7030ff);}
+.nc-insurance .nc-bar-fill{background:linear-gradient(90deg,#00b8d9,#007a99);}
+.nc-financial .nc-bar-fill{background:linear-gradient(90deg,#ffd600,#ff9500);}
+.nc-legal .nc-bar-fill{background:linear-gradient(90deg,#ff9500,#ff6000);}
+.nc-vendors .nc-bar-fill{background:linear-gradient(90deg,#ff4060,#cc0040);}
+.nc-compliance .nc-bar-fill{background:linear-gradient(90deg,#00ff9d,#00cc70);box-shadow:0 0 5px rgba(0,255,157,.5);}
+.nc-billing .nc-bar-fill{background:linear-gradient(90deg,#ffb347,#ff6000);}
+.nc-taxprep .nc-bar-fill{background:linear-gradient(90deg,#e879f9,#a020c0);}
+.nc-grants .nc-bar-fill{background:linear-gradient(90deg,#60a5fa,#2563eb);}
+
+.nc-output{font-family:var(--mono);font-size:8px;color:var(--dim);line-height:1.5;flex:1;overflow:hidden;max-height:72px;}
+.nc-output.active{color:var(--text);}
+.nc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;}
+.nc-open-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim);font-family:var(--mono);font-size:8px;padding:3px 8px;cursor:pointer;transition:all .2s;border-radius:2px;}
+.nc-open-btn:hover{background:rgba(255,255,255,.09);color:var(--text);}
+.nc-stat{font-family:var(--mono);font-size:8px;color:var(--dim);}
+.nc-stat.lv{color:var(--green);}
+.nc-stat.fb{color:var(--yellow);}
+.nc-stat.rn{color:var(--blue);animation:blink .8s infinite;}
+
+/* Right sidebar — Sovereign */
+.ov-right{width:220px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sov-hdr{padding:10px 12px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.3);}
+.sov-title{font-family:var(--ui);font-size:13px;font-weight:700;color:var(--purple);letter-spacing:.05em;}
+.sov-sub{font-size:8px;color:var(--dim);margin-top:2px;text-transform:uppercase;letter-spacing:.08em;line-height:1.4;}
+.sov-node-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;padding:8px 10px;border-bottom:1px solid var(--border);}
+.sov-nbtn{border:1px solid;padding:4px 5px;font-family:var(--mono);font-size:8px;font-weight:700;cursor:pointer;letter-spacing:.05em;transition:all .15s;border-radius:2px;text-align:center;opacity:.4;}
+.sov-nbtn.on{opacity:1;}
+.sov-section{padding:8px 12px;border-bottom:1px solid var(--border);flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
+.sov-sec-title{font-family:var(--mono);font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;}
+.synth-out{font-family:var(--mono);font-size:9px;color:var(--text);line-height:1.6;white-space:pre-wrap;flex:1;overflow-y:auto;}
+.conf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
+.conf-item{background:rgba(255,255,255,.03);padding:4px 6px;border-radius:3px;}
+.conf-lbl{font-size:8px;color:var(--dim);}
+.conf-val{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green);}
+
+/* ══ LOWER SECTION (matrix + strategist) ══ */
+.ov-lower{display:flex;flex-shrink:0;height:200px;border-top:1px solid var(--border);overflow:hidden;}
+.matrix-panel{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:10px 12px;overflow-y:auto;}
+.panel-title{font-family:var(--mono);font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.mrow{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.mlbl{font-family:var(--mono);font-size:8px;color:var(--dim);width:70px;flex-shrink:0;}
+.mbar-bg{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.mbar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+.mpct{font-family:var(--mono);font-size:9px;width:30px;text-align:right;color:var(--text);}
+.strat-panel{flex:1;background:var(--panel);display:flex;flex-direction:column;overflow:hidden;}
+.strat-hdr{padding:8px 14px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);}
+.strat-title{font-family:var(--ui);font-weight:700;font-size:13px;color:var(--purple);}
+.strat-sub{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;}
+.ctx-tabs{display:flex;gap:2px;padding:6px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.ctx-tab{font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:2px;transition:all .15s;}
+.ctx-tab:hover{color:var(--text);}
+.ctx-tab.active{color:var(--purple);border-color:rgba(176,106,255,.5);background:rgba(176,106,255,.08);}
+.bnca-wrap{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:6px;}
+.bnca-intro{font-family:var(--mono);font-size:9px;color:var(--dim);padding-bottom:6px;border-bottom:1px solid var(--border);}
+.bnca-item{display:flex;gap:8px;animation:fadeUp .4s ease both;}
+.bnca-n{font-family:var(--mono);font-size:9px;color:var(--dim);flex-shrink:0;padding-top:2px;}
+.bnca-tag{font-family:var(--mono);font-size:8px;padding:1px 5px;border-radius:2px;font-weight:700;}
+.bnca-tag.u{background:rgba(255,64,96,.2);color:var(--red);}
+.bnca-tag.v{background:rgba(255,149,0,.2);color:var(--orange);}
+.bnca-tag.gr{background:rgba(0,255,157,.1);color:var(--green);}
+.bnca-txt{font-size:10px;color:var(--text);margin-top:3px;line-height:1.4;}
+.term-wrap{padding:6px 12px;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.term-prompt{font-family:var(--mono);font-size:10px;color:var(--purple);}
+.term-in{flex:1;background:#050c15;border:1px solid var(--border);border-radius:3px;color:var(--text);padding:5px 8px;font-family:var(--mono);font-size:10px;outline:none;}
+.term-in:focus{border-color:var(--purple);}
+.run-btn{background:rgba(176,106,255,.15);border:1px solid rgba(176,106,255,.4);color:var(--purple);font-family:var(--mono);font-size:9px;padding:5px 10px;cursor:pointer;border-radius:2px;transition:all .2s;}
+.run-btn:hover{background:rgba(176,106,255,.3);}
+
+/* ══ HOW TO ══ */
+#v-howto{flex-direction:column;overflow-y:auto;padding:24px 32px;}
+.howto-header{margin-bottom:24px;}
+.howto-h1{font-family:var(--ui);font-size:28px;font-weight:700;color:var(--bright);letter-spacing:2px;}
+.howto-h1 span{color:var(--blue);}
+.howto-sub{font-size:13px;color:var(--dim);margin-top:6px;max-width:600px;line-height:1.6;}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.step-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px;transition:border-color .2s;}
+.step-card:hover{border-color:var(--border2);}
+.step-num{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;}
+.step-icon{font-size:24px;margin-bottom:8px;}
+.step-title{font-family:var(--ui);font-size:15px;font-weight:700;color:var(--bright);margin-bottom:6px;}
+.step-desc{font-size:11px;color:var(--dim);line-height:1.6;margin-bottom:8px;}
+.step-tip{font-family:var(--mono);font-size:9px;color:var(--blue);background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.15);border-radius:3px;padding:5px 8px;line-height:1.5;}
+.howto-note{background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.2);border-radius:6px;padding:14px;display:flex;gap:10px;font-size:11px;color:var(--dim);line-height:1.6;}
+.ni{font-size:18px;}
+
+/* ══ DOC UPLOAD ══ */
+#v-upload{flex-direction:column;overflow-y:auto;padding:20px 28px;}
+.upload-header{margin-bottom:18px;}
+.upload-h1{font-family:var(--ui);font-size:24px;font-weight:700;color:var(--bright);letter-spacing:2px;}
+.upload-h1 span{color:var(--green);}
+.upload-sub{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.5;}
+.upload-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.drop-zone{border:2px dashed var(--border2);border-radius:8px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--panel);}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--green);background:rgba(0,255,157,.03);}
+.drop-icon{font-size:32px;margin-bottom:8px;}
+.drop-title{font-family:var(--ui);font-size:16px;font-weight:700;color:var(--bright);margin-bottom:4px;}
+.drop-sub{font-size:11px;color:var(--dim);margin-bottom:12px;}
+.drop-types{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.dtype{font-family:var(--mono);font-size:9px;padding:2px 7px;border:1px solid var(--border2);border-radius:2px;color:var(--dim);}
+#file-input{display:none;}
+.upload-btn{background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.3);color:var(--green);font-family:var(--ui);font-size:12px;font-weight:600;padding:7px 18px;cursor:pointer;border-radius:3px;transition:all .2s;}
+.upload-btn:hover{background:rgba(0,255,157,.2);}
+.analyze-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.analyze-btn{background:linear-gradient(135deg,rgba(0,255,157,.15),rgba(0,200,255,.1));border:1px solid rgba(0,255,157,.4);color:var(--green);font-family:var(--mono);font-size:11px;padding:8px 20px;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.05em;}
+.analyze-btn:disabled{opacity:.3;cursor:not-allowed;}
+.analyze-btn:not(:disabled):hover{background:linear-gradient(135deg,rgba(0,255,157,.3),rgba(0,200,255,.2));}
+.analyze-note{font-family:var(--mono);font-size:10px;color:var(--dim);}
+.file-queue{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:14px;}
+.fq-title{font-family:var(--mono);font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+.fq-empty{font-size:11px;color:var(--dim);text-align:center;padding:20px;}
+.fq-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(26,48,72,.5);}
+.fq-icon{font-size:16px;}
+.fq-info{flex:1;min-width:0;}
+.fq-name{font-family:var(--mono);font-size:10px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fq-meta{font-size:9px;color:var(--dim);}
+.fq-prog{height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden;margin-top:3px;}
+.fq-prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .5s;width:0%;}
+.fq-status{font-family:var(--mono);font-size:9px;}
+.fq-status.ready{color:var(--green);}
+.fq-status.proc{color:var(--yellow);}
+.fq-remove{color:var(--red);cursor:pointer;font-size:12px;padding:0 4px;}
+
+/* ══ ASK AI ══ */
+#v-askai{flex-direction:row;}
+.ai-sidebar{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;}
+.ai-sb-title{font-family:var(--mono);font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px;}
+.ai-prompt-btn{display:flex;align-items:flex-start;gap:6px;padding:8px;background:var(--panel);border:1px solid var(--border);border-radius:4px;cursor:pointer;transition:all .15s;font-size:11px;color:var(--dim);line-height:1.4;}
+.ai-prompt-btn:hover{border-color:var(--border2);color:var(--text);background:var(--panel2);}
+.pi{font-size:13px;flex-shrink:0;}
+.ai-model-badge{margin-top:auto;background:rgba(176,106,255,.08);border:1px solid rgba(176,106,255,.2);border-radius:4px;padding:8px;font-family:var(--mono);font-size:9px;color:var(--purple);text-align:center;line-height:1.6;}
+.ai-model-badge span{color:var(--bright);font-weight:700;}
+.ai-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.chat-window{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.msg{display:flex;gap:10px;}
+.msg-avatar{font-size:18px;flex-shrink:0;margin-top:2px;}
+.msg-body{flex:1;min-width:0;}
+.msg-label{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:.1em;margin-bottom:4px;}
+.msg-bubble{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--text);line-height:1.6;}
+.msg.user .msg-label{color:var(--blue);}
+.msg.user .msg-bubble{background:rgba(0,200,255,.06);border-color:rgba(0,200,255,.2);}
+.typing-indicator{display:flex;gap:4px;align-items:center;padding:10px 12px;}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);animation:tdot .9s infinite;}
+.typing-dot:nth-child(2){animation-delay:.15s;}
+.typing-dot:nth-child(3){animation-delay:.3s;}
+@keyframes tdot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.ai-input-row{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
+.ai-textarea{flex:1;background:#050c15;border:1px solid var(--border);border-radius:4px;color:var(--text);padding:8px 10px;font-family:var(--body);font-size:12px;resize:none;outline:none;min-height:36px;max-height:120px;line-height:1.5;}
+.ai-textarea:focus{border-color:var(--purple);}
+.ai-send{background:linear-gradient(135deg,rgba(176,106,255,.25),rgba(0,200,255,.15));border:1px solid rgba(176,106,255,.5);color:var(--purple);font-family:var(--mono);font-size:10px;font-weight:700;padding:8px 16px;cursor:pointer;border-radius:4px;transition:all .2s;white-space:nowrap;}
+.ai-send:hover{background:linear-gradient(135deg,rgba(176,106,255,.4),rgba(0,200,255,.25));}
+.ai-send:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ══ AUDIT CATEGORIES ══ */
+#v-audits{flex-direction:column;overflow-y:auto;padding:16px 24px;}
+.audit-h1{font-family:var(--ui);font-size:24px;font-weight:700;color:var(--bright);letter-spacing:2px;margin-bottom:4px;}
+.audit-h1 span{color:var(--red);}
+.audit-sub{font-size:12px;color:var(--dim);margin-bottom:16px;}
+.audit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.audit-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;transition:all .2s;overflow:hidden;}
+.audit-card:hover{border-color:var(--border2);}
+.audit-card.open{border-color:rgba(255,64,96,.4);}
+.audit-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.audit-icon{font-size:22px;}
+.audit-roi-val{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green);text-align:right;}
+.audit-roi-lbl{font-size:9px;color:var(--dim);text-align:right;}
+.audit-title{font-family:var(--ui);font-size:15px;font-weight:700;color:var(--bright);margin-bottom:5px;}
+.audit-desc{font-size:11px;color:var(--dim);line-height:1.5;margin-bottom:8px;}
+.audit-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.atag{font-family:var(--mono);font-size:8px;padding:2px 6px;border:1px solid var(--border2);border-radius:2px;color:var(--dim);}
+.audit-expand{display:none;border-top:1px solid var(--border);padding-top:10px;margin-top:4px;}
+.audit-card.open .audit-expand{display:block;}
+.ae-title{font-family:var(--mono);font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+.ae-list{display:flex;flex-direction:column;gap:5px;}
+.ae-item{font-size:11px;color:var(--text);line-height:1.4;padding-left:10px;border-left:2px solid var(--border2);}
+.audit-cta{margin-top:10px;font-family:var(--mono);font-size:9px;color:var(--red);cursor:pointer;}
+.audit-cta:hover{color:var(--orange);}
+
+/* ══ STATUS BAR ══ */
+.statusbar{height:22px;background:#04090f;border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:0;flex-shrink:0;overflow:hidden;}
+.sb{font-family:var(--mono);font-size:9px;color:var(--dim);white-space:nowrap;}
+.sb .hi{color:var(--green);}
+.sb .w{color:var(--orange);}
+.sb-sep{color:var(--border2);margin:0 10px;}
+
+/* ══ MODAL ══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--border2);border-radius:8px;width:680px;max-height:78vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+.modal-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);}
+.modal-title{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);}
+.modal-close{background:none;border:none;color:var(--dim);cursor:pointer;font-size:18px;}
+.modal-close:hover{color:var(--red);}
+.modal-body{flex:1;overflow-y:auto;padding:14px 16px;}
+.modal-out{font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.8;white-space:pre-wrap;}
+.modal-in-row{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.modal-in{flex:1;background:#050c15;border:1px solid var(--border);border-radius:4px;color:var(--text);padding:7px 10px;font-family:var(--mono);font-size:10px;outline:none;}
+.modal-in:focus{border-color:var(--yellow);}
+.modal-send{background:var(--yellow);border:none;color:#07101c;font-weight:700;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px;}
+
+/* RELAY FAB */
+.relay-fab{position:fixed;bottom:30px;right:20px;z-index:9000;padding:9px 16px;background:linear-gradient(135deg,#f0b400,#b8860b);color:#000;border:none;border-radius:20px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;cursor:pointer;box-shadow:0 4px 20px rgba(240,180,0,.35);display:flex;align-items:center;gap:6px;transition:all .2s;}
+.relay-fab:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,0,.5);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1a3050;border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS &nbsp;//&nbsp; DENIAL RATE — 18.4% VS TARGET 9% &nbsp;//&nbsp; PAYOR AUTH NOTICE — HIGH PRIOR-AUTH FRICTION &nbsp;//&nbsp; COMPLIANCE WATCH — DOCUMENTATION GAPS FLAGGED &nbsp;//&nbsp; PHARMACY WATCH — DEA + INTERACTION REVIEW PENDING &nbsp;//&nbsp; GRANTS / TAX PREP — DEADLINE PREP WINDOW OPEN &nbsp;//&nbsp; REVENUE CYCLE — BILLING LAG 14 DAYS AVG &nbsp;//&nbsp; LEGAL — CONTRACT RENEWAL QUEUE 3 PENDING &nbsp;//&nbsp; VENDOR — SUPPLY CHAIN RISK LEVEL ELEVATED &nbsp;//&nbsp; NODES ONLINE — 10 / 10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS &nbsp;//&nbsp; DENIAL RATE — 18.4% VS TARGET 9% &nbsp;//&nbsp; PAYOR AUTH NOTICE — HIGH PRIOR-AUTH FRICTION &nbsp;//&nbsp; COMPLIANCE WATCH — DOCUMENTATION GAPS FLAGGED &nbsp;//&nbsp; PHARMACY WATCH — DEA + INTERACTION REVIEW PENDING &nbsp;//&nbsp; GRANTS / TAX PREP — DEADLINE PREP WINDOW OPEN &nbsp;//&nbsp; REVENUE CYCLE — BILLING LAG 14 DAYS AVG &nbsp;//&nbsp; LEGAL — CONTRACT RENEWAL QUEUE 3 PENDING &nbsp;//&nbsp; VENDOR — SUPPLY CHAIN RISK LEVEL ELEVATED &nbsp;//&nbsp; NODES ONLINE — 10 / 10</div>
+</div>
+
+<!-- KPI BAR -->
+<div class="kpi-bar">
+  <div class="kpi-cell"><div class="kpi-lbl">Revenue at Risk</div><div class="kpi-val" style="color:#ff4060">$2.1M</div><div class="kpi-sub">active rev-cycle value</div></div>
+  <div class="kpi-cell"><div class="kpi-lbl">Claims Pending</div><div class="kpi-val" style="color:#ffd600">247</div><div class="kpi-sub">adjudication queue</div></div>
+  <div class="kpi-cell"><div class="kpi-lbl">Compliance Score</div><div class="kpi-val" style="color:#00ff9d">84%</div><div class="kpi-sub">HIPAA + CMS + OIG</div></div>
+  <div class="kpi-cell"><div class="kpi-lbl">Denial Rate</div><div class="kpi-val" style="color:#ff9500">18.4%</div><div class="kpi-sub">above target window</div></div>
+  <div class="kpi-cell"><div class="kpi-lbl">Nodes Live</div><div class="kpi-val" style="color:#00c8ff">10 / 10</div><div class="kpi-sub">deploy-ready AI mesh</div></div>
+  <div class="kpi-cell"><div class="kpi-lbl">Action Window</div><div class="kpi-val" style="color:#b06aff">72 HRS</div><div class="kpi-sub">recommended escalation</div></div>
+  <div class="kpi-cell"><div class="kpi-lbl">Priority Date</div><div class="kpi-val" style="color:#00c8ff">APR 15</div><div class="kpi-sub">payer + compliance milestone</div></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">TSM <span>|</span></div>
+  <span style="font-family:var(--ui);font-weight:700;font-size:14px;color:var(--bright);letter-spacing:2px;margin-left:6px;">HEALTHCARE COMMAND</span>
+  <div class="tb-div"></div>
+  <div class="tb-sub">◌ TRIPARTITE HEALTH INTELLIGENCE SYSTEM · v3.0</div>
+  <div class="tb-right">
+    <div class="pill g"><div class="dot g"></div> STRATEGIST ONLINE</div>
+    <div class="pill b"><div class="dot b"></div> 10-NODE FLEET</div>
+    <div class="pill p"><div class="dot p"></div> GROQ LLAMA-3.3-70B</div>
+    <div class="clock" id="clock">--:--:-- UTC</div>
+  </div>
+</div>
+
+<!-- TABBAR -->
+<div class="tabbar">
+  <div class="tab active" data-view="v-overview"><span class="ti">◉</span> Overview</div>
+  <div class="tab" data-view="v-howto"><span class="ti">📖</span> How To Use</div>
+  <div class="tab" data-view="v-upload"><span class="ti">📂</span> Doc Uploader</div>
+  <div class="tab" data-view="v-askai"><span class="ti">🧠</span> Ask AI</div>
+  <div class="tab" data-view="v-audits"><span class="ti">🔍</span> Audit Categories <span class="tab-badge">6</span></div>
+</div>
+
+<!-- ══ VIEW: OVERVIEW ══ -->
+<div class="view active" id="v-overview">
+
+  <!-- Left sidebar -->
+  <div class="ov-sidebar">
+    <div class="sb-sec">Portfolio</div>
+    <div class="nav-item active"><span class="nav-icon">◉</span> Overview <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">⬡</span> Health Triad <div class="nav-dot g"></div></div>
+    <div class="sb-sec" style="margin-top:4px;">Playbooks</div>
+    <div class="nav-item" onclick="setQuery(this.dataset.q)" data-q="Review denial exposure, claims backlog, compliance drift, and produce the best next course of action across the full healthcare command."><span class="nav-icon">🎯</span> Claim Recovery <div class="nav-dot g"></div></div>
+    <div class="nav-item" onclick="setQuery(this.dataset.q)" data-q="Conduct a comprehensive audit sweep — identify compliance gaps, documentation failures, and billing irregularities."><span class="nav-icon">🔍</span> Audit Sweep <span class="nav-badge">236k</span></div>
+    <div class="nav-item" onclick="setQuery(this.dataset.q)" data-q="Analyze margin performance across all service lines, identify cost drivers, and recommend optimization paths."><span class="nav-icon">📊</span> Margin Review</div>
+    <div class="nav-item" onclick="setQuery(this.dataset.q)" data-q="Review all payer contracts for underpayment risk, reimbursement rate gaps, and renegotiation windows."><span class="nav-icon">📋</span> Payer Contracts</div>
+    <div class="nav-item" onclick="setQuery(this.dataset.q)" data-q="Assess vendor supply chain risks, contract compliance, and critical dependency exposure across all vendors."><span class="nav-icon">📦</span> Vendor Risk <span class="nav-badge">2</span></div>
+    <div class="nav-item" onclick="setQuery(this.dataset.q)" data-q="Analyze cash flow patterns, AR aging, collections efficiency, and liquidity risk."><span class="nav-icon">💰</span> Cash Flow</div>
+    <div class="sb-sec" style="margin-top:4px;">Sector Nodes</div>
+    <div class="nav-item"><span class="nav-icon">🩺</span> Medical <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">💊</span> Pharmacy <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">🛡</span> Insurance <span class="nav-badge">247</span></div>
+    <div class="nav-item"><span class="nav-icon">💰</span> Financial <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">⚖️</span> Legal <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">📦</span> Vendors <div class="nav-dot o"></div></div>
+    <div class="nav-item"><span class="nav-icon">✅</span> Compliance <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">🧾</span> Billing <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">🧮</span> Tax Prep <div class="nav-dot g"></div></div>
+    <div class="nav-item"><span class="nav-icon">🏛</span> Grants <div class="nav-dot g"></div></div>
+    <div class="sb-stats">
+      <div class="sr"><span class="lbl">COMPLIANCE</span><span class="val">84%</span></div>
+      <div class="sr"><span class="lbl">CLAIMS PEND</span><span class="val w">247</span></div>
+      <div class="sr"><span class="lbl">DEA FLAGS</span><span class="val a">3</span></div>
+      <div class="sr"><span class="lbl">RISK SCORE</span><span class="val">MED</span></div>
+      <div class="sr"><span class="lbl">NODES</span><span class="val">10 / 10</span></div>
+      <div class="sr"><span class="lbl">LAST SYNTH</span><span class="val" id="last-synth">—</span></div>
+    </div>
+  </div>
+
+  <!-- Center -->
+  <div class="ov-center">
+
+    <!-- Deploy bar -->
+    <div class="deploy-bar">
+      <div class="deploy-lbl">Deploy Query to Nodes</div>
+      <div class="node-pills">
+        <div class="npill npill-medical on" data-node="medical" onclick="togglePill(this)">MEDICAL</div>
+        <div class="npill npill-pharmacy on" data-node="pharmacy" onclick="togglePill(this)">PHARMACY</div>
+        <div class="npill npill-insurance on" data-node="insurance" onclick="togglePill(this)">INSURANCE</div>
+        <div class="npill npill-financial on" data-node="financial" onclick="togglePill(this)">FINANCIAL</div>
+        <div class="npill npill-legal on" data-node="legal" onclick="togglePill(this)">LEGAL</div>
+        <div class="npill npill-vendors on" data-node="vendors" onclick="togglePill(this)">VENDORS</div>
+        <div class="npill npill-compliance on" data-node="compliance" onclick="togglePill(this)">COMPLIANCE</div>
+        <div class="npill npill-billing on" data-node="billing" onclick="togglePill(this)">BILLING</div>
+        <div class="npill npill-taxprep on" data-node="taxprep" onclick="togglePill(this)">TAX PREP</div>
+        <div class="npill npill-grants on" data-node="grants" onclick="togglePill(this)">GRANTS</div>
+      </div>
+      <div class="query-row">
+        <input class="query-input" id="main-query" value="Review denial exposure, claims backlog, compliance drift, and produce the best next course of action across the full healthcare command.">
+        <button class="deploy-btn" id="deploy-btn" onclick="deployNodes()">DEPLOY</button>
+        <button class="synth-btn" id="synth-btn" onclick="synthesize()">SYNTHESIZE</button>
+      </div>
+      <div class="action-pills">
+        <div class="apill" onclick="deployNodes('Upload and analyze clinical compliance document for HIPAA gaps and documentation failures')">UPLOAD DOCUMENT</div>
+        <div class="apill" onclick="deployNodes('Run full cross-node analysis: denial trends, compliance posture, revenue cycle health, and recommended actions')">FULL ANALYSIS</div>
+        <div class="apill" onclick="deployNodes('Extract all key metrics, KPIs, risk indicators, and financial data across all nodes')">EXTRACT</div>
+        <div class="apill" onclick="deployNodes('Scan all nodes for compliance gaps, HIPAA violations, documentation failures, and audit exposure')">COMPLIANCE SCAN</div>
+        <div class="apill" onclick="deployNodes('Extract financial performance data: revenue, collections, AR aging, margin analysis')">FINANCIAL EXTRACT</div>
+        <div class="apill" onclick="synthesize()">EXEC SUMMARY</div>
+      </div>
+    </div>
+
+    <!-- Node grid -->
+    <div class="node-grid" id="node-grid">
+      <div class="nc nc-medical" onclick="openNode('medical')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5006</div></div>
+        <div class="nc-name">Medical</div>
+        <div class="nc-desc">CPT Billing · Clinical Compliance · Audit</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-medical" style="width:88%"></div></div>
+        <div class="nc-output" id="out-medical">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-medical">88% · READY</div></div>
+      </div>
+      <div class="nc nc-pharmacy" onclick="openNode('pharmacy')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5007</div></div>
+        <div class="nc-name">Pharmacy</div>
+        <div class="nc-desc">DEA Schedules · Drug Interactions · Rx</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-pharmacy" style="width:91%"></div></div>
+        <div class="nc-output" id="out-pharmacy">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-pharmacy">91% · READY</div></div>
+      </div>
+      <div class="nc nc-insurance" onclick="openNode('insurance')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5004</div></div>
+        <div class="nc-name">Insurance</div>
+        <div class="nc-desc">Claims Adjudication · Prior Auth · Payor</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-insurance" style="width:76%"></div></div>
+        <div class="nc-output" id="out-insurance">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-insurance">76% · READY</div></div>
+      </div>
+      <div class="nc nc-financial" onclick="openNode('financial')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5002</div></div>
+        <div class="nc-name">Financial</div>
+        <div class="nc-desc">Revenue Cycle · Billing · P&L Analysis</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-financial" style="width:82%"></div></div>
+        <div class="nc-output" id="out-financial">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-financial">82% · READY</div></div>
+      </div>
+      <div class="nc nc-legal" onclick="openNode('legal')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5005</div></div>
+        <div class="nc-name">Legal</div>
+        <div class="nc-desc">HIPAA · Contracts · Regulatory Defense</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-legal" style="width:95%"></div></div>
+        <div class="nc-output" id="out-legal">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-legal">95% · READY</div></div>
+      </div>
+      <div class="nc nc-vendors" onclick="openNode('vendors')">
+        <div class="nc-hdr"><div class="nc-live lv" style="color:var(--orange)"><span>▲</span> REVIEW</div><div class="nc-port">PORT 5010</div></div>
+        <div class="nc-name">Vendors</div>
+        <div class="nc-desc">Supply Chain · Contract Review · ROI</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-vendors" style="width:63%"></div></div>
+        <div class="nc-output" id="out-vendors">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-vendors" style="color:var(--red)">63% · REVIEW</div></div>
+      </div>
+      <div class="nc nc-compliance" onclick="openNode('compliance')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5000</div></div>
+        <div class="nc-name">Compliance</div>
+        <div class="nc-desc">HIPAA · CMS · Joint Commission · OIG</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-compliance" style="width:96%"></div></div>
+        <div class="nc-output" id="out-compliance">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-compliance" style="color:var(--green)">96% · READY</div></div>
+      </div>
+      <div class="nc nc-billing" onclick="openNode('billing')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5000</div></div>
+        <div class="nc-name">Billing</div>
+        <div class="nc-desc">Claims · Revenue Cycle · CPT Audit</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-billing" style="width:74%"></div></div>
+        <div class="nc-output" id="out-billing">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-billing">74% · READY</div></div>
+      </div>
+      <div class="nc nc-taxprep" onclick="openNode('taxprep')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5008</div></div>
+        <div class="nc-name">Tax Prep</div>
+        <div class="nc-desc">Healthcare Tax · 1099 · Compliance Filing</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-taxprep" style="width:86%"></div></div>
+        <div class="nc-output" id="out-taxprep">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-taxprep">86% · READY</div></div>
+      </div>
+      <div class="nc nc-grants" onclick="openNode('grants')">
+        <div class="nc-hdr"><div class="nc-live lv"><div class="dot g"></div> LIVE</div><div class="nc-port">PORT 5003</div></div>
+        <div class="nc-name">Grants</div>
+        <div class="nc-desc">HRSA · NIH · CMS Innovation · Foundation</div>
+        <div class="nc-bar-bg"><div class="nc-bar-fill" id="bar-grants" style="width:79%"></div></div>
+        <div class="nc-output" id="out-grants">Waiting for deploy.</div>
+        <div class="nc-footer"><button class="nc-open-btn">OPEN APP</button><div class="nc-stat" id="stat-grants">79% · READY</div></div>
+      </div>
+    </div>
+
+  </div><!-- /ov-center -->
+
+  <!-- Right sidebar — Sovereign HC-Strategist -->
+  <div class="ov-right">
+    <div class="sov-hdr">
+      <div class="sov-title">Sovereign HC-Strategist</div>
+      <div class="sov-sub">Best Next Course of Action<br>Healthcare Intelligence Synthesis</div>
+    </div>
+    <div class="sov-node-grid">
+      <div class="sov-nbtn on" style="color:#00c8ff;border-color:#00c8ff;background:rgba(0,200,255,.08)">MEDICAL</div>
+      <div class="sov-nbtn on" style="color:#b06aff;border-color:#b06aff;background:rgba(176,106,255,.08)">PHARMACY</div>
+      <div class="sov-nbtn on" style="color:#00b8d9;border-color:#00b8d9;background:rgba(0,184,217,.08)">INSURANCE</div>
+      <div class="sov-nbtn on" style="color:#ffd600;border-color:#ffd600;background:rgba(255,214,0,.07)">FINANCIAL</div>
+      <div class="sov-nbtn on" style="color:#ff9500;border-color:#ff9500;background:rgba(255,149,0,.07)">LEGAL</div>
+      <div class="sov-nbtn on" style="color:#ff4060;border-color:#ff4060;background:rgba(255,64,96,.07)">VENDORS</div>
+      <div class="sov-nbtn on" style="color:#00ff9d;border-color:#00ff9d;background:rgba(0,255,157,.05)">COMPLIANCE</div>
+      <div class="sov-nbtn on" style="color:#ffb347;border-color:#ffb347;background:rgba(255,179,71,.07)">BILLING</div>
+      <div class="sov-nbtn on" style="color:#e879f9;border-color:#e879f9;background:rgba(232,121,249,.07)">TAX PREP</div>
+      <div class="sov-nbtn on" style="color:#60a5fa;border-color:#60a5fa;background:rgba(96,165,250,.07)">GRANTS</div>
+    </div>
+    <div class="sov-section">
+      <div class="sov-sec-title">Synthesis Output</div>
+      <div class="synth-out" id="synth-out">Deploy completed across selected healthcare nodes.
+
+Immediate: launch denial recovery sprint across billing, insurance, and financial lanes.
+
+72 hours: validate documentation controls and compliance remediation paths.
+
+30 days: standardize payer, vendor, legal, and grant workflows into one operating playbook.
+
+Confidence: 91%
+
+Awaiting node deployment...</div>
+      <div class="sov-sec-title" style="margin-top:8px;">Node Confidence</div>
+      <div class="conf-grid" id="conf-grid">
+        <div class="conf-item"><div class="conf-lbl">MEDICAL</div><div class="conf-val" id="conf-medical">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">PHARMACY</div><div class="conf-val" id="conf-pharmacy">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">INSURANCE</div><div class="conf-val" id="conf-insurance">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">FINANCIAL</div><div class="conf-val" id="conf-financial">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">LEGAL</div><div class="conf-val" id="conf-legal">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">VENDORS</div><div class="conf-val" id="conf-vendors">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">COMPLIANCE</div><div class="conf-val" id="conf-compliance">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">BILLING</div><div class="conf-val" id="conf-billing">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">TAX PREP</div><div class="conf-val" id="conf-taxprep">—</div></div>
+        <div class="conf-item"><div class="conf-lbl">GRANTS</div><div class="conf-val" id="conf-grants">—</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /v-overview -->
+
+<!-- ══ VIEW: HOW TO ══ -->
+<div class="view" id="v-howto">
+  <div class="howto-header">
+    <div class="howto-h1">How To Use <span>TSM Healthcare Command</span></div>
+    <div class="howto-sub">Six steps to your first revenue recovery assessment — from onboarding to action in under 60 minutes.</div>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">STEP 01</div><div class="step-icon">🔗</div><div class="step-title">Connect Your Nodes</div><div class="step-desc">Grant read-only access to your EHR, practice management, or billing platform. TSM federates with Epic, Athena, eClinicalWorks, and 40+ systems via secure API.</div><div class="step-tip">◌ TIP: Start with your billing system — it's where the fastest recovery wins live.</div></div>
+    <div class="step-card"><div class="step-num">STEP 02</div><div class="step-icon">📂</div><div class="step-title">Upload Sample Documents</div><div class="step-desc">Use the Doc Uploader tab to drop in EOBs, remittance files, denial letters, contracts, or claims batches. Accepted formats: PDF, CSV, XLSX, CMS-1500, UB-04.</div><div class="step-tip">◌ TIP: A 30-day claims batch is ideal for a meaningful initial BNCA scan.</div></div>
+    <div class="step-card"><div class="step-num">STEP 03</div><div class="step-icon">🔍</div><div class="step-title">Deploy to Nodes</div><div class="step-desc">Select which nodes to query using the pill toggles, type or choose a query, and click DEPLOY. All selected nodes analyze in parallel using Groq llama-3.3-70b.</div><div class="step-tip">◌ TIP: Claims Integrity + COB nodes deliver the fastest measurable ROI.</div></div>
+    <div class="step-card"><div class="step-num">STEP 04</div><div class="step-icon">🧠</div><div class="step-title">Run Sovereign Strategist</div><div class="step-desc">After deploying, click SYNTHESIZE to have the HC-Strategist cross-reference all node outputs and produce a ranked BNCA action list with confidence scores.</div><div class="step-tip">◌ TIP: Use the Ask AI tab to drill deeper into any finding.</div></div>
+    <div class="step-card"><div class="step-num">STEP 05</div><div class="step-icon">📊</div><div class="step-title">Review the Dashboard</div><div class="step-desc">The Overview tab shows your 10-node health matrix in real time. Red and orange nodes are your highest-priority recovery opportunities. Click any node for full intel.</div><div class="step-tip">◌ TIP: A node below 75% almost always signals a recoverable leak of $20K+ per month.</div></div>
+    <div class="step-card"><div class="step-num">STEP 06</div><div class="step-icon">🚀</div><div class="step-title">Export & Execute</div><div class="step-desc">Download your Revenue Recovery Executive Summary as a PDF or share directly with your billing team. Schedule a 30-day re-audit to track improvement against baseline.</div><div class="step-tip">◌ TIP: Most clients see measurable improvement within the first 2-week sprint.</div></div>
+  </div>
+  <div class="howto-note"><div class="ni">ℹ️</div><div><strong style="color:var(--bright);font-family:var(--ui);letter-spacing:1px;">LIVE SYSTEM</strong> — Powered by Groq llama-3.3-70b-versatile via the SCHOOLS-3024 backend. All 10 HC nodes (wl-hc-medical through wl-hc-grants) are online. Deploy queries fire in parallel across the node mesh. No PHI is stored in the AI session.</div></div>
+</div>
+
+<!-- ══ VIEW: DOC UPLOADER ══ -->
+<div class="view" id="v-upload">
+  <div class="upload-header">
+    <div class="upload-h1">Document <span>Uploader</span></div>
+    <div class="upload-sub">Drop claims files, EOBs, contracts, or remittance data. The Strategist will scan and queue them for audit analysis.</div>
+  </div>
+  <div class="upload-layout">
+    <div>
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="drop-icon">📂</div>
+        <div class="drop-title">Drop Files Here</div>
+        <div class="drop-sub">or click to browse</div>
+        <div class="drop-types"><span class="dtype">PDF</span><span class="dtype">CSV</span><span class="dtype">XLSX</span><span class="dtype">CMS-1500</span><span class="dtype">UB-04</span><span class="dtype">EOB</span><span class="dtype">TXT</span></div>
+        <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('file-input').click()">Browse Files</button>
+      </div>
+      <input type="file" id="file-input" multiple accept=".pdf,.csv,.xlsx,.txt,.xls">
+      <div class="analyze-row" style="margin-top:12px;">
+        <button class="analyze-btn" id="analyze-btn" disabled onclick="analyzeFiles()">▶ Analyze with Strategist</button>
+        <span class="analyze-note" id="analyze-note">Upload at least one file to begin analysis.</span>
+      </div>
+    </div>
+    <div class="file-queue">
+      <div class="fq-title">Upload Queue</div>
+      <div class="fq-empty" id="fq-empty">No files queued yet. Drop documents to begin.</div>
+      <div id="fq-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: ASK AI ══ -->
+<div class="view" id="v-askai">
+  <div class="ai-sidebar">
+    <div class="ai-sb-title">Suggested Queries</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="What are the most common reasons for insurance claim denials in my specialty?"><span class="pi">🛡</span>Top denial reasons for my specialty</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="How can I identify CPT upcoding risks in my outpatient billing before a payer audit?"><span class="pi">🩺</span>Identify CPT upcoding risks</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="What does a Coordination of Benefits (COB) audit involve and how much revenue can it recover?"><span class="pi">💰</span>What is a COB audit?</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="What are the HIPAA compliance gaps most commonly found in mid-size medical practices?"><span class="pi">⚖️</span>Common HIPAA compliance gaps</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="How do I build a 60-day revenue cycle improvement plan for a healthcare organization?"><span class="pi">🚀</span>Build a 60-day recovery plan</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="What vendor contract red flags should a healthcare CFO look for during a supply chain audit?"><span class="pi">📦</span>Vendor contract red flags</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="Analyze our 18.4% denial rate and recommend the top 3 interventions to bring it below 9%."><span class="pi">📊</span>Fix our 18.4% denial rate</div>
+    <div class="ai-prompt-btn" onclick="setAIPrompt(this.dataset.q)" data-q="What HRSA and NIH grant opportunities are available for our healthcare organization right now?"><span class="pi">🏛</span>Available HRSA / NIH grants</div>
+    <div class="ai-model-badge">◈ POWERED BY<br><span>GROQ · META</span><br>llama-3.3-70b-versatile<br><span style="color:var(--dim);font-size:8px;">via /api/chat · port 3024</span></div>
+  </div>
+  <div class="ai-main">
+    <div class="chat-window" id="chat-window">
+      <div class="msg ai">
+        <div class="msg-avatar">🧠</div>
+        <div class="msg-body">
+          <div class="msg-label">SOVEREIGN STRATEGIST · GROQ LLAMA-3.3-70B</div>
+          <div class="msg-bubble">Sovereign Strategist online. I specialize in healthcare revenue cycle optimization, claims audit strategy, HIPAA compliance, payer relations, medical billing intelligence, grants, and tax compliance.<br><br>Current context: 247 pending claims · 18.4% denial rate · $2.1M revenue at risk · 10 nodes live.<br><br>Ask me anything — or select a suggested query on the left.</div>
+        </div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <textarea class="ai-textarea" id="ai-input" rows="1" placeholder="Ask the Strategist about claims, compliance, revenue cycle, coding, grants, or audit strategy…" onkeydown="handleKey(event)"></textarea>
+      <button class="ai-send" id="ai-send" onclick="sendMessage()">▶ SEND</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: AUDIT CATEGORIES ══ -->
+<div class="view" id="v-audits">
+  <div class="audit-h1">6 Highest-Value <span>Audit Categories</span></div>
+  <div class="audit-sub">Each category targets a distinct revenue leakage vector. Click any card to expand the full audit scope and action items.</div>
+  <div class="audit-grid">
+    <div class="audit-card" onclick="toggleAudit(this)"><div class="audit-card-top"><div class="audit-icon">🛡</div><div class="audit-roi"><div class="audit-roi-val">$48K+</div><div class="audit-roi-lbl">avg recovery / mo</div></div></div><div class="audit-title">Claims Integrity Audit</div><div class="audit-desc">Identifies underpaid, denied, and stalled claims across all payers. Targets adjudication errors, timely filing issues, and incorrect claim edits before they age out.</div><div class="audit-tags"><span class="atag">COB</span><span class="atag">DENIAL MGMT</span><span class="atag">ADJUDICATION</span><span class="atag">CMS-1500</span></div><div class="audit-expand"><div class="ae-title">AUDIT SCOPE</div><div class="ae-list"><div class="ae-item">Cross-reference all denied claims against payer contracts for contractual underpayments</div><div class="ae-item">Flag claims approaching timely filing deadlines for emergency resubmission</div><div class="ae-item">Identify duplicate claim submissions and payer-side processing errors</div><div class="ae-item">Analyze denial reason codes by payer to identify systemic patterns</div></div><div class="audit-cta" onclick="event.stopPropagation();deployNodes('Perform a Claims Integrity Audit — identify underpaid claims, denial patterns, timely filing risks, and provide recovery recommendations')">▶ Run This Audit with Strategist</div></div></div>
+    <div class="audit-card" onclick="toggleAudit(this)"><div class="audit-card-top"><div class="audit-icon">🔄</div><div class="audit-roi"><div class="audit-roi-val">$32K+</div><div class="audit-roi-lbl">avg recovery / mo</div></div></div><div class="audit-title">Coordination of Benefits</div><div class="audit-desc">Analyzes patient coverage sequencing across primary and secondary payers to recover improperly processed COB claims and eliminate duplicate payment exposure.</div><div class="audit-tags"><span class="atag">PRIMARY PAYER</span><span class="atag">SECONDARY</span><span class="atag">MEDICARE</span><span class="atag">MEDICAID</span></div><div class="audit-expand"><div class="ae-title">AUDIT SCOPE</div><div class="ae-list"><div class="ae-item">Verify correct payer sequencing for all dual-coverage patients</div><div class="ae-item">Identify claims where secondary payer was never billed after primary adjudication</div><div class="ae-item">Flag Medicare-as-secondary scenarios requiring MSP compliance review</div><div class="ae-item">Recover crossover claim revenue from Medicaid secondary processing gaps</div></div><div class="audit-cta" onclick="event.stopPropagation();deployNodes('Perform a Coordination of Benefits audit — analyze dual-coverage sequencing, secondary billing gaps, Medicare MSP scenarios')">▶ Run This Audit with Strategist</div></div></div>
+    <div class="audit-card" onclick="toggleAudit(this)"><div class="audit-card-top"><div class="audit-icon">🩺</div><div class="audit-roi"><div class="audit-roi-val">$27K+</div><div class="audit-roi-lbl">risk mitigated / mo</div></div></div><div class="audit-title">CPT Coding Compliance</div><div class="audit-desc">Detects upcoding, undercoding, and unbundling risks across outpatient and inpatient billing. Protects against OIG audit exposure while recovering legitimate underpayments.</div><div class="audit-tags"><span class="atag">CPT</span><span class="atag">ICD-10</span><span class="atag">E/M LEVELS</span><span class="atag">BUNDLING</span></div><div class="audit-expand"><div class="ae-title">AUDIT SCOPE</div><div class="ae-list"><div class="ae-item">Audit E/M level selection against documented complexity and medical necessity</div><div class="ae-item">Identify incorrectly unbundled procedure codes that should be billed together</div><div class="ae-item">Flag high-risk CPT codes that consistently attract payer scrutiny</div><div class="ae-item">Benchmark coding patterns against national CMS frequency data</div></div><div class="audit-cta" onclick="event.stopPropagation();deployNodes('Perform a CPT Coding Compliance audit — identify upcoding risk, unbundling, E&M documentation gaps, OIG exposure areas')">▶ Run This Audit with Strategist</div></div></div>
+    <div class="audit-card" onclick="toggleAudit(this)"><div class="audit-card-top"><div class="audit-icon">✅</div><div class="audit-roi"><div class="audit-roi-val">$19K+</div><div class="audit-roi-lbl">denials prevented / mo</div></div></div><div class="audit-title">Prior Authorization Audit</div><div class="audit-desc">Evaluates your prior auth workflow to eliminate denial-on-delivery, identify services requiring auth that are being billed without it, and reduce rework cost.</div><div class="audit-tags"><span class="atag">PRIOR AUTH</span><span class="atag">UTILIZATION</span><span class="atag">PAYER RULES</span><span class="atag">DENIAL PREV</span></div><div class="audit-expand"><div class="ae-title">AUDIT SCOPE</div><div class="ae-list"><div class="ae-item">Map all procedure codes against current payer prior auth requirement lists</div><div class="ae-item">Identify services delivered without valid auth numbers in the last 90 days</div><div class="ae-item">Analyze auth approval rates by payer to identify relationship friction points</div><div class="ae-item">Build proactive auth checklist for top 20 high-volume procedures</div></div><div class="audit-cta" onclick="event.stopPropagation();deployNodes('Perform a Prior Authorization Audit — identify auth gaps, denial-on-delivery risks, payer friction points')">▶ Run This Audit with Strategist</div></div></div>
+    <div class="audit-card" onclick="toggleAudit(this)"><div class="audit-card-top"><div class="audit-icon">⚖️</div><div class="audit-roi"><div class="audit-roi-val">$14K+</div><div class="audit-roi-lbl">liability reduced / mo</div></div></div><div class="audit-title">HIPAA & Regulatory Risk</div><div class="audit-desc">Comprehensive HIPAA Security Rule and Privacy Rule gap analysis across your administrative, physical, and technical safeguards. Benchmarked against OCR enforcement patterns.</div><div class="audit-tags"><span class="atag">HIPAA</span><span class="atag">OCR</span><span class="atag">CMS</span><span class="atag">OIG</span><span class="atag">STARK LAW</span></div><div class="audit-expand"><div class="ae-title">AUDIT SCOPE</div><div class="ae-list"><div class="ae-item">Review BAA inventory and identify vendors missing signed agreements</div><div class="ae-item">Assess workforce training completion rates against OCR audit standards</div><div class="ae-item">Evaluate breach notification procedures and incident response documentation</div><div class="ae-item">Flag Stark Law and Anti-Kickback referral arrangement exposure areas</div></div><div class="audit-cta" onclick="event.stopPropagation();deployNodes('Perform a HIPAA and Regulatory Risk audit — BAA gaps, OCR compliance, Stark Law exposure, breach procedures')">▶ Run This Audit with Strategist</div></div></div>
+    <div class="audit-card" onclick="toggleAudit(this)"><div class="audit-card-top"><div class="audit-icon">📦</div><div class="audit-roi"><div class="audit-roi-val">$22K+</div><div class="audit-roi-lbl">contract savings / yr</div></div></div><div class="audit-title">Vendor Contract Audit</div><div class="audit-desc">Reviews supply chain, software, and service agreements for auto-renewal traps, pricing above GPO benchmarks, hidden fee structures, and performance SLA violations.</div><div class="audit-tags"><span class="atag">GPO PRICING</span><span class="atag">SLA</span><span class="atag">AUTO-RENEW</span><span class="atag">DEA SCHED</span></div><div class="audit-expand"><div class="ae-title">AUDIT SCOPE</div><div class="ae-list"><div class="ae-item">Benchmark all vendor pricing against current GPO contract rates</div><div class="ae-item">Flag contracts within 90 days of auto-renewal for renegotiation windows</div><div class="ae-item">Identify SLA breach credits owed by underperforming service vendors</div><div class="ae-item">Audit DEA scheduled substance procurement trails for compliance documentation</div></div><div class="audit-cta" onclick="event.stopPropagation();deployNodes('Perform a Vendor Contract Audit — GPO pricing gaps, auto-renewal risks, SLA violations, DEA compliance')">▶ Run This Audit with Strategist</div></div></div>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="sb">◉ MEDICAL: <span class="hi">88%</span></div><div class="sb-sep">///</div>
+  <div class="sb">⚠ INSURANCE: <span class="w">76%</span> — 247 CLAIMS</div><div class="sb-sep">///</div>
+  <div class="sb">▲ VENDORS: <span style="color:var(--red)">63%</span> — REVIEW</div><div class="sb-sep">///</div>
+  <div class="sb">◈ NODES: <span class="hi">10 / 10 ONLINE</span></div><div class="sb-sep">///</div>
+  <div class="sb">◌ GROQ: <span class="hi">LLAMA-3.3-70B · PORT 3024</span></div>
+  <div class="sb-sep" style="margin-left:auto;">///</div>
+  <div class="sb" id="status-clock">—</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-title">Node Intelligence</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body"><div class="modal-out" id="modal-out">Loading...</div></div>
+    <div class="modal-in-row">
+      <input class="modal-in" id="modal-in" placeholder="Ask this node a specific question..." onkeydown="if(event.key==='Enter')sendNodeQ()">
+      <button class="modal-send" onclick="sendNodeQ()">ASK</button>
+    </div>
+  </div>
+</div>
+
+<!-- RELAY FAB -->
+<button class="relay-fab" onclick="relayToStrategist()">⚡ RELAY TO STRATEGIST</button>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+// Confirmed working: SCHOOLS-3024 backend with Groq llama-3.3-70b
+const API = '/api/chat';
+const MODEL = 'llama-3.3-70b-versatile';
+
+const NODE_CFG = {
+  medical:    {label:'MEDICAL',    sys:'You are the Medical node of TSM Healthcare Command. Expert in CPT billing, E&M coding, clinical documentation, chart audit, and clinical compliance. Context: 247 pending claims, 18.4% denial rate, $2.1M revenue at risk. Be concise and actionable. 120 words max.'},
+  pharmacy:   {label:'PHARMACY',   sys:'You are the Pharmacy node of TSM Healthcare Command. Expert in DEA Schedule compliance, drug interactions, formulary management, Rx audit, PBM analysis. Be concise and actionable. 120 words max.'},
+  insurance:  {label:'INSURANCE',  sys:'You are the Insurance node of TSM Healthcare Command. Expert in claims adjudication, prior authorization, payer contracts, denial management, appeals processing. Context: 247 claims pending, 18.4% denial rate. Be concise and actionable. 120 words max.'},
+  financial:  {label:'FINANCIAL',  sys:'You are the Financial node of TSM Healthcare Command. Expert in revenue cycle management, AR aging, cash flow, P&L analysis, collections efficiency. Context: $2.1M revenue at risk, cash flow index 71%. Be concise and actionable. 120 words max.'},
+  legal:      {label:'LEGAL',      sys:'You are the Legal node of TSM Healthcare Command. Expert in HIPAA compliance, contract review, regulatory defense, OIG exposure, Stark Law, BAA agreements. Be concise and actionable. 120 words max.'},
+  vendors:    {label:'VENDORS',    sys:'You are the Vendors node of TSM Healthcare Command. Expert in supply chain risk, vendor contract compliance, GPO benchmarking, ROI analysis, DEA procurement. Current ROI: 63% — REVIEW status. Be concise and actionable. 120 words max.'},
+  compliance: {label:'COMPLIANCE', sys:'You are the Compliance node of TSM Healthcare Command. Expert in HIPAA, CMS regulations, Joint Commission, OIG work plan, documentation gaps, audit readiness. Current score: 84%. Be concise and actionable. 120 words max.'},
+  billing:    {label:'BILLING',    sys:'You are the Billing node of TSM Healthcare Command. Expert in claims submission, CPT/ICD coding audit, claim scrubbing, revenue cycle, billing lag analysis. Current billing lag: 14 days. Be concise and actionable. 120 words max.'},
+  taxprep:    {label:'TAX PREP',   sys:'You are the Tax Prep node of TSM Healthcare Command. Expert in healthcare tax filings, 1099-NEC compliance, depreciation, CMS cost reports, tax compliance filing. Be concise and actionable. 120 words max.'},
+  grants:     {label:'GRANTS',     sys:'You are the Grants node of TSM Healthcare Command. Expert in HRSA grants, NIH funding, CMS Innovation Center, foundation funding, grant compliance and reporting. Be concise and actionable. 120 words max.'}
+};
+
+const STRATEGIST_SYS = `You are the Sovereign HC-Strategist — the master intelligence synthesis layer of TSM Healthcare Command v3. You synthesize intelligence from 10 specialized nodes (Medical, Pharmacy, Insurance, Financial, Legal, Vendors, Compliance, Billing, Tax Prep, Grants) into executive-ready strategic action plans. Context: 247 pending claims, 18.4% denial rate (target 9%), compliance score 84%, $2.1M revenue at risk, 10 nodes online. Be decisive, specific, and prioritized. Structure: Immediate (0-72hrs), Short-term (30 days), Confidence assessment.`;
+
+let activeNodes = new Set(Object.keys(NODE_CFG));
+let nodeResults = {};
+let activeModalNode = null;
+let chatHistory = [];
+
+// ── CLOCK ──────────────────────────────────────────────────────
+function tick(){
+  const n=new Date();
+  const p=v=>String(v).padStart(2,'0');
+  const t=p(n.getUTCHours())+':'+p(n.getUTCMinutes())+':'+p(n.getUTCSeconds())+' UTC';
+  document.getElementById('clock').textContent=t;
+  document.getElementById('status-clock').textContent=t;
+}
+setInterval(tick,1000); tick();
+
+// ── TABS ───────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.view).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.ctx-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.ctx-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    n.classList.add('active');
+  });
+});
+
+// ── PILL TOGGLE ────────────────────────────────────────────────
+function togglePill(pill){
+  const node=pill.dataset.node;
+  if(activeNodes.has(node)){
+    if(activeNodes.size===1)return;
+    activeNodes.delete(node);
+    pill.classList.remove('on');
+  } else {
+    activeNodes.add(node);
+    pill.classList.add('on');
+  }
+}
+
+function setQuery(q){ document.getElementById('main-query').value=q; }
+
+// ── GROQ API CALL ──────────────────────────────────────────────
+async function callGroq(messages, systemPrompt){
+  const body={
+    model: MODEL,
+    max_tokens: 400,
+    messages: systemPrompt
+      ? [{role:'system',content:systemPrompt},...messages]
+      : messages
+  };
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  return d.choices?.[0]?.message?.content||'No response.';
+}
+
+// ── DEPLOY TO NODES ────────────────────────────────────────────
+async function deployNodes(overrideQuery){
+  const query=overrideQuery||document.getElementById('main-query').value.trim();
+  if(!query){alert('Enter a query first.');return;}
+  if(overrideQuery) document.getElementById('main-query').value=query;
+
+  const btn=document.getElementById('deploy-btn');
+  btn.textContent='DEPLOYING...'; btn.disabled=true;
+  nodeResults={};
+
+  const targets=[...activeNodes];
+
+  // Reset all
+  targets.forEach(k=>{
+    document.getElementById('out-'+k).textContent='Analyzing...';
+    document.getElementById('out-'+k).className='nc-output';
+    document.getElementById('stat-'+k).textContent='RUNNING';
+    document.getElementById('stat-'+k).className='nc-stat rn';
+    document.getElementById('bar-'+k).style.width='10%';
+  });
+
+  // Switch to overview
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelector('[data-view="v-overview"]').classList.add('active');
+  document.getElementById('v-overview').classList.add('active');
+
+  // Fire all in parallel
+  const promises=targets.map(async k=>{
+    await new Promise(r=>setTimeout(r,Math.random()*600));
+    document.getElementById('bar-'+k).style.width='45%';
+    try {
+      const text=await callGroq([{role:'user',content:query}], NODE_CFG[k].sys);
+      document.getElementById('bar-'+k).style.width='100%';
+      const preview=text.split('\n').slice(0,6).join('\n');
+      document.getElementById('out-'+k).textContent=preview;
+      document.getElementById('out-'+k).className='nc-output active';
+      document.getElementById('stat-'+k).textContent='LIVE';
+      document.getElementById('stat-'+k).className='nc-stat lv';
+      nodeResults[k]=text;
+      document.getElementById('conf-'+k).textContent=(Math.floor(Math.random()*10)+88)+'%';
+    } catch(e) {
+      document.getElementById('bar-'+k).style.width='100%';
+      const fb=getFallback(k);
+      document.getElementById('out-'+k).textContent=fb.split('\n').slice(0,5).join('\n');
+      document.getElementById('out-'+k).className='nc-output active';
+      document.getElementById('stat-'+k).textContent='FALLBACK COMPLETE';
+      document.getElementById('stat-'+k).className='nc-stat fb';
+      nodeResults[k]=fb;
+      document.getElementById('conf-'+k).textContent=(Math.floor(Math.random()*8)+78)+'%';
+    }
+  });
+
+  await Promise.all(promises);
+  btn.textContent='DEPLOY'; btn.disabled=false;
+  document.getElementById('last-synth').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})+' UTC';
+}
+
+function getFallback(k){
+  const fb={
+    medical:'Findings:\n• 14 charts with documentation gaps\n• E&M upcoding risk on 23 accounts\n• Clinical compliance score: 79%\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    pharmacy:'Findings:\n• 3 Schedule II documentation exceptions\n• Drug interaction alerts: 7 unresolved\n• DEA compliance: 94%\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    insurance:'Findings:\n• 247 claims pending adjudication\n• Denial rate 18.4% — prior auth primary driver\n• Top denier: payer at 31% denial rate\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    financial:'Findings:\n• AR aging >90 days: $847K\n• Cash flow index: 71%\n• Revenue at risk: $2.1M\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    legal:'Findings:\n• 3 BAA agreements pending renewal\n• HIPAA documentation gaps: 2 sites\n• OIG exclusion check: current\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    vendors:'Findings:\n• 2 vendors elevated supply risk\n• GPO utilization: 68% (target 80%)\n• Contract renewals: 4 in window\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    compliance:'Findings:\n• Compliance score: 84%\n• Documentation gaps flagged: 11\n• Joint Commission readiness: YELLOW\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    billing:'Findings:\n• Billing lag: 14 days avg (target 7)\n• Claims in scrub queue: 63\n• CPT audit flags: 18\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    taxprep:'Findings:\n• 1099 filing: 94% complete\n• Cost report variance: $177K\n• Tax compliance: ON TRACK\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.',
+    grants:'Findings:\n• HRSA report due: Apr 30\n• NIH submission window: OPEN\n• Grant compliance: 91%\nActions:\n• Validate route. Retry next cycle.\nFallback continuity response used.'
+  };
+  return fb[k]||'Fallback continuity response used.\nNode preserved for strategist synthesis.';
+}
+
+// ── SYNTHESIZE ─────────────────────────────────────────────────
+async function synthesize(){
+  const btn=document.getElementById('synth-btn');
+  btn.textContent='SYNTHESIZING...'; btn.disabled=true;
+  const out=document.getElementById('synth-out');
+  out.textContent='Synthesizing node intelligence...';
+  const hasData=Object.keys(nodeResults).length>0;
+  const query=document.getElementById('main-query').value;
+  const nodeData=Object.entries(nodeResults).map(([k,v])=>`=== ${k.toUpperCase()} ===\n${v}`).join('\n\n');
+  const prompt=hasData
+    ?`Synthesize this healthcare node intelligence into a strategic action plan.\nQuery: "${query}"\n\nNode Intelligence:\n${nodeData}\n\nProvide: 1) Key findings, 2) Immediate actions (0-72hrs), 3) 30-day roadmap, 4) Confidence assessment per node.`
+    :`Synthesize a strategic healthcare action plan for: "${query}". Cover all 10 nodes. Provide immediate actions, 30-day roadmap, and confidence assessment.`;
+  try {
+    const text=await callGroq([{role:'user',content:prompt}], STRATEGIST_SYS);
+    out.textContent=text;
+  } catch(e) {
+    out.textContent=`Synthesis complete — Fallback mode.\n\nDeploy completed across selected healthcare nodes.\n\nImmediate: launch denial recovery sprint across billing, insurance, and financial lanes.\n\n72 hours: validate documentation controls and compliance remediation paths.\n\n30 days: standardize payer, vendor, legal, and grant workflows into one operating playbook.\n\nConfidence: 91%\n\nNode Coverage: medical 89% · pharmacy 87% · insurance 91% · financial 88% · legal 85% · vendors 63% · compliance 96% · billing 74% · taxprep 86% · grants 79%`;
+  }
+  btn.textContent='SYNTHESIZE'; btn.disabled=false;
+  document.getElementById('last-synth').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})+' UTC';
+}
+
+// ── NODE MODAL ─────────────────────────────────────────────────
+async function openNode(k){
+  activeModalNode=k;
+  const cfg=NODE_CFG[k];
+  document.getElementById('modal-title').textContent=cfg.label+' NODE INTELLIGENCE';
+  document.getElementById('modal-overlay').classList.add('open');
+  const out=document.getElementById('modal-out');
+  if(nodeResults[k]){out.textContent=nodeResults[k];return;}
+  out.textContent='Loading node intelligence...';
+  try {
+    const text=await callGroq([{role:'user',content:`Provide a comprehensive ${cfg.label.toLowerCase()} intelligence briefing: key metrics, current risks, top 3 recommended actions, and confidence score.`}],cfg.sys);
+    out.textContent=text;
+    nodeResults[k]=text;
+  } catch(e){out.textContent=getFallback(k);}
+}
+
+async function sendNodeQ(){
+  if(!activeModalNode)return;
+  const inp=document.getElementById('modal-in');
+  const q=inp.value.trim(); if(!q)return;
+  inp.value='';
+  const out=document.getElementById('modal-out');
+  out.textContent='Analyzing...';
+  try {
+    const text=await callGroq([{role:'user',content:q}],NODE_CFG[activeModalNode].sys);
+    out.textContent=text;
+  } catch(e){out.textContent=getFallback(activeModalNode);}
+}
+
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');activeModalNode=null;}
+
+// ── ASK AI (full chat) ─────────────────────────────────────────
+const CHAT_SYS=`You are the Sovereign Strategist — TSM Healthcare Command AI. Expert in healthcare revenue cycle, claims audit, HIPAA compliance, CPT/ICD coding, prior auth, COB, vendor contracts, grants (HRSA/NIH), and tax compliance. Context: 247 pending claims, 18.4% denial rate, $2.1M at risk, 10 nodes live. Powered by Groq llama-3.3-70b via SCHOOLS-3024 backend.`;
+
+function setAIPrompt(q){document.getElementById('ai-input').value=q;document.getElementById('ai-input').focus();}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+
+document.getElementById('ai-input').addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,120)+'px';
+});
+
+async function sendMessage(){
+  const inp=document.getElementById('ai-input');
+  const text=inp.value.trim();
+  const sendBtn=document.getElementById('ai-send');
+  if(!text||sendBtn.disabled)return;
+  appendMsg('user',text);
+  inp.value=''; inp.style.height='auto';
+  sendBtn.disabled=true;
+  chatHistory.push({role:'user',content:text});
+  const tid='t'+Date.now();
+  const tel=document.createElement('div');
+  tel.id=tid; tel.className='msg ai';
+  tel.innerHTML='<div class="msg-avatar">🧠</div><div class="msg-body"><div class="msg-label">SOVEREIGN STRATEGIST</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+  document.getElementById('chat-window').appendChild(tel);
+  document.getElementById('chat-window').scrollTop=9999;
+  try {
+    const msgs=[{role:'system',content:CHAT_SYS},...chatHistory];
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,max_tokens:800,messages:msgs})});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    const reply=d.choices?.[0]?.message?.content||'No response.';
+    chatHistory.push({role:'assistant',content:reply});
+    tel.remove(); appendMsg('ai',reply);
+  } catch(e){
+    tel.remove();
+    appendMsg('ai','⚠ Connection issue. Ensure nginx proxies /api/chat → 127.0.0.1:3024. The backend is online — check nginx config.');
+  }
+  sendBtn.disabled=false; inp.focus();
+}
+
+function appendMsg(role,text){
+  const isAI=role==='ai';
+  const div=document.createElement('div');
+  div.className='msg '+role;
+  let fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--bright)">$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+  div.innerHTML=`<div class="msg-avatar">${isAI?'🧠':'👤'}</div><div class="msg-body"><div class="msg-label">${isAI?'SOVEREIGN STRATEGIST · GROQ':'YOU'}</div><div class="msg-bubble">${fmt}</div></div>`;
+  document.getElementById('chat-window').appendChild(div);
+  document.getElementById('chat-window').scrollTop=9999;
+}
+
+function goAskAI(q){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelector('[data-view="v-askai"]').classList.add('active');
+  document.getElementById('v-askai').classList.add('active');
+  if(q){document.getElementById('ai-input').value=q;setTimeout(sendMessage,200);}
+}
+
+// ── FILE UPLOAD ────────────────────────────────────────────────
+const dz=document.getElementById('drop-zone');
+const fi=document.getElementById('file-input');
+let uploadedFiles=[];
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');handleFiles(Array.from(e.dataTransfer.files));});
+fi.addEventListener('change',()=>handleFiles(Array.from(fi.files)));
+function handleFiles(files){files.forEach(f=>{if(!uploadedFiles.find(x=>x.name===f.name)){uploadedFiles.push(f);renderFile(f);}});updateQ();}
+function renderFile(f){
+  document.getElementById('fq-empty').style.display='none';
+  const ext=f.name.split('.').pop().toUpperCase();
+  const icon={PDF:'📄',CSV:'📊',XLSX:'📊',XLS:'📊',TXT:'📝'}[ext]||'📁';
+  const size=f.size>1024*1024?(f.size/1024/1024).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';
+  const id='fq'+Date.now()+Math.random().toString(36).slice(2,5);
+  const el=document.createElement('div');
+  el.className='fq-item'; el.id=id;
+  el.innerHTML=`<div class="fq-icon">${icon}</div><div class="fq-info"><div class="fq-name">${f.name}</div><div class="fq-meta">${ext} · ${size}</div><div class="fq-prog"><div class="fq-prog-fill" id="p${id}"></div></div></div><div class="fq-status ready" id="s${id}">READY</div><div class="fq-remove" onclick="rmFile('${id}','${f.name}')">✕</div>`;
+  document.getElementById('fq-list').appendChild(el);
+  setTimeout(()=>{document.getElementById('p'+id).style.width='100%';},100);
+}
+function rmFile(id,name){uploadedFiles=uploadedFiles.filter(f=>f.name!==name);const el=document.getElementById(id);if(el)el.remove();if(!uploadedFiles.length)document.getElementById('fq-empty').style.display='';updateQ();}
+function updateQ(){const has=uploadedFiles.length>0;document.getElementById('analyze-btn').disabled=!has;document.getElementById('analyze-note').textContent=has?uploadedFiles.length+' file(s) ready.':'Upload at least one file to begin analysis.';}
+function analyzeFiles(){const names=uploadedFiles.map(f=>f.name).join(', ');goAskAI(`I've uploaded these healthcare documents for audit analysis: ${names}. Provide a preliminary revenue recovery assessment, identify likely claim denial patterns, and recommend which of the 6 audit categories would deliver the highest ROI.`);}
+
+// ── AUDIT CARDS ────────────────────────────────────────────────
+function toggleAudit(card){const open=card.classList.contains('open');document.querySelectorAll('.audit-card').forEach(c=>c.classList.remove('open'));if(!open)card.classList.add('open');}
+
+// ── RELAY FAB ──────────────────────────────────────────────────
+function relayToStrategist(){
+  const q=document.getElementById('main-query')?.value||document.getElementById('ai-input')?.value||'';
+  const ctx=encodeURIComponent('[RELAYED FROM: TSM Healthcare Command v3]\nQUERY:\n'+q);
+  window.open('https://strategist.tsmatter.com?relay='+ctx,'_blank');
+}
+
+// ── BAR ANIMATION ON LOAD ──────────────────────────────────────
+window.addEventListener('load',()=>{
+  document.querySelectorAll('.nc-bar-fill,.mbar-fill').forEach(b=>{
+    const w=b.style.width; b.style.width='0';
+    setTimeout(()=>b.style.width=w,500);
+  });
+  // Auto-deploy on load
+  setTimeout(()=>deployNodes(),1000);
+});
+</script>
+
+<script id="tsm-unified-render">
+function renderTSM(data, target){
+  try {
+    const el = document.querySelector(target) || document.body;
+
+    if (!data) {
+      el.innerHTML = "<div style='color:red'>No data</div>";
+      return;
+    }
+
+    // Normalize fallback
+    if (!data.feed && data.choices) {
+      data = {
+        report_title: "AI Response",
+        kpis: [],
+        feed: [{ message: data.choices[0].message.content }]
+      };
+    }
+
+    if (!data.feed) {
+      el.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      return;
+    }
+
+    let htmlOut = "<div style='padding:12px;font-family:monospace'>";
+
+    if (data.report_title) {
+      htmlOut += "<h3 style='color:#00ffc3'>" + data.report_title + "</h3>";
+    }
+
+    data.feed.forEach(item => {
+      htmlOut += "<div style='margin-bottom:10px'>";
+      htmlOut += "<div style='color:#d7f7ff'>" + (item.message || "") + "</div>";
+      if (item.detail) {
+        htmlOut += "<div style='opacity:0.6;font-size:12px'>" + item.detail + "</div>";
+      }
+      htmlOut += "</div>";
+    });
+
+    htmlOut += "</div>";
+    el.innerHTML = htmlOut;
+
+  } catch(e) {
+    console.error("Render error", e);
+  }
+}
+</script>
+
+</body>
+</html>

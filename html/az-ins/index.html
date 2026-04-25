@@ -1548,7 +1548,7 @@ const SYS_PROMPT = `You are TSM Neural Core — an expert Arizona insurance AI a
 Be expert, precise, actionable. Use specific dollar figures. Reference AZ carriers (Banner Aetna, BCBS AZ, UHC, Humana, Health Net/Centene), AZ regulations (ARS citations), and AZ-specific risks (heat, envenomation, pools, wildfire). Always include compliance notes. Format with clear headings and bullet points.`;
 
 async function tsmCall(userMsg, systemOverride) {
-  const res = await fetch('/api/v1/bridge', {
+  const res = await fetch('/api/insurance/query', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -2200,7 +2200,7 @@ async function sendMessage() {
 
   try {
     const msgs = chatHistory.slice(-8);
-    const res = await fetch('/api/v1/bridge', {
+    const res = await fetch('/api/insurance/query', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ model:'llama-3.3-70b-versatile', max_tokens:1000, temperature:0.4,
@@ -2319,7 +2319,7 @@ Format as a natural conversation script the agent can say word-for-word.`;
   </div>
   <script>
 (function(){
-var AI="https://tsm-core.fly.dev/ask";
+var AI="/api/insurance/query";
 var H=[];
 async function send(){
 var inp=document.getElementById("tsm-widget-input")||document.getElementById("ai-input");
@@ -2388,7 +2388,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('https://tsm-core.fly.dev/ask', {
+      var r = await fetch('/api/insurance/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
