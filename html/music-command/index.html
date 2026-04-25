@@ -169,7 +169,7 @@ async function runAnalysis(){
   await new Promise(r=>setTimeout(r,500)); setStage(2); document.getElementById('progressStatus').textContent='Scoring DNA metrics...';
   await new Promise(r=>setTimeout(r,500)); setStage(3); document.getElementById('progressStatus').textContent='Generating options...';
 
-  let data=await safeFetch('/api/music/revision/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft,request:'guided creation app'})});
+  let data=await safeFetch('/api/music/agent/chain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft,request:'guided creation app'})});
   if(!data.ok) data=await safeFetch('/api/music/agent/chain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({draft,request:'guided creation app'})});
 
   setStage(4); await new Promise(r=>setTimeout(r,400));

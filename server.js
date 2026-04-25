@@ -2874,6 +2874,68 @@ app.get('/api/music/demo/deal-room', (req, res) => {
 });
 // ===== END MUSIC DEMO DEAL-CLOSING MODE =====
 
+
+// ===== MUSIC REVISION RUN COMPATIBILITY ROUTE =====
+app.post('/api/music/revision/run', (req, res) => {
+  const body = req.body || {};
+  const draft = body.draft || body.input || body.text || "";
+  const request = body.request || "guided creation app";
+
+  if (!draft.trim()) {
+    return res.status(400).json({ ok:false, error:"No draft provided" });
+  }
+
+  function localScore(txt){
+    const len = String(txt || "").length;
+    const base = Math.min(0.86, 0.70 + (len % 18) / 100);
+    return {
+      cadence: +(base + 0.06).toFixed(2),
+      emotion: +(base + 0.00).toFixed(2),
+      structure: +(base + 0.04).toFixed(2),
+      imagery: +(base - 0.02).toFixed(2),
+      overall: +(base + 0.03).toFixed(2)
+    };
+  }
+
+  const score = localScore(draft);
+
+  const flow = `[ZAY — CADENCE / BOUNCE]\n\n${draft}\n\nAgent move: tighten rhythm, shorten heavy phrasing, and make the last phrase hit in-pocket.`;
+  const emotion = `[RIYA — EMOTION / IMAGERY]\n\n${draft}\n\nAgent move: make the emotional image more specific while keeping the artist voice plain-spoken.`;
+  const hook = `[DJ — STRUCTURE / HOOK]\n\n${draft}\n\nAgent move: move the strongest repeatable phrase into hook position and clean the transition.`;
+
+  const session = {
+    id: Date.now(),
+    request,
+    input: draft,
+    options: [
+      { id:"A", title:"Flow First", strategy:"Cadence and bounce", output:flow, score },
+      { id:"B", title:"Emotion First", strategy:"Imagery and vulnerability", output:emotion, score:{...score, overall:+(score.overall-.02).toFixed(2)} },
+      { id:"C", title:"Hook First", strategy:"Structure and repeatability", output:hook, score:{...score, overall:+(score.overall-.01).toFixed(2)} }
+    ],
+    recommended:"A",
+    createdAt:new Date().toISOString()
+  };
+
+  global.MUSIC_REVISION_SESSIONS = global.MUSIC_REVISION_SESSIONS || {};
+  global.MUSIC_REVISION_SESSIONS[String(session.id)] = session;
+
+  global.MUSIC_SUITE_STATE = global.MUSIC_SUITE_STATE || {};
+  global.MUSIC_SUITE_STATE.lastRevision = session;
+  global.MUSIC_SUITE_STATE.lastRun = {
+    agents:["ZAY","RIYA","DJ"],
+    output:flow,
+    score,
+    createdAt:session.createdAt
+  };
+
+  return res.json({
+    ok:true,
+    session,
+    run:global.MUSIC_SUITE_STATE.lastRun
+  });
+});
+// ===== END MUSIC REVISION RUN COMPATIBILITY ROUTE =====
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
 
