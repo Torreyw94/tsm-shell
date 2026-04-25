@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const card = document.querySelector(".access-card"); if(card) card.style.display = "none"; document.body.style.overflow = "auto"; }, 1500); });</script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -284,7 +285,7 @@ body {
 .step-card.open .step-arrow { transform: rotate(180deg); }
 
 .step-body {
-  display: none;
+  display: block;
   padding: 0 22px 22px 70px;
   border-top: 1px solid var(--border);
 }
@@ -712,7 +713,7 @@ body {
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .layout { grid-template-columns: 1fr; }
-  .sidenav { display: none; }
+  .sidenav { display: block; }
   .main-content { padding: 32px 24px; }
   .hero { padding: 36px 24px 32px; }
   .hero-title { font-size: 30px; }

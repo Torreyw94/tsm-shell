@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const card = document.querySelector(".access-card"); if(card) card.style.display = "none"; document.body.style.overflow = "auto"; }, 1500); });</script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -414,7 +415,7 @@ body::before{
   }
 
   body::-webkit-scrollbar {
-    display: none;
+    display: block;
   }
 
   main::-webkit-scrollbar,

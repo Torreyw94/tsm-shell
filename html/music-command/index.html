@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const card = document.querySelector(".access-card"); if(card) card.style.display = "none"; document.body.style.overflow = "auto"; }, 1500); });</script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -293,7 +294,7 @@
     scrollbar-color: var(--bg4) transparent;
   }
 
-  .panel { display: none; }
+  .panel { display: block; }
   .panel.active { display: flex; }
 
   /* METRIC CARDS */
@@ -709,7 +710,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .loading-overlay {
-    display: none;
+    display: block;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -767,7 +768,7 @@
 
   /* MODAL */
   .modal-overlay {
-    display: none;
+    display: block;
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.7);
@@ -1024,7 +1025,7 @@
   }
 
   body::-webkit-scrollbar {
-    display: none;
+    display: block;
   }
 
   main::-webkit-scrollbar,
