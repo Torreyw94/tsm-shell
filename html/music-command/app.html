@@ -1680,7 +1680,7 @@ async function callClaude(systemPrompt, userPrompt, loadingId, callback) {
         messages: [{ role: 'user', content: userPrompt }]
       })
     });
-    const data = await resp.json();
+    const data = await resp.js?v=1777119642on();
     const text = data.content?.map(b => b.text || '').join('') || '';
     if (loading) loading.classList.remove('show');
     callback(text);
@@ -2080,21 +2080,21 @@ window.MusicSuite = {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload||{})
-    }).then(r=>r.json());
+    }).then(r=>r.js?v=1777119642on());
   },
   async strategy(prompt){
     return fetch('/api/music/strategy',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({prompt})
-    }).then(r=>r.json());
+    }).then(r=>r.js?v=1777119642on());
   },
   async saveSong(payload){
     return fetch('/api/music/song',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload||{})
-    }).then(r=>r.json());
+    }).then(r=>r.js?v=1777119642on());
   }
 };
 
@@ -2124,7 +2124,7 @@ window.addEventListener('load', musicSuiteBoot);
     try{
       const res = await fetch(url, opts);
       let data;
-      try { data = await res.json(); }
+      try { data = await res.js?v=1777119642on(); }
       catch { data = { ok:false, error:'Non-JSON response' }; }
 
       if(!res.ok || data.ok === false){
@@ -2527,7 +2527,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(!panel){
       panel = document.createElement('section');
       panel.id = 'music-evolution-panel';
-      panel.style.cssText = `
+      panel.style.css?v=1777119642Text = `
         margin-top:14px;
         padding:14px;
         border:1px solid rgba(20,241,149,.28);
@@ -2753,7 +2753,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(!panel){
       panel = document.createElement('section');
       panel.id = 'music-commerce-panel';
-      panel.style.cssText = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
+      panel.style.css?v=1777119642Text = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
       const target = document.getElementById('mainContent') || document.querySelector('main') || document.body;
       target.appendChild(panel);
     }
@@ -2854,7 +2854,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(!modal){
       modal = document.createElement('div');
       modal.id = 'music-upgrade-modal';
-      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;';
+      modal.style.css?v=1777119642Text = 'position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;';
       document.body.appendChild(modal);
     }
 
@@ -2881,7 +2881,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(!panel){
       panel = document.createElement('section');
       panel.id = 'music-pricing-panel';
-      panel.style.cssText = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
+      panel.style.css?v=1777119642Text = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
       const target = document.getElementById('mainContent') || document.querySelector('main') || document.body;
       target.appendChild(panel);
     }
@@ -2990,7 +2990,7 @@ window.addEventListener('load', musicSuiteBoot);
 
     try{
       const res = await fetch('/api/music/demo/validate?demo_token=' + encodeURIComponent(token));
-      const data = await res.json();
+      const data = await res.js?v=1777119642on();
 
       if(!data.ok && !isMarketing){
         document.body.innerHTML = `
@@ -3006,7 +3006,7 @@ window.addEventListener('load', musicSuiteBoot);
         const wm = document.createElement('div');
         wm.id = 'tsm-demo-watermark';
         wm.textContent = data.watermark;
-        wm.style.cssText = `
+        wm.style.css?v=1777119642Text = `
           position:fixed;
           right:14px;
           bottom:14px;
@@ -3060,7 +3060,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(!el){
       el = document.createElement('div');
       el.id = 'tsm-demo-urgency-banner';
-      el.style.cssText = `
+      el.style.css?v=1777119642Text = `
         position:fixed;
         top:12px;
         left:50%;
@@ -3092,7 +3092,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(!modal){
       modal = document.createElement('div');
       modal.id = 'tsm-demo-upgrade-prompt';
-      modal.style.cssText = `
+      modal.style.css?v=1777119642Text = `
         position:fixed;
         right:18px;
         bottom:58px;
@@ -3125,7 +3125,7 @@ window.addEventListener('load', musicSuiteBoot);
 
     try{
       const res = await fetch('/api/music/demo/view?demo_token=' + encodeURIComponent(token), { method:'POST' });
-      const data = await res.json();
+      const data = await res.js?v=1777119642on();
 
       if(!data.ok){
         banner(data.error || 'Demo access locked', 'danger');
