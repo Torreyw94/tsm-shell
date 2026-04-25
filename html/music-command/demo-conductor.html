@@ -629,5 +629,29 @@ Say this:
 }
 </script>
 
+
+<script id="tsm-conductor-clear-stale-demo-lock">
+(function(){
+  try{
+    const params = new URLSearchParams(location.search);
+    if(params.get("clear_demo") === "1" || !params.get("demo_token")){
+      localStorage.removeItem("tsm_music_demo_token");
+      sessionStorage.removeItem("tsm_demo_ran");
+      sessionStorage.removeItem("tsm_cinematic_demo_ran");
+    }
+
+    window.addEventListener("load", function(){
+      const banners = Array.from(document.querySelectorAll("div"));
+      banners.forEach(el=>{
+        const txt = (el.textContent || "").trim();
+        if(txt.includes("Demo limit reached") || txt.includes("Unlock required")){
+          el.style.display = "none";
+        }
+      });
+    });
+  }catch(e){}
+})();
+</script>
+
 </body>
 </html>

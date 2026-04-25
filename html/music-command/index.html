@@ -328,5 +328,112 @@ window.addEventListener('load',()=>document.getElementById('onboardingModal').cl
 })();
 </script>
 
+
+<script id="tsm-music-tab-router">
+(function(){
+  if(window.__TSM_MUSIC_TAB_ROUTER__) return;
+  window.__TSM_MUSIC_TAB_ROUTER__ = true;
+
+  const sections = {
+    "Draft + Analysis": "draft",
+    "Revision Mode": "revision",
+    "Generate": "generate",
+    "Song Bank": "bank",
+    "Artist DNA": "dna"
+  };
+
+  function ensurePanels(){
+    let workspace = document.querySelector(".workspace");
+    if(!workspace) return;
+
+    if(!document.getElementById("panel-revision")){
+      workspace.insertAdjacentHTML("beforeend", `
+        <div class="card tsm-tab-panel" id="panel-revision" style="display:none">
+          <div class="section-label">Revision Mode</div>
+          <div class="card-title">Generate 3 Better Versions</div>
+          <div class="card-sub">Use this after your first run. Pick the strongest direction, then improve it again.</div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="runAnalysis()">Run Revision Chain</button>
+            <button class="btn btn-ghost" onclick="improveRecommended && improveRecommended()">Improve Picked Version</button>
+          </div>
+        </div>
+
+        <div class="card tsm-tab-panel" id="panel-generate" style="display:none">
+          <div class="section-label">Generate</div>
+          <div class="card-title">Start From a Concept</div>
+          <div class="card-sub">Load the sample or paste a rough idea, then run the full ZAY → RIYA → DJ chain.</div>
+          <div style="margin-top:14px">
+            <button class="btn btn-primary" onclick="startWithSample()">Load Sample & Run</button>
+          </div>
+        </div>
+
+        <div class="card tsm-tab-panel" id="panel-bank" style="display:none">
+          <div class="section-label">Song Bank</div>
+          <div class="card-title">Saved Directions</div>
+          <div class="box">Recommended versions and future saved songs will live here. For now, use “Copy Recommended” after a run.</div>
+        </div>
+
+        <div class="card tsm-tab-panel" id="panel-dna" style="display:none">
+          <div class="section-label">Artist DNA</div>
+          <div class="card-title">Style Memory</div>
+          <div class="box">The system tracks cadence, emotion, structure, imagery, learned songs, and style match as the song evolves.</div>
+        </div>
+      `);
+    }
+  }
+
+  function showTab(name){
+    ensurePanels();
+
+    document.querySelectorAll(".tab,.nav-item").forEach(el=>{
+      const text = el.textContent.trim();
+      const clean = text.replace(/[✦⟳◈◻]/g,"").trim();
+      el.classList.toggle("active", clean === name);
+    });
+
+    const mainCards = Array.from(document.querySelectorAll(".workspace > .card, .workspace > .agent-progress, .workspace > .results"));
+    const panels = document.querySelectorAll(".tsm-tab-panel");
+    panels.forEach(p=>p.style.display="none");
+
+    const key = sections[name] || "draft";
+
+    if(key === "draft"){
+      mainCards.forEach(el=>{
+        if(!el.classList.contains("tsm-tab-panel")) el.style.display="";
+      });
+      return;
+    }
+
+    mainCards.forEach(el=>{
+      if(!el.classList.contains("tsm-tab-panel")) el.style.display="none";
+    });
+
+    const panel = document.getElementById("panel-" + key);
+    if(panel) panel.style.display = "block";
+  }
+
+  function bindTabs(){
+    ensurePanels();
+
+    document.querySelectorAll(".tab,.nav-item").forEach(el=>{
+      if(el.dataset.tsmTabBound) return;
+      el.dataset.tsmTabBound = "1";
+      el.style.cursor = "pointer";
+      el.addEventListener("click", ()=>{
+        const clean = el.textContent.replace(/[✦⟳◈◻]/g,"").trim();
+        if(sections[clean]) showTab(clean);
+      });
+    });
+  }
+
+  window.addEventListener("load", ()=>{
+    bindTabs();
+    showTab("Draft + Analysis");
+  });
+
+  setTimeout(bindTabs, 700);
+})();
+</script>
+
 </body>
 </html>
