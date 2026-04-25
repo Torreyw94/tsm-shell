@@ -24,6 +24,61 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 .panel-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px;font-family:var(--mono)}.score-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}.score-name{font-size:11px;color:var(--muted);width:72px}.score-bar-bg{flex:1;height:4px;background:var(--bg4);border-radius:3px;overflow:hidden}.score-bar{height:100%;background:var(--green);width:0%;transition:width .7s}.score-val{font-size:10px;font-family:var(--mono);width:30px;text-align:right}.box{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.84);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}.modal-overlay.hidden{display:none}.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:500px;padding:30px}.modal-title{font-size:24px;font-weight:800;margin:14px 0 8px}.modal-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:22px}.modal-logo{width:44px;height:44px;background:var(--green);border-radius:10px;display:grid;place-items:center;color:#000;font-family:var(--mono);font-weight:900}.modal-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}.modal-feat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px}.modal-feat-label{font-size:12px;font-weight:700}.modal-feat-sub{font-size:11px;color:var(--muted)}
 </style>
+
+<style id="guided-creation-loop-css">
+.loop-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:12px 0 18px;
+}
+.btn-loop{
+  background:rgba(57,217,138,.12);
+  color:#39d98a;
+  border:1px solid rgba(57,217,138,.35);
+  padding:9px 14px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn-loop:hover{
+  background:rgba(57,217,138,.2);
+}
+.btn-loop.secondary{
+  background:transparent;
+  color:#ffb347;
+  border-color:rgba(255,179,71,.35);
+}
+.loop-toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  z-index:99999;
+  background:#0f1726;
+  border:1px solid rgba(57,217,138,.35);
+  color:#e8e8f0;
+  padding:12px 16px;
+  border-radius:999px;
+  font-family:var(--mono,monospace);
+  font-size:11px;
+  box-shadow:0 0 30px rgba(57,217,138,.12);
+}
+.evolution-dots{
+  display:flex;
+  gap:6px;
+  align-items:flex-end;
+  height:46px;
+  margin-top:10px;
+}
+.evolution-dot{
+  flex:1;
+  min-height:6px;
+  background:linear-gradient(180deg,#39d98a,#5b9cf6);
+  border-radius:5px 5px 0 0;
+}
+</style>
+
 </head>
 <body>
 <div class="modal-overlay" id="onboardingModal">
@@ -70,6 +125,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
           <div class="section-label">Analysis Output · Run #<span id="runNum">1</span></div>
           <div class="result-decision"><div><div class="decision-score" id="hitScore">—</div><div class="hit-label">Hit Score</div></div><div><div class="decision-label" id="decisionLabel">Analyzing</div><div class="decision-sub" id="decisionSub"></div></div></div>
           <div class="section-label">Recommended Options</div><div class="versions-grid" id="versionsGrid"></div>
+          <div id="guidedLoopActions" class="loop-actions" style="display:none">
+            <button class="btn-loop" onclick="improveRecommended()">↻ Improve Picked Version</button>
+            <button class="btn-loop secondary" onclick="copyRecommended()">Copy Recommended</button>
+          </div>
+
           <div class="section-label">Agent Analysis</div><div class="box" id="analysisText"></div>
         </div>
       </section>
@@ -137,5 +197,105 @@ function render(data,draft){
 }
 window.addEventListener('load',()=>document.getElementById('onboardingModal').classList.remove('hidden'));
 </script>
+
+<script id="guided-creation-loop-js">
+(function(){
+  if(window.__GUIDED_CREATION_LOOP__) return;
+  window.__GUIDED_CREATION_LOOP__ = true;
+
+  window.__musicEvolutionScores = window.__musicEvolutionScores || [];
+
+  function toast(msg){
+    let el = document.createElement('div');
+    el.className = 'loop-toast';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 2200);
+  }
+
+  function recommendedText(){
+    const el = document.querySelector('.version-card.recommended .version-text');
+    return el ? el.innerText.trim() : '';
+  }
+
+  window.copyRecommended = async function(){
+    const txt = recommendedText();
+    if(!txt) return toast('No recommended version yet');
+    try{
+      await navigator.clipboard.writeText(txt);
+      toast('Recommended version copied');
+    }catch(e){
+      toast('Copy failed — select manually');
+    }
+  };
+
+  window.improveRecommended = function(){
+    const txt = recommendedText();
+    if(!txt) return toast('Run analysis first');
+    const input = document.getElementById('lyricInput');
+    if(input){
+      input.value = txt;
+      toast('Recommended version loaded — improving again');
+      setTimeout(()=>runAnalysis(), 450);
+    }
+  };
+
+  function enhanceAfterRender(){
+    const actions = document.getElementById('guidedLoopActions');
+    if(actions) actions.style.display = 'flex';
+
+    const scoreEl = document.getElementById('hitScore');
+    const score = scoreEl ? parseInt(scoreEl.textContent,10) : 0;
+    if(score){
+      window.__musicEvolutionScores.push(score);
+      window.__musicEvolutionScores = window.__musicEvolutionScores.slice(-8);
+      renderEvolutionMini();
+    }
+
+    if(!sessionStorage.getItem('zy_loop_prompt_seen')){
+      sessionStorage.setItem('zy_loop_prompt_seen','1');
+      setTimeout(()=>{
+        toast('Tip: click “Improve Picked Version” to keep building the song');
+      }, 900);
+    }
+  }
+
+  function renderEvolutionMini(){
+    const box = document.getElementById('trajectoryBox');
+    if(!box) return;
+    const scores = window.__musicEvolutionScores;
+    const bars = scores.map(s=>`<div class="evolution-dot" title="${s}%" style="height:${Math.max(8,s/2)}px"></div>`).join('');
+    box.innerHTML = `
+      <div>${scores.length > 1 ? 'Improving · Score Delta +' + Math.max(0, scores[scores.length-1]-scores[0]) : 'First run captured'}</div>
+      <div class="evolution-dots">${bars}</div>
+    `;
+  }
+
+  const oldRender = window.render;
+  if(typeof oldRender === 'function'){
+    window.render = function(){
+      const result = oldRender.apply(this, arguments);
+      setTimeout(enhanceAfterRender, 80);
+      return result;
+    };
+  }
+
+  const input = document.getElementById('lyricInput');
+  if(input){
+    let pasteTimer = null;
+    input.addEventListener('input', ()=>{
+      clearTimeout(pasteTimer);
+      const val = input.value.trim();
+      if(val.length > 80 && !sessionStorage.getItem('zy_auto_hint_seen')){
+        sessionStorage.setItem('zy_auto_hint_seen','1');
+        pasteTimer = setTimeout(()=>{
+          toast('Lyrics detected — click Run Full Chain to get scored options');
+        }, 700);
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
