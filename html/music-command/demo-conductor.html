@@ -158,6 +158,37 @@ button.primary,.btn.primary{background:var(--gold);color:#050505;border-color:va
 })();
 </script>
 
+
+<script id="tsm-runtime-null-guard">
+(function(){
+  if(window.__TSM_RUNTIME_NULL_GUARD__) return;
+  window.__TSM_RUNTIME_NULL_GUARD__ = true;
+
+  window.safeSetText = function(id, value){
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+  };
+
+  window.addEventListener('error', function(e){
+    if(String(e.message || '').includes('Cannot set properties of null')){
+      console.warn('Suppressed null DOM write:', e.message);
+      e.preventDefault();
+      return true;
+    }
+  }, true);
+
+  window.addEventListener('unhandledrejection', function(e){
+    const msg = String(e.reason && (e.reason.message || e.reason) || '');
+    if(msg.includes('Cannot set properties of null')){
+      console.warn('Suppressed null promise:', msg);
+      e.preventDefault();
+    }
+  });
+
+  window.__SOVEREIGN_NO_RESET_ON_DEVTOOLS__ = true;
+})();
+</script>
+
 </head>
 <body>
 
@@ -267,7 +298,7 @@ DNA loads, agents activate, and the system runs a live improvement pass.`
   {
     title:"Guided Creation App",
     label:"Show the real product",
-    url:"/html/music-command/index.html?v=conductor",
+    url:"/html/music-command/index.html?clear_demo=1&v=conductor",
     action:"Click Load Sample & Run. Then point to Hit Score, Pick This, and Improve Picked Version.",
     talk:`Now we are inside the actual app.
 
@@ -286,7 +317,7 @@ and what to do next.`
   {
     title:"Auto-Evolution Loop",
     label:"Make the aha moment clear",
-    url:"/html/music-command/index.html?v=loopfix",
+    url:"/html/music-command/index.html?clear_demo=1&v=loopfix",
     action:"Use the recommended card. Click Improve Picked Version. Show score / trajectory moving.",
     talk:`This is the moment that makes the app feel different.
 

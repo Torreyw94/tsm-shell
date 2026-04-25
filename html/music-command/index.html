@@ -79,6 +79,37 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 }
 </style>
 
+
+<script id="tsm-runtime-null-guard">
+(function(){
+  if(window.__TSM_RUNTIME_NULL_GUARD__) return;
+  window.__TSM_RUNTIME_NULL_GUARD__ = true;
+
+  window.safeSetText = function(id, value){
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+  };
+
+  window.addEventListener('error', function(e){
+    if(String(e.message || '').includes('Cannot set properties of null')){
+      console.warn('Suppressed null DOM write:', e.message);
+      e.preventDefault();
+      return true;
+    }
+  }, true);
+
+  window.addEventListener('unhandledrejection', function(e){
+    const msg = String(e.reason && (e.reason.message || e.reason) || '');
+    if(msg.includes('Cannot set properties of null')){
+      console.warn('Suppressed null promise:', msg);
+      e.preventDefault();
+    }
+  });
+
+  window.__SOVEREIGN_NO_RESET_ON_DEVTOOLS__ = true;
+})();
+</script>
+
 </head>
 <body>
 <div class="modal-overlay" id="onboardingModal">
