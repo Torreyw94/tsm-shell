@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Music Command Center — How To Guide</title>
@@ -98,7 +99,7 @@ body {
 }
 
 .hero-pills {
-  display: flex;
+  display: none !important;
   gap: 8px;
   flex-wrap: wrap;
 }
@@ -150,11 +151,11 @@ body {
   font-family: var(--font-mono);
   padding: 0 20px;
   margin-bottom: 6px;
-  display: block;
+  display: none !important;
 }
 
 .sidenav-item {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 10px;
   padding: 9px 20px;
@@ -183,7 +184,7 @@ body {
 }
 
 .section-eyebrow {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
@@ -226,7 +227,7 @@ body {
 
 /* STEP CARDS */
 .steps {
-  display: flex;
+  display: none !important;
   flex-direction: column;
   gap: 14px;
   margin-bottom: 28px;
@@ -243,7 +244,7 @@ body {
 .step-card:hover { border-color: var(--border2); }
 
 .step-header {
-  display: flex;
+  display: none !important;
   align-items: flex-start;
   gap: 16px;
   padding: 20px 22px;
@@ -253,7 +254,7 @@ body {
 .step-num-circle {
   width: 32px; height: 32px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+  display: none !important; align-items: center; justify-content: center;
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
@@ -288,7 +289,7 @@ body {
   border-top: 1px solid var(--border);
 }
 
-.step-card.open .step-body { display: block; }
+.step-card.open .step-body { display: none !important; }
 
 .step-body p {
   font-size: 14px;
@@ -391,7 +392,7 @@ body {
 }
 
 .agent-trait {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 8px;
   font-size: 12px;
@@ -419,14 +420,14 @@ body {
 
 /* WORKFLOW DIAGRAM */
 .workflow {
-  display: flex;
+  display: none !important;
   flex-direction: column;
   gap: 0;
   margin: 24px 0;
 }
 
 .wf-step {
-  display: flex;
+  display: none !important;
   gap: 16px;
   align-items: flex-start;
   padding: 16px 20px;
@@ -443,7 +444,7 @@ body {
 .wf-icon {
   width: 36px; height: 36px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+  display: none !important; align-items: center; justify-content: center;
   font-size: 16px;
   flex-shrink: 0;
 }
@@ -480,7 +481,7 @@ body {
   font-weight: 700;
   color: var(--text);
   margin-bottom: 6px;
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 8px;
 }
@@ -501,7 +502,7 @@ body {
   color: var(--text2);
   padding: 6px 0;
   border-bottom: 1px solid var(--border);
-  display: flex;
+  display: none !important;
   gap: 8px;
   line-height: 1.5;
 }
@@ -528,7 +529,7 @@ body {
 }
 
 .check-item {
-  display: flex;
+  display: none !important;
   align-items: flex-start;
   gap: 12px;
   padding: 10px 0;
@@ -544,7 +545,7 @@ body {
   border-radius: 4px;
   flex-shrink: 0;
   margin-top: 1px;
-  display: flex; align-items: center; justify-content: center;
+  display: none !important; align-items: center; justify-content: center;
   transition: all 0.15s;
   font-size: 11px;
 }
@@ -577,7 +578,7 @@ body {
 .answer-box.partial { border-color: rgba(245,200,66,0.25); background: rgba(245,200,66,0.04); }
 
 .answer-header {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 12px;
   margin-bottom: 14px;
@@ -605,7 +606,7 @@ body {
 
 /* SONG STRUCTURE DIAGRAM */
 .song-structure {
-  display: flex;
+  display: none !important;
   flex-direction: column;
   gap: 6px;
   margin: 20px 0;
@@ -622,7 +623,7 @@ body {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text3);
-  display: flex;
+  display: none !important;
   align-items: center;
   text-transform: uppercase;
   letter-spacing: 0.06em;
