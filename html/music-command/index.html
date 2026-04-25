@@ -2919,5 +2919,39 @@ window.addEventListener('load', musicSuiteBoot);
 })();
 </script>
 
+
+<script id="tsm-basic-deterrent">
+(function(){
+  // Block right-click
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Block common DevTools keys
+  document.addEventListener('keydown', function(e){
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key.toUpperCase())) ||
+      (e.ctrlKey && e.key.toUpperCase() === "U")
+    ){
+      e.preventDefault();
+    }
+  });
+
+  // Simple devtools open detection (weak)
+  let devtools = false;
+  setInterval(function(){
+    const threshold = 160;
+    if (window.outerWidth - window.innerWidth > threshold ||
+        window.outerHeight - window.innerHeight > threshold) {
+      if (!devtools) {
+        devtools = true;
+        console.warn("DevTools detected");
+      }
+    } else {
+      devtools = false;
+    }
+  }, 1000);
+})();
+</script>
+
 </body>
 </html>
