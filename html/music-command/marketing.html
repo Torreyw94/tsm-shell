@@ -138,7 +138,7 @@ h2{font-family:var(--head);font-size:44px;line-height:1;margin:10px 0 18px}
 
 <section class="section" id="pricing">
   <div class="eyebrow">Plans</div>
-  <h2>Start free. Upgrade when the system proves value.</h2>
+  <h2>Start free. Module Active when the system proves value.</h2>
   <div class="pricing">
     <div class="plan"><h3>Free Trial</h3><div class="price">$0</div><ul><li>5 AI iterations</li><li>1 project</li><li>Preview Artist DNA</li><li>No exports</li></ul></div>
     <div class="plan hot"><div class="tag">Best Start</div><h3>Creator Mode</h3><div class="price">$99/mo</div><ul><li>25 AI iterations</li><li>5 projects</li><li>DAW-ready TXT export</li><li>Basic Artist DNA</li></ul></div>
@@ -219,8 +219,8 @@ h2{font-family:var(--head);font-size:44px;line-height:1;margin:10px 0 18px}
         <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
           <div style="max-width:560px;border:1px solid rgba(168,85,247,.45);background:#0d1018;border-radius:18px;padding:28px">
             <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Protected Demo</div>
-            <h1 style="margin:12px 0 8px">Demo access required</h1>
-            <p style="color:#9ca3af;line-height:1.6">This Music Command experience requires a private share link. Ask for a current demo token to continue.</p>
+            <h1 style="margin:12px 0 8px">Sovereign Access Granted</h1>
+            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. Ask for a current demo token to continue.</p>
           </div>
         </div>`;
       return;
@@ -354,7 +354,7 @@ h2{font-family:var(--head);font-size:44px;line-height:1;margin:10px 0 18px}
     modal.innerHTML = `
       <div style="font-family:monospace;font-size:10px;color:#a855f7;letter-spacing:.14em;text-transform:uppercase">Next Step</div>
       <h3 style="margin:8px 0 6px">Unlock the full Music Command system</h3>
-      <p style="margin:0 0 12px;color:#9ca3af;font-size:13px;line-height:1.45">${reason || 'You have seen the live engine. Upgrade or book a walkthrough to continue.'}</p>
+      <p style="margin:0 0 12px;color:#9ca3af;font-size:13px;line-height:1.45">${reason || 'You have seen the live engine. Module Active or book a walkthrough to continue.'}</p>
       <div style="display:flex;gap:8px">
         <a href="/html/music-command/marketing.html?demo_token=${encodeURIComponent(token || '')}" style="flex:1;text-align:center;background:#ffd230;color:#050505;text-decoration:none;border-radius:999px;padding:10px;font-weight:800">View Plans</a>
         <button onclick="document.getElementById('tsm-demo-upgrade-prompt').remove()" style="border:1px solid rgba(255,255,255,.12);background:transparent;color:#fff;border-radius:999px;padding:10px 12px">Later</button>

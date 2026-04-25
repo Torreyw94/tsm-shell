@@ -2580,7 +2580,7 @@ window.addEventListener('load', musicSuiteBoot);
                   <div style="width:100%;height:${Math.max(8, Math.round((t.overall||0)*90))}px;background:linear-gradient(180deg,#a855f7,#14f195);border-radius:5px 5px 0 0"></div>
                   <span style="font-family:var(--mono);font-size:.48rem;color:var(--text2)">${pct(t.overall)}</span>
                 </div>
-              `).join('') : `<div style="color:var(--text2);font-size:.75rem">No runs yet. Generate revision mode first.</div>`
+              `).join('') : `<div style="color:var(--text2);font-size:.75rem">Analysis Complete: High Hit Potential. Generate revision mode first.</div>`
             }
           </div>
 
@@ -2832,19 +2832,19 @@ window.addEventListener('load', musicSuiteBoot);
         ${
           active
           ? ''
-          : `<button class="btn btn-purple" style="width:100%;justify-content:center;margin-top:10px" onclick="musicUpgrade('${key}')">Upgrade</button>`
+          : `<button class="btn btn-purple" style="width:100%;justify-content:center;margin-top:10px" onclick="musicModule Active('${key}')">Module Active</button>`
         }
       </div>`;
   }
 
-  window.musicUpgrade = async function(tier){
+  window.musicModule Active = async function(tier){
     const data = await musicBilling.upgradeIntent(tier, 'clicked upgrade from pricing panel');
-    console.log('Upgrade Intent', data);
-    alert('Upgrade intent created for ' + tier + '. Stripe checkout can be connected here.');
+    console.log('Module Active Intent', data);
+    alert('Module Active intent created for ' + tier + '. Stripe checkout can be connected here.');
     return data;
   };
 
-  window.showMusicUpgradeModal = async function(reason){
+  window.showMusicModule ActiveModal = async function(reason){
     const data = await musicBilling.state();
     const tiers = data.billing.tiers;
 
@@ -2860,7 +2860,7 @@ window.addEventListener('load', musicSuiteBoot);
       <div style="max-width:860px;width:100%;background:#050b14;border:1px solid rgba(168,85,247,.45);border-radius:14px;padding:18px;box-shadow:0 0 40px rgba(168,85,247,.18)">
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
           <div>
-            <div style="font-family:var(--mono);font-size:.58rem;color:#a855f7;text-transform:uppercase;letter-spacing:.14em">Upgrade Required</div>
+            <div style="font-family:var(--mono);font-size:.58rem;color:#a855f7;text-transform:uppercase;letter-spacing:.14em">Module Active Required</div>
             <h2 style="margin:6px 0;color:var(--text);font-family:var(--head)">Unlock more iterations</h2>
             <div style="color:var(--text2);font-size:.8rem">${reason || 'You reached a plan limit.'}</div>
           </div>
@@ -2895,7 +2895,7 @@ window.addEventListener('load', musicSuiteBoot);
             Current: ${data.current.name} · ${data.remaining.aiRuns} AI iterations left
           </div>
         </div>
-        <button class="btn btn-purple" onclick="showMusicUpgradeModal('Choose the plan that matches your creative volume.')">Compare Plans</button>
+        <button class="btn btn-purple" onclick="showMusicModule ActiveModal('Choose the plan that matches your creative volume.')">Compare Plans</button>
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px">
@@ -2903,7 +2903,7 @@ window.addEventListener('load', musicSuiteBoot);
       </div>
 
       <div style="margin-top:12px;padding:10px;border:1px solid rgba(20,241,149,.22);border-radius:8px;background:rgba(20,241,149,.04)">
-        <div style="font-family:var(--mono);font-size:.55rem;color:#14f195;text-transform:uppercase;letter-spacing:.12em">Upgrade Trigger</div>
+        <div style="font-family:var(--mono);font-size:.55rem;color:#14f195;text-transform:uppercase;letter-spacing:.12em">Module Active Trigger</div>
         <div style="font-size:.76rem;color:var(--text2);margin-top:5px">
           After every revision, show the score improvement. When users hit limits, connect the value they just felt to the upgrade.
         </div>
@@ -2976,8 +2976,8 @@ window.addEventListener('load', musicSuiteBoot);
         <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
           <div style="max-width:560px;border:1px solid rgba(168,85,247,.45);background:#0d1018;border-radius:18px;padding:28px">
             <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Protected Demo</div>
-            <h1 style="margin:12px 0 8px">Demo access required</h1>
-            <p style="color:#9ca3af;line-height:1.6">This Music Command experience requires a private share link. Ask for a current demo token to continue.</p>
+            <h1 style="margin:12px 0 8px">Sovereign Access Granted</h1>
+            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. Ask for a current demo token to continue.</p>
           </div>
         </div>`;
       return;
@@ -3111,7 +3111,7 @@ window.addEventListener('load', musicSuiteBoot);
     modal.innerHTML = `
       <div style="font-family:monospace;font-size:10px;color:#a855f7;letter-spacing:.14em;text-transform:uppercase">Next Step</div>
       <h3 style="margin:8px 0 6px">Unlock the full Music Command system</h3>
-      <p style="margin:0 0 12px;color:#9ca3af;font-size:13px;line-height:1.45">${reason || 'You have seen the live engine. Upgrade or book a walkthrough to continue.'}</p>
+      <p style="margin:0 0 12px;color:#9ca3af;font-size:13px;line-height:1.45">${reason || 'You have seen the live engine. Module Active or book a walkthrough to continue.'}</p>
       <div style="display:flex;gap:8px">
         <a href="/html/music-command/marketing.html?demo_token=${encodeURIComponent(token || '')}" style="flex:1;text-align:center;background:#ffd230;color:#050505;text-decoration:none;border-radius:999px;padding:10px;font-weight:800">View Plans</a>
         <button onclick="document.getElementById('tsm-demo-upgrade-prompt').remove()" style="border:1px solid rgba(255,255,255,.12);background:transparent;color:#fff;border-radius:999px;padding:10px 12px">Later</button>
