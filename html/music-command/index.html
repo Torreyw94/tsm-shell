@@ -1049,6 +1049,7 @@
   }
 </style>
 
+<style>body { overflow: auto !important; pointer-events: auto !important; } .access-card, #demo-modal, [class*="access"] { display: none !important; z-index: -9999 !important; }</style>
 </head>
 <body>
 
@@ -2975,10 +2976,7 @@ window.addEventListener('load', musicSuiteBoot);
       document.body.innerHTML = `
         <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
           <div style="max-width:560px;border:1px solid rgba(168,85,247,.45);background:#0d1018;border-radius:18px;padding:28px">
-            <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Protected Demo</div>
-            <h1 style="margin:12px 0 8px">Sovereign Access Granted</h1>
-            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. Ask for a current demo token to continue.</p>
-          </div>
+            <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px"></div>
         </div>`;
       return;
     }
