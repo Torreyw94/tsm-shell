@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const card = document.querySelector(".access-card, [class*="access-card"]"); if(card) { card.style.transition = "opacity 0.5s ease"; card.style.opacity = "0"; setTimeout(() => card.remove(), 500); } document.body.style.overflow = "auto"; }, 1500); });</script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1049,6 +1050,7 @@
   }
 </style>
 
+<style>.main-container, #app-root { display: block !important; opacity: 1 !important; visibility: visible !important; }</style>
 </head>
 <body>
 
