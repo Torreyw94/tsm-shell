@@ -500,6 +500,62 @@ function showToast(msg){
 })();
 </script>
 
+
+<script id="tsm-modal-action-fix">
+(function(){
+  if(window.__TSM_MODAL_ACTION_FIX__) return;
+  window.__TSM_MODAL_ACTION_FIX__ = true;
+
+  window.closeModal = window.closeModal || function(){
+    const modal = document.getElementById('onboardingModal');
+    if(modal) modal.classList.add('hidden');
+  };
+
+  window.startWithSample = window.startWithSample || function(){
+    if(typeof window.closeModal === 'function') window.closeModal();
+
+    if(typeof window.loadSample === 'function'){
+      window.loadSample();
+    } else {
+      const input = document.getElementById('lyricInput');
+      if(input){
+        input.value = `I keep running but the finish line moves
+every win feels like just another bruise
+they clap when I'm up but go quiet when I bleed
+I'm building an empire nobody chose to see`;
+      }
+    }
+
+    setTimeout(()=>{
+      if(typeof window.runAnalysis === 'function') window.runAnalysis();
+    }, 350);
+  };
+
+  // Bind buttons defensively in case inline handlers fail.
+  window.addEventListener('load', function(){
+    document.querySelectorAll('button').forEach(btn=>{
+      const txt = (btn.textContent || '').trim();
+      if(txt.includes('Load Sample')){
+        btn.addEventListener('click', function(e){
+          if(typeof window.startWithSample === 'function'){
+            e.preventDefault();
+            window.startWithSample();
+          }
+        });
+      }
+      if(txt === 'Start Blank'){
+        btn.addEventListener('click', function(e){
+          if(typeof window.closeModal === 'function'){
+            e.preventDefault();
+            window.closeModal();
+          }
+        });
+      }
+    });
+  });
+})();
+</script>
+
 </body>
 
 </html>
