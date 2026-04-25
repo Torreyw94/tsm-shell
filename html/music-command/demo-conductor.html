@@ -36,6 +36,43 @@ button.primary,.btn.primary{background:var(--gold);color:#050505;border-color:va
 .topHint{position:absolute;left:18px;top:18px;z-index:4;background:rgba(0,0,0,.72);border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-family:var(--mono);font-size:11px;color:var(--green)}
 @media(max-width:900px){.shell{grid-template-columns:1fr}.side{height:48vh}.stage{height:52vh}.controls{position:fixed}}
 </style>
+
+<style id="objection-css">
+.objectionBox{
+  margin-top:14px;
+  border:1px solid rgba(251,113,133,.28);
+  background:rgba(127,29,29,.12);
+  border-radius:14px;
+  padding:14px;
+}
+.objectionBox h2{
+  font-size:15px;
+  margin:0 0 8px;
+  color:#fecdd3;
+}
+.objBtn{
+  width:100%;
+  margin:6px 0;
+  text-align:left;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.055);
+  color:#fff;
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:800;
+}
+.objBtn:hover{border-color:rgba(251,113,133,.6)}
+.objAnswer{
+  margin-top:10px;
+  white-space:pre-wrap;
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:1.55;
+  color:#e5e7eb;
+}
+</style>
+
 </head>
 <body>
 
@@ -51,6 +88,17 @@ button.primary,.btn.primary{background:var(--gold);color:#050505;border-color:va
       <h2>Say This</h2>
       <pre id="talk"></pre>
     </div>
+
+    
+<div class="objectionBox">
+  <h2>Live Objection Handler</h2>
+  <button class="objBtn" onclick="showObj('chatgpt')">“I already use ChatGPT.”</button>
+  <button class="objBtn" onclick="showObj('need')">“I don’t need this.”</button>
+  <button class="objBtn" onclick="showObj('price')">“How much is it?”</button>
+  <button class="objBtn" onclick="showObj('quality')">“Can AI really judge music?”</button>
+  <pre class="objAnswer" id="objAnswer">Click an objection if it comes up during the demo.</pre>
+</div>
+
 
     <div class="actionBox">
       <b>Button / Action:</b>
@@ -222,5 +270,54 @@ document.addEventListener("keydown", e=>{
 
 render();
 </script>
+
+<script id="objection-js">
+const objectionAnswers = {
+  chatgpt: `Totally — ChatGPT is great for generating ideas.
+
+The difference is this is not built around one prompt and one answer.
+
+This is built around a music workflow:
+generate options, score directions, pick the strongest version, improve it again, and track whether the song is getting better.
+
+So ChatGPT gives you output.
+This gives you a process.`,
+
+  need: `That makes sense — not every writer needs help starting.
+
+Where this usually helps is after you already have something.
+
+The hard part is:
+which version is stronger,
+what should change next,
+and whether it is ready.
+
+This is less about replacing your creativity and more about removing the second-guessing loop.`,
+
+  price: `It depends on how often you are writing.
+
+The simple way to think about it is:
+Free shows how the system thinks.
+Creator Mode is for regular writing.
+Studio Mode is for serious release work.
+Label Mode is for catalog-building and teams.
+
+If it helps finish even one stronger release faster, it usually pays for itself.`,
+
+  quality: `It is not pretending to be the final judge of taste.
+
+It gives directional signals:
+cadence, emotion, structure, imagery, and hook strength.
+
+You still make the creative decision.
+The system just gives you better options and a clearer next move.`
+};
+
+function showObj(key){
+  const el = document.getElementById('objAnswer');
+  if(el) el.textContent = objectionAnswers[key] || '';
+}
+</script>
+
 </body>
 </html>
