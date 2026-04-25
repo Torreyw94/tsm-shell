@@ -117,6 +117,47 @@ button.primary,.btn.primary{background:var(--gold);color:#050505;border-color:va
 }
 </style>
 
+
+<script id="tsm-conductor-runtime-guard">
+(function(){
+  if(window.__TSM_CONDUCTOR_RUNTIME_GUARD__) return;
+  window.__TSM_CONDUCTOR_RUNTIME_GUARD__ = true;
+
+  window.safeSetText = function(id, value){
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+  };
+
+  window.safeSetHTML = function(id, value){
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = value;
+  };
+
+  window.__TSM_LOCKED__ = false;
+
+  const oldError = window.onerror;
+  window.onerror = function(msg, src, line, col, err){
+    if(String(msg || '').includes('Cannot set properties of null')){
+      console.warn('Suppressed null DOM write:', msg);
+      return true;
+    }
+    if(oldError) return oldError(msg, src, line, col, err);
+    return false;
+  };
+
+  window.addEventListener('unhandledrejection', function(e){
+    const msg = String(e.reason && (e.reason.message || e.reason) || '');
+    if(msg.includes('Cannot set properties of null')){
+      console.warn('Suppressed null DOM promise error:', msg);
+      e.preventDefault();
+    }
+  });
+
+  // Soften destructive devtools/reset behavior if any older script is present.
+  window.__SOVEREIGN_NO_RESET_ON_DEVTOOLS__ = true;
+})();
+</script>
+
 </head>
 <body>
 
