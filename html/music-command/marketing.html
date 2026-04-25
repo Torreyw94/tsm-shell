@@ -196,5 +196,97 @@ h2{font-family:var(--head);font-size:44px;line-height:1;margin:10px 0 18px}
 })();
 </script>
 
+
+<script id="tsm-music-demo-protection">
+(function(){
+  if(window.__TSM_MUSIC_DEMO_PROTECTION__) return;
+  window.__TSM_MUSIC_DEMO_PROTECTION__ = true;
+
+  const params = new URLSearchParams(location.search);
+  const token = params.get('demo_token') || localStorage.getItem('tsm_music_demo_token');
+
+  if(token){
+    localStorage.setItem('tsm_music_demo_token', token);
+  }
+
+  async function validateDemo(){
+    // Marketing page can remain viewable but still watermarked if token exists.
+    const isMarketing = location.pathname.includes('/marketing.html');
+
+    if(!token && !isMarketing){
+      document.body.innerHTML = `
+        <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
+          <div style="max-width:560px;border:1px solid rgba(168,85,247,.45);background:#0d1018;border-radius:18px;padding:28px">
+            <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Protected Demo</div>
+            <h1 style="margin:12px 0 8px">Demo access required</h1>
+            <p style="color:#9ca3af;line-height:1.6">This Music Command experience requires a private share link. Ask for a current demo token to continue.</p>
+          </div>
+        </div>`;
+      return;
+    }
+
+    if(!token) return;
+
+    try{
+      const res = await fetch('/api/music/demo/validate?demo_token=' + encodeURIComponent(token));
+      const data = await res.json();
+
+      if(!data.ok && !isMarketing){
+        document.body.innerHTML = `
+          <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
+            <div style="max-width:560px;border:1px solid rgba(251,113,133,.45);background:#0d1018;border-radius:18px;padding:28px">
+              <div style="font-family:monospace;color:#fb7185;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Access Expired</div>
+              <h1 style="margin:12px 0 8px">Demo link expired</h1>
+              <p style="color:#9ca3af;line-height:1.6">Request a fresh Music Command demo link.</p>
+            </div>
+          </div>`;
+        return;
+      }
+
+      if(data.watermark){
+        const wm = document.createElement('div');
+        wm.id = 'tsm-demo-watermark';
+        wm.textContent = data.watermark;
+        wm.style.cssText = `
+          position:fixed;
+          right:14px;
+          bottom:14px;
+          z-index:999999;
+          pointer-events:none;
+          font-family:monospace;
+          font-size:10px;
+          letter-spacing:.12em;
+          color:rgba(255,255,255,.42);
+          background:rgba(0,0,0,.35);
+          border:1px solid rgba(255,255,255,.08);
+          padding:6px 8px;
+          border-radius:999px;
+        `;
+        document.body.appendChild(wm);
+      }
+
+      window.__TSM_DEMO_ACCESS__ = data;
+    }catch(e){
+      console.warn('Demo validation failed', e);
+    }
+  }
+
+  validateDemo();
+
+  const originalFetch = window.fetch;
+  window.fetch = function(url, opts){
+    opts = opts || {};
+    opts.headers = opts.headers || {};
+
+    const saved = localStorage.getItem('tsm_music_demo_token');
+    if(saved && String(url).includes('/api/music/')){
+      opts.headers['X-Demo-Token'] = saved;
+    }
+
+    return originalFetch(url, opts);
+  };
+})();
+</script>
+
 </body>
 </html>
