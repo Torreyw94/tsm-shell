@@ -2919,5 +2919,16 @@ window.addEventListener('load', musicSuiteBoot);
 })();
 </script>
 
+
+<script id="tsm-app-safe-token-clear">
+(function(){
+  const params = new URLSearchParams(location.search);
+  if(params.get('clear_demo') === '1'){
+    localStorage.removeItem('tsm_music_demo_token');
+    history.replaceState({}, '', location.pathname + '?v=clean');
+  }
+})();
+</script>
+
 </body>
 </html>
