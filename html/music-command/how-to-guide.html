@@ -1803,5 +1803,127 @@ sections.forEach(s => observer.observe(s));
 })();
 </script>
 
+
+<script id="tsm-demo-deal-closing-ui">
+(function(){
+  if(window.__TSM_DEMO_DEAL_CLOSING_UI__) return;
+  window.__TSM_DEMO_DEAL_CLOSING_UI__ = true;
+
+  const token = new URLSearchParams(location.search).get('demo_token') || localStorage.getItem('tsm_music_demo_token');
+
+  function banner(msg, mode){
+    let el = document.getElementById('tsm-demo-urgency-banner');
+    if(!el){
+      el = document.createElement('div');
+      el.id = 'tsm-demo-urgency-banner';
+      el.style.cssText = `
+        position:fixed;
+        top:12px;
+        left:50%;
+        transform:translateX(-50%);
+        z-index:999998;
+        max-width:760px;
+        width:calc(100% - 32px);
+        padding:10px 14px;
+        border-radius:999px;
+        font-family:monospace;
+        font-size:11px;
+        letter-spacing:.08em;
+        text-align:center;
+        pointer-events:none;
+        backdrop-filter:blur(14px);
+      `;
+      document.body.appendChild(el);
+    }
+
+    const danger = mode === 'danger';
+    el.style.background = danger ? 'rgba(127,29,29,.78)' : 'rgba(5,10,20,.78)';
+    el.style.border = danger ? '1px solid rgba(251,113,133,.6)' : '1px solid rgba(20,241,149,.35)';
+    el.style.color = danger ? '#fecdd3' : '#bbf7d0';
+    el.textContent = msg;
+  }
+
+  function upgradePrompt(reason){
+    let modal = document.getElementById('tsm-demo-upgrade-prompt');
+    if(!modal){
+      modal = document.createElement('div');
+      modal.id = 'tsm-demo-upgrade-prompt';
+      modal.style.cssText = `
+        position:fixed;
+        right:18px;
+        bottom:58px;
+        z-index:999997;
+        width:340px;
+        background:#050b14;
+        border:1px solid rgba(168,85,247,.45);
+        border-radius:16px;
+        padding:16px;
+        box-shadow:0 0 36px rgba(168,85,247,.18);
+        color:#fff;
+        font-family:Arial,sans-serif;
+      `;
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+      <div style="font-family:monospace;font-size:10px;color:#a855f7;letter-spacing:.14em;text-transform:uppercase">Next Step</div>
+      <h3 style="margin:8px 0 6px">Unlock the full Music Command system</h3>
+      <p style="margin:0 0 12px;color:#9ca3af;font-size:13px;line-height:1.45">${reason || 'You have seen the live engine. Upgrade or book a walkthrough to continue.'}</p>
+      <div style="display:flex;gap:8px">
+        <a href="/html/music-command/marketing.html?demo_token=${encodeURIComponent(token || '')}" style="flex:1;text-align:center;background:#ffd230;color:#050505;text-decoration:none;border-radius:999px;padding:10px;font-weight:800">View Plans</a>
+        <button onclick="document.getElementById('tsm-demo-upgrade-prompt').remove()" style="border:1px solid rgba(255,255,255,.12);background:transparent;color:#fff;border-radius:999px;padding:10px 12px">Later</button>
+      </div>
+    `;
+  }
+
+  async function registerView(){
+    if(!token) return;
+
+    try{
+      const res = await fetch('/api/music/demo/view?demo_token=' + encodeURIComponent(token), { method:'POST' });
+      const data = await res.json();
+
+      if(!data.ok){
+        banner(data.error || 'Demo access locked', 'danger');
+        upgradePrompt('This private demo link has reached its limit. Request a fresh link or book the full walkthrough.');
+        return;
+      }
+
+      if(data.urgency && data.urgency.message){
+        banner(data.urgency.message, data.urgency.viewsLeft <= 1 ? 'danger' : 'normal');
+      }
+
+      window.__TSM_DEMO_DEAL__ = data;
+    }catch(e){
+      console.warn('demo view tracking failed', e);
+    }
+  }
+
+  const originalFetch = window.fetch;
+  window.fetch = async function(url, opts){
+    const response = await originalFetch(url, opts);
+
+    try{
+      const saved = localStorage.getItem('tsm_music_demo_token');
+      const isMusicApi = String(url).includes('/api/music/');
+      if(isMusicApi && saved){
+        const deal = window.__TSM_DEMO_DEAL__;
+        const usageHits = deal && deal.usage ? deal.usage.hits : 0;
+
+        if(usageHits >= 8){
+          setTimeout(() => upgradePrompt('You are actively using the demo. Studio Mode unlocks more runs, exports, and deeper Artist DNA.'), 700);
+        }
+      }
+    }catch(e){}
+
+    return response;
+  };
+
+  window.addEventListener('load', function(){
+    setTimeout(registerView, 600);
+  });
+})();
+</script>
+
 </body>
 </html>

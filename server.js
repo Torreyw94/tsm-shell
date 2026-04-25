@@ -2625,7 +2625,7 @@ global.MUSIC_DEMO_ACCESS = global.MUSIC_DEMO_ACCESS || {
 };
 
 function makeDemoToken(client="demo", hours=48){
-  const token = crypto.randomBytes(18).toString("hex");
+  const token = crypto.randomBytes(24).toString("hex") + Date.now();
   const expiresAt = Date.now() + Number(hours || 48) * 60 * 60 * 1000;
 
   global.MUSIC_DEMO_ACCESS.tokens[token] = {
@@ -2633,7 +2633,13 @@ function makeDemoToken(client="demo", hours=48){
     client,
     expiresAt,
     createdAt: new Date().toISOString(),
-    watermark: `ZY MUSIC COMMAND · ${client} · ${token.slice(0,6)}`
+    watermark: `ZY MUSIC COMMAND · ${client} · ${token.slice(0,6)}`,
+    maxViews: 3,
+    maxApiHits: 15,
+    views: 0,
+    locked: false,
+    lockReason: null,
+    events: []
   };
 
   return global.MUSIC_DEMO_ACCESS.tokens[token];
@@ -2654,8 +2660,21 @@ function validateDemoAccess(req){
   const record = global.MUSIC_DEMO_ACCESS.tokens[token];
   if(!record) return { ok:false, error:"Invalid demo token" };
 
+  if(record.locked){
+    return { ok:false, error:record.lockReason || "Demo link locked" };
+  }
+
   if(Date.now() > record.expiresAt){
+    record.locked = true;
+    record.lockReason = "Demo token expired";
     return { ok:false, error:"Demo token expired" };
+  }
+
+  const usage = global.MUSIC_DEMO_ACCESS.usage[token];
+  if(usage && usage.hits >= (record.maxApiHits || 15)){
+    record.locked = true;
+    record.lockReason = "Demo usage limit reached";
+    return { ok:false, error:"Demo usage limit reached" };
   }
 
   return { ok:true, token, record };
@@ -2751,6 +2770,109 @@ app.get('/api/music/demo/usage', (req, res) => {
   });
 });
 // ===== END MUSIC PROTECTION LAYER =====
+
+
+// ===== MUSIC DEMO DEAL-CLOSING MODE =====
+function recordDemoEvent(token, type, detail){
+  const record = global.MUSIC_DEMO_ACCESS.tokens[token];
+  if(!record) return null;
+
+  const event = {
+    id: Date.now(),
+    type,
+    detail: detail || "",
+    createdAt: new Date().toISOString()
+  };
+
+  record.events = record.events || [];
+  record.events.unshift(event);
+  record.events = record.events.slice(0, 50);
+
+  return event;
+}
+
+app.post('/api/music/demo/view', (req, res) => {
+  const access = validateDemoAccess(req);
+  if(!access.ok) return res.status(401).json({ ok:false, error:access.error, locked:true });
+
+  const record = access.record;
+  record.views = (record.views || 0) + 1;
+
+  if(record.views > (record.maxViews || 3)){
+    record.locked = true;
+    record.lockReason = "Demo view limit reached";
+    recordDemoEvent(access.token, "locked", "View limit reached");
+    return res.status(403).json({ ok:false, error:"Demo view limit reached", locked:true, record });
+  }
+
+  const event = recordDemoEvent(access.token, "viewed", `Demo opened by ${record.client}`);
+  const usage = trackMusicUsage(req, "demo_view");
+
+  const hoursLeft = Math.max(0, Math.ceil((record.expiresAt - Date.now()) / (60 * 60 * 1000)));
+  const viewsLeft = Math.max(0, (record.maxViews || 3) - record.views);
+
+  return res.json({
+    ok:true,
+    viewed:true,
+    event,
+    usage,
+    demo:record,
+    urgency:{
+      hoursLeft,
+      viewsLeft,
+      message: `Private demo link expires in ${hoursLeft} hour(s) or ${viewsLeft} view(s).`
+    }
+  });
+});
+
+app.post('/api/music/demo/lock', (req, res) => {
+  const body = req.body || {};
+  const token = body.token || getDemoToken(req);
+  const record = global.MUSIC_DEMO_ACCESS.tokens[token];
+
+  if(!record) return res.status(404).json({ ok:false, error:"Token not found" });
+
+  record.locked = true;
+  record.lockReason = body.reason || "Locked by owner";
+  recordDemoEvent(token, "locked", record.lockReason);
+
+  return res.json({ ok:true, demo:record });
+});
+
+app.post('/api/music/demo/unlock', (req, res) => {
+  const body = req.body || {};
+  const token = body.token || getDemoToken(req);
+  const record = global.MUSIC_DEMO_ACCESS.tokens[token];
+
+  if(!record) return res.status(404).json({ ok:false, error:"Token not found" });
+
+  record.locked = false;
+  record.lockReason = null;
+  recordDemoEvent(token, "unlocked", "Unlocked by owner");
+
+  return res.json({ ok:true, demo:record });
+});
+
+app.get('/api/music/demo/deal-room', (req, res) => {
+  return res.json({
+    ok:true,
+    tokens:Object.values(global.MUSIC_DEMO_ACCESS.tokens).map(t => ({
+      token:t.token,
+      client:t.client,
+      createdAt:t.createdAt,
+      expiresAt:t.expiresAt,
+      views:t.views || 0,
+      maxViews:t.maxViews || 3,
+      maxApiHits:t.maxApiHits || 15,
+      locked:!!t.locked,
+      lockReason:t.lockReason || null,
+      watermark:t.watermark,
+      events:t.events || []
+    })),
+    usage:global.MUSIC_DEMO_ACCESS.usage
+  });
+});
+// ===== END MUSIC DEMO DEAL-CLOSING MODE =====
 
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
