@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>document.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const card = document.querySelector(".access-card"); if(card) card.style.display = "none"; document.body.style.overflow = "auto"; }, 1500); });</script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -25,7 +24,6 @@ pre{white-space:pre-wrap;max-height:320px;overflow:auto;background:rgba(0,0,0,.2
 .demoBox{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}textarea{width:100%;min-height:130px;background:#0b1020;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:15px}
 @media(max-width:960px){.grid,.grid3,.grid4,.flow,.demoBox{grid-template-columns:1fr}h1{font-size:44px}.slide{padding:32px;overflow:auto}.nav{display:none}}
 </style>
-<style>.modal, .overlay, #demo-modal { display: none !important; visibility: hidden !important; pointer-events: none !important; }</style>
 </head>
 <body>
 
@@ -54,7 +52,7 @@ pre{white-space:pre-wrap;max-height:320px;overflow:auto;background:rgba(0,0,0,.2
 </div>
  Generate options, score directions, pick the strongest path, rerun, learn, and track hit trajectory.</p>
   <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap">
-    <a class="btn primary" href="/html/music-command/app.html">Open App</a>
+    <a class="btn primary" href="/html/music-command/index.html">Open App</a>
     <a class="btn purple" href="/html/music-command/marketing.html">Marketing Page</a>
     <button class="btn" onclick="refreshAll()">Refresh Live Data</button>
   </div>
@@ -161,7 +159,7 @@ Every day a battle every night a new light</textarea>
   <div class="kicker">Close</div>
   <h1>This is not a lyric generator.<br><span>It is a decision system for music.</span></h1>
   <p>For artists: better songs faster. For producers: faster sessions. For songwriters: clearer creative direction. For labels: catalog-scale decision intelligence.</p>
-  <a class="btn primary" href="/html/music-command/app.html">Open Live App</a>
+  <a class="btn primary" href="/html/music-command/index.html">Open Live App</a>
 </section>
 
 <script>
@@ -281,8 +279,7 @@ refreshAll();
           <div style="max-width:560px;border:1px solid rgba(168,85,247,.45);background:#0d1018;border-radius:18px;padding:28px">
             <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Protected Demo</div>
             <h1 style="margin:12px 0 8px">Sovereign Access Granted</h1>
-<script>setTimeout(() => { document.querySelector(".access-card").style.opacity = "0"; }, 2000);</script>
-            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. </p>
+            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. Ask for a current demo token to continue.</p>
           </div>
         </div>`;
       return;
@@ -299,6 +296,8 @@ refreshAll();
           <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
             <div style="max-width:560px;border:1px solid rgba(251,113,133,.45);background:#0d1018;border-radius:18px;padding:28px">
               <div style="font-family:monospace;color:#fb7185;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Access Expired</div>
+              <h1 style="margin:12px 0 8px">Demo link expired</h1>
+              <p style="color:#9ca3af;line-height:1.6">Request a fresh Music Command demo link.</p>
             </div>
           </div>`;
         return;

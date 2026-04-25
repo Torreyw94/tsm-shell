@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>document.addEventListener("DOMContentLoaded", () => { setTimeout(() => { const card = document.querySelector(".access-card"); if(card) card.style.display = "none"; document.body.style.overflow = "auto"; }, 1500); });</script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -285,7 +284,7 @@ body {
 .step-card.open .step-arrow { transform: rotate(180deg); }
 
 .step-body {
-  display: block;
+  display: none;
   padding: 0 22px 22px 70px;
   border-top: 1px solid var(--border);
 }
@@ -713,7 +712,7 @@ body {
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .layout { grid-template-columns: 1fr; }
-  .sidenav { display: block; }
+  .sidenav { display: none; }
   .main-content { padding: 32px 24px; }
   .hero { padding: 36px 24px 32px; }
   .hero-title { font-size: 30px; }
@@ -740,7 +739,6 @@ body {
 @media(max-width:900px){.decision-grid,.tier-grid{grid-template-columns:1fr}}
 </style>
 
-<style>.modal, .overlay, #demo-modal { display: none !important; visibility: hidden !important; pointer-events: none !important; }</style>
 </head>
 <body>
 
@@ -1737,8 +1735,7 @@ sections.forEach(s => observer.observe(s));
           <div style="max-width:560px;border:1px solid rgba(168,85,247,.45);background:#0d1018;border-radius:18px;padding:28px">
             <div style="font-family:monospace;color:#a855f7;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Protected Demo</div>
             <h1 style="margin:12px 0 8px">Sovereign Access Granted</h1>
-<script>setTimeout(() => { document.querySelector(".access-card").style.opacity = "0"; }, 2000);</script>
-            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. </p>
+            <p style="color:#9ca3af;line-height:1.6">This Music Command experience is now integrated with your Sovereign Bridge. Ask for a current demo token to continue.</p>
           </div>
         </div>`;
       return;
@@ -1755,6 +1752,8 @@ sections.forEach(s => observer.observe(s));
           <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07080d;color:#fff;font-family:Arial;padding:24px">
             <div style="max-width:560px;border:1px solid rgba(251,113,133,.45);background:#0d1018;border-radius:18px;padding:28px">
               <div style="font-family:monospace;color:#fb7185;letter-spacing:.14em;text-transform:uppercase;font-size:12px">Access Expired</div>
+              <h1 style="margin:12px 0 8px">Demo link expired</h1>
+              <p style="color:#9ca3af;line-height:1.6">Request a fresh Music Command demo link.</p>
             </div>
           </div>`;
         return;
