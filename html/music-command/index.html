@@ -187,7 +187,7 @@ function render(data,draft,analysis){
   document.getElementById('decisionSub').textContent='Score Delta '+(runCount>1&&delta!==0?(delta>0?'+':'')+delta:'');
   [['cad',s.cadence],['emo',s.emotion],['str',s.structure],['img',s.imagery]].forEach(([k,v])=>{document.getElementById('bar-'+k).style.width=pct(v)+'%';document.getElementById('val-'+k).textContent=pct(v)+'%'});
   document.getElementById('dna-cad').textContent=Number(s.cadence).toFixed(2); document.getElementById('dna-emo').textContent=Number(s.emotion).toFixed(2); document.getElementById('dna-str').textContent=Number(s.structure).toFixed(2); document.getElementById('dna-img').textContent=Number(s.imagery).toFixed(2); document.getElementById('dna-songs').textContent=runCount; document.getElementById('styleMatch').textContent=overall>=80?'High':'Medium';
-  document.getElementById('trajectoryBox').textContent='${overall>=74?'Rising':'Developing'}  Score Delta ${runCount>1&&delta!==0?(delta>0?'+':'')+delta:''}';
+  document.getElementById('trajectoryBox').textContent=`${overall>=74?'Rising':'Developing'} · Score Delta ${runCount>1&&delta!==0?(delta>0?'+':'')+delta:''}`;
   document.getElementById('releaseBox').textContent= overall>=86?'Strong enough to move toward recording or release planning.':overall>=80?'Strong version. Refine once more and this could be release-ready.':overall>=74?'Not ready yet. One more pass could make this a strong release.':'Hook needs rework before release consideration.';
   const opts=data.session?.options || [
     {id:'A',title:'Flow First',strategy:'Cadence and bounce',output:data.run?.output || draft,score:s},
