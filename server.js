@@ -3070,7 +3070,5 @@ app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
 });
 
 
-app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
-  console.log('TSM Shell running on port', process.env.PORT || 8080);
-});
+
 
