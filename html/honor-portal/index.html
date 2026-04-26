@@ -657,5 +657,24 @@ function showToast(msg){
 }
 </script>
 
+
+<script>
+(function(){
+  var style = document.createElement('style');
+  style.innerHTML =
+    "html,body{margin:0;padding:0;background:#050b14;overflow-y:auto;}" +
+    "body>*:not(#dee-command-center):not(script){display:none;}" +
+    "#dee-command-center{display:block;position:relative;width:100%;max-width:1400px;margin:0 auto;}" +
+    "#dee-command-center *{max-height:none;overflow:visible;}";
+
+  document.head.appendChild(style);
+
+  var dee = document.getElementById('dee-command-center');
+  if (dee && document.body.firstChild !== dee) {
+    document.body.insertBefore(dee, document.body.firstChild);
+  }
+})();
+</script>
+
 </body>
 </html>
