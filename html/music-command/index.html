@@ -1055,6 +1055,32 @@ I'm building an empire nobody chose to see`;
 })();
 </script>
 
+
+<script>
+function goStep(step){
+  try{
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    const el = document.querySelector('[data-step="'+step+'"]');
+    if(el) el.classList.add('active');
+  }catch(e){
+    console.warn("goStep fallback used", e);
+  }
+}
+</script>
+
+<script>
+(function(){
+  if(window.__TSM_SAFE_RUNTIME__) return;
+  window.__TSM_SAFE_RUNTIME__ = true;
+
+  window.safe = function(fn){
+    try{ return fn(); }
+    catch(e){ console.warn("Safe wrapper caught:", e); }
+  };
+})();
+</script>
 </body>
+
+
 
 </html>
