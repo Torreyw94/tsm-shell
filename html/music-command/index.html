@@ -709,7 +709,7 @@ I'm building an empire nobody chose to see`;
     var btn=document.getElementById("refineBtn");
     if(btn){btn.disabled=true;btn.textContent="RIYA is working...";}
     try{
-      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'RIYA',draft:base,request:note||'Make it stronger and more repeatable'})});
+      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'DJ',draft:source,request:'Extract the single most powerful hook — the 1-2 lines most likely to be remembered.'})});
       var data=await resp.json();
       var refined=(data.output||'').trim();
       window.__refinedVersion=refined;
@@ -748,7 +748,7 @@ I'm building an empire nobody chose to see`;
     var btn=document.getElementById("lockBtn");
     if(btn){btn.disabled=true;btn.textContent="DJ is working...";}
     try{
-      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'RIYA',draft:base,request:note||'Make it stronger and more repeatable'})});
+      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'DJ',draft:source,request:'Extract the single most powerful hook — the 1-2 lines most likely to be remembered.'})});
       var data=await resp.json();
       var hook=(data.output||'').trim();
       window.__lockedHook=hook; goStep(5);
