@@ -424,7 +424,9 @@ function showToast(msg){
       toast("Locking in the strongest direction... now we refine.");
     }
 
-    if(txt.includes("unlock full system")){
+    if(e.target && e.target.id==="unlockBtn"){
+      e.preventDefault();
+      e.stopPropagation();
       const email=prompt("Enter your email to unlock the full system:");
       if(email){
         toast("Access request captured. Continue evolving your song.");
