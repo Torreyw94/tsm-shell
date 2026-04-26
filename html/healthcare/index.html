@@ -303,6 +303,7 @@ CONFIDENCE
     <div class="modal-input-row">
       <input class="modal-input" id="modal-input" placeholder="Ask this node a specific question...">
       <button class="modal-send" onclick="sendNodeQuery()">ASK</button>
+      <button class="modal-send" style="background:var(--blue,#00aaff);margin-left:4px" onclick="openFullApp()">OPEN APP ↗</button>
     </div>
   </div>
 </div>
@@ -324,6 +325,21 @@ const NODE_CONFIG = {
   grants:{ label:'GRANTS', port:3012, color:'var(--grants)', cardClass:'nc-grants', pillClass:'pill-grants', subtitle:'HRSA · NIH · CMS Innovation · Foundation', findings:'Grant reporting windows require active follow-up.' }
 };
 const NODE_KEYS = Object.keys(NODE_CONFIG);
+
+const NODE_URLS = {
+  operations:  '/html/hc-operations/index.html',
+  medical:     '/html/hc-medical/index.html',
+  pharmacy:    '/html/hc-pharmacy/index.html',
+  insurance:   '/html/hc-insurance/index.html',
+  financial:   '/html/hc-financial/index.html',
+  legal:       '/html/hc-legal/index.html',
+  vendors:     '/html/hc-vendors/index.html',
+  compliance:  '/html/hc-compliance/index.html',
+  billing:     '/html/hc-billing/index.html',
+  taxprep:     '/html/hc-taxprep/index.html',
+  grants:      '/html/hc-grants/index.html',
+};
+
 let selectedNodes = new Set(NODE_KEYS);
 let nodeResults = {};
 let activeNode = null;
@@ -355,7 +371,7 @@ function buildUI(){
       <div class="nc-progress-bar"><div class="nc-progress-fill" style="background:${cfg.color};width:0%" id="prog-${key}"></div></div>
       <div class="nc-output" id="out-${key}">Waiting for deploy.</div>
       <div class="nc-footer">
-        <button class="nc-open-btn" onclick="openNode('${key}')">OPEN APP</button>
+        <button class="nc-open-btn" onclick="openNode('${key}')">INTEL</button><button class="nc-open-btn" style="margin-left:4px;background:var(--b,#00aaff);color:#000" onclick="if(NODE_URLS['${key}'])window.open(NODE_URLS['${key}'],'_blank')">OPEN ↗</button>
         <div class="nc-status ready" id="status-${key}">READY</div>
       </div>`;
     grid.appendChild(card);
@@ -629,6 +645,12 @@ async function pollNodeState(){
     renderNodeState(data.state || {});
   } catch(e){ console.warn(e); }
 }
+function openFullApp(){
+  if(!activeNode) return;
+  const url = NODE_URLS[activeNode];
+  if(url) window.open(url, '_blank');
+}
+
 async function openNode(nodeKey){
   activeNode = nodeKey;
   const cfg = NODE_CONFIG[nodeKey];
