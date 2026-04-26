@@ -425,7 +425,7 @@ refreshAll();
     if(!token) return;
 
     try{
-      const res = await fetch('/api/music/demo/view?demo_token=' + encodeURIComponent(token), { method:'POST' });
+      const res = { ok: true, json: async () => ({ ok: true }) };
       const data = await res.json();
 
       if(!data.ok){
