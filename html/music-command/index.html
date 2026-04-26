@@ -235,16 +235,19 @@ async function runAnalysis(){
 }
 function scoreObj(data){return data.session?.options?.[0]?.score || data.run?.score || {cadence:.78,emotion:.8,structure:.76,imagery:.74,overall:.79}}
 function render(data,draft,analysis){
+  window.__lastScore = window.__currentScore || 0;
   document.getElementById('agentProgress').classList.remove('visible'); document.getElementById('resultsPanel').classList.add('visible');
   const s=scoreObj(data), overall=pct(s.overall);
   document.getElementById('hitScore').textContent=overall+'%';
-  const decision=overall>=86?'Release Ready':overall>=74?'Not the best version yet. Let us improve it.':'Scrap / Rework Hook';
+  window.__currentScore = overall;
+  const delta = overall - (window.__lastScore||overall);
+  const decision=overall>=86?'Release Ready':overall>=80?'Strong version. One more pass could lock it.':overall>=74?'Not the best version yet. Let us improve it.':'Scrap / Rework Hook';
   document.getElementById('decisionLabel').textContent=decision;
-  document.getElementById('decisionSub').textContent='Score Delta '+(runCount>1?'+4':'+0');
+  document.getElementById('decisionSub').textContent='Score Delta '+(runCount>1&&delta!==0?(delta>0?'+':'')+delta:'—');
   [['cad',s.cadence],['emo',s.emotion],['str',s.structure],['img',s.imagery]].forEach(([k,v])=>{document.getElementById('bar-'+k).style.width=pct(v)+'%';document.getElementById('val-'+k).textContent=pct(v)+'%'});
   document.getElementById('dna-cad').textContent=Number(s.cadence).toFixed(2); document.getElementById('dna-emo').textContent=Number(s.emotion).toFixed(2); document.getElementById('dna-str').textContent=Number(s.structure).toFixed(2); document.getElementById('dna-img').textContent=Number(s.imagery).toFixed(2); document.getElementById('dna-songs').textContent=runCount; document.getElementById('styleMatch').textContent=overall>=80?'High':'Medium';
-  document.getElementById('trajectoryBox').textContent=`${overall>=74?'Rising':'Developing'} · Score Delta ${runCount>1?'+4':'+0'}`;
-  document.getElementById('releaseBox').textContent= overall>=86?'Strong enough to move toward recording or release planning.': overall>=74?'Not ready yet. One more pass could make this a strong release.':'Hook needs rework before release consideration.';
+  document.getElementById('trajectoryBox').textContent=`${overall>=74?'Rising':'Developing'} · Score Delta ${runCount>1&&delta!==0?(delta>0?'+':'')+delta:'—'}`;
+  document.getElementById('releaseBox').textContent= overall>=86?'Strong enough to move toward recording or release planning.':overall>=80?'Strong version. Refine once more and this could be release-ready.':overall>=74?'Not ready yet. One more pass could make this a strong release.':'Hook needs rework before release consideration.';
   const opts=data.session?.options || [
     {id:'A',title:'Flow First',strategy:'Cadence and bounce',output:data.run?.output || draft,score:s},
     {id:'B',title:'Emotion First',strategy:'Imagery and vulnerability',output:draft+'\n\n[Emotion pass] Make the image more specific and personal.',score:s},
@@ -389,8 +392,9 @@ window.addEventListener('load',()=>document.getElementById('onboardingModal').cl
 
         <div class="card tsm-tab-panel" id="panel-bank" style="display:none">
           <div class="section-label">Song Bank</div>
-          <div class="card-title">Saved Directions</div>
-          <div class="box">Recommended versions and future saved songs will live here. For now, use “Copy Recommended” after a run.</div>
+          <div class="card-title">Saved Songs</div>
+          <div class="card-sub" style="margin-bottom:14px">Songs save automatically when you Copy Full Version or Lock a Hook.</div>
+          <div id="songBankList"><div style="color:var(--muted);font-size:12px">No songs saved yet. Complete a run and copy your version.</div></div>
         </div>
 
         <div class="card tsm-tab-panel" id="panel-dna" style="display:none">
@@ -607,6 +611,8 @@ I'm building an empire nobody chose to see`;
       document.body.appendChild(el);
     }
     el.textContent = msg;
+    clearTimeout(el._fadeTimer);
+    el._fadeTimer = setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 4000);
   }
 
   function runCoachingSequence(){
@@ -799,7 +805,7 @@ I'm building an empire nobody chose to see`;
     try{await navigator.clipboard.writeText(window.__lockedHook||"");alert("Hook copied!");}catch(e){}
   };
   window.startOver=function(){
-    window.__pickedVersion="";window.__refinedVersion="";window.__lockedHook="";
+    window.__pickedVersion="";window.__refinedVersion="";window.__lockedHook="";window.__journeyStep=1;if(typeof updateBar==="function")updateBar();if(typeof showDraft==="function")showDraft();
     window.__journeyStep=1;
     clearPanels();
     var c=document.getElementById("lyricInput");
@@ -1001,52 +1007,6 @@ I'm building an empire nobody chose to see`;
     };
   }
 
-})();
-</script>
-
-
-<script id="tsm-journey-progress-fix">
-(function(){
-  if(window.__TSM_JOURNEY_PROGRESS_FIX__) return;
-  window.__TSM_JOURNEY_PROGRESS_FIX__ = true;
-
-  window.goStep = window.goStep || function(n){
-    document.querySelectorAll(".journey-step").forEach(el=>el.classList.remove("active","done"));
-    for(let i=1;i<=5;i++){
-      const el=document.getElementById("jstep-"+i);
-      if(!el) continue;
-      if(i<n) el.classList.add("done");
-      if(i===n) el.classList.add("active");
-    }
-    window.__jStep = n;
-  };
-
-  const oldRender = window.render;
-  if(typeof oldRender === "function"){
-    window.render = function(){
-      const result = oldRender.apply(this, arguments);
-      setTimeout(()=>window.goStep(2), 250);
-      return result;
-    };
-  }
-
-  document.addEventListener("click", function(e){
-    const btn=e.target.closest("button");
-    if(!btn) return;
-    const txt=(btn.textContent||"").toLowerCase();
-
-    if(txt.includes("pick this") || txt.includes("recommended")){
-      setTimeout(()=>window.goStep(3), 150);
-    }
-
-    if(txt.includes("improve picked") || txt.includes("refine")){
-      setTimeout(()=>window.goStep(4), 300);
-    }
-
-    if(txt.includes("lock")){
-      setTimeout(()=>window.goStep(5), 300);
-    }
-  }, true);
 })();
 </script>
 
