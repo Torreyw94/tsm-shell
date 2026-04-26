@@ -393,7 +393,7 @@ window.addEventListener('load',()=>document.getElementById('onboardingModal').cl
         <div class="card tsm-tab-panel" id="panel-bank" style="display:none">
           <div class="section-label">Song Bank</div>
           <div class="card-title">Saved Songs</div>
-          <div class="card-sub" style="margin-bottom:14px">Songs save automatically when you Copy Full Version or Lock a Hook.</div>
+          <div class="card-sub" style="margin-bottom:14px">Songs save automatically when you Export Final Version or Lock a Hook.</div>
           <div id="songBankList"><div style="color:var(--muted);font-size:12px">No songs saved yet. Complete a run and copy your version.</div></div>
         </div>
 
@@ -790,10 +790,35 @@ I'm building an empire nobody chose to see`;
       +"<div class=\"refinement-label\" style=\"margin-bottom:6px\">Full Version</div>"
       +"<div class=\"refinement-area\" style=\"margin-bottom:0\"><div class=\"refinement-text\" id=\"exportFull\">"+(full||"No version generated yet.")+"</div></div>"
       +"<div class=\"export-actions\">"
-      +"<button class=\"btn-export primary\" onclick=\"copyExport()\">Copy Full Version</button>"
+      +"<button class=\"btn-export primary\" onclick=\"copyExport()\">Export Final Version</button>"
       +"<button class=\"btn-export\" onclick=\"copyHook()\">Copy Hook Only</button>"
       +"<button class=\"btn-export\" onclick=\"startOver()\">Start New Song</button>"
-      +"</div></div>";
+      +"</div>
+
+<div id="tsm-conversion-block" style="margin-top:16px;padding:14px;border:1px solid rgba(57,217,138,.3);border-radius:10px;background:rgba(57,217,138,.05)">
+  <div style="font-size:12px;color:#39d98a;letter-spacing:.08em;margin-bottom:6px">
+    SYSTEM NOTE
+  </div>
+
+  <div style="font-size:14px;font-weight:600;margin-bottom:8px">
+    This version is stronger because:
+  </div>
+
+  <div style="font-size:12px;color:#a1a1aa;line-height:1.6">
+    • Hook is more repeatable<br>
+    • Structure flows into the chorus<br>
+    • Emotional clarity improved
+  </div>
+
+  <div style="margin-top:12px;font-size:13px;font-weight:600">
+    Most creators would stop here.
+  </div>
+
+  <button id="unlockBtn" style="margin-top:10px;width:100%;padding:10px;border-radius:6px;background:#39d98a;color:#000;font-weight:700;border:none;cursor:pointer">
+    Unlock Full System →
+  </button>
+</div>
+</div>";
     w.appendChild(p);
   }
 
@@ -1007,6 +1032,26 @@ I'm building an empire nobody chose to see`;
     };
   }
 
+})();
+</script>
+
+
+<script id="tsm-unlock-flow">
+(function(){
+  if(window.__TSM_UNLOCK__) return;
+  window.__TSM_UNLOCK__ = true;
+
+  document.addEventListener("click", function(e){
+    if(e.target && e.target.id === "unlockBtn"){
+      const email = prompt("Enter your email to unlock full system:");
+      if(!email) return;
+
+      alert("Unlocked. Continue evolving your song.");
+
+      // future: send to backend
+      console.log("Captured lead:", email);
+    }
+  });
 })();
 </script>
 
