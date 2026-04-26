@@ -20,6 +20,47 @@ const https = require('https');
 
 const app = express()
 
+// ===== SECURITY LAYER =====
+const rateLimit = require('express-rate-limit');
+
+// General API rate limit — 60 req/min per IP
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: 'Too many requests. Slow down.' }
+});
+
+// AI route rate limit — 10 req/min per IP (protects Groq quota)
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: 'AI rate limit reached. Wait 60 seconds.' }
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/music/revision/run', aiLimiter);
+app.use('/api/music/agent-pass', aiLimiter);
+app.use('/api/music/chain', aiLimiter);
+app.use('/api/ai/query', aiLimiter);
+
+// Body size limit
+app.use(express.json({ limit: '50kb' }));
+
+// Basic security headers
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+// ===== END SECURITY LAYER =====
+
+
+
 // ===== FORCE MUSIC ROUTE (TOP LEVEL) =====
 console.log("🚀 Registering MUSIC routes...");
 
@@ -292,7 +333,6 @@ function buildStrategistSystemPosture(system, officesPayload = []) {
 
 
 
-app.use(express.json());
 
 // ── HUB ROUTE ──
 app.get("/hub", (req, res) => res.sendFile(path.join(__dirname, "html", "hub", "index.html")));
