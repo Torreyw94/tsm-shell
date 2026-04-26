@@ -194,7 +194,17 @@ function render(data,draft,analysis){
     {id:'B',title:'Emotion First',strategy:'Imagery and vulnerability',output:draft+'\n\n[Emotion pass] Make the image more specific and personal.',score:s},
     {id:'C',title:'Hook First',strategy:'Structure and repeatability',output:draft+'\n\n[Hook pass] Move the strongest phrase into repeat position.',score:s}
   ];
-  document.getElementById('versionsGrid').innerHTML=opts.map((o,i)=>'<div class="version-card ${i===0?'recommended':''}">${i===0?'<span class="rec-badge"> PICK THIS</span>':''}<div class="version-label">${o.title||('Option '+o.id)}</div><div class="version-text">${o.output||''}</div><span class="version-tag">${o.strategy||'revision'}</span></div>').join('');   document.getElementById('analysisText').textContent= analysis || 'The strongest path is ${opts[0]?.title||'Flow First'} because it gives the draft clearer movement and a more repeatable hook direction.';
+  document.getElementById('versionsGrid').innerHTML = opts.map((o,i)=>`
+    <div class="version-card ${i===0?'recommended':''}">
+      ${i===0?'<span class="rec-badge">⭐ PICK THIS</span>':''}
+      <div class="version-label">${o.title || ('Option ' + o.id)}</div>
+      <div class="version-text">${o.output || ''}</div>
+      <span class="version-tag">${o.strategy || 'revision'}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('analysisText').textContent =
+    analysis || `The strongest path is ${opts[0]?.title || 'Flow First'} because it gives the draft clearer movement and a more repeatable hook direction.`;
 }
 window.addEventListener('load',()=>document.getElementById('onboardingModal').classList.remove('hidden'));
 </script>
