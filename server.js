@@ -3105,8 +3105,7 @@ res.status(404).json({ ok: false, error: 'API route not found' });
 
 
 // ✅ FORCE LISTEN FOR FLY.IO
-app.listen(process.env.PORT || 8080, '0.0.0.0', () => {
-  console.log('TSM Shell running on port', process.env.PORT || 8080);
+app.listen(process.env.PORT || 8080, '0.0.0.0', () => console.log('TSM Shell listening on', process.env.PORT || 8080));
 });
 
 
