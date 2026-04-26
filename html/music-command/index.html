@@ -751,7 +751,7 @@ I'm building an empire nobody chose to see`;
       var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'RIYA',draft:base,request:note||'Make it stronger and more repeatable'})});
       var data=await resp.json();
       var hook=(data.output||'').trim();
-      window.__lockedHook=hook;
+      window.__lockedHook=hook; goStep(5);
       var out=document.getElementById("lockOutput");
       var res=document.getElementById("lockResult");
       if(out&&res){res.textContent=hook;out.style.display="block";out.scrollIntoView({behavior:"smooth"});}
