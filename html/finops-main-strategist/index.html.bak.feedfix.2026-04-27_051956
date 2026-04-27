@@ -31,7 +31,47 @@ main{padding-bottom:42px}
 <body>
 
 
+<!-- 🔥 TOP ACTION FEED (VISIBLE PROOF) -->
+<style>
+.finops-top-feed{
+  margin:20px;
+  padding:14px;
+  border:1px solid #00f59f;
+  background:#021a12;
+  border-radius:10px;
+  font-family:monospace;
+  font-size:12px;
+  max-height:120px;
+  overflow:auto;
+}
+</style>
 
+<div class="finops-top-feed" id="finops-top-feed">
+[READY] No actions yet...
+</div>
+
+<script>
+async function loadTopFeed(){
+  try{
+    const res = await fetch('/api/finops/actions',{cache:'no-store'});
+    const data = await res.json();
+    const el = document.getElementById('finops-top-feed');
+
+    if(!el) return;
+
+    if(data.actions && data.actions.length){
+      el.innerHTML = data.actions.slice(0,5).map(a =>
+        "["+new Date(a.ts).toLocaleTimeString()+"] " + a.type + " → " + a.summary
+      ).join("<br>");
+    }else{
+      el.innerHTML = "[READY] Awaiting actions...";
+    }
+  }catch(e){}
+}
+
+setInterval(loadTopFeed,3000);
+setTimeout(loadTopFeed,500);
+</script>
 
 
 <header>
@@ -363,47 +403,7 @@ Last Updated: <span id="finops-ts"></span> | Source: Financial Intel + Tax + Com
 </div>
 
 <div class="finops-actions">
-  <b>
-<!-- 🔥 TOP ACTION FEED (VISIBLE PROOF) -->
-<style>
-.finops-top-feed{
-  margin:12px 0;
-  padding:12px;
-  border:1px solid #00f59f;
-  background:#021a12;
-  border-radius:8px;
-  font-family:monospace;
-  font-size:12px;
-}
-</style>
-
-<div class="finops-top-feed">
-  <div id="finops-feed">[READY] Awaiting actions...</div>
-</div>
-
-<script>
-async function loadFinopsFeed(){
-  try{
-    const res = await fetch('/api/finops/actions');
-    const data = await res.json();
-
-    const el = document.getElementById('finops-feed');
-    if(!data.actions || data.actions.length === 0){
-      el.innerText = "[READY] Awaiting actions...";
-      return;
-    }
-
-    el.innerHTML = data.actions.slice(-5).map(a =>
-      "[" + new Date(a.ts).toLocaleTimeString() + "] " + a.type + " → " + a.summary
-    ).join("<br>");
-  }catch(e){}
-}
-
-setInterval(loadFinopsFeed, 2000);
-loadFinopsFeed();
-</script>
-
-OPERATIONS ACTIONS</b><br/>
+  <b>OPERATIONS ACTIONS</b><br/>
 
   <button onclick="runFinopsAction('AP_QUEUE')">▶ Send AP Queue</button>
   <button onclick="runFinopsAction('RECON_REVIEW')">▶ Trigger Reconciliation Review</button>
