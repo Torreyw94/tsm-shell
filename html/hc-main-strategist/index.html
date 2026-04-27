@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HC Main Strategist</title>
+<style>
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:monospace}
+header{padding:18px;border-bottom:1px solid #123050;background:#061018}
+h1{color:#00e0ff;letter-spacing:.14em}
+.wrap{padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.val{font-size:28px;color:#00f59f;font-weight:900}
+pre{white-space:pre-wrap;background:#061018;border:1px solid #123050;border-radius:14px;padding:16px;line-height:1.5}
+button{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 14px;font:900 11px monospace}
+</style>
+</head>
+<body>
+<header>
+<h1>HEALTHCARE MAIN STRATEGIST</h1>
+<div>Executive healthcare operations · HC nodes · BNCA · HITL manager view</div>
+</header>
+<div class="wrap">
+<div class="grid">
+<div class="card">Nodes Reporting<div class="val" id="nodes">—</div></div>
+<div class="card">Latest Document<div class="val" id="doc">—</div></div>
+<div class="card">Risk Posture<div class="val" id="risk">—</div></div>
+<div class="card">Report Status<div class="val" id="status">—</div></div>
+</div>
+<h3>Executive Healthcare BNCA</h3>
+<pre id="summary">Loading healthcare strategist report...</pre>
+<button onclick="location.href='/html/honor-portal/index.html?v=hc-main'">OPEN EXECUTIVE PORTAL</button>
+</div>
+<script>
+async function loadHC(){
+ try{
+  const data=await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
+  const relay=data.relay||{}, nodes=relay.nodes||{}, report=data.report||{};
+  const doc=nodes['ghs-document-pipeline'];
+  const keys=Object.keys(nodes);
+  document.getElementById('nodes').textContent=keys.length;
+  document.getElementById('doc').textContent=doc ? ((doc.metrics?.document||'Document')+' '+(doc.metrics?.version||'')) : '—';
+  document.getElementById('risk').textContent=(doc?.metrics?.quality==='complete')?'MODERATE':'WATCH';
+  document.getElementById('status').textContent=report.summary?'READY':'WAITING';
+  document.getElementById('summary').textContent=(report.summary||'No healthcare report yet. Run GHS presentation → Push to Main Strategist.').replace(/\\n/g,'\n');
+ }catch(e){document.getElementById('summary').textContent='HC feed offline';}
+}
+loadHC(); setInterval(loadHC,3000);
+</script>
+</body>
+</html>
