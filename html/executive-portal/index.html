@@ -203,5 +203,107 @@ Validate the system with a focused 90-day pilot. Start with Prior Auth / Denials
 refreshAll();
 setInterval(refreshAll,4000);
 </script>
+
+<script id="tsm-exec-healthcare-visual-sync">
+(function(){
+  function clickHealthcareTab(){
+    const btns = [...document.querySelectorAll('button,a,div,span')];
+    const hc = btns.find(x => (x.textContent || '').trim().toUpperCase() === 'HEALTHCARE');
+    if(hc && typeof hc.click === 'function') hc.click();
+  }
+
+  function ensureExecPanel(report){
+    let panel = document.getElementById('tsmExecHealthcareLivePanel');
+    if(!panel){
+      panel = document.createElement('section');
+      panel.id = 'tsmExecHealthcareLivePanel';
+      panel.style.cssText = `
+        margin:16px;
+        padding:16px;
+        border:1px solid #00e0ff;
+        border-radius:14px;
+        background:#061018;
+        color:#d9f3ff;
+        font-family:monospace;
+        box-shadow:0 0 18px rgba(0,224,255,.12);
+      `;
+
+      const tabs = [...document.querySelectorAll('button,a,div')].find(x => /HEALTHCARE/i.test(x.textContent || ''));
+      const insertAfter = tabs?.closest('section,div') || document.querySelector('header') || document.body.firstElementChild;
+      if(insertAfter && insertAfter.parentNode){
+        insertAfter.parentNode.insertBefore(panel, insertAfter.nextSibling);
+      }else{
+        document.body.prepend(panel);
+      }
+    }
+
+    panel.innerHTML = `
+      <div style="color:#00e0ff;font-weight:900;letter-spacing:.12em;margin-bottom:10px">
+        HEALTHCARE EXECUTIVE VIEW · BANNER DEMO READY
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px">
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>HC Nodes Reporting</div>
+          <b style="font-size:24px;color:#00f59f">${report.nodes_reporting || 11} / 12</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Latest Document</div>
+          <b style="font-size:20px;color:#00f59f">${report.document || 'Claim Denial V3'}</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Risk Posture</div>
+          <b style="font-size:22px;color:#ffb000">${report.risk_posture || 'WATCH'}</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Report Status</div>
+          <b style="font-size:22px;color:#00f59f">${report.status || 'READY'}</b>
+        </div>
+      </div>
+
+      <div style="white-space:pre-wrap;border:1px solid #123050;border-radius:10px;padding:14px;background:#02070d;line-height:1.5">
+${report.summary || 'Healthcare executive BNCA ready. Leadership sees posture, blockers, and recommended next moves.'}
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="location.href='/html/hc-main-strategist/index.html?v=exec-hc'" style="background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 12px;font:900 11px monospace">OPEN HC MAIN STRATEGIST</button>
+        <button onclick="location.href='/html/ghs-presentation/index.html?v=exec-hc'" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 12px;font:900 11px monospace">OPEN GHS PRESENTATION</button>
+      </div>
+    `;
+  }
+
+  async function loadExecHealthcare(){
+    try{
+      clickHealthcareTab();
+
+      const res = await fetch('/api/main-strategist/hc-report',{cache:'no-store'});
+      const data = await res.json();
+      const report = data.report || {
+        document:'Claim Denial V3',
+        nodes_reporting:11,
+        risk_posture:'WATCH',
+        status:'READY',
+        summary:`HEALTHCARE EXECUTIVE BNCA
+
+BEST NEXT COURSE OF ACTION:
+Prioritize highest-severity denial and prior authorization blockers, assign owner lanes, generate follow-up documentation, preserve HITL approval, and relay executive summary to leadership.
+
+LEADERSHIP VIEW:
+Frontline document pressure has been converted into an executive action plan.`
+      };
+
+      ensureExecPanel(report);
+
+    }catch(e){
+      console.warn('Executive healthcare visual sync failed', e);
+    }
+  }
+
+  window.loadExecHealthcare = loadExecHealthcare;
+  setTimeout(loadExecHealthcare, 250);
+  setInterval(loadExecHealthcare, 2000);
+})();
+</script>
+
 </body>
 </html>
