@@ -3,157 +3,130 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FinOps Live Intelligence Presentation</title>
+<title>TSM FinOps Presentation</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080b0f;color:#d9f3ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-.wrap{padding:56px}
-h1{font-size:34px;margin:0 0 18px;color:#eefcff;letter-spacing:.04em}
-.badges{display:flex;gap:10px;margin-bottom:26px}
-.badge{border:1px solid #00e0ff;color:#00e0ff;border-radius:6px;padding:8px 14px;font-size:11px}
-.badge.active{border-color:#00f59f;color:#001018;background:#00f59f}
-.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:26px 0 30px;align-items:center}
-.step{text-align:center;color:#8fb0c8;font-size:11px}
-.num{width:30px;height:30px;border-radius:50%;margin:0 auto 8px;background:#06301f;border:1px solid #00f59f;color:#00f59f;display:flex;align-items:center;justify-content:center}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#11161d;border:1px solid #00f59f;border-radius:10px;padding:16px;min-height:165px}
-.card.dim{border-color:#123050;color:#7aa6c2}
-.card h3{margin:0 0 10px;color:#00f59f;font-size:13px;letter-spacing:.14em}
-.card small{color:#7aa6c2}
-.metric{display:inline-block;background:#17202b;border:1px solid #123050;border-radius:6px;padding:10px;margin:8px 8px 0 0}
-.metric b{color:#00f59f;font-size:18px}
-.output{margin-top:14px;background:#151b23;border:1px solid #123050;border-radius:10px;padding:14px;min-height:74px}
-.log{margin-top:14px;background:#151b23;border:1px solid #123050;border-radius:10px;padding:12px;color:#00f59f;min-height:50px}
-.controls{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-button{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:7px;padding:10px 14px;font:900 12px monospace;cursor:pointer}
+body{margin:0;background:#05090d;color:#d9f3ff;font-family:ui-monospace,Menlo,monospace}
+header{padding:22px;border-bottom:1px solid #123050;background:#061018}
+h1{margin:0;color:#00e0ff;letter-spacing:.14em}
+.sub{color:#8fb0c8;margin-top:6px}
+.wrap{padding:22px}
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:22px 0}
+.step{border:1px solid #00f59f;border-radius:12px;padding:12px;text-align:center;background:#041a12}
+.step b{color:#00f59f}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:#07111b;border:1px solid #123050;border-radius:16px;padding:18px}
+.card h2{color:#00e0ff;margin-top:0}
+.metric{display:inline-block;margin:6px 8px 6px 0;padding:10px;border:1px solid #123050;border-radius:10px;background:#061018}
+.metric b{color:#00f59f;font-size:22px}
+.output{white-space:pre-wrap;background:#02070d;border:1px solid #123050;border-radius:12px;padding:14px;margin-top:12px;min-height:120px}
+button{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 13px;font:900 11px monospace;margin:6px;cursor:pointer}
 button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
-button.gold{border-color:#ffb000;color:#ffb000}
-.talk{margin-top:28px;background:#10161d;border:1px solid #123050;border-radius:12px;padding:18px}
-.talk h2{margin:0 0 12px;color:#eefcff}
-.line{padding:10px 12px;margin:8px 0;background:#151b23;border-left:3px solid #00f59f;color:#cfefff}
+.close{border:1px solid #00f59f;background:#031a14;margin-top:18px;border-radius:16px;padding:18px}
+.close b{color:#00f59f}
 .footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
-@media(max-width:900px){.grid,.timeline{grid-template-columns:1fr}.wrap{padding:24px}}
+main{padding-bottom:44px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Live Financial Operations Intelligence — watch it run</h1>
+<header>
+<h1>TSM FINANCIAL OPERATIONS · LIVE EXECUTIVE DEMO</h1>
+<div class="sub">Financial Command → ASC 958 / Financial Intelligence → FinOps Main Strategist</div>
+</header>
 
-  <div class="badges">
-    <div class="badge active">INTY FINOPS</div>
-    <div class="badge">AR / AP</div>
-    <div class="badge">RECONCILIATION</div>
-    <div class="badge">1099 / TAX</div>
-    <div class="badge">CONTROLLER VIEW</div>
-  </div>
+<main class="wrap">
 
-  <div class="timeline">
-    <div class="step"><div class="num">1</div>Client query<br/>received</div>
-    <div class="step"><div class="num">2</div>Financial Intel<br/>fires</div>
-    <div class="step"><div class="num">3</div>Tax + 1099<br/>checks</div>
-    <div class="step"><div class="num">4</div>Compliance +<br/>Zero Trust</div>
-    <div class="step"><div class="num">5</div>Strategist<br/>BNCA</div>
-    <div class="step"><div class="num">6</div>Controller<br/>acts</div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>● FINANCIAL INTEL NODE</h3>
-      <small>AR/AP · invoice queue · cash timing · bank feed</small>
-      <p><b>Financial Intel · Inty Power</b></p>
-      <div class="metric"><b>$18.4K</b><br><small>AR at risk</small></div>
-      <div class="metric"><b>12</b><br><small>AP invoices</small></div>
-      <div class="output">→ AP queue prioritized. High-risk vendors flagged. Payment timing protected.</div>
-    </div>
-
-    <div class="card">
-      <h3>● TAX INTELLIGENCE NODE</h3>
-      <small>1099 readiness · W-9 review · deadline windows</small>
-      <p><b>Tax Intelligence · 1099 Process</b></p>
-      <div class="metric"><b>7</b><br><small>vendors need W-9</small></div>
-      <div class="metric"><b>$34K</b><br><small>tax opportunity</small></div>
-      <div class="output">→ Vendor threshold review started. 1099 readiness moved forward.</div>
-    </div>
-
-    <div class="card">
-      <h3>● COMPLIANCE SHIELD NODE</h3>
-      <small>audit trail · supporting docs · approvals</small>
-      <p><b>Compliance Shield · Month-End Support</b></p>
-      <div class="metric"><b>94%</b><br><small>controls score</small></div>
-      <div class="metric"><b>3</b><br><small>open recon items</small></div>
-      <div class="output">→ Supporting documentation gaps flagged before controller review.</div>
-    </div>
-
-    <div class="card">
-      <h3>● ZERO TRUST NODE</h3>
-      <small>QuickBooks access · permission risk · financial data security</small>
-      <p><b>Zero Trust · Access Review</b></p>
-      <div class="metric"><b>6</b><br><small>security gaps</small></div>
-      <div class="metric"><b>WATCH</b><br><small>permission posture</small></div>
-      <div class="output">→ Financial data access review queued. Unnecessary permissions flagged.</div>
-    </div>
-
-    <div class="card" style="grid-column:1/-1">
-      <h3>◆ STRATEGIST BNCA OUTPUT</h3>
-      <small>Best Next Course of Action · Controller-ready recommendation</small>
-      <div class="output" id="bnca">
-        BEST NEXT COURSE OF ACTION:
-        Prioritize AP validation and bank reconciliation exceptions first, complete 1099 vendor review, then package month-end support for Controller review.
-      </div>
-      <div class="log" id="log">[READY] Awaiting financial operations cycle...</div>
-    </div>
-  </div>
-
-  <div class="controls">
-    <button class="primary" onclick="runCycle()">▶ Run FinOps cycle</button>
-    <button onclick="pushMain()">→ FinOps Main</button>
-    <button onclick="openCommand()">→ Financial Command</button>
-    <button class="gold" onclick="openOffer()">→ Inty Offer Page</button>
-  </div>
-
-  <div class="talk">
-    <h2>Talk Track</h2>
-    <div class="line">“This is the same workflow your staff accountant owns today: invoices, bank feed, reconciliation, 1099s, and month-end support.”</div>
-    <div class="line">“The difference is the work is now structured into nodes, prioritized, and logged.”</div>
-    <div class="line">“Instead of hiring an unknown and hoping the process improves, you can see the system organize the work immediately.”</div>
-    <div class="line">“Most teams pay $5K–$7K/month for this manually. This gives you the operating layer for $1,250/month.”</div>
-  </div>
+<div class="flow">
+  <div class="step"><b>1</b><br>Client Workload</div>
+  <div class="step"><b>2</b><br>Financial Intel</div>
+  <div class="step"><b>3</b><br>Tax / 1099</div>
+  <div class="step"><b>4</b><br>Compliance + Zero Trust</div>
+  <div class="step"><b>5</b><br>Strategist BNCA</div>
+  <div class="step"><b>6</b><br>Controller Acts</div>
 </div>
 
+<div class="grid">
+  <section class="card">
+    <h2>1 · FINANCIAL COMMAND</h2>
+    <p>Deploys the 5-node FinOps workflow.</p>
+    <div class="metric"><b>$18.4K</b><br>AR priority</div>
+    <div class="metric"><b>12</b><br>AP invoices</div>
+    <div class="metric"><b>6</b><br>security gaps</div>
+    <div class="output" id="cmdOut">Ready to run Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.</div>
+    <button class="primary" onclick="runCycle()">RUN FINOPS CYCLE</button>
+    <button onclick="location.href='/html/financial-command/index.html?v=finops-demo'">OPEN FINANCIAL COMMAND</button>
+  </section>
+
+  <section class="card">
+    <h2>2 · FINANCIAL INTELLIGENCE / ASC 958</h2>
+    <p>Shows fund accounting, grant restrictions, reports, and compliance exposure.</p>
+    <div class="metric"><b>$480K</b><br>HRSA grant</div>
+    <div class="metric"><b>OVERDUE</b><br>report status</div>
+    <div class="metric"><b>84%</b><br>Form 990</div>
+    <div class="output">ASC 958 module tracks restricted funds, grant utilization, HRSA escalation, and Form 990 readiness.</div>
+    <button onclick="location.href='/html/financial/index.html?v=asc958-demo'">OPEN FINANCIAL INTEL</button>
+  </section>
+
+  <section class="card">
+    <h2>3 · FINOPS MAIN STRATEGIST</h2>
+    <p>Executive output layer: lanes, action log, business outcome, and $1,250/month close.</p>
+    <div class="metric"><b>5 / 5</b><br>nodes reporting</div>
+    <div class="metric"><b>12–18 hrs</b><br>saved monthly</div>
+    <div class="metric"><b>$1,250/mo</b><br>system price</div>
+    <div class="output" id="mainOut">Waiting for FinOps cycle output...</div>
+    <button onclick="pushMain()">PUSH TO FINOPS MAIN</button>
+    <button onclick="location.href='/html/finops-main-strategist/index.html?v=finops-demo'">OPEN FINOPS MAIN</button>
+  </section>
+</div>
+
+<section class="close">
+  <b>30-SECOND INTY CLOSE</b>
+  <p>
+  “Right here — these are your QuickBooks transactions, AP invoices, reconciliation work, and month-end support.
+  The system flags issues before close, organizes the work immediately, and gives your controller an action-ready report.
+  Most teams pay $5K–$7K/month for this manually. TSM delivers it as a visible operating system for $1,250/month.
+  Would you rather start this alongside your current workflow, or replace part of it right away?”
+  </p>
+</section>
+
+</main>
+
 <div class="footer">
-  <span>● FINOPS PRESENTATION · FINANCIAL INTEL + TAX + COMPLIANCE + ZERO TRUST + STRATEGIST</span>
-  <span>READY</span>
+<span>● FINOPS PRESENTATION · FINANCIAL COMMAND + ASC 958 + MAIN STRATEGIST</span>
+<span>READY</span>
 </div>
 
 <script>
-function logLine(t){
-  const el=document.getElementById('log');
-  el.innerHTML = `[${new Date().toLocaleTimeString()}] ${t}<br>` + el.innerHTML;
-}
+function set(id,txt){document.getElementById(id).textContent=txt}
 
 async function runCycle(){
-  logLine('Client query received — Inty Financial Operations review started...');
-  setTimeout(()=>logLine('Financial Intel fired — AP queue + AR risk analyzed...'),600);
-  setTimeout(()=>logLine('Tax Intelligence fired — 1099 + W-9 readiness checked...'),1200);
-  setTimeout(()=>logLine('Compliance Shield fired — supporting docs + audit trail verified...'),1800);
-  setTimeout(()=>logLine('Zero Trust fired — QuickBooks access and permission risk reviewed...'),2400);
-  setTimeout(()=>{
-    logLine('Strategist generated BNCA — Controller-ready action plan complete.');
-    document.getElementById('bnca').innerText =
-`BEST NEXT COURSE OF ACTION:
-Prioritize 12 AP invoices, resolve 3 reconciliation exceptions before month-end close, complete 7 vendor W-9 reviews, and prepare the Controller report.
+  set('cmdOut',
+`FINOPS CYCLE RUNNING
 
-BUSINESS OUTCOME:
-12–18 hours/month immediately saved. $5K–$7K/month manual workload replaced by a visible $1,250/month operating layer.`;
-  },3000);
+✓ Financial Intel: AP queue + AR risk analyzed
+✓ Tax Intelligence: 1099 / W-9 readiness checked
+✓ Compliance Shield: supporting docs reviewed
+✓ Zero Trust: QuickBooks access risk checked
+✓ Strategist: BNCA generated`);
+
+  set('mainOut',
+`SYSTEM RESULT:
+→ 12 vendor invoices prioritized
+→ 3 reconciliation issues flagged before month-end close
+→ 7 vendors moved into 1099 readiness review
+→ Controller report prepared
+
+VALUE:
+12–18 hours/month immediately saved.
+$5K–$7K/month manual workload replaced by $1,250/month system.`);
 
   try{
     await fetch('/api/finops/report',{
       method:'POST',
       headers:{'content-type':'application/json'},
       body:JSON.stringify({
-        title:'Inty FinOps Presentation Cycle',
-        summary:'FinOps cycle completed: Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist BNCA.',
+        title:'FinOps Presentation Cycle',
+        summary:document.getElementById('mainOut').textContent,
         metrics:{apInvoices:12,reconItems:3,vendors1099:7,timeSaved:'12–18 hrs/month'}
       })
     });
@@ -161,13 +134,12 @@ BUSINESS OUTCOME:
 }
 
 function pushMain(){
-  location.href='/html/finops-main-strategist/index.html?v=from-presentation';
-}
-function openCommand(){
-  location.href='/html/financial-command/index.html?v=from-presentation';
-}
-function openOffer(){
-  location.href='/html/inty-finops-offer/index.html?v=from-presentation';
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'FinOps Presentation Executive Output',
+    summary:document.getElementById('mainOut').textContent || 'FinOps cycle pushed to Main Strategist.'
+  }));
+  location.href='/html/finops-main-strategist/index.html?v=from-finops-presentation';
 }
 </script>
 </body>
