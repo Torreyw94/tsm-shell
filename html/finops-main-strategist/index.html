@@ -556,7 +556,7 @@ function runFinopsAction(type){
     if(text.includes('AP') || text.includes('Queue')){
       el.textContent = '→ 12 vendor invoices prioritized · high-risk approvals flagged · payment timing protected';
     } else if(text.includes('Recon')){
-      el.textContent = '→ 3 reconciliation issues flagged · bank feed matched to QuickBooks · month-end exceptions reduced';
+      el.textContent = '→ 3 reconciliation issues flagged before month-end close · bank feed matched to QuickBooks · exceptions resolved before reporting risk';
     } else if(text.includes('Month')){
       el.textContent = '→ Month-end checklist locked · close readiness confirmed · controller review package prepared';
     } else if(text.includes('1099')){
@@ -568,6 +568,88 @@ function runFinopsAction(type){
 
   document.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click',()=>setOutcomeFromAction(btn.innerText || ''));
+  });
+})();
+</script>
+
+
+<style id="finops-roi-close-css">
+#finopsRoiClose{
+  margin:12px 20px 22px;
+  padding:16px;
+  border:1px solid #00f59f;
+  border-radius:12px;
+  background:#031a14;
+  color:#d9f3ff;
+  font-family:monospace;
+  box-shadow:0 0 22px rgba(0,245,159,.16);
+}
+#finopsRoiClose b{color:#00f59f;letter-spacing:.12em}
+.finops-roi-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.finops-roi-card{
+  background:#061018;
+  border:1px solid #123050;
+  border-radius:10px;
+  padding:12px;
+}
+.finops-roi-card .val{
+  font-size:24px;
+  font-weight:900;
+  color:#00f59f;
+  margin:6px 0;
+}
+.finops-hire-line{
+  margin-top:12px;
+  padding:12px;
+  border:1px solid rgba(0,245,159,.5);
+  background:#02110d;
+  color:#00f59f;
+  font-weight:900;
+}
+</style>
+
+<section id="finopsRoiClose">
+  <b>WHY THIS BEATS AN UNKNOWN HIRE</b>
+  <div class="finops-roi-grid">
+    <div class="finops-roi-card">
+      <div>Estimated Time Saved This Month</div>
+      <div class="val" id="finopsTimeSaved">18–25 hrs</div>
+      <small>AP chasing · reconciliation review · month-end prep</small>
+    </div>
+    <div class="finops-roi-card">
+      <div>Manual Workload Replaced</div>
+      <div class="val">$5K–$7K/mo</div>
+      <small>typical staff accounting coordination cost</small>
+    </div>
+    <div class="finops-roi-card">
+      <div>TSM Financial Ops Layer</div>
+      <div class="val">$1,250/mo</div>
+      <small>visible system · action log · executive reporting</small>
+    </div>
+  </div>
+  <div class="finops-hire-line">
+    Instead of hiring an unknown and hoping the process improves, you can see the system organize the work immediately.
+  </div>
+</section>
+
+<script id="finops-roi-close-js">
+(function(){
+  function updateRoiFromAction(text){
+    const el=document.getElementById('finopsTimeSaved');
+    if(!el) return;
+    if(text.includes('AP') || text.includes('Queue')) el.textContent='18–25 hrs';
+    else if(text.includes('Recon')) el.textContent='12–18 hrs';
+    else if(text.includes('Month')) el.textContent='20–30 hrs';
+    else if(text.includes('1099')) el.textContent='10–15 hrs';
+    else if(text.includes('Export')) el.textContent='6–10 hrs';
+  }
+  document.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',()=>updateRoiFromAction(btn.innerText||''));
   });
 })();
 </script>
