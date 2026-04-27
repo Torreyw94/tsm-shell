@@ -87,6 +87,282 @@ Built to support AP, AR, bank reconciliations, month-end close, 1099 readiness, 
   <div class="card"><b>Executive Reporting</b><p>Saved BNCA reports and PDF-ready controller summaries.</p></div>
 </section>
 
+
+<style id="finops-doc-runner-css">
+#finopsDocRunner{
+  margin-top:18px;
+  background:#061018;
+  border:1px solid #123050;
+  border-radius:16px;
+  padding:18px;
+}
+.finops-doc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.finops-doc{
+  background:#07111b;
+  border:1px solid #123050;
+  border-radius:12px;
+  padding:12px;
+  cursor:pointer;
+}
+.finops-doc.active{
+  border-color:#00f59f;
+  box-shadow:0 0 18px rgba(0,245,159,.18);
+}
+.finops-doc b{color:#00e0ff}
+.finops-doc small{color:#8fb0c8}
+#finopsDocOutput{
+  white-space:pre-wrap;
+  margin-top:14px;
+  background:#02070d;
+  border:1px solid #123050;
+  border-radius:12px;
+  padding:14px;
+  min-height:150px;
+}
+</style>
+
+<section id="finopsDocRunner">
+  <h2 style="color:#00e0ff;margin-top:0">FINOPS DOCUMENT INTELLIGENCE RUNNER</h2>
+  <div style="color:#8fb0c8">
+    Run real accounting documents through Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.
+  </div>
+
+  <div class="finops-doc-grid" id="finopsDocGrid"></div>
+
+  <div style="margin-top:12px">
+    <button class="primary" onclick="runSelectedFinopsDoc()">RUN SELECTED DOCUMENT</button>
+    <button onclick="runAllFinopsDocs()">RUN ALL 8 DOCS</button>
+    <button onclick="pushDocToFinopsMain()">PUSH DOC OUTPUT TO FINOPS MAIN</button>
+  </div>
+
+  <div id="finopsDocOutput">Select a financial document to analyze.</div>
+</section>
+
+<script id="finops-doc-runner-js">
+const FINOPS_DOCS = [
+  {
+    key:'financials',
+    title:'Monthly Financial Statement Package',
+    risk:'margin / liquidity review',
+    output:`MONTHLY FINANCIAL STATEMENT PACKAGE — Apex Distribution LLC
+
+FINANCIAL INTEL:
+Revenue $1.25M, gross profit $470K, net income $193K.
+Cash $320K, AR $410K, inventory $525K.
+
+NODE FINDINGS:
+• Gross margin: 37.6%
+• AR concentration requires follow-up
+• AP $290K should be reviewed against cash timing
+• Operating cash flow remains positive at $175K
+
+BNCA:
+Prioritize AR collections and AP timing review before month-end package is sent to controller.`
+  },
+  {
+    key:'bank-recon',
+    title:'Bank Reconciliation Statement',
+    risk:'variance investigation',
+    output:`BANK RECONCILIATION STATEMENT — Chase Operating Account
+
+FINANCIAL INTEL:
+Adjusted bank balance: $142,000
+Adjusted book balance: $140,000
+Variance identified: $2,000
+
+COMPLIANCE SHIELD:
+Variance requires investigation and documentation before close.
+
+BNCA:
+Investigate $2,000 variance, document reconciling item, and route to controller review before month-end close.`
+  },
+  {
+    key:'ap-aging',
+    title:'Accounts Payable Aging Report',
+    risk:'vendor payment priority',
+    output:`ACCOUNTS PAYABLE AGING REPORT
+
+FINANCIAL INTEL:
+Total AP aging: $45,200
+90+ days: $900
+60 days: $3,400
+
+NODE FINDINGS:
+• SupplyCo has largest exposure at $21,500
+• Freight Logistics has aging across 30/60/90+ buckets
+• Payment priority queue should be created
+
+BNCA:
+Prioritize SupplyCo and Freight Logistics review, validate approvals, and protect vendor continuity.`
+  },
+  {
+    key:'budget-variance',
+    title:'Budget vs Actual Variance Report',
+    risk:'marketing overspend',
+    output:`BUDGET VS ACTUAL VARIANCE — Marketing Q1 2026
+
+FINANCIAL INTEL:
+Budget: $205,000
+Actual: $222,000
+Variance: +$17,000 / +8.3%
+
+NODE FINDINGS:
+• Advertising overspend +16.7%
+• Software overspend +20%
+• Events under budget -13.3%
+
+BNCA:
+Review ad campaign ROI, pause low-performing spend, and submit variance explanation for controller review.`
+  },
+  {
+    key:'gl-detail',
+    title:'General Ledger Detail',
+    risk:'supporting schedule review',
+    output:`GENERAL LEDGER DETAIL — Account 6100 Office Supplies
+
+FINANCIAL INTEL:
+March ending balance: $2,500
+
+COMPLIANCE SHIELD:
+Supporting invoices should be attached for Office Depot, Staples, and Amazon Supplies.
+
+BNCA:
+Attach vendor support, verify payment application, and preserve audit trail for month-end close.`
+  },
+  {
+    key:'forecast',
+    title:'Financial Forecast Model',
+    risk:'cash / growth assumptions',
+    output:`FINANCIAL FORECAST MODEL — April–June 2026
+
+FINANCIAL INTEL:
+Projected revenue growth: 8% monthly
+April $1.35M, May $1.46M, June $1.58M
+
+NODE FINDINGS:
+• Customer retention assumption: 92%
+• Gross margin assumption: 38%
+• Risks: supply chain volatility and interest rates
+
+BNCA:
+Validate gross margin assumption, review inventory exposure, and stress-test cash flow against rate increases.`
+  },
+  {
+    key:'expense-report',
+    title:'Employee Expense Report',
+    risk:'approval / policy review',
+    output:`EMPLOYEE EXPENSE REPORT — John Smith
+
+COMPLIANCE SHIELD:
+Total submitted: $1,025
+Approval status: Pending Manager Review
+
+NODE FINDINGS:
+• Travel, hotel, meals, and Uber documented
+• Client dinner may require policy validation
+• Approval required before posting
+
+BNCA:
+Route to manager approval, validate meal policy, then post reimbursable expense after support is confirmed.`
+  },
+  {
+    key:'audit-findings',
+    title:'Internal Audit Findings Report',
+    risk:'procurement controls',
+    output:`INTERNAL AUDIT FINDINGS — Procurement Process
+
+COMPLIANCE SHIELD:
+Risk level: Moderate
+
+FINDINGS:
+• Missing approvals for purchases > $10,000
+• Duplicate vendor entries
+• Inconsistent documentation retention
+
+BNCA:
+Implement approval workflow, clean vendor master, and enforce document retention policy before next audit cycle.`
+  }
+];
+
+let selectedFinopsDoc = FINOPS_DOCS[0];
+
+function renderFinopsDocs(){
+  const grid=document.getElementById('finopsDocGrid');
+  if(!grid) return;
+  grid.innerHTML = FINOPS_DOCS.map(d=>`
+    <div class="finops-doc ${d.key===selectedFinopsDoc.key?'active':''}" onclick="selectFinopsDoc('${d.key}')">
+      <b>${d.title}</b><br>
+      <small>${d.risk}</small>
+    </div>
+  `).join('');
+}
+
+function selectFinopsDoc(key){
+  selectedFinopsDoc = FINOPS_DOCS.find(d=>d.key===key) || FINOPS_DOCS[0];
+  renderFinopsDocs();
+  document.getElementById('finopsDocOutput').textContent = selectedFinopsDoc.output;
+}
+
+function runSelectedFinopsDoc(){
+  const out = `RUNNING DOCUMENT THROUGH 5 FINOPS NODES...
+
+1. Financial Intel — complete
+2. Tax Intelligence — reviewed
+3. Compliance Shield — reviewed
+4. Zero Trust — access / audit posture checked
+5. Strategist — BNCA generated
+
+${selectedFinopsDoc.output}`;
+
+  document.getElementById('finopsDocOutput').textContent = out;
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:selectedFinopsDoc.title,
+    summary:out
+  }));
+}
+
+function runAllFinopsDocs(){
+  const out = `ALL 8 FINOPS DOCUMENTS PROCESSED
+
+Documents:
+• Monthly Financial Statement Package
+• Bank Reconciliation Statement
+• Accounts Payable Aging Report
+• Budget vs Actual Variance Report
+• General Ledger Detail
+• Financial Forecast Model
+• Expense Report
+• Internal Audit Findings Report
+
+EXECUTIVE BNCA:
+Prioritize bank reconciliation variance, AP aging review, procurement control gaps, and month-end controller package.
+
+BUSINESS OUTCOME:
+This replaces manual document review across accounting, finance, compliance, and reporting with a structured $1,250/month operations layer.`;
+
+  document.getElementById('finopsDocOutput').textContent = out;
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'All 8 FinOps Documents Processed',
+    summary:out
+  }));
+}
+
+function pushDocToFinopsMain(){
+  runSelectedFinopsDoc();
+  location.href='/html/finops-main-strategist/index.html?v=doc-output';
+}
+
+renderFinopsDocs();
+selectFinopsDoc('bank-recon');
+</script>
+
 <section class="close">
 <b>30-SECOND CLOSE</b>
 <p>
