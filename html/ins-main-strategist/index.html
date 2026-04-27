@@ -19,7 +19,7 @@ button.dark{background:transparent;color:#E8C870;border:1px solid #C9A84C}
 <body>
 <header>
 <h1>INSURANCE MAIN STRATEGIST</h1>
-<div>Executive insurance view · P&C · DME · Agents · AZ command · revenue/risk BNCA</div>
+<div>Executive insurance view · P&C · DME · Agents · AZ command · revenue/risk BNCA<button onclick="location.href='/html/executive-portal/index.html?v=from-sector'">OPEN UNIFIED EXECUTIVE PORTAL</button></div>
 </header>
 <div class="wrap">
 <div class="grid">
@@ -36,7 +36,7 @@ button.dark{background:transparent;color:#E8C870;border:1px solid #C9A84C}
 <script>
 function loadINS(){
  let data={};
- try{data=JSON.parse(sessionStorage.getItem('tsm_pc_strategist_output')||'{}')}catch(e){}
+ try{data=JSON.parse(sessionStorage.getItem('tsm_pc_strategist_output') || localStorage.getItem('tsm_ins_persist') || '{}')}catch(e){}
  document.getElementById('exposure').textContent=data.exposure||'$4.2M';
  document.getElementById('recoverable').textContent=data.recoverable||'$280K–$420K';
  document.getElementById('lane').textContent='P&C / Coverage';
