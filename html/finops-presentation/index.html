@@ -162,7 +162,18 @@ NODE FINDINGS:
 • Operating cash flow remains positive at $175K
 
 BNCA:
-Prioritize AR collections and AP timing review before month-end package is sent to controller.`
+Prioritize AR collections and AP timing review before month-end package is sent to controller.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ $410K AR balance flagged for follow-up
+→ AP timing reviewed against $320K cash position
+→ Controller package strengthened before reporting
+
+ESTIMATED TIME SAVED:
+3–5 hours preparing financial review package
+
+DEMO LINE:
+“This turns a static statement package into an action-ready controller review.”`
   },
   {
     key:'bank-recon',
@@ -179,7 +190,18 @@ COMPLIANCE SHIELD:
 Variance requires investigation and documentation before close.
 
 BNCA:
-Investigate $2,000 variance, document reconciling item, and route to controller review before month-end close.`
+Investigate $2,000 variance, document reconciling item, and route to controller review before month-end close.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ $2,000 variance identified before month-end close
+→ Controller review triggered before reporting
+→ Reconciliation delay risk removed
+
+ESTIMATED TIME SAVED:
+2–4 hours on this reconciliation alone
+
+DEMO LINE:
+“Right here — this is your Chase account. There’s a $2,000 variance. Normally someone has to find that manually. This catches it before month-end.”`
   },
   {
     key:'ap-aging',
@@ -198,7 +220,18 @@ NODE FINDINGS:
 • Payment priority queue should be created
 
 BNCA:
-Prioritize SupplyCo and Freight Logistics review, validate approvals, and protect vendor continuity.`
+Prioritize SupplyCo and Freight Logistics review, validate approvals, and protect vendor continuity.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ $45,200 AP aging organized by risk
+→ $4,300 aged 60+ days flagged
+→ Vendor payment priority queue created
+
+ESTIMATED TIME SAVED:
+2–3 hours chasing vendor status and approvals
+
+DEMO LINE:
+“This is your vendor payment pressure organized before it becomes a relationship problem.”`
   },
   {
     key:'budget-variance',
@@ -217,7 +250,18 @@ NODE FINDINGS:
 • Events under budget -13.3%
 
 BNCA:
-Review ad campaign ROI, pause low-performing spend, and submit variance explanation for controller review.`
+Review ad campaign ROI, pause low-performing spend, and submit variance explanation for controller review.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ $17,000 marketing overspend identified
+→ Ad spend variance explained
+→ Controller-ready variance narrative prepared
+
+ESTIMATED TIME SAVED:
+2–4 hours building variance commentary
+
+DEMO LINE:
+“This doesn’t just show overspend — it prepares the explanation leadership needs.”`
   },
   {
     key:'gl-detail',
@@ -232,7 +276,18 @@ COMPLIANCE SHIELD:
 Supporting invoices should be attached for Office Depot, Staples, and Amazon Supplies.
 
 BNCA:
-Attach vendor support, verify payment application, and preserve audit trail for month-end close.`
+Attach vendor support, verify payment application, and preserve audit trail for month-end close.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ Office supplies activity tied to vendor support
+→ Payment application reviewed
+→ Audit trail preserved before close
+
+ESTIMATED TIME SAVED:
+1–2 hours finding backup documentation
+
+DEMO LINE:
+“This is the supporting schedule work that usually gets chased at month-end.”`
   },
   {
     key:'forecast',
@@ -250,7 +305,18 @@ NODE FINDINGS:
 • Risks: supply chain volatility and interest rates
 
 BNCA:
-Validate gross margin assumption, review inventory exposure, and stress-test cash flow against rate increases.`
+Validate gross margin assumption, review inventory exposure, and stress-test cash flow against rate increases.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ 8% monthly growth assumption reviewed
+→ 38% margin assumption tested
+→ Supply chain and interest-rate risks elevated
+
+ESTIMATED TIME SAVED:
+3–5 hours preparing forecast review notes
+
+DEMO LINE:
+“This turns a forecast into a risk-aware operating plan.”`
   },
   {
     key:'expense-report',
@@ -268,7 +334,18 @@ NODE FINDINGS:
 • Approval required before posting
 
 BNCA:
-Route to manager approval, validate meal policy, then post reimbursable expense after support is confirmed.`
+Route to manager approval, validate meal policy, then post reimbursable expense after support is confirmed.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ $1,025 expense report routed for approval
+→ Client dinner policy review flagged
+→ Posting held until support is confirmed
+
+ESTIMATED TIME SAVED:
+30–60 minutes per expense packet
+
+DEMO LINE:
+“This prevents reimbursements from becoming cleanup work later.”`
   },
   {
     key:'audit-findings',
@@ -285,11 +362,39 @@ FINDINGS:
 • Inconsistent documentation retention
 
 BNCA:
-Implement approval workflow, clean vendor master, and enforce document retention policy before next audit cycle.`
+Implement approval workflow, clean vendor master, and enforce document retention policy before next audit cycle.
+
+SYSTEM RESULT · BUSINESS OUTCOME:
+→ Purchases over $10,000 missing approvals flagged
+→ Duplicate vendor risk identified
+→ Document retention control gap elevated
+
+ESTIMATED TIME SAVED:
+4–6 hours of audit follow-up coordination
+
+DEMO LINE:
+“This is audit cleanup turned into an action plan before it becomes a finding again.”`
   }
 ];
 
 let selectedFinopsDoc = FINOPS_DOCS[0];
+
+
+function updateFinopsDocCoach(){
+  const el=document.getElementById('finopsDocCoachText');
+  if(!el || !selectedFinopsDoc) return;
+  const map={
+    'bank-recon':'Point to the $2,000 variance. Say: “Right here — this is your Chase account. The system catches the variance before month-end and routes it to controller review.” Pause.',
+    'financials':'Point to AR $410K and AP $290K. Say: “This turns a statement package into an action-ready controller review.” Pause.',
+    'ap-aging':'Point to $45,200 AP aging. Say: “This is vendor payment pressure organized before it becomes a relationship problem.” Pause.',
+    'budget-variance':'Point to +$17K variance. Say: “This prepares the explanation leadership needs, not just the numbers.” Pause.',
+    'gl-detail':'Point to vendor invoices. Say: “This is the backup documentation work that usually gets chased at close.” Pause.',
+    'forecast':'Point to 8% growth and risks. Say: “This turns a forecast into a risk-aware operating plan.” Pause.',
+    'expense-report':'Point to pending approval. Say: “This prevents reimbursements from becoming cleanup work later.” Pause.',
+    'audit-findings':'Point to missing approvals. Say: “This turns audit cleanup into an action plan.” Pause.'
+  };
+  el.textContent = map[selectedFinopsDoc.key] || 'Run the document, point to the business risk, then tie it to time saved and controller review.';
+}
 
 function renderFinopsDocs(){
   const grid=document.getElementById('finopsDocGrid');
@@ -305,6 +410,7 @@ function renderFinopsDocs(){
 function selectFinopsDoc(key){
   selectedFinopsDoc = FINOPS_DOCS.find(d=>d.key===key) || FINOPS_DOCS[0];
   renderFinopsDocs();
+  updateFinopsDocCoach();
   document.getElementById('finopsDocOutput').textContent = selectedFinopsDoc.output;
 }
 
@@ -361,7 +467,28 @@ function pushDocToFinopsMain(){
 
 renderFinopsDocs();
 selectFinopsDoc('bank-recon');
+updateFinopsDocCoach();
 </script>
+
+
+<style id="finops-doc-coach-css">
+#finopsDocCoach{
+  margin-top:14px;
+  padding:14px;
+  border:1px solid #00f59f;
+  border-radius:12px;
+  background:#031a14;
+  font-family:monospace;
+}
+#finopsDocCoach b{color:#00f59f;letter-spacing:.12em}
+#finopsDocCoach .say{margin-top:10px;padding:10px;border-left:3px solid #00e0ff;background:#02110d;line-height:1.55}
+</style>
+<section id="finopsDocCoach">
+  <b>DEMO COACH · CLICK → SAY → PAUSE</b>
+  <div class="say" id="finopsDocCoachText">
+    Click <b>Run Selected Document</b>, point to the variance or risk, then say: “This is where the system catches the issue before it becomes a month-end problem.”
+  </div>
+</section>
 
 <section class="close">
 <b>30-SECOND CLOSE</b>
