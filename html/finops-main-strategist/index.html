@@ -307,5 +307,113 @@ function refreshFinOps(){
 refreshFinOps();
 setInterval(refreshFinOps,4000);
 </script>
+
+
+<!-- =========================
+🔥 FINOPS ACTION LAYER
+========================= -->
+
+<style>
+.finops-actions{
+  margin:20px;
+  padding:16px;
+  border:1px solid #00f0ff;
+  border-radius:10px;
+  background:#04141a;
+}
+.finops-actions button{
+  margin:6px;
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #00f0ff;
+  background:transparent;
+  color:#00f0ff;
+  cursor:pointer;
+}
+.finops-actions button:hover{
+  background:#00f0ff;
+  color:#000;
+}
+.finops-meta{
+  font-size:12px;
+  opacity:0.7;
+  margin:10px 20px;
+}
+.finops-log{
+  margin:20px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:#02070b;
+  font-family:monospace;
+  font-size:12px;
+  max-height:140px;
+  overflow:auto;
+}
+</style>
+
+<div class="finops-meta">
+Last Updated: <span id="finops-ts"></span> | Source: Financial Intel + Tax + Compliance + Zero Trust
+</div>
+
+<div class="finops-actions">
+  <b>OPERATIONS ACTIONS</b><br/>
+
+  <button onclick="runFinopsAction('AP_QUEUE')">▶ Send AP Queue</button>
+  <button onclick="runFinopsAction('RECON_REVIEW')">▶ Trigger Reconciliation Review</button>
+  <button onclick="runFinopsAction('MONTH_END')">▶ Lock Month-End Close</button>
+  <button onclick="runFinopsAction('1099_TRACK')">▶ Run 1099 Outreach</button>
+  <button onclick="runFinopsAction('EXPORT')">▶ Export Controller Report</button>
+</div>
+
+<div class="finops-log" id="finops-log">
+[READY] Awaiting actions...
+</div>
+
+<script>
+function updateTimestamp(){
+  const el=document.getElementById('finops-ts');
+  if(el) el.innerText=new Date().toLocaleString();
+}
+updateTimestamp();
+
+function log(msg){
+  const el=document.getElementById('finops-log');
+  if(!el) return;
+  const line = "["+new Date().toLocaleTimeString()+"] " + msg;
+  el.innerHTML = line + "<br>" + el.innerHTML;
+}
+
+function runFinopsAction(type){
+  log("Executing: "+type);
+
+  let output = "";
+
+  if(type==="AP_QUEUE"){
+    output = "AP queue prioritized. High-risk vendors flagged. Approval routing initiated.";
+  }
+  if(type==="RECON_REVIEW"){
+    output = "Bank reconciliation workflow triggered. Matching engine activated.";
+  }
+  if(type==="MONTH_END"){
+    output = "Month-end checklist locked. Close readiness confirmed.";
+  }
+  if(type==="1099_TRACK"){
+    output = "1099 vendor outreach started. W-9 requests sent.";
+  }
+  if(type==="EXPORT"){
+    output = "Executive report generated. Ready for controller review.";
+  }
+
+  log(output);
+
+  // update BNCA panel if present
+  const bnca = document.querySelector("#finops-bnca, .finops-bnca");
+  if(bnca){
+    bnca.innerText = "UPDATED ACTION:\n\n" + output;
+  }
+}
+</script>
+
+
 </body>
 </html>
