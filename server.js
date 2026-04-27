@@ -3105,6 +3105,71 @@ res.status(404).json({ ok: false, error: 'API route not found' });
 
 
 // ✅ FORCE LISTEN FOR FLY.IO
+
+// ================================
+// TSM FINOPS PERSISTENT BACKEND
+// ================================
+const fs = require('fs');
+const path = require('path');
+
+const finopsDataDir = path.join(__dirname, 'data');
+const finopsFile = path.join(finopsDataDir, 'finops-actions.json');
+
+function ensureFinopsStore(){
+  if(!fs.existsSync(finopsDataDir)) fs.mkdirSync(finopsDataDir, {recursive:true});
+  if(!fs.existsSync(finopsFile)){
+    fs.writeFileSync(finopsFile, JSON.stringify({actions:[], reports:[]}, null, 2));
+  }
+}
+function readFinopsStore(){
+  ensureFinopsStore();
+  try { return JSON.parse(fs.readFileSync(finopsFile, 'utf8')); }
+  catch(e){ return {actions:[], reports:[]}; }
+}
+function writeFinopsStore(data){
+  ensureFinopsStore();
+  fs.writeFileSync(finopsFile, JSON.stringify(data, null, 2));
+}
+
+app.get('/api/finops/actions', (req,res)=>{
+  const data = readFinopsStore();
+  res.json({ok:true, actions:data.actions || [], reports:data.reports || []});
+});
+
+app.post('/api/finops/action', (req,res)=>{
+  const data = readFinopsStore();
+  const body = req.body || {};
+  const action = {
+    id:'finops-' + Date.now(),
+    type: body.type || 'GENERAL',
+    title: body.title || 'FinOps Action',
+    owner: body.owner || 'TSM FinOps Layer',
+    status: body.status || 'ACTIONED',
+    summary: body.summary || '',
+    lane: body.lane || 'Financial Operations',
+    ts: new Date().toISOString()
+  };
+  data.actions = [action, ...(data.actions || [])].slice(0,200);
+  writeFinopsStore(data);
+  res.json({ok:true, action, count:data.actions.length});
+});
+
+app.post('/api/finops/report', (req,res)=>{
+  const data = readFinopsStore();
+  const body = req.body || {};
+  const report = {
+    id:'finops-report-' + Date.now(),
+    title: body.title || 'TSM Financial Operations Report',
+    summary: body.summary || '',
+    metrics: body.metrics || {},
+    ts: new Date().toISOString()
+  };
+  data.reports = [report, ...(data.reports || [])].slice(0,50);
+  writeFinopsStore(data);
+  res.json({ok:true, report, count:data.reports.length});
+});
+
+
 app.listen(process.env.PORT || 8080, '0.0.0.0', () => console.log('TSM Shell listening'));
 
 
