@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banner Health — Operational Intelligence Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --bg2: #141414;
+    --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --border-hi: rgba(255,255,255,0.15);
+    --text: #e8e8e8;
+    --text2: #999;
+    --text3: #666;
+    --gold: #C9A84C;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-dark: #8B6914;
+    --green: #1D9E75;
+    --green-dim: rgba(29,158,117,0.12);
+    --blue: #378ADD;
+    --blue-dim: rgba(55,138,221,0.12);
+    --red: #D85A30;
+    --red-dim: rgba(216,90,48,0.12);
+    --purple: #7F77DD;
+    --purple-dim: rgba(127,119,221,0.12);
+    --mono: 'Courier New', Courier, monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .hdr {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+  .hdr-left { flex: 1; }
+  .org-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .hdr h1 {
+    font-size: 24px; font-weight: 600; color: #fff;
+    margin-bottom: 4px; line-height: 1.2;
+  }
+  .hdr-sub { font-size: 13px; color: var(--text2); }
+  .hdr-badge {
+    background: var(--green-dim); border: 1px solid var(--green);
+    color: var(--green); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; padding: 4px 10px; border-radius: 4px;
+    white-space: nowrap; align-self: flex-start; margin-top: 4px;
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: #000; border: 1px solid var(--green);
+    border-radius: 6px; overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .ticker-label {
+    display: inline-block; background: var(--green);
+    color: #000; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; padding: 4px 10px;
+  }
+  .ticker-scroll {
+    display: inline-block;
+    font-family: var(--mono); font-size: 11px; color: #00ff88;
+    padding: 6px 12px; letter-spacing: 0.04em;
+    white-space: nowrap;
+    animation: scroll 30s linear infinite;
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* STAT ROW */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 1.5rem;
+  }
+  .stat {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px; text-align: center;
+  }
+  .stat-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .stat-val { font-size: 18px; font-weight: 700; }
+  .gold  { color: var(--gold); }
+  .green { color: var(--green); }
+  .blue  { color: var(--blue); }
+  .red   { color: var(--red); }
+
+  /* STEPS */
+  .step {
+    border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+  .step.open { border-color: var(--border-hi); }
+
+  .step-hdr {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; cursor: pointer;
+    background: var(--bg2);
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .step-hdr:hover { background: var(--bg3); }
+  .step.open .step-hdr { border-bottom: 1px solid var(--border); }
+
+  .badge {
+    font-size: 10px; font-weight: 700; padding: 3px 9px;
+    border-radius: 20px; letter-spacing: 0.06em; text-transform: uppercase;
+    white-space: nowrap; border: 1px solid;
+  }
+  .b-open   { border-color: var(--gold);   color: var(--gold);   background: var(--gold-dim); }
+  .b-speak  { border-color: var(--blue);   color: var(--blue);   background: var(--blue-dim); }
+  .b-nav    { border-color: var(--green);  color: var(--green);  background: var(--green-dim); }
+  .b-click  { border-color: var(--red);    color: var(--red);    background: var(--red-dim); }
+  .b-close  { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+
+  .step-title { font-size: 14px; font-weight: 500; flex: 1; color: var(--text); }
+  .chev { font-size: 12px; color: var(--text3); transition: transform 0.2s; }
+  .step.open .chev { transform: rotate(90deg); }
+
+  .step-body { display: none; padding: 16px; background: var(--bg); }
+  .step.open .step-body { display: block; }
+
+  /* LINES */
+  .line {
+    font-size: 13px; line-height: 1.75;
+    padding: 8px 12px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 8px;
+    border-radius: 0 4px 4px 0;
+  }
+  .line:last-child { margin-bottom: 0; }
+  .line.quote {
+    border-left-color: var(--blue);
+    color: #c8dff7;
+    font-style: italic;
+    background: var(--blue-dim);
+  }
+  .line.dir {
+    border-left-color: var(--gold);
+    color: var(--text2);
+    font-size: 12px;
+  }
+  .line.pause {
+    border-left-color: transparent;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3); padding-left: 0;
+    text-align: center; background: none;
+  }
+  .line.cmd {
+    border-left-color: var(--green);
+    font-family: var(--mono); font-size: 12px;
+    background: rgba(29,158,117,0.08);
+    color: #9FE1CB;
+  }
+
+  /* UI REFERENCE BOX */
+  .ui-ref {
+    background: #000;
+    border: 1px solid var(--green);
+    border-radius: 6px; padding: 10px 14px;
+    margin: 10px 0;
+    font-family: var(--mono); font-size: 11px;
+  }
+  .ui-ref .url { color: #5DCAA5; margin-bottom: 4px; font-weight: 600; }
+  .ui-ref .detail { color: #3a7a5c; line-height: 1.6; }
+
+  /* PRIORITY TABLE */
+  .priority-table {
+    width: 100%; font-size: 12px; border-collapse: collapse;
+    margin: 12px 0;
+  }
+  .priority-table th {
+    text-align: left; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text3); padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .priority-table td {
+    padding: 8px 8px; border-bottom: 1px solid var(--border);
+    color: var(--text); vertical-align: middle;
+  }
+  .priority-table tr:last-child td { border-bottom: none; }
+  .priority-table tr:hover td { background: var(--bg2); }
+  .priority-num { font-weight: 700; color: var(--text3); }
+  .impact-val { font-weight: 600; }
+  .urgent { font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 10px; background: var(--red-dim);
+    color: var(--red); border: 1px solid var(--red); }
+  .inprog { font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 10px; background: var(--green-dim);
+    color: var(--green); border: 1px solid var(--green); }
+
+  /* NODE CARDS */
+  .node-cards {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 8px; margin: 12px 0;
+  }
+  .node-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px;
+    border-top-width: 2px;
+  }
+  .nc-ins  { border-top-color: var(--red); }
+  .nc-ops  { border-top-color: var(--blue); }
+  .nc-fin  { border-top-color: var(--green); }
+  .nc-comp { border-top-color: var(--purple); }
+  .nc-name { font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 4px; }
+  .nc-ins  .nc-name { color: var(--red); }
+  .nc-ops  .nc-name { color: var(--blue); }
+  .nc-fin  .nc-name { color: var(--green); }
+  .nc-comp .nc-name { color: var(--purple); }
+  .nc-issue { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* OBJECTIONS */
+  .obj {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; margin-bottom: 8px;
+    background: var(--bg2);
+    transition: border-color 0.15s;
+  }
+  .obj:hover { border-color: var(--border-hi); }
+  .obj-q {
+    font-size: 12px; font-weight: 600;
+    color: var(--text2); margin-bottom: 6px;
+  }
+  .obj-q::before { content: '"'; color: var(--text3); margin-right: 2px; }
+  .obj-q::after  { content: '"'; color: var(--text3); margin-left: 2px; }
+  .obj-a { font-size: 13px; line-height: 1.7; color: var(--text); }
+
+  /* DIVIDER */
+  .divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  /* FOOTER */
+  .footer {
+    font-size: 11px; color: var(--text3); line-height: 1.8;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem; margin-top: 1.5rem;
+  }
+  .footer strong { color: var(--text2); }
+
+  /* PRINT */
+  @media print {
+    body { background: #fff; color: #111; }
+    .ticker-wrap, .ticker-scroll { animation: none; }
+    .step-body { display: block !important; }
+    .chev { display: none; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 540px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .node-cards { grid-template-columns: 1fr; }
+    .priority-table { font-size: 11px; }
+    .hdr { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="org-label">Operational Intelligence Demo</div>
+      <h1>Banner Health</h1>
+      <div class="hdr-sub">BNCA Engine &nbsp;·&nbsp; HC Strategist &nbsp;·&nbsp; GHS Presentation &nbsp;·&nbsp; April 2026</div>
+    </div>
+    <div class="hdr-badge">LIVE SYSTEM</div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <span class="ticker-label">LIVE</span>
+    <span class="ticker-scroll">
+      BANNER HEALTH &nbsp;//&nbsp; REVENUE AT RISK $2.1M &nbsp;//&nbsp; CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS &nbsp;//&nbsp; DENIAL RATE — 18.4% VS TARGET 9% &nbsp;//&nbsp; PRIOR AUTH FRICTION — HIGH &nbsp;//&nbsp; NODES LIVE — 11 / 11 &nbsp;//&nbsp; OPS QUEUE — 31 &nbsp;//&nbsp; OPERATIONS NODE — LIVE &nbsp;//&nbsp; STAFFING / THROUGHPUT — WATCHLIST ACTIVE &nbsp;//&nbsp; BANNER HEALTH &nbsp;//&nbsp; REVENUE AT RISK $2.1M &nbsp;//&nbsp; CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS &nbsp;//&nbsp; DENIAL RATE — 18.4% VS TARGET 9% &nbsp;//&nbsp; PRIOR AUTH FRICTION — HIGH &nbsp;//&nbsp; NODES LIVE — 11 / 11 &nbsp;//&nbsp; OPS QUEUE — 31 &nbsp;//&nbsp; OPERATIONS NODE — LIVE &nbsp;//&nbsp; STAFFING / THROUGHPUT — WATCHLIST ACTIVE
+    </span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-lbl">Revenue at risk</div>
+      <div class="stat-val gold">$2.1M</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Denial rate</div>
+      <div class="stat-val red">18.4%</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Claims backlog</div>
+      <div class="stat-val blue">247</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Nodes online</div>
+      <div class="stat-val green">11 / 11</div>
+    </div>
+  </div>
+
+  <!-- ── OPEN ── -->
+  <div class="step open" id="s0">
+    <div class="step-hdr" onclick="tog('s0')">
+      <span class="badge b-open">Open</span>
+      <span class="step-title">Opening — say this while the screen loads, don't click anything</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Navigate to tsm-shell.fly.dev/html/ghs/ before the meeting. Let the live ticker run across the top. Hands off.</div>
+      <div class="line quote">"What you're looking at is not a dashboard. It's a live operational command system — it reads Banner's payer mix, your claims backlog, your prior auth queue, and tells your revenue cycle team exactly where to move first."</div>
+      <div class="line pause">— let them read the ticker — do not fill the silence —</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1 ── -->
+  <div class="step" id="s1">
+    <div class="step-hdr" onclick="tog('s1')">
+      <span class="badge b-speak">Step 1</span>
+      <span class="step-title">Set the stakes — hands off the keyboard, just talk</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Don't touch the screen. Watch for a nod — that's your green light to move forward.</div>
+      <div class="line quote">"Every major health system right now is absorbing the same three compounding pressures: denial rates climbing past 18%, prior auth backlogs that freeze cash for 30-plus days, and intake bottlenecks that create downstream pressure across every lane."</div>
+      <div class="line quote">"The problem isn't that these things exist — it's that they don't live in one system. They compound across teams. That's where Banner's $2.1 million in active rev-cycle value is sitting right now."</div>
+      <div class="line pause">— pause — watch their face —</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 2 ── -->
+  <div class="step" id="s2">
+    <div class="step-hdr" onclick="tog('s2')">
+      <span class="badge b-nav">Step 2</span>
+      <span class="step-title">The live operational surface — tsm-shell.fly.dev/html/ghs/</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="ui-ref">
+        <div class="url">↗ tsm-shell.fly.dev/html/ghs/</div>
+        <div class="detail">Live · 11/11 nodes online · Mode: OFFICE MANAGER · Engine: BNCA<br>Scope: CLAIMS · AUTHS · COMPLIANCE · STAFFING · VENDORS</div>
+      </div>
+      <div class="line quote">"This is the live operational surface. Every node represents a functional lane in Banner's revenue cycle — Operations, Medical, Pharmacy, Insurance, Financial, Legal, Vendors, Compliance."</div>
+      <div class="line quote">"Each one is reporting pressure in real time. The system has already identified the top issue in each lane."</div>
+      <div class="node-cards">
+        <div class="node-card nc-ins">
+          <div class="nc-name">Insurance</div>
+          <div class="nc-issue">Prior auth delay remains the top denial driver across the network</div>
+        </div>
+        <div class="node-card nc-ops">
+          <div class="nc-name">Operations</div>
+          <div class="nc-issue">Intake delays + scheduling pressure are the main throughput blockers</div>
+        </div>
+        <div class="node-card nc-fin">
+          <div class="nc-name">Financial</div>
+          <div class="nc-issue">AR aging and revenue drag remain concentrated in delayed claims</div>
+        </div>
+        <div class="node-card nc-comp">
+          <div class="nc-name">Compliance</div>
+          <div class="nc-issue">Documentation gaps continue to affect audit posture across nodes</div>
+        </div>
+      </div>
+      <div class="line pause">— give them 5 full seconds — don't explain every node —</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3 ── -->
+  <div class="step" id="s3">
+    <div class="step-hdr" onclick="tog('s3')">
+      <span class="badge b-nav">Step 3</span>
+      <span class="step-title">Navigate to HC Strategist — where it becomes actionable</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="ui-ref">
+        <div class="url">↗ tsm-shell.fly.dev/html/hc-strategist/index.html</div>
+        <div class="detail">HC STRATEGIST · BNCA Engine · Beacon of Truth · Healthcare Command Authority<br>NODE ACTIVE · REPORT MEMORY LIVE · Priority Action Queue — ranked by impact</div>
+      </div>
+      <div class="line quote">"But this is where it becomes actionable."</div>
+      <div class="line dir">One sentence. Navigate. Stop. Let the Priority Action Queue load — let them read it before you speak.</div>
+      <table class="priority-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Node</th>
+            <th>Action</th>
+            <th>Impact</th>
+            <th>Deadline</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="priority-num">1</td>
+            <td>Compliance</td>
+            <td>Execute HIPAA BAA for missing vendors</td>
+            <td class="impact-val red">$1.9M risk</td>
+            <td>Apr 15</td>
+            <td><span class="urgent">URGENT</span></td>
+          </tr>
+          <tr>
+            <td class="priority-num">2</td>
+            <td>Insurance</td>
+            <td>Reduce denial rate from 8.3% to 5.1%</td>
+            <td class="impact-val gold">$348K</td>
+            <td>Apr 30</td>
+            <td><span class="urgent">URGENT</span></td>
+          </tr>
+          <tr>
+            <td class="priority-num">3</td>
+            <td>Operations</td>
+            <td>Re-sequence intake coverage + clear queues &gt;24h</td>
+            <td class="impact-val blue">Throughput</td>
+            <td>Today</td>
+            <td><span class="urgent">URGENT</span></td>
+          </tr>
+          <tr>
+            <td class="priority-num">4</td>
+            <td>Medical</td>
+            <td>Clear 247 prior auth backlog</td>
+            <td class="impact-val gold">$186K</td>
+            <td>Apr 15</td>
+            <td><span class="urgent">URGENT</span></td>
+          </tr>
+          <tr>
+            <td class="priority-num">5</td>
+            <td>Grants</td>
+            <td>File overdue HRSA health center report</td>
+            <td class="impact-val">Funding</td>
+            <td>Mar 25</td>
+            <td><span class="urgent">URGENT</span></td>
+          </tr>
+          <tr>
+            <td class="priority-num">6</td>
+            <td>Billing</td>
+            <td>Accelerate scrub queue + high-value denial recovery</td>
+            <td class="impact-val green">$48K</td>
+            <td>Apr 01</td>
+            <td><span class="inprog">IN PROGRESS</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 ── -->
+  <div class="step" id="s4">
+    <div class="step-hdr" onclick="tog('s4')">
+      <span class="badge b-click">Step 4</span>
+      <span class="step-title">Click RUN ENTERPRISE BNCA — then go completely silent</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Bottom of HC Strategist — click the green <strong>RUN BNCA</strong> button (bottom right) or <strong>RUN ENTERPRISE BNCA</strong> text button (center bottom).</div>
+      <div class="line pause">— count to 3 in your head — do not speak — let the output generate —</div>
+      <div class="line dir">The BNCA OUTPUT panel on the right side of the GHS screen will populate. Let them read the "BEST NEXT COURSE OF ACTION" section before you say anything.</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 5 ── -->
+  <div class="step" id="s5">
+    <div class="step-hdr" onclick="tog('s5')">
+      <span class="badge b-speak">Step 5</span>
+      <span class="step-title">Read the numbers — one line, one breath, one pause each</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Read slowly. One line per breath. The pauses are load-bearing — don't rush through them.</div>
+      <div class="line quote">"Right now Banner has $2.1 million in active revenue cycle value being held — not lost, held."</div>
+      <div class="line pause">— pause —</div>
+      <div class="line quote">"Denial rate is running at 18.4% against a 9% target. That gap is where the money is."</div>
+      <div class="line pause">— pause —</div>
+      <div class="line quote">"There are 247 claims in pending adjudication right now. The system has ranked which ones to clear first — by dollar impact."</div>
+      <div class="line pause">— pause —</div>
+      <div class="line quote">"And there's a $1.9 million compliance exposure with a harder deadline than any of the revenue items on this list."</div>
+      <div class="line pause">— let that land —</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 6 ── -->
+  <div class="step" id="s6">
+    <div class="step-hdr" onclick="tog('s6')">
+      <span class="badge b-speak">Step 6</span>
+      <span class="step-title">Connect the cross-functional picture — don't click anything</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Stay on the same screen. No navigation. This is the "why" behind the numbers.</div>
+      <div class="line quote">"This isn't just an insurance problem. The system is showing that prior auth delays, documentation gaps in clinical, intake bottlenecks in operations, and AR aging in financial are all hitting at the same time — on the same patient population."</div>
+      <div class="line quote">"That convergence is exactly why revenue is stuck. No single team can see it from their lane. This system sees it across all of them — and it tells you which one to fix first."</div>
+      <div class="line dir">Point to the BNCA Output panel on screen: "Clear highest-value backlog first → Escalate auth and documentation blockers older than 24 hours → Align intake, billing, and scheduling."</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 7 ── -->
+  <div class="step" id="s7">
+    <div class="step-hdr" onclick="tog('s7')">
+      <span class="badge b-nav">Step 7</span>
+      <span class="step-title">Exec Correspondence — make it immediately useful for leadership</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Click the <strong>EXEC CORRESPONDENCE</strong> tab at the bottom of the HC Strategist screen.</div>
+      <div class="line quote">"This is where it gets directly useful for your leadership team."</div>
+      <div class="line dir">Set: <strong>Audience → CFO</strong> &nbsp;·&nbsp; <strong>Format → Email</strong></div>
+      <div class="line dir">Type in the query field:</div>
+      <div class="line cmd">"United Healthcare auth backlog — status and recovery timeline"</div>
+      <div class="line dir">Hit <strong>GENERATE</strong>. Count to 4. Let it write fully — don't narrate while it loads.</div>
+      <div class="line quote">"That's a CFO-ready communication — with Banner's numbers, Banner's payer mix, Banner's timeline. It can go out within the hour."</div>
+      <div class="line dir">Hit <strong>COPY</strong>. Say nothing else. Let the moment land.</div>
+      <div class="line pause">— silence —</div>
+    </div>
+  </div>
+
+  <!-- ── STEP 8 ── -->
+  <div class="step" id="s8">
+    <div class="step-hdr" onclick="tog('s8')">
+      <span class="badge b-nav">Step 8</span>
+      <span class="step-title">Optional — GHS Presentation for document intelligence demo</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="ui-ref">
+        <div class="url">↗ tsm-shell.fly.dev/html/ghs-presentation/index.html?v=redirects</div>
+        <div class="detail">GHS HEALTHCARE COMMAND · LIVE EXECUTIVE DEMO<br>Document Intelligence → HC Nodes → HC Strategist → Main Strategist → HITL Manager → Letters + Reports</div>
+      </div>
+      <div class="line dir">Use this if the audience asks "how does it actually process our documents?" This is the full pipeline demo.</div>
+      <div class="line quote">"This is the document intelligence layer — watch what happens when we run a prior auth or referral order through the system."</div>
+      <div class="line dir">Select any document type (Referral Order, Prior Auth Letter, Clinical Note, Consent Form). Click <strong>v3</strong> for the most complete version. Hit <strong>RUN SELECTED DOCUMENT</strong>.</div>
+      <div class="line quote">"The document moves through 5 stages automatically: intake, 11-node parallel analysis, BNCA synthesis, priority ranking, and final HITL review. That's what your team currently does manually — across 3 systems, 2 teams, and 48 hours."</div>
+      <div class="line dir">For a fast demo: hit <strong>ONE-CLICK DEMO MODE</strong> and let all 24 scenarios run. Point to the BNCA Output panel as it populates in real time.</div>
+      <div class="line dir">If they react to the speed: "This is exactly why the 247 claim backlog is addressable this week — not next quarter."</div>
+    </div>
+  </div>
+
+  <!-- ── CLOSE ── -->
+  <div class="step" id="s9">
+    <div class="step-hdr" onclick="tog('s9')">
+      <span class="badge b-close">Close</span>
+      <span class="step-title">The close — Banner-specific, no filler</span>
+      <span class="chev">›</span>
+    </div>
+    <div class="step-body">
+      <div class="line dir">Look up from the screen. No more clicking. Direct eye contact.</div>
+      <div class="line quote">"What you just saw is Banner Health — your payer mix, your backlog, your compliance exposure."</div>
+      <div class="line quote">"The 247 claims in adjudication? Clearable this week. The $1.9 million HIPAA exposure? That has a harder deadline than any revenue item on this list."</div>
+      <div class="line quote">"This doesn't replace your revenue cycle team. It tells them where to go first — and puts leadership-ready communication in their hands before the meeting ends."</div>
+      <div class="line pause">— stop — let them respond —</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- OBJECTIONS -->
+  <div class="section-label">If they say...</div>
+
+  <div class="obj">
+    <div class="obj-q">We already have Epic / Tableau / RCM dashboards.</div>
+    <div class="obj-a">"This sits on top of those — it reads them. It translates what Epic is tracking into a prioritized action queue with dollar values attached. Your team stays in Epic. They just know which 20 of those 247 claims to work first."</div>
+  </div>
+  <div class="obj">
+    <div class="obj-q">Is this real Banner data?</div>
+    <div class="obj-a">"This is a live simulation calibrated to Banner's payer mix, facility footprint, and denial profile. In your environment it pulls directly from your systems. What you're seeing is the logic — the numbers become exact once we're integrated."</div>
+  </div>
+  <div class="obj">
+    <div class="obj-q">How does it handle Banner's 30+ hospital complexity?</div>
+    <div class="obj-a">"That's exactly what it's built for. You can slice by facility, by payer, by service line — or see the consolidated picture across the entire network. The 11 nodes you saw reporting each map to a functional lane across your system, not just one site."</div>
+  </div>
+  <div class="obj">
+    <div class="obj-q">What's the implementation timeline?</div>
+    <div class="obj-a">"Most deployments are live within 30 days. We map to your existing feeds — Epic, your clearinghouse, payer portals. The technical spec is a separate conversation with your IT team. What matters today is whether the output is useful — and you've already seen that."</div>
+  </div>
+  <div class="obj">
+    <div class="obj-q">Who owns this day-to-day?</div>
+    <div class="obj-a">"Revenue cycle directors, operations leads, and the CFO's office. The people who currently spend two hours pulling three reports to answer one question — this gives them that answer before the morning huddle."</div>
+  </div>
+  <div class="obj">
+    <div class="obj-q">We're not sure about the AI piece — how does it make decisions?</div>
+    <div class="obj-a">"Every recommendation is traceable — you can see the node data it used, the payer logic it applied, and the dollar impact it calculated. Nothing is a black box. Your team reviews and approves before anything goes out. The HITL Manager step you saw in the document demo is that review gate."</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <strong>Industry context behind the numbers:</strong><br>
+    Denial rates hit 11.8% industry-wide in 2024 (up from 10.2%). Medicare Advantage denial spike of 4.8% YoY. Prior auth requirements up 30% over 3 years. More than 40% of providers reported denial rates exceeding 10%. Advisory Board: up to 12% of hospital revenue at risk from denied claims.
+  </div>
+
+</div>
+
+<script>
+  function tog(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
