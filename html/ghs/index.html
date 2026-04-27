@@ -666,5 +666,88 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   setInterval(pollNodeState, 15000);
 });
 </script>
+
+<script id="tsm-hc-node-real-app-router">
+(function(){
+  const NODE_URLS = {
+    operations: "/html/hc-operations/index.html",
+    medical: "/html/hc-medical/index.html",
+    pharmacy: "/html/hc-pharmacy/index.html",
+    insurance: "/html/hc-insurance/index.html",
+    financial: "/html/hc-financial/index.html",
+    legal: "/html/hc-legal/index.html",
+    vendors: "/html/hc-vendors/index.html",
+    compliance: "/html/hc-compliance/index.html",
+    billing: "/html/hc-billing/index.html",
+    taxprep: "/html/hc-taxprep/index.html",
+    "tax prep": "/html/hc-taxprep/index.html",
+    grants: "/html/hc-grants/index.html"
+  };
+
+  window.openHCNodeApp = function(node){
+    const key = String(node || "")
+      .toLowerCase()
+      .replace("hc-", "")
+      .replace(/_/g," ")
+      .trim();
+
+    const url = NODE_URLS[key] || NODE_URLS[key.replace(/\s+/g,"")] || null;
+    if(!url){
+      alert("No HC node route found for: " + node);
+      return;
+    }
+
+    window.location.href = url + "?v=node-open-" + Date.now();
+  };
+
+  function detectNodeFromElement(el){
+    let cur = el;
+    for(let i=0; i<5 && cur; i++, cur=cur.parentElement){
+      const txt = (cur.innerText || "").toLowerCase();
+      for(const k of Object.keys(NODE_URLS)){
+        if(txt.includes(k)) return k;
+      }
+    }
+    return null;
+  }
+
+  document.addEventListener("click", function(e){
+    const el = e.target.closest("button,a,[role='button']");
+    if(!el) return;
+
+    const text = (el.innerText || el.textContent || "").toLowerCase().trim();
+
+    // direct node buttons
+    for(const k of Object.keys(NODE_URLS)){
+      if(text === k || text === k.toUpperCase().toLowerCase()){
+        e.preventDefault();
+        openHCNodeApp(k);
+        return;
+      }
+    }
+
+    // OPEN APP buttons inside each node card
+    if(text.includes("open app") || text.includes("open node")){
+      const node = detectNodeFromElement(el);
+      if(node){
+        e.preventDefault();
+        openHCNodeApp(node);
+      }
+    }
+  }, true);
+
+  // Upgrade obvious static buttons/cards with direct click behavior
+  document.querySelectorAll("button,a,[role='button']").forEach(el=>{
+    const text = (el.innerText || el.textContent || "").toLowerCase().trim();
+    for(const k of Object.keys(NODE_URLS)){
+      if(text === k){
+        el.onclick = function(ev){ ev.preventDefault(); openHCNodeApp(k); };
+        el.style.cursor = "pointer";
+      }
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
