@@ -506,6 +506,72 @@ function runFinopsAction(type){
 }
 </style>
 
+
+<style id="finops-outcome-summary-css">
+#finopsOutcomeSummary{
+  margin:12px 20px 20px;
+  padding:14px 16px;
+  border:1px solid #00f59f;
+  border-radius:10px;
+  background:#031a14;
+  color:#d9f3ff;
+  font-family:monospace;
+  box-shadow:0 0 18px rgba(0,245,159,.14);
+}
+#finopsOutcomeSummary b{
+  color:#00f59f;
+  letter-spacing:.12em;
+}
+#finopsOutcomeSummary .outcome-line{
+  margin-top:8px;
+  font-size:15px;
+  line-height:1.55;
+}
+#finopsOutcomeSummary .money-line{
+  margin-top:10px;
+  padding:10px;
+  border:1px solid rgba(0,245,159,.45);
+  color:#00f59f;
+  background:#02110d;
+  font-weight:900;
+}
+</style>
+
+<section id="finopsOutcomeSummary">
+  <b>SYSTEM RESULT · BUSINESS OUTCOME</b>
+  <div class="outcome-line" id="finopsOutcomeLine">
+    → 12 invoices prioritized · 3 reconciliation issues flagged · Month-end risk reduced before close
+  </div>
+  <div class="money-line">
+    This is the work normally chased manually across QuickBooks, email, and spreadsheets — organized instantly for $1,250/month.
+  </div>
+</section>
+
+<script id="finops-outcome-summary-js">
+(function(){
+  function setOutcomeFromAction(text){
+    const el = document.getElementById('finopsOutcomeLine');
+    if(!el) return;
+
+    if(text.includes('AP') || text.includes('Queue')){
+      el.textContent = '→ 12 vendor invoices prioritized · high-risk approvals flagged · payment timing protected';
+    } else if(text.includes('Recon')){
+      el.textContent = '→ 3 reconciliation issues flagged · bank feed matched to QuickBooks · month-end exceptions reduced';
+    } else if(text.includes('Month')){
+      el.textContent = '→ Month-end checklist locked · close readiness confirmed · controller review package prepared';
+    } else if(text.includes('1099')){
+      el.textContent = '→ 7 vendors flagged for W-9 / threshold review · 1099 readiness moved forward';
+    } else if(text.includes('Export')){
+      el.textContent = '→ Controller report generated · executive summary ready · audit trail preserved';
+    }
+  }
+
+  document.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',()=>setOutcomeFromAction(btn.innerText || ''));
+  });
+})();
+</script>
+
 <div class="finops-close-layer">
   <div class="finops-close-title">LIVE FINANCIAL OPERATIONS IMPACT</div>
 
