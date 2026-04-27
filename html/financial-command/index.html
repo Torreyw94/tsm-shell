@@ -1408,4 +1408,73 @@ function pushFinOpsToMainStrategist(){
 }
 </script>
 
+
+<style id="finops-overlay-fix-css">
+/* FinOps overlay/layout correction */
+#finopsLayer{
+  position:relative !important;
+  z-index:5 !important;
+  margin-top:24px !important;
+  margin-right:18px !important;
+  margin-bottom:90px !important;
+}
+
+/* If the page has a fixed/absolute left rail, keep FinOps in the main lane */
+@media (min-width: 900px){
+  body:has(.sidebar) #finopsLayer,
+  body:has(.left-panel) #finopsLayer,
+  body:has(.side-nav) #finopsLayer,
+  body:has(.nav-panel) #finopsLayer{
+    margin-left:300px !important;
+    width:calc(100% - 330px) !important;
+  }
+}
+
+/* Fallback for browsers/page structures without :has support */
+.finops-main-offset{
+  margin-left:300px !important;
+  width:calc(100% - 330px) !important;
+}
+
+/* keep bottom report bar/chat from covering FinOps output */
+#finopsOutput{
+  max-height:300px !important;
+  overflow:auto !important;
+  padding-bottom:22px !important;
+}
+</style>
+
+<script id="finops-overlay-fix-js">
+(function(){
+  function fixFinOpsLayout(){
+    const layer=document.getElementById('finopsLayer');
+    if(!layer) return;
+
+    const leftSelectors=[
+      '.sidebar','.left-panel','.side-nav','.nav-panel',
+      '[class*="sidebar"]','[class*="left"]','[class*="rail"]'
+    ];
+
+    const left = leftSelectors.map(s=>document.querySelector(s)).find(Boolean);
+    if(left && window.innerWidth > 900){
+      const rect=left.getBoundingClientRect();
+      if(rect.width > 120 && rect.left < 80){
+        layer.style.marginLeft = Math.ceil(rect.width + 20) + 'px';
+        layer.style.width = 'calc(100% - ' + Math.ceil(rect.width + 45) + 'px)';
+      }
+    }
+
+    // Move FinOps after the existing main node grid/command area if it was injected too early.
+    const main = document.querySelector('main') || document.querySelector('.main') || document.querySelector('[class*="content"]');
+    if(main && layer.parentElement !== main){
+      main.appendChild(layer);
+    }
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fixFinOpsLayout);
+  else fixFinOpsLayout();
+  setTimeout(fixFinOpsLayout,500);
+})();
+</script>
+
 </body></html>
