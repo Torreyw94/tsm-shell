@@ -29,51 +29,6 @@ main{padding-bottom:42px}
 </style>
 </head>
 <body>
-
-
-<!-- 🔥 TOP ACTION FEED (VISIBLE PROOF) -->
-<style>
-.finops-top-feed{
-  margin:20px;
-  padding:14px;
-  border:1px solid #00f59f;
-  background:#021a12;
-  border-radius:10px;
-  font-family:monospace;
-  font-size:12px;
-  max-height:120px;
-  overflow:auto;
-}
-</style>
-
-<div class="finops-top-feed" id="finops-top-feed">
-[READY] No actions yet...
-</div>
-
-<script>
-async function loadTopFeed(){
-  try{
-    const res = await fetch('/api/finops/actions',{cache:'no-store'});
-    const data = await res.json();
-    const el = document.getElementById('finops-top-feed');
-
-    if(!el) return;
-
-    if(data.actions && data.actions.length){
-      el.innerHTML = data.actions.slice(0,5).map(a =>
-        "["+new Date(a.ts).toLocaleTimeString()+"] " + a.type + " → " + a.summary
-      ).join("<br>");
-    }else{
-      el.innerHTML = "[READY] Awaiting actions...";
-    }
-  }catch(e){}
-}
-
-setInterval(loadTopFeed,3000);
-setTimeout(loadTopFeed,500);
-</script>
-
-
 <header>
   <div>
     <div class="brand">FINOPS MAIN STRATEGIST</div>
@@ -259,7 +214,6 @@ Most teams pay $5K–$7K/month for someone to manage this manually. TSM delivers
     summary:report
   }));
 
-  if(typeof saveFinopsBackendReport === 'function') saveFinopsBackendReport(report);
   alert('Accounting Ops report built and saved.');
 }
 
@@ -270,7 +224,6 @@ function saveFinOpsMainReport(){
     title:'TSM Financial Operations Executive Report',
     summary:txt
   }));
-  if(typeof saveFinopsBackendReport === 'function') saveFinopsBackendReport(txt);
   alert('Saved FinOps Main report.');
 }
 
@@ -452,16 +405,6 @@ function runFinopsAction(type){
   }
 
   log(output);
-  if(typeof saveFinopsBackendAction === 'function'){
-    saveFinopsBackendAction({
-      type,
-      title:'FinOps Action Executed',
-      owner: type==='AP_QUEUE'?'AP Queue':type==='RECON_REVIEW'?'Accounting Review':type==='MONTH_END'?'Controller Review':type==='1099_TRACK'?'Tax / 1099 Queue':'Executive Reporting',
-      status:'ACTIONED',
-      lane:'Financial Operations',
-      summary:output
-    });
-  }
 
   // update BNCA panel if present
   const bnca = document.querySelector("#finops-bnca, .finops-bnca");
@@ -471,47 +414,6 @@ function runFinopsAction(type){
 }
 </script>
 
-
-
-<script id="finops-backend-action-js">
-async function saveFinopsBackendAction(payload){
-  try{
-    await fetch('/api/finops/action',{
-      method:'POST',
-      headers:{'content-type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-  }catch(e){ console.warn('FinOps backend action save failed', e); }
-}
-
-async function saveFinopsBackendReport(summary){
-  try{
-    await fetch('/api/finops/report',{
-      method:'POST',
-      headers:{'content-type':'application/json'},
-      body:JSON.stringify({
-        title:'TSM Financial Operations Executive Report',
-        summary,
-        metrics:{arRisk:'$18.4K', taxOpportunity:'$34K', securityGaps:6, closeReadiness:'84%'}
-      })
-    });
-  }catch(e){ console.warn('FinOps backend report save failed', e); }
-}
-
-async function loadFinopsBackendFeed(){
-  try{
-    const data = await fetch('/api/finops/actions',{cache:'no-store'}).then(r=>r.json());
-    const log = document.getElementById('finops-log');
-    if(log && data.actions?.length){
-      log.innerHTML = data.actions.slice(0,8).map(a =>
-        `[${new Date(a.ts).toLocaleTimeString()}] ${a.type} · ${a.owner} · ${a.status}<br>${a.summary}`
-      ).join('<br><br>');
-    }
-  }catch(e){}
-}
-setInterval(loadFinopsBackendFeed,5000);
-setTimeout(loadFinopsBackendFeed,500);
-</script>
 
 </body>
 </html>
