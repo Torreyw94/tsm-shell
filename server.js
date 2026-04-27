@@ -3109,9 +3109,6 @@ res.status(404).json({ ok: false, error: 'API route not found' });
 // ================================
 // TSM FINOPS PERSISTENT BACKEND
 // ================================
-const fs = require('fs');
-const path = require('path');
-
 const finopsDataDir = path.join(__dirname, 'data');
 const finopsFile = path.join(finopsDataDir, 'finops-actions.json');
 
