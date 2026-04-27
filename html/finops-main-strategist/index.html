@@ -50,7 +50,195 @@ main{padding-bottom:42px}
     <div class="nodegrid" id="nodeGrid"></div>
   </section>
 
-  <section class="panel">
+  
+<style id="finops-accounting-lanes-css">
+#finopsAccountingLanes{
+  margin-top:16px;
+}
+.finops-lane-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.finops-lane{
+  background:#07111b;
+  border:1px solid #123050;
+  border-radius:14px;
+  padding:14px;
+}
+.finops-lane b{
+  color:#00e0ff;
+  letter-spacing:.08em;
+}
+.finops-lane .metric{
+  font-size:24px;
+  color:#00f59f;
+  font-weight:900;
+  margin:8px 0 4px;
+}
+.finops-lane ul{
+  margin:8px 0 0 18px;
+  padding:0;
+  line-height:1.45;
+}
+.finops-report-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.finops-report-actions button{
+  background:#00b7ff;
+  color:#001018;
+  border:0;
+  border-radius:8px;
+  padding:10px 13px;
+  font:900 11px monospace;
+  cursor:pointer;
+}
+.finops-report-actions button.dark{
+  background:transparent;
+  color:#00e0ff;
+  border:1px solid #00e0ff;
+}
+</style>
+
+<section id="finopsAccountingLanes" class="panel">
+  <b style="color:#00e0ff;letter-spacing:.12em">ACCOUNTING OPERATIONS LANES</b>
+  <div style="color:#8fb0c8;margin-top:6px">
+    Staff Accountant coverage: AP · AR · bank reconciliation · month-end close · 1099 readiness · executive reporting.
+  </div>
+
+  <div class="finops-lane-grid">
+    <div class="finops-lane">
+      <b>AP VENDOR INVOICE LANE</b>
+      <div class="metric" id="apMetric">12</div>
+      <small>vendor invoices pending validation</small>
+      <ul>
+        <li>Validate invoice accuracy and timing</li>
+        <li>Flag missing approvals or support</li>
+        <li>Prepare payment priority queue</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>BANK RECONCILIATION LANE</b>
+      <div class="metric" id="bankMetric">3</div>
+      <small>reconciling items need documentation</small>
+      <ul>
+        <li>Match bank feed to books</li>
+        <li>Resolve/document open items</li>
+        <li>Preserve audit trail</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>MONTH-END CLOSE CHECKLIST</b>
+      <div class="metric" id="closeMetric">84%</div>
+      <small>close readiness score</small>
+      <ul>
+        <li>AR/AP reviewed</li>
+        <li>Schedules updated</li>
+        <li>Controller review package prepared</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>1099 TRACKER</b>
+      <div class="metric" id="tax1099Metric">7</div>
+      <small>vendors need W-9 / threshold review</small>
+      <ul>
+        <li>Track vendor eligibility</li>
+        <li>Validate W-9 completeness</li>
+        <li>Prepare year-end 1099 readiness</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>EXECUTIVE REPORTING</b>
+      <div class="metric" id="reportMetric">READY</div>
+      <small>saved report available for review</small>
+      <ul>
+        <li>Summarize AR/AP blockers</li>
+        <li>Highlight tax and compliance risks</li>
+        <li>Recommend BNCA for controller</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="finops-report-actions">
+    <button onclick="buildFinOpsAccountingReport()">BUILD ACCOUNTING OPS REPORT</button>
+    <button onclick="exportFinOpsReport()">EXPORT PDF-READY</button>
+    <button class="dark" onclick="saveFinOpsMainReport()">SAVE REPORT</button>
+  </div>
+</section>
+
+<script id="finops-accounting-lanes-js">
+function buildFinOpsAccountingReport(){
+  const report = `TSM FINANCIAL OPERATIONS LAYER — ACCOUNTING OPS REPORT
+
+AP VENDOR INVOICE LANE
+- 12 vendor invoices pending validation.
+- Validate invoice accuracy, approvals, timing, and supporting documentation.
+- Prioritize invoices by due date and vendor impact.
+
+BANK RECONCILIATION LANE
+- 3 reconciling items require documentation.
+- Match bank feed transactions to QuickBooks activity.
+- Resolve or document exceptions before month-end review.
+
+MONTH-END CLOSE CHECKLIST
+- Close readiness: 84%.
+- AR/AP review active.
+- Supporting schedules and documentation require final update.
+- Controller review package should be prepared before close.
+
+1099 TRACKER
+- 7 vendors require W-9 / threshold review.
+- Maintain 1099 process and prepare year-end readiness.
+- Flag missing vendor tax documentation.
+
+BEST NEXT COURSE OF ACTION
+Prioritize AP validation and bank reconciliation exceptions first, complete 1099 vendor review, then package month-end support for Controller review.
+
+$1,250/MO VALUE POSITION
+Most teams pay $5K–$7K/month for someone to manage this manually. TSM delivers it as a system that monitors, flags, organizes, and reports the work for $1,250/month.`;
+
+  const summary=document.getElementById('summary');
+  if(summary) summary.textContent = report;
+
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Accounting Ops Report',
+    summary:report
+  }));
+
+  alert('Accounting Ops report built and saved.');
+}
+
+function saveFinOpsMainReport(){
+  const txt = document.getElementById('summary')?.textContent || 'FinOps report saved.';
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Executive Report',
+    summary:txt
+  }));
+  alert('Saved FinOps Main report.');
+}
+
+function exportFinOpsReport(){
+  const txt = document.getElementById('summary')?.textContent || '';
+  const w = window.open('', '_blank');
+  w.document.write(`<pre style="font-family:monospace;white-space:pre-wrap;line-height:1.5">${txt.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</pre>`);
+  w.document.title = 'TSM Financial Operations Report';
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+</script>
+
+
+<section class="panel">
     <b style="color:#00e0ff;letter-spacing:.12em">FINANCIAL OPERATIONS EXECUTIVE BNCA</b>
     <div class="summary" id="summary">Waiting for Financial Command report...</div>
     <button class="btn" onclick="location.href='/html/financial-command/index.html?v=from-finops-main'">OPEN FINANCIAL COMMAND</button>
