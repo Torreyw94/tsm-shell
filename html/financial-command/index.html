@@ -1215,4 +1215,182 @@ Be direct, specific, dollar-focused.';
 
 
 <script id="tsm-api-fix">/* TSM API routing fixed */</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd841ad308e7d',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd841ad308e7d',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<style id="finops-layer-css">
+#finopsLayer{
+  margin:18px;
+  padding:18px;
+  border:1px solid #00f59f;
+  border-radius:14px;
+  background:#041a12;
+  color:#d9f3ff;
+  font-family:monospace;
+}
+#finopsLayer h2{margin:0 0 8px;color:#00f59f;letter-spacing:.12em}
+.finops-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:14px 0}
+.finops-card{background:#061018;border:1px solid #123050;border-radius:12px;padding:14px}
+.finops-card b{color:#00e0ff}
+.finops-val{font-size:24px;font-weight:900;color:#00f59f;margin-top:6px}
+.finops-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.finops-actions button{
+  background:transparent;
+  color:#00f59f;
+  border:1px solid #00f59f;
+  border-radius:8px;
+  padding:9px 12px;
+  font:900 11px monospace;
+  cursor:pointer;
+}
+.finops-actions button.primary{background:#00f59f;color:#001018}
+#finopsOutput{
+  margin-top:14px;
+  white-space:pre-wrap;
+  background:#02070d;
+  border:1px solid #123050;
+  border-radius:12px;
+  padding:14px;
+  line-height:1.5;
+}
+</style>
+
+<section id="finopsLayer">
+  <h2>TSM FINANCIAL OPERATIONS LAYER · $1,250/MO</h2>
+  <div style="color:#8fb0c8">
+    Transaction monitoring · AR/AP management · reconciliation oversight · month-end intelligence · compliance monitoring · executive reporting
+  </div>
+
+  <div class="finops-grid">
+    <div class="finops-card"><b>Financial Intel</b><div class="finops-val">$18.4K</div><small>AR collection priority</small></div>
+    <div class="finops-card"><b>Tax Intelligence</b><div class="finops-val">$34K</div><small>deadline / savings window</small></div>
+    <div class="finops-card"><b>Compliance Shield</b><div class="finops-val">94%</div><small>controls score</small></div>
+    <div class="finops-card"><b>Zero Trust</b><div class="finops-val">6</div><small>security gaps detected</small></div>
+    <div class="finops-card"><b>Strategist</b><div class="finops-val">BNCA</div><small>executive recommendation</small></div>
+  </div>
+
+  <div class="finops-actions">
+    <button class="primary" onclick="generateInvoice()">GENERATE INVOICE</button>
+    <button onclick="runCollectionScan()">SCAN OUTSTANDING AR</button>
+    <button onclick="runTaxNode()">RUN TAX NODE</button>
+    <button onclick="runComplianceNode()">RUN COMPLIANCE SHIELD</button>
+    <button onclick="runZeroTrustNode()">RUN ZERO TRUST</button>
+    <button onclick="runFinOpsBNCA()">RUN FINOPS BNCA</button>
+    <button onclick="saveFinOpsReport()">SAVE EXEC REPORT</button>
+  </div>
+
+  <div id="finopsOutput">Ready. Deploy a financial operations query across Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.</div>
+</section>
+
+<script id="finops-layer-js">
+function setFinOpsOutput(txt){
+  document.getElementById('finopsOutput').textContent = txt;
+}
+
+function generateInvoice(){
+  setFinOpsOutput(`INVOICE GENERATED
+
+Customer: Inty Power Client Account
+Amount: $4,850
+Terms: Net 15
+Status: Sent / tracking payment timeline
+
+FINANCIAL INTEL:
+Invoice added to AR monitor. Payment delay risk will be tracked automatically.
+
+UPGRADE VALUE:
+This does not just generate an invoice — it tracks revenue flow, detects delayed payment risk, and prioritizes collections.`);
+}
+
+function runCollectionScan(){
+  setFinOpsOutput(`AR COLLECTION SCAN
+
+3 overdue accounts detected
+Total at risk: $18,400
+Priority: follow up within 48 hours
+
+FINANCIAL INTEL:
+Highest priority account has 61-day aging and prior late-payment pattern.
+
+BEST NEXT ACTION:
+Send collection reminder, confirm receipt, and escalate if no response within 2 business days.`);
+}
+
+function runTaxNode(){
+  setFinOpsOutput(`TAX INTELLIGENCE NODE
+
+Detected:
+- 1099 process requires vendor validation
+- Estimated tax planning window open
+- Potential $34K tax opportunity before year-end
+
+BEST NEXT ACTION:
+Validate vendor W-9 records, review contractor payment thresholds, and prepare 1099 readiness report.`);
+}
+
+function runComplianceNode(){
+  setFinOpsOutput(`COMPLIANCE SHIELD
+
+Detected:
+- Supporting schedules present but need final month-end review
+- 2 documentation items require attachment
+- Audit trail available for AR/AP activity
+
+BEST NEXT ACTION:
+Attach supporting documentation, validate approvals, and preserve report for month-end close.`);
+}
+
+function runZeroTrustNode(){
+  setFinOpsOutput(`ZERO TRUST NODE
+
+Detected:
+- 6 security gaps
+- 2 critical permissions require review
+- Financial data access should be limited to controller/accounting owner
+
+BEST NEXT ACTION:
+Review QuickBooks access, remove unnecessary users, and document permission changes.`);
+}
+
+function runFinOpsBNCA(){
+  const report = `TSM FINANCIAL OPERATIONS LAYER — BNCA
+
+NODES REVIEWED:
+1. Financial Intel
+2. Tax Intelligence
+3. Compliance Shield
+4. Zero Trust
+5. Strategist
+
+BEST NEXT COURSE OF ACTION:
+Prioritize AR collections first, complete 1099 vendor validation, attach missing reconciliation support, and review financial data access permissions.
+
+EXECUTIVE VALUE:
+Most teams pay $5K–$7K/month for someone to manage this manually. TSM delivers it as an intelligent financial operations system for $1,250/month.
+
+SERVICE COVERAGE:
+- Transaction monitoring
+- AR/AP management
+- Reconciliation oversight
+- Month-end intelligence
+- Compliance monitoring
+- Executive reporting`;
+
+  setFinOpsOutput(report);
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Layer BNCA',
+    summary:report
+  }));
+}
+
+function saveFinOpsReport(){
+  const txt = document.getElementById('finopsOutput').textContent;
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Executive Report',
+    summary:txt
+  }));
+  alert('Financial Operations report saved for executive review.');
+}
+</script>
+
+</body></html>
