@@ -357,5 +357,113 @@ Frontline document pressure has been converted into an executive action plan.`
 })();
 </script>
 
+
+<script id="tsm-exec-no-flicker-patch">
+(function(){
+  let lastHealthcareSignature = "";
+
+  async function stableHealthcareRender(){
+    try{
+      const res = await fetch("/api/main-strategist/hc-report",{cache:"no-store"});
+      const data = await res.json();
+
+      const report = data.report || {
+        document:"Claim Denial V3",
+        nodes_reporting:11,
+        risk_posture:"WATCH",
+        status:"READY",
+        summary:"Banner demo BNCA ready: prioritize denial/auth blockers, assign owner lanes, generate follow-up documentation, and relay executive summary."
+      };
+
+      const signature = JSON.stringify({
+        d: report.document,
+        n: report.nodes_reporting,
+        r: report.risk_posture,
+        s: report.status,
+        m: report.summary
+      });
+
+      // Do not re-render if same data. Prevents 0 → 11 animation loop.
+      if(signature === lastHealthcareSignature) return;
+      lastHealthcareSignature = signature;
+
+      const isExec = location.pathname.includes("executive-portal");
+      const id = isExec ? "tsmStableExecHealthcarePanel" : "tsmStableHcMainPanel";
+      let panel = document.getElementById(id);
+
+      if(!panel){
+        panel = document.createElement("section");
+        panel.id = id;
+        panel.style.cssText = `
+          margin:16px;
+          padding:16px;
+          border:1px solid #00e0ff;
+          border-radius:16px;
+          background:linear-gradient(135deg,#061018,#031a14);
+          color:#d9f3ff;
+          font-family:monospace;
+          box-shadow:0 0 22px rgba(0,224,255,.16);
+        `;
+
+        const header = document.querySelector("header") || document.body.firstElementChild;
+        if(header && header.parentNode) header.parentNode.insertBefore(panel, header.nextSibling);
+        else document.body.prepend(panel);
+      }
+
+      const denom = isExec ? 12 : 11;
+      const title = isExec
+        ? "HEALTHCARE EXECUTIVE VIEW · BANNER DEMO READY"
+        : "LIVE HEALTHCARE MAIN STRATEGIST OUTPUT · FROM GHS PRESENTATION";
+
+      panel.innerHTML = `
+        <div style="color:#00e0ff;font-weight:900;letter-spacing:.14em;margin-bottom:12px">${title}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px">
+          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
+            <div style="color:#9bbbd0;font-size:12px">Nodes Reporting</div>
+            <div style="margin-top:6px;color:#00f59f;font-size:24px;font-weight:900">${report.nodes_reporting || 11} / ${denom}</div>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
+            <div style="color:#9bbbd0;font-size:12px">Latest Document</div>
+            <div style="margin-top:6px;color:#00f59f;font-size:24px;font-weight:900">${report.document || "Claim Denial V3"}</div>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
+            <div style="color:#9bbbd0;font-size:12px">Risk Posture</div>
+            <div style="margin-top:6px;color:#ffb000;font-size:24px;font-weight:900">${report.risk_posture || "WATCH"}</div>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
+            <div style="color:#9bbbd0;font-size:12px">Report Status</div>
+            <div style="margin-top:6px;color:#00f59f;font-size:24px;font-weight:900">${report.status || "READY"}</div>
+          </div>
+        </div>
+        <div style="white-space:pre-wrap;border:1px solid #123050;border-radius:12px;padding:14px;background:#02070d;line-height:1.55">${report.summary || ""}</div>
+        <div style="margin-top:10px;color:#00f59f;font-size:11px;letter-spacing:.12em">TSM Neural Core locked · healthcare posture stable</div>
+      `;
+
+      panel.animate(
+        [
+          {boxShadow:"0 0 0 rgba(0,245,159,0)"},
+          {boxShadow:"0 0 28px rgba(0,245,159,.35)"},
+          {boxShadow:"0 0 22px rgba(0,224,255,.16)"}
+        ],
+        {duration:700, easing:"ease-out"}
+      );
+
+      // Hide older polish panels to prevent duplicate / animated versions.
+      ["tsmPolishedExec","tsmPolishedHcMain","tsmExecHealthcareLivePanel","tsmHcLiveReportPanel"].forEach(oldId=>{
+        const old=document.getElementById(oldId);
+        if(old && old.id !== id) old.style.display="none";
+      });
+
+    }catch(e){
+      console.warn("stable healthcare render failed", e);
+    }
+  }
+
+  window.stableHealthcareRender = stableHealthcareRender;
+  setTimeout(stableHealthcareRender,250);
+  setInterval(stableHealthcareRender,2500);
+})();
+</script>
+
 </body>
 </html>
