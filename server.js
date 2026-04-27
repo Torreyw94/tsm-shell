@@ -337,6 +337,75 @@ function buildStrategistSystemPosture(system, officesPayload = []) {
 // ── HUB ROUTE ──
 app.get("/hub", (req, res) => res.sendFile(path.join(__dirname, "html", "hub", "index.html")));
 
+
+// =====================================================
+// TSM DEMO-SAFE AI + HEALTHCARE STRATEGIST ROUTES
+// Must appear BEFORE static fallback / catch-all routes
+// =====================================================
+
+let tsmHealthcareReport = {
+  report: null,
+  updated_at: null
+};
+
+app.post('/ai/chat', express.json({limit:'2mb'}), async (req,res)=>{
+  const body = req.body || {};
+  const msg = body.message || body.prompt || 'healthcheck';
+  const mode = body.mode || 'healthcare';
+
+  return res.json({
+    ok:true,
+    status:'TSM Neural Core demo bridge online',
+    mode,
+    response:
+      mode === 'healthcare'
+        ? `TSM Healthcare BNCA: Review claims pressure, prior authorization delay, documentation gaps, and compliance risk. Best next action: prioritize highest-risk workflow, assign owner lane, generate follow-up output, and relay summary to Main Strategist. Input: ${msg}`
+        : `TSM Neural Core response: ${msg}`,
+    ts:new Date().toISOString()
+  });
+});
+
+app.get('/api/main-strategist/hc-report', (req,res)=>{
+  res.json({
+    ok:true,
+    report: tsmHealthcareReport.report,
+    updated_at: tsmHealthcareReport.updated_at
+  });
+});
+
+app.post('/api/main-strategist/hc-report', express.json({limit:'5mb'}), (req,res)=>{
+  const body = req.body || {};
+
+  const report = {
+    source: body.source || 'ghs-presentation',
+    document: body.document || body.latestDocument || 'Claim Denial V3',
+    nodes_reporting: body.nodes_reporting || body.nodes || 11,
+    risk_posture: body.risk_posture || 'WATCH',
+    status: 'READY',
+    summary: body.summary || body.bnca || `HC STRATEGIST SYNTHESIS
+
+NODES REPORTING: 11
+
+LATEST DOCUMENT:
+Claim Denial V3
+
+BEST NEXT COURSE OF ACTION:
+Prioritize highest-severity denial and prior authorization blockers, assign owner lanes, generate follow-up documentation, preserve HITL approval, and relay executive summary to leadership.
+
+EXECUTIVE IMPACT:
+Revenue risk and operational delay are now visible at the Main Strategist layer.`,
+    ts: new Date().toISOString()
+  };
+
+  tsmHealthcareReport = {
+    report,
+    updated_at: new Date().toISOString()
+  };
+
+  res.json({ok:true, report});
+});
+
+
 app.use(express.static(__dirname, {
   extensions: ['html']
 }));
