@@ -516,5 +516,82 @@ setInterval(loadFinopsBackendFeed,5000);
 setTimeout(loadFinopsBackendFeed,500);
 </script>
 
+
+<style id="finops-terminal-feed-css">
+#finops-feed{
+  min-height:42px;
+  color:#00f59f;
+  text-shadow:0 0 8px rgba(0,245,159,.45);
+}
+#finops-feed::after{
+  content:" █";
+  animation: finopsBlink .8s infinite;
+}
+@keyframes finopsBlink{
+  0%,45%{opacity:1}
+  46%,100%{opacity:0}
+}
+.finops-terminal-line{
+  display:block;
+  animation: finopsLineIn .28s ease-out;
+}
+@keyframes finopsLineIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.finops-feed-hot{
+  box-shadow:0 0 24px rgba(0,245,159,.35);
+  animation: finopsPulse .7s ease-out;
+}
+@keyframes finopsPulse{
+  0%{transform:scale(.995);border-color:#00e0ff}
+  100%{transform:scale(1);border-color:#00f59f}
+}
+</style>
+
+<script id="finops-terminal-feed-js">
+(function(){
+  let lastFeedText = "";
+
+  window.renderFinopsTerminalFeed = function(lines){
+    const feed = document.getElementById("finops-feed");
+    if(!feed) return;
+
+    const html = lines.map(x => `<span class="finops-terminal-line">${x}</span>`).join("");
+    if(html !== lastFeedText){
+      lastFeedText = html;
+      feed.innerHTML = html;
+      feed.closest(".finops-top-feed")?.classList.add("finops-feed-hot");
+      setTimeout(()=>feed.closest(".finops-top-feed")?.classList.remove("finops-feed-hot"),800);
+    }
+  };
+
+  const oldLoad = window.loadFinopsFeed;
+  window.loadFinopsFeed = async function(){
+    try{
+      const res = await fetch('/api/finops/actions',{cache:'no-store'});
+      const data = await res.json();
+
+      if(!data.actions || data.actions.length === 0){
+        renderFinopsTerminalFeed(["[READY] Awaiting actions..."]);
+        return;
+      }
+
+      renderFinopsTerminalFeed(
+        data.actions.slice(0,6).map(a =>
+          "[" + new Date(a.ts).toLocaleTimeString() + "] " +
+          "✓ " + a.type + " :: " + (a.summary || a.status || "Action logged")
+        )
+      );
+    }catch(e){
+      renderFinopsTerminalFeed(["[OFFLINE] Action feed reconnecting..."]);
+    }
+  };
+
+  setInterval(window.loadFinopsFeed, 2000);
+  setTimeout(window.loadFinopsFeed, 400);
+})();
+</script>
+
 </body>
 </html>
