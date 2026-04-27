@@ -249,219 +249,76 @@ Revenue risk, auth friction, compliance exposure, and office-level operational p
 }
 </style>
 
-<script id="tsm-exec-polish-js">
+
+
+
+
+
+
+<script id="tsm-final-stability-lock">
 (function(){
-  function animateNumber(el, end, suffix){
-    if(!el) return;
-    let start = 0;
-    const dur = 500;
-    const t0 = performance.now();
-    function tick(now){
-      const p = Math.min(1,(now-t0)/dur);
-      const val = Math.round(start + (end-start)*p);
-      el.textContent = val + suffix;
-      if(p<1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
+  let lastSig = null;
 
-  function defaultReport(){
-    return {
-      document:"Claim Denial V3",
-      nodes_reporting:11,
-      risk_posture:"WATCH",
-      status:"READY",
-      summary:`HEALTHCARE EXECUTIVE BNCA
-
-BEST NEXT COURSE OF ACTION:
-Prioritize highest-severity denial and prior authorization blockers, assign owner lanes, generate follow-up documentation, preserve HITL approval, and relay executive summary to leadership.
-
-LEADERSHIP VIEW:
-Frontline document pressure has been converted into an executive action plan.`
-    };
-  }
-
-  function makePanel(id,title,denom){
-    let panel=document.getElementById(id);
-    if(!panel){
-      panel=document.createElement("section");
-      panel.id=id;
-      panel.className="tsm-polish-panel";
-
-      const header=document.querySelector("header") || document.body.firstElementChild;
-      if(header && header.parentNode) header.parentNode.insertBefore(panel, header.nextSibling);
-      else document.body.prepend(panel);
-    }
-    return panel;
-  }
-
-  function renderPanel(id,title,report,denom){
-    const panel=makePanel(id,title,denom);
-    const n = Number(report.nodes_reporting || 11);
-    panel.innerHTML = `
-      <div class="tsm-polish-title">${title}</div>
-      <div class="tsm-polish-grid">
-        <div class="tsm-polish-card"><div class="label">Nodes Reporting</div><div class="value" data-polish-nodes>0 / ${denom}</div></div>
-        <div class="tsm-polish-card"><div class="label">Latest Document</div><div class="value">${report.document || "Claim Denial V3"}</div></div>
-        <div class="tsm-polish-card"><div class="label">Risk Posture</div><div class="value risk">${report.risk_posture || "WATCH"}</div></div>
-        <div class="tsm-polish-card"><div class="label">Report Status</div><div class="value">${report.status || "READY"}</div></div>
-      </div>
-      <div class="tsm-polish-report">${report.summary || defaultReport().summary}</div>
-      <div class="tsm-thinking">TSM Neural Core synthesizing live healthcare posture</div>
-    `;
-    panel.classList.remove("tsm-fresh");
-    void panel.offsetWidth;
-    panel.classList.add("tsm-fresh");
-
-    const nodeEl=panel.querySelector("[data-polish-nodes]");
-    animateNumber(nodeEl,n," / "+denom);
-  }
-
-  function hideStaleHealthcareBlocks(){
-    [...document.querySelectorAll("section,div")].forEach(el=>{
-      const txt=(el.textContent||"").trim();
-      if(
-        txt.includes("No healthcare report yet") ||
-        txt.includes("No healthcare signals yet") ||
-        /^Nodes Reporting\s*0\s*Latest Document\s*[-—]/i.test(txt)
-      ){
-        if(!el.closest(".tsm-polish-panel")) el.style.display="none";
-      }
-    });
-  }
-
-  async function loadPolishedHealthcare(){
-    try{
-      const res=await fetch("/api/main-strategist/hc-report",{cache:"no-store"});
-      const data=await res.json();
-      const report=data.report || defaultReport();
-
-      if(location.pathname.includes("hc-main-strategist")){
-        renderPanel("tsmPolishedHcMain","LIVE HEALTHCARE MAIN STRATEGIST OUTPUT · FROM GHS PRESENTATION",report,11);
-      }else if(location.pathname.includes("executive-portal")){
-        const hcTab=[...document.querySelectorAll("button,a,div,span")]
-          .find(x=>(x.textContent||"").trim().toUpperCase()==="HEALTHCARE");
-        try{hcTab?.click?.()}catch(e){}
-        renderPanel("tsmPolishedExec","HEALTHCARE EXECUTIVE VIEW · BANNER DEMO READY",report,12);
-      }
-
-      hideStaleHealthcareBlocks();
-    }catch(e){
-      console.warn("Executive polish failed",e);
-    }
-  }
-
-  window.loadPolishedHealthcare=loadPolishedHealthcare;
-  setTimeout(loadPolishedHealthcare,250);
-  setInterval(loadPolishedHealthcare,2000);
-})();
-</script>
-
-
-<script id="tsm-exec-no-flicker-patch">
-(function(){
-  let lastHealthcareSignature = "";
-
-  async function stableHealthcareRender(){
+  async function stableFetch(){
     try{
       const res = await fetch("/api/main-strategist/hc-report",{cache:"no-store"});
       const data = await res.json();
+      const r = data.report || {};
 
-      const report = data.report || {
-        document:"Claim Denial V3",
-        nodes_reporting:11,
-        risk_posture:"WATCH",
-        status:"READY",
-        summary:"Banner demo BNCA ready: prioritize denial/auth blockers, assign owner lanes, generate follow-up documentation, and relay executive summary."
-      };
-
-      const signature = JSON.stringify({
-        d: report.document,
-        n: report.nodes_reporting,
-        r: report.risk_posture,
-        s: report.status,
-        m: report.summary
+      const sig = JSON.stringify({
+        d: r.document,
+        n: r.nodes_reporting,
+        rp: r.risk_posture,
+        s: r.status,
+        sm: r.summary
       });
 
-      // Do not re-render if same data. Prevents 0 → 11 animation loop.
-      if(signature === lastHealthcareSignature) return;
-      lastHealthcareSignature = signature;
+      // 🚫 STOP HERE if nothing changed
+      if(sig === lastSig) return;
+      lastSig = sig;
 
-      const isExec = location.pathname.includes("executive-portal");
-      const id = isExec ? "tsmStableExecHealthcarePanel" : "tsmStableHcMainPanel";
-      let panel = document.getElementById(id);
+      const nodes = r.nodes_reporting || 11;
+      const denom = location.pathname.includes("executive") ? 12 : 11;
 
-      if(!panel){
-        panel = document.createElement("section");
-        panel.id = id;
-        panel.style.cssText = `
-          margin:16px;
-          padding:16px;
-          border:1px solid #00e0ff;
-          border-radius:16px;
-          background:linear-gradient(135deg,#061018,#031a14);
-          color:#d9f3ff;
-          font-family:monospace;
-          box-shadow:0 0 22px rgba(0,224,255,.16);
-        `;
+      // 🔒 HARD SET VALUES (no animation)
+      document.querySelectorAll('[data-hc-nodes]').forEach(el=>{
+        el.textContent = nodes + " / " + denom;
+      });
 
-        const header = document.querySelector("header") || document.body.firstElementChild;
-        if(header && header.parentNode) header.parentNode.insertBefore(panel, header.nextSibling);
-        else document.body.prepend(panel);
-      }
+      document.querySelectorAll('[data-hc-doc]').forEach(el=>{
+        el.textContent = r.document || "Claim Denial V3";
+      });
 
-      const denom = isExec ? 12 : 11;
-      const title = isExec
-        ? "HEALTHCARE EXECUTIVE VIEW · BANNER DEMO READY"
-        : "LIVE HEALTHCARE MAIN STRATEGIST OUTPUT · FROM GHS PRESENTATION";
+      document.querySelectorAll('[data-hc-risk]').forEach(el=>{
+        el.textContent = r.risk_posture || "WATCH";
+      });
 
-      panel.innerHTML = `
-        <div style="color:#00e0ff;font-weight:900;letter-spacing:.14em;margin-bottom:12px">${title}</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px">
-          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
-            <div style="color:#9bbbd0;font-size:12px">Nodes Reporting</div>
-            <div style="margin-top:6px;color:#00f59f;font-size:24px;font-weight:900">${report.nodes_reporting || 11} / ${denom}</div>
-          </div>
-          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
-            <div style="color:#9bbbd0;font-size:12px">Latest Document</div>
-            <div style="margin-top:6px;color:#00f59f;font-size:24px;font-weight:900">${report.document || "Claim Denial V3"}</div>
-          </div>
-          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
-            <div style="color:#9bbbd0;font-size:12px">Risk Posture</div>
-            <div style="margin-top:6px;color:#ffb000;font-size:24px;font-weight:900">${report.risk_posture || "WATCH"}</div>
-          </div>
-          <div style="border:1px solid #123050;border-radius:12px;padding:12px;background:#07111b">
-            <div style="color:#9bbbd0;font-size:12px">Report Status</div>
-            <div style="margin-top:6px;color:#00f59f;font-size:24px;font-weight:900">${report.status || "READY"}</div>
-          </div>
-        </div>
-        <div style="white-space:pre-wrap;border:1px solid #123050;border-radius:12px;padding:14px;background:#02070d;line-height:1.55">${report.summary || ""}</div>
-        <div style="margin-top:10px;color:#00f59f;font-size:11px;letter-spacing:.12em">TSM Neural Core locked · healthcare posture stable</div>
-      `;
+      document.querySelectorAll('[data-hc-status]').forEach(el=>{
+        el.textContent = r.status || "READY";
+      });
 
-      panel.animate(
-        [
-          {boxShadow:"0 0 0 rgba(0,245,159,0)"},
-          {boxShadow:"0 0 28px rgba(0,245,159,.35)"},
-          {boxShadow:"0 0 22px rgba(0,224,255,.16)"}
-        ],
-        {duration:700, easing:"ease-out"}
-      );
+      document.querySelectorAll('[data-hc-summary]').forEach(el=>{
+        el.textContent = r.summary || "";
+      });
 
-      // Hide older polish panels to prevent duplicate / animated versions.
-      ["tsmPolishedExec","tsmPolishedHcMain","tsmExecHealthcareLivePanel","tsmHcLiveReportPanel"].forEach(oldId=>{
-        const old=document.getElementById(oldId);
-        if(old && old.id !== id) old.style.display="none";
+      // ✅ subtle pulse ONLY on real change
+      document.querySelectorAll('.tsm-polish-panel, #tsmStableExecHealthcarePanel, #tsmStableHcMainPanel').forEach(el=>{
+        el.style.transition="all .4s ease";
+        el.style.boxShadow="0 0 28px rgba(0,245,159,.35)";
+        setTimeout(()=>{
+          el.style.boxShadow="0 0 18px rgba(0,224,255,.16)";
+        },400);
       });
 
     }catch(e){
-      console.warn("stable healthcare render failed", e);
+      console.warn("stability fetch error", e);
     }
   }
 
-  window.stableHealthcareRender = stableHealthcareRender;
-  setTimeout(stableHealthcareRender,250);
-  setInterval(stableHealthcareRender,2500);
+  // 🚀 slower, stable polling
+  setTimeout(stableFetch,300);
+  setInterval(stableFetch,3000);
+
 })();
 </script>
 
