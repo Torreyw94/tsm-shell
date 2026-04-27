@@ -490,7 +490,17 @@
     <div class="step-body">
       <div class="line dir">Bottom of HC Strategist — click the green <strong>RUN BNCA</strong> button (bottom right) or <strong>RUN ENTERPRISE BNCA</strong> text button (center bottom).</div>
       <div class="line pause">— count to 3 in your head — do not speak — let the output generate —</div>
-      <div class="line dir">The BNCA OUTPUT panel on the right side of the GHS screen will populate. Let them read the "BEST NEXT COURSE OF ACTION" section before you say anything.</div>
+      <div class="line dir">The BNCA OUTPUT panel on the right side will populate. Let them read "BEST NEXT COURSE OF ACTION" before you say anything.</div>
+
+      <div class="callout callout-blue">
+        <div class="callout-label">If they ask: "What is BNCA?"</div>
+        <div class="callout-body">"BNCA stands for Beacon of New Course of Action. It's the decision engine — it takes everything the 11 nodes are reporting across operations, billing, insurance, compliance, and every other lane, weighs it against your payer rules and financial exposure, and produces a single ranked output: here's what to do, in this order, for this dollar amount. It's not a report. It's a directive."</div>
+      </div>
+
+      <div class="callout callout-gold">
+        <div class="callout-label">One-liner version if time is short</div>
+        <div class="callout-body">"BNCA is the system's brain — it reads all 11 lanes simultaneously and tells you the one thing to do next that has the highest financial impact."</div>
+      </div>
     </div>
   </div>
 
@@ -509,8 +519,13 @@
       <div class="line pause">— pause —</div>
       <div class="line quote">"There are 247 claims in pending adjudication right now. The system has ranked which ones to clear first — by dollar impact."</div>
       <div class="line pause">— pause —</div>
-      <div class="line quote">"And there's a $1.9 million compliance exposure with a harder deadline than any of the revenue items on this list."</div>
-      <div class="line pause">— let that land —</div>
+      <div class="line quote">"And separate from all of that — there's a $1.9 million HIPAA compliance exposure. Missing BAA agreements with vendors. That's not a revenue cycle issue. That's a liability sitting on the balance sheet with a regulatory deadline attached."</div>
+      <div class="line pause">— let that land — do not move on immediately —</div>
+
+      <div class="callout callout-red">
+        <div class="callout-label">If a CFO or COO is in the room — use this language</div>
+        <div class="callout-body">"To be direct: a missing Business Associate Agreement with a vendor who touches PHI isn't a paperwork gap — it's an OCR audit finding waiting to happen. The floor for a HIPAA settlement involving willful neglect is $50,000 per violation. The system flagged this at $1.9 million exposure with an April 15 deadline. That's the item on this list that doesn't wait for a budget cycle."</div>
+      </div>
     </div>
   </div>
 
@@ -553,7 +568,7 @@
   <div class="step" id="s8">
     <div class="step-hdr" onclick="tog('s8')">
       <span class="badge b-nav">Step 8</span>
-      <span class="step-title">Optional — GHS Presentation for document intelligence demo</span>
+      <span class="step-title">Optional — GHS Presentation · document intelligence pipeline walkthrough</span>
       <span class="chev">›</span>
     </div>
     <div class="step-body">
@@ -561,12 +576,59 @@
         <div class="url">↗ tsm-shell.fly.dev/html/ghs-presentation/index.html?v=redirects</div>
         <div class="detail">GHS HEALTHCARE COMMAND · LIVE EXECUTIVE DEMO<br>Document Intelligence → HC Nodes → HC Strategist → Main Strategist → HITL Manager → Letters + Reports</div>
       </div>
-      <div class="line dir">Use this if the audience asks "how does it actually process our documents?" This is the full pipeline demo.</div>
-      <div class="line quote">"This is the document intelligence layer — watch what happens when we run a prior auth or referral order through the system."</div>
-      <div class="line dir">Select any document type (Referral Order, Prior Auth Letter, Clinical Note, Consent Form). Click <strong>v3</strong> for the most complete version. Hit <strong>RUN SELECTED DOCUMENT</strong>.</div>
-      <div class="line quote">"The document moves through 5 stages automatically: intake, 11-node parallel analysis, BNCA synthesis, priority ranking, and final HITL review. That's what your team currently does manually — across 3 systems, 2 teams, and 48 hours."</div>
-      <div class="line dir">For a fast demo: hit <strong>ONE-CLICK DEMO MODE</strong> and let all 24 scenarios run. Point to the BNCA Output panel as it populates in real time.</div>
-      <div class="line dir">If they react to the speed: "This is exactly why the 247 claim backlog is addressable this week — not next quarter."</div>
+      <div class="line dir">Use this when the audience asks "how does it actually work with our documents?" or "what does it do with a prior auth?" This is the full pipeline demo.</div>
+      <div class="line quote">"This is the document intelligence layer. Watch what happens when we run a real prior auth or referral order through the system."</div>
+      <div class="line dir">Select any document type — <strong>Referral Order</strong> or <strong>Prior Auth Letter</strong> lands best. Click <strong>v3</strong>. Hit <strong>RUN SELECTED DOCUMENT</strong>. Then walk them through each stage as it lights up.</div>
+
+      <div class="pipeline">
+        <div class="pipe-stage">
+          <div class="pipe-num">1</div>
+          <div class="pipe-content">
+            <div class="pipe-name">Document Intake</div>
+            <div class="pipe-desc">Upload &amp; parse — the system reads the document, extracts structured data, identifies the document type, owner lane, required fields, and any missing elements.</div>
+            <div class="pipe-say">"Your staff currently does this manually — reading through a 6-page referral to find the three fields that actually matter. This takes 400 milliseconds."</div>
+          </div>
+        </div>
+        <div class="pipe-arrow">↓</div>
+        <div class="pipe-stage">
+          <div class="pipe-num">2</div>
+          <div class="pipe-content">
+            <div class="pipe-name">HC Nodes — 11-node parallel review</div>
+            <div class="pipe-desc">Every relevant node reviews the document simultaneously — clinical, coding/billing, compliance, insurance, operations. Each flags issues from its lane.</div>
+            <div class="pipe-say">"This is what normally takes 48 hours across two teams and three systems. It's happening in parallel, right now, across all 11 nodes at once."</div>
+          </div>
+        </div>
+        <div class="pipe-arrow">↓</div>
+        <div class="pipe-stage">
+          <div class="pipe-num">3</div>
+          <div class="pipe-content">
+            <div class="pipe-name">HC Strategist — BNCA synthesis</div>
+            <div class="pipe-desc">The BNCA engine synthesizes all node findings into a single assessment: is this document actionable, what's blocking it, and what's the recommended next step.</div>
+            <div class="pipe-say">"The output you'll see: 'Complete record. Required documentation, owner lane, timeline, and action path are present. Status: ACTIONABLE — proceed with workflow.' Or it tells you exactly what's missing and who owns fixing it."</div>
+          </div>
+        </div>
+        <div class="pipe-arrow">↓</div>
+        <div class="pipe-stage">
+          <div class="pipe-num">4</div>
+          <div class="pipe-content">
+            <div class="pipe-name">Main Strategist — priority &amp; risk ranking</div>
+            <div class="pipe-desc">The document is ranked against everything else in the queue by financial impact, deadline pressure, and payer rules. It gets placed in the right position in the priority action queue.</div>
+            <div class="pipe-say">"This is how the 247-claim backlog gets a ranked order — not first-in-first-out, but highest-impact first."</div>
+          </div>
+        </div>
+        <div class="pipe-arrow">↓</div>
+        <div class="pipe-stage">
+          <div class="pipe-num">5</div>
+          <div class="pipe-content">
+            <div class="pipe-name">HITL Manager — human-in-the-loop approval</div>
+            <div class="pipe-desc">Nothing goes out without a human review gate. The HITL Manager presents the recommended action, the supporting evidence, and a one-click approve or escalate decision.</div>
+            <div class="pipe-say">"This is the answer to 'does AI just do things automatically?' — No. Your team reviews every output before it moves. The system does the analysis. Your people make the call."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="line dir" style="margin-top:12px;">For a fast run: hit <strong>ONE-CLICK DEMO MODE</strong> — all 24 scenarios process automatically. Point to the BNCA Output panel as it populates.</div>
+      <div class="line dir">If they react to the speed: <em>"This is why the 247-claim backlog is addressable this week — not next quarter."</em></div>
     </div>
   </div>
 
