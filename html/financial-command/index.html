@@ -1275,6 +1275,8 @@ Be direct, specific, dollar-focused.';
     <button onclick="runZeroTrustNode()">RUN ZERO TRUST</button>
     <button onclick="runFinOpsBNCA()">RUN FINOPS BNCA</button>
     <button onclick="saveFinOpsReport()">SAVE EXEC REPORT</button>
+    <button onclick="pushFinOpsToMainStrategist()">PUSH TO FINOPS MAIN</button>
+    <button onclick="location.href='/html/finops-main-strategist/index.html?v=from-financial-command'">OPEN FINOPS MAIN STRATEGIST</button>
   </div>
 
   <div id="finopsOutput">Ready. Deploy a financial operations query across Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.</div>
@@ -1390,6 +1392,19 @@ function saveFinOpsReport(){
     summary:txt
   }));
   alert('Financial Operations report saved for executive review.');
+}
+</script>
+
+
+<script id="finops-main-push-js">
+function pushFinOpsToMainStrategist(){
+  const txt = document.getElementById('finopsOutput')?.textContent || 'Financial Operations report generated.';
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Executive Report',
+    summary:txt
+  }));
+  window.location.href='/html/finops-main-strategist/index.html?v=live-push-' + Date.now();
 }
 </script>
 
