@@ -3,25 +3,26 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>TSM FinOps Presentation</title>
+<title>TSM Financial Operations Layer · Inty Close</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#05090d;color:#d9f3ff;font-family:ui-monospace,Menlo,monospace}
-header{padding:22px;border-bottom:1px solid #123050;background:#061018}
-h1{margin:0;color:#00e0ff;letter-spacing:.14em}
-.sub{color:#8fb0c8;margin-top:6px}
+header{padding:26px;border-bottom:1px solid #123050;background:#061018}
+h1{margin:0;color:#00e0ff;letter-spacing:.12em;font-size:28px}
+.sub{color:#8fb0c8;margin-top:8px;max-width:1100px;line-height:1.5}
+.price{color:#00f59f;font-size:30px;font-weight:900;margin-top:14px}
 .wrap{padding:22px}
-.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:22px 0}
-.step{border:1px solid #00f59f;border-radius:12px;padding:12px;text-align:center;background:#041a12}
-.step b{color:#00f59f}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .card{background:#07111b;border:1px solid #123050;border-radius:16px;padding:18px}
-.card h2{color:#00e0ff;margin-top:0}
-.metric{display:inline-block;margin:6px 8px 6px 0;padding:10px;border:1px solid #123050;border-radius:10px;background:#061018}
-.metric b{color:#00f59f;font-size:22px}
-.output{white-space:pre-wrap;background:#02070d;border:1px solid #123050;border-radius:12px;padding:14px;margin-top:12px;min-height:120px}
+.card h2,.card b{color:#00e0ff}
+.val{font-size:28px;color:#00f59f;font-weight:900;margin:8px 0}
+.panel{margin-top:18px;background:#061018;border:1px solid #123050;border-radius:16px;padding:18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:11px;border-bottom:1px solid #123050;text-align:left}
+th{color:#8fb0c8}.ok{color:#00f59f;font-weight:900}
 button{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 13px;font:900 11px monospace;margin:6px;cursor:pointer}
 button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
+.output{white-space:pre-wrap;background:#02070d;border:1px solid #123050;border-radius:12px;padding:14px;margin-top:12px;min-height:120px}
 .close{border:1px solid #00f59f;background:#031a14;margin-top:18px;border-radius:16px;padding:18px}
 .close b{color:#00f59f}
 .footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
@@ -30,116 +31,154 @@ main{padding-bottom:44px}
 </head>
 <body>
 <header>
-<h1>TSM FINANCIAL OPERATIONS · LIVE EXECUTIVE DEMO</h1>
-<div class="sub">Financial Command → ASC 958 / Financial Intelligence → FinOps Main Strategist</div>
+<h1>TSM FINANCIAL OPERATIONS LAYER</h1>
+<div class="sub">
+Accounting execution, compliance visibility, and executive reporting — as a system.
+Built to support AP, AR, bank reconciliations, month-end close, 1099 readiness, issue communication, supporting schedules, and controller-ready reporting.
+</div>
+<div class="price">$1,250/month</div>
+<button class="primary" onclick="runDemo()">RUN LIVE FINOPS DEMO</button>
+<button onclick="location.href='/html/finops-main-strategist/index.html?v=inty-close'">OPEN FINOPS MAIN STRATEGIST</button>
+<button onclick="location.href='/html/financial-command/index.html?v=inty-close'">OPEN FINANCIAL COMMAND</button>
 </header>
 
 <main class="wrap">
 
-<div class="flow">
-  <div class="step"><b>1</b><br>Client Workload</div>
-  <div class="step"><b>2</b><br>Financial Intel</div>
-  <div class="step"><b>3</b><br>Tax / 1099</div>
-  <div class="step"><b>4</b><br>Compliance + Zero Trust</div>
-  <div class="step"><b>5</b><br>Strategist BNCA</div>
-  <div class="step"><b>6</b><br>Controller Acts</div>
-</div>
+<section class="grid">
+  <div class="card"><b>AR AT RISK</b><div class="val">$18.4K</div><span>collection priority queue</span></div>
+  <div class="card"><b>AP VENDOR INVOICES</b><div class="val">12</div><span>pending validation</span></div>
+  <div class="card"><b>RECON ITEMS</b><div class="val">3</div><span>documentation required</span></div>
+  <div class="card"><b>1099 TRACKER</b><div class="val">7</div><span>vendors require W-9 / review</span></div>
+</section>
 
-<div class="grid">
-  <section class="card">
-    <h2>1 · FINANCIAL COMMAND</h2>
-    <p>Deploys the 5-node FinOps workflow.</p>
-    <div class="metric"><b>$18.4K</b><br>AR priority</div>
-    <div class="metric"><b>12</b><br>AP invoices</div>
-    <div class="metric"><b>6</b><br>security gaps</div>
-    <div class="output" id="cmdOut">Ready to run Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.</div>
-    <button class="primary" onclick="runCycle()">RUN FINOPS CYCLE</button>
-    <button onclick="location.href='/html/financial-command/index.html?v=finops-demo'">OPEN FINANCIAL COMMAND</button>
-  </section>
+<section class="panel">
+<h2>LIVE WORKFLOW EXECUTION</h2>
+<button class="primary" onclick="stepAP()">▶ Send AP Queue</button>
+<button onclick="stepRecon()">▶ Trigger Reconciliation Review</button>
+<button onclick="stepClose()">▶ Lock Month-End Close</button>
+<button onclick="step1099()">▶ Run 1099 Outreach</button>
+<button onclick="pushMain()">▶ Show Executive Output</button>
+<div class="output" id="liveOut">Ready. Click RUN LIVE FINOPS DEMO or execute one workflow button.</div>
+</section>
 
-  <section class="card">
-    <h2>2 · FINANCIAL INTELLIGENCE / ASC 958</h2>
-    <p>Shows fund accounting, grant restrictions, reports, and compliance exposure.</p>
-    <div class="metric"><b>$480K</b><br>HRSA grant</div>
-    <div class="metric"><b>OVERDUE</b><br>report status</div>
-    <div class="metric"><b>84%</b><br>Form 990</div>
-    <div class="output">ASC 958 module tracks restricted funds, grant utilization, HRSA escalation, and Form 990 readiness.</div>
-    <button onclick="location.href='/html/financial/index.html?v=asc958-demo'">OPEN FINANCIAL INTEL</button>
-  </section>
+<section class="panel">
+<h2>How TSM Meets the Staff Accountant Requirements</h2>
+<table>
+<thead><tr><th>Requirement</th><th>TSM Financial Operations Layer</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Post bank feed transactions</td><td>Transaction monitoring + reconciliation lane flags items needing review.</td><td class="ok">Covered</td></tr>
+<tr><td>Generate customer invoices</td><td>Generate Invoice trigger + AR tracking and payment delay monitoring.</td><td class="ok">Covered</td></tr>
+<tr><td>Post payments / apply cash</td><td>AR priority queue identifies late accounts and cash application follow-up.</td><td class="ok">Covered</td></tr>
+<tr><td>Process vendor invoices</td><td>AP Vendor Invoice Lane validates invoice accuracy, approvals, timing, and support.</td><td class="ok">Covered</td></tr>
+<tr><td>Communicate variances or concerns</td><td>BNCA output converts issues into recommended actions for controller review.</td><td class="ok">Covered</td></tr>
+<tr><td>Perform bank reconciliations</td><td>Bank Reconciliation Lane tracks open items and documentation status.</td><td class="ok">Covered</td></tr>
+<tr><td>Support month-end review</td><td>Month-End Close Checklist packages AR/AP, schedules, and support status.</td><td class="ok">Covered</td></tr>
+<tr><td>Maintain 1099 process</td><td>1099 Tracker flags W-9, threshold, and readiness gaps.</td><td class="ok">Covered</td></tr>
+</tbody>
+</table>
+</section>
 
-  <section class="card">
-    <h2>3 · FINOPS MAIN STRATEGIST</h2>
-    <p>Executive output layer: lanes, action log, business outcome, and $1,250/month close.</p>
-    <div class="metric"><b>5 / 5</b><br>nodes reporting</div>
-    <div class="metric"><b>12–18 hrs</b><br>saved monthly</div>
-    <div class="metric"><b>$1,250/mo</b><br>system price</div>
-    <div class="output" id="mainOut">Waiting for FinOps cycle output...</div>
-    <button onclick="pushMain()">PUSH TO FINOPS MAIN</button>
-    <button onclick="location.href='/html/finops-main-strategist/index.html?v=finops-demo'">OPEN FINOPS MAIN</button>
-  </section>
-</div>
+<section class="grid panel">
+  <div class="card"><b>Transaction Monitoring</b><p>Bank-feed, cash-flow, and anomaly monitoring.</p></div>
+  <div class="card"><b>AR/AP Management</b><p>Invoice, vendor, payment, and collections prioritization.</p></div>
+  <div class="card"><b>Reconciliation Oversight</b><p>Open-item tracking and supporting documentation control.</p></div>
+  <div class="card"><b>Month-End Intelligence</b><p>Close readiness, schedules, and controller review packet.</p></div>
+  <div class="card"><b>Compliance Monitoring</b><p>Audit trail, tax readiness, and documentation gaps.</p></div>
+  <div class="card"><b>Executive Reporting</b><p>Saved BNCA reports and PDF-ready controller summaries.</p></div>
+</section>
 
 <section class="close">
-  <b>30-SECOND INTY CLOSE</b>
-  <p>
-  “Right here — these are your QuickBooks transactions, AP invoices, reconciliation work, and month-end support.
-  The system flags issues before close, organizes the work immediately, and gives your controller an action-ready report.
-  Most teams pay $5K–$7K/month for this manually. TSM delivers it as a visible operating system for $1,250/month.
-  Would you rather start this alongside your current workflow, or replace part of it right away?”
-  </p>
+<b>30-SECOND CLOSE</b>
+<p>
+“Right here — these are your QuickBooks transactions, AP invoices, reconciliation work, and month-end support.
+The system flags issues before close, organizes the work immediately, and gives your controller an action-ready report.
+Most teams pay $5K–$7K/month for this manually. TSM delivers it as a visible operating system for $1,250/month.
+Would you rather start this alongside your current workflow, or replace part of it right away?”
+</p>
+</section>
+
+<section class="panel">
+<h2>Recommended Start</h2>
+<p>
+Start with <b>AR/AP + reconciliation for the first 30 days</b>, then add 1099 readiness and month-end reporting.
+This keeps scope controlled while proving measurable value immediately.
+</p>
+<button class="primary" onclick="pushMain()">SHOW EXECUTIVE OUTPUT</button>
 </section>
 
 </main>
 
 <div class="footer">
-<span>● FINOPS PRESENTATION · FINANCIAL COMMAND + ASC 958 + MAIN STRATEGIST</span>
+<span>● TSM FINOPS CLOSE · STAFF ACCOUNTANT ALTERNATIVE · $1,250/MONTH</span>
 <span>READY</span>
 </div>
 
 <script>
-function set(id,txt){document.getElementById(id).textContent=txt}
+function out(txt){document.getElementById('liveOut').textContent=txt}
 
-async function runCycle(){
-  set('cmdOut',
-`FINOPS CYCLE RUNNING
+function stepAP(){
+ out(`AP VENDOR INVOICE LANE
 
-✓ Financial Intel: AP queue + AR risk analyzed
-✓ Tax Intelligence: 1099 / W-9 readiness checked
-✓ Compliance Shield: supporting docs reviewed
-✓ Zero Trust: QuickBooks access risk checked
-✓ Strategist: BNCA generated`);
+→ 12 vendor invoices prioritized
+→ missing approvals/support flagged
+→ payment timing protected
 
-  set('mainOut',
-`SYSTEM RESULT:
+NARRATIVE:
+These are your vendor invoices, approvals, and payment timing — organized before they become a delay.`);
+}
+function stepRecon(){
+ out(`BANK RECONCILIATION LANE
+
+→ 3 reconciliation issues flagged before month-end close
+→ bank feed matched to QuickBooks
+→ exceptions resolved before reporting risk
+
+NARRATIVE:
+This is where teams lose time and reporting risk shows up. TSM organizes it instantly.`);
+}
+function stepClose(){
+ out(`MONTH-END CLOSE CHECKLIST
+
+→ close readiness confirmed at 84%
+→ AR/AP reviewed
+→ controller package prepared
+
+NARRATIVE:
+Instead of discovering issues at close, your team sees readiness early.`);
+}
+function step1099(){
+ out(`1099 TRACKER
+
+→ 7 vendors flagged for W-9 / threshold review
+→ year-end readiness moved forward
+→ tax compliance exposure reduced
+
+NARRATIVE:
+This prevents year-end cleanup from becoming a scramble.`);
+}
+async function runDemo(){
+ stepAP();
+ setTimeout(stepRecon,900);
+ setTimeout(stepClose,1800);
+ setTimeout(step1099,2700);
+ setTimeout(()=>out(`SYSTEM RESULT
+
 → 12 vendor invoices prioritized
 → 3 reconciliation issues flagged before month-end close
 → 7 vendors moved into 1099 readiness review
 → Controller report prepared
 
-VALUE:
+ROI:
 12–18 hours/month immediately saved.
-$5K–$7K/month manual workload replaced by $1,250/month system.`);
-
-  try{
-    await fetch('/api/finops/report',{
-      method:'POST',
-      headers:{'content-type':'application/json'},
-      body:JSON.stringify({
-        title:'FinOps Presentation Cycle',
-        summary:document.getElementById('mainOut').textContent,
-        metrics:{apInvoices:12,reconItems:3,vendors1099:7,timeSaved:'12–18 hrs/month'}
-      })
-    });
-  }catch(e){}
+$5K–$7K/month manual workload replaced by a $1,250/month system.`),3600);
 }
-
 function pushMain(){
-  localStorage.setItem('tsm_finops_report', JSON.stringify({
-    ts:new Date().toISOString(),
-    title:'FinOps Presentation Executive Output',
-    summary:document.getElementById('mainOut').textContent || 'FinOps cycle pushed to Main Strategist.'
-  }));
-  location.href='/html/finops-main-strategist/index.html?v=from-finops-presentation';
+ localStorage.setItem('tsm_finops_report', JSON.stringify({
+  ts:new Date().toISOString(),
+  title:'Inty Financial Operations Executive Output',
+  summary:document.getElementById('liveOut').textContent
+ }));
+ location.href='/html/finops-main-strategist/index.html?v=inty-executive-output';
 }
 </script>
 </body>
