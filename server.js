@@ -406,6 +406,104 @@ Revenue risk and operational delay are now visible at the Main Strategist layer.
 });
 
 
+
+// =====================================================
+// FINOPS DOCUMENT RUNNER + MAIN STRATEGIST PUSH
+// =====================================================
+const finopsDocs = {
+  "bank-reconciliation": {
+    title:"Bank Reconciliation Statement",
+    node:"Financial Intel",
+    impact:"$2,000 variance before month-end close",
+    outcome:"Variance identified before reporting risk. Controller review required."
+  },
+  "ap-aging": {
+    title:"Accounts Payable Aging Report",
+    node:"Financial Intel",
+    impact:"$45,200 AP aging organized by priority",
+    outcome:"Vendor payment pressure converted into action queue."
+  },
+  "ar-ledger": {
+    title:"AR Ledger / Collections",
+    node:"Financial Intel",
+    impact:"$410,000 AR reviewed for cash timing",
+    outcome:"Delayed collections surfaced before cash pressure increases."
+  },
+  "financial-statements": {
+    title:"Monthly Financial Statement Package",
+    node:"Financial Intel",
+    impact:"$1.25M revenue / $193K net income reviewed",
+    outcome:"Statement package converted into controller-ready review."
+  },
+  "budget-variance": {
+    title:"Budget Variance Report",
+    node:"Financial Intel",
+    impact:"$17,000 marketing overspend explained",
+    outcome:"Variance commentary prepared for leadership."
+  },
+  "gl-detail": {
+    title:"General Ledger Detail",
+    node:"Compliance Shield",
+    impact:"Supporting schedule validation required",
+    outcome:"Audit trail preserved before close."
+  },
+  "1099-tracker": {
+    title:"1099 + W-9 Tracker",
+    node:"Tax Intelligence",
+    impact:"7 vendors require W-9 / threshold review",
+    outcome:"1099 readiness moved forward before year-end scramble."
+  },
+  "audit-findings": {
+    title:"Internal Audit Findings Report",
+    node:"Compliance Shield",
+    impact:"Procurement control gaps elevated",
+    outcome:"Audit findings converted into owner-lane action plan."
+  }
+};
+
+app.get('/api/finops/docs', (req,res)=>{
+  res.json({ok:true, docs:finopsDocs});
+});
+
+app.post('/api/finops/run-doc', express.json({limit:'5mb'}), (req,res)=>{
+  const type = req.body.type || 'bank-reconciliation';
+  const d = finopsDocs[type] || finopsDocs["bank-reconciliation"];
+
+  const report = {
+    source:'finops-doc-grid',
+    suite:'finops',
+    document:d.title,
+    latest_document:d.title,
+    node:d.node,
+    nodes_reporting:5,
+    risk_posture:type === 'bank-reconciliation' || type === 'audit-findings' ? 'WATCH' : 'READY',
+    status:'READY',
+    summary:`FINOPS DOCUMENT ANALYSIS · ${d.title}
+
+NODE:
+${d.node}
+
+IMPACT:
+${d.impact}
+
+BUSINESS OUTCOME:
+${d.outcome}
+
+BEST NEXT COURSE OF ACTION:
+Assign owner lane, validate supporting documentation, preserve audit trail, and package result for controller review.
+
+VALUE POSITION:
+This is staff-accountant workload converted into a visible operating system before month-end risk appears.`,
+    ts:new Date().toISOString()
+  };
+
+  global.__TSM_STRATEGIST_MEMORY__ = global.__TSM_STRATEGIST_MEMORY__ || {};
+  global.__TSM_STRATEGIST_MEMORY__.finops = report;
+
+  res.json({ok:true, report});
+});
+
+
 app.use(express.static(__dirname, {
   extensions: ['html']
 }));
