@@ -73,6 +73,29 @@ main, .wrap, .panel, .grid, .card {
 }
 </style>
 
+
+<style id="tsm-closing-buttons-visible-fix">
+#closingLock {
+  align-items:flex-start !important;
+  overflow-y:auto !important;
+  padding:18px 16px 180px 16px !important;
+}
+#closingLock > div {
+  max-height:none !important;
+  margin:0 auto 180px auto !important;
+  padding-bottom:42px !important;
+}
+#closingLock > div > div:last-child,
+#closingLock > div div[style*="display:flex"][style*="flex-wrap"] {
+  position:sticky !important;
+  bottom:0 !important;
+  background:#02070d !important;
+  padding-top:12px !important;
+  padding-bottom:12px !important;
+  z-index:3 !important;
+}
+</style>
+
 </head>
 <body>
 <script>
