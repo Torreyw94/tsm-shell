@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>TSM Financial Operations Layer · Inty Close</title>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 *{box-sizing:border-box}
 body{margin:0;background:#05090d;color:#d9f3ff;font-family:ui-monospace,Menlo,monospace}
 header{padding:26px;border-bottom:1px solid #123050;background:#061018}
@@ -28,6 +56,15 @@ button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
 .footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
 main{padding-bottom:44px}
 </style>
+
+<style id="tsm-targeted-scroll-fix">
+html, body { height: auto !important; min-height: 100% !important; overflow-y: auto !important; }
+body { padding-bottom: 90px !important; }
+main, .wrap, .shell, .app, .dashboard { min-height: auto !important; overflow: visible !important; padding-bottom: 90px !important; }
+.footer, .statusbar { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; height: 30px !important; z-index: 30 !important; }
+.ask-bar, #askBar, .chatbox, .floating-chat { bottom: 42px !important; z-index: 40 !important; }
+</style>
+
 </head>
 <body>
 <header>
