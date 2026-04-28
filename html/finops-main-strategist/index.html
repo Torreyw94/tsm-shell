@@ -246,6 +246,40 @@ function exportFinOpsReport(){
     <button class="btn dark" onclick="location.href='/html/financial/index.html?v=from-finops-main'">OPEN FINANCIAL INTEL</button>
     <button class="btn dark" onclick="refreshFinOps()">REFRESH</button>
   </section>
+
+<section id="finopsCrossSuiteApps" class="panel" style="margin-top:16px">
+  <b style="color:#00e0ff;letter-spacing:.12em">FINOPS CROSS-SUITE APPS</b>
+  <div style="color:#8fb0c8;margin-top:6px">
+    Tax Prep and Compliance are injected into the FinOps suite as shared operating layers.
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px">
+    <div style="background:#07111b;border:1px solid #123050;border-radius:14px;padding:14px">
+      <b style="color:#00e0ff">TAX PREP</b>
+      <div style="font-size:24px;color:#00f59f;font-weight:900;margin:8px 0">1099 / W-9</div>
+      <small>vendor tax readiness · deadline windows · filing support</small>
+      <ul>
+        <li>1099 vendor threshold review</li>
+        <li>W-9 completeness tracking</li>
+        <li>tax deadline monitoring</li>
+      </ul>
+      <button onclick="location.href='/html/tax-prep/index.html?v=from-finops'" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 13px;font:900 11px monospace;cursor:pointer">OPEN TAX PREP</button>
+    </div>
+
+    <div style="background:#07111b;border:1px solid #123050;border-radius:14px;padding:14px">
+      <b style="color:#00e0ff">COMPLIANCE SHIELD</b>
+      <div style="font-size:24px;color:#00f59f;font-weight:900;margin:8px 0">AUDIT TRAIL</div>
+      <small>documentation gaps · approvals · controls · policy risk</small>
+      <ul>
+        <li>missing approval review</li>
+        <li>supporting document validation</li>
+        <li>controller-ready audit trail</li>
+      </ul>
+      <button onclick="location.href='/html/compliance/index.html?v=from-finops'" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 13px;font:900 11px monospace;cursor:pointer">OPEN COMPLIANCE</button>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <div class="footer">
