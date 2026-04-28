@@ -1,5 +1,33 @@
 
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ameris Construction | Command Center</title><style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 <link rel="stylesheet" href="/library-style.css"><script src="/library-core.js"></script>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -74,7 +102,7 @@ function getNodeSystemPrompt() {
 <div class="presets" id="presets"></div>
 <div class="chat"><div class="ct">YOUR DEDICATED AI INTELLIGENCE ENGINE</div>
 <div class="cw" id="chat"><div class="msg"><div class="av">AI</div><div class="mb"><div class="ml">TSM INTELLIGENCE</div><div class="mt">Ameris Construction Command Center initialized. I am your dedicated AI intelligence engine with deep knowledge of your operations, active alerts, and industry context. Ask me anything — compliance posture, revenue optimization, risk assessment, or operational intelligence.</div></div></div></div>
-<div class="ci"><input class="inp" id="inp" placeholder="Ask your AI engine anything..." onkeydown="if(event.key==='Enter')send()"><button class="btn" onclick="send()">ASK →</button></div>
+<div class="ci"><input class="ask-bar" class="ask-bar" class="inp" id="inp" placeholder="Ask your AI engine anything..." onkeydown="if(event.key==='Enter')send()"><button class="btn" onclick="send()">ASK →</button></div>
 </div>
 </div>
 <div class="footer">© 2026 AMERIS CONSTRUCTION · POWERED BY TSM MATTER · ameris-construction.tsmatter.com</div>
@@ -234,7 +262,7 @@ setInterval(pollAmerisIntake, 30000);
   <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
     <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
     <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <input class="ask-bar" class="ask-bar" id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
       <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
     </div>
   </div>

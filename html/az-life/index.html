@@ -6,6 +6,34 @@
 <title>AZ Insurance Command · NPN 18818059</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Libre+Franklin:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{
   --bg:#070b11;--bg2:#0c1320;--bg3:#101a28;--panel:#0e1822;
   --border:rgba(180,150,80,.14);--border2:rgba(180,150,80,.32);
@@ -1911,6 +1939,34 @@ function generateReport(type='full') {
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AZ Insurance Report · ${now}</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Libre+Franklin:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Libre Franklin',sans-serif;background:#f8f7f4;color:#1a1a2e;padding:40px;max-width:900px;margin:0 auto}
     .hdr{background:linear-gradient(135deg,#1a1a2e,#0d1420);color:#fff;padding:32px 36px;border-radius:10px;margin-bottom:28px}

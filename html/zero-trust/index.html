@@ -6,6 +6,34 @@
 <script>document.oncontextmenu=()=>false;document.onkeydown=e=>{if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85))return false;};</script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{--bg:#050a0e;--bg2:#080f14;--bg3:#0a1520;--bg4:#0d1a24;--c1:#00d4ff;--c2:#00ff9d;--c3:#f5c518;--c4:#ff4455;--c5:#a855f7;--c6:#ff8c00;--txt:#e2f4ff;--txt2:#7ba8c4;--txt3:#3d6b8a;--bdr:#1a3a52;--bdr2:#0a4a6e;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;}
@@ -260,6 +288,34 @@ td{padding:9px 10px;color:var(--txt);}
   <a href="https://hub.tsmatter.com" class="mesh-link" style="color:var(--c4);border-color:rgba(255,68,85,.3);">[hub]</a>
 </div>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 .mesh-link{font-size:9px;color:var(--txt3);text-decoration:none;padding:2px 8px;border:1px solid var(--bdr);border-radius:3px;transition:all .2s;}
 .mesh-link:hover{color:var(--c4);border-color:rgba(255,68,85,.4);}
 </style>
@@ -402,7 +458,7 @@ td{padding:9px 10px;color:var(--txt);}
         <div class="msg"><div class="msg-r ai">Zero-Trust Neural Processor</div><div class="msg-t">Enterprise security intelligence online. 7 analysis sectors available — Identity, Threat, Compliance, Network, Incident Response, Legal, and Dev/Ops. Select a preset or ask anything.</div></div>
       </div>
       <div class="ai-row">
-        <input class="ainput" id="ai-in" placeholder="Ask about threats, compliance, access risks, legal contracts, DevOps security..." onkeydown="if(event.key==='Enter')sendAI()">
+        <input class="ask-bar" class="ask-bar" class="ainput" id="ai-in" placeholder="Ask about threats, compliance, access risks, legal contracts, DevOps security..." onkeydown="if(event.key==='Enter')sendAI()">
         <button class="btn btn-p" onclick="sendAI()" id="ai-btn">◎ ANALYZE</button>
       </div>
     </div>

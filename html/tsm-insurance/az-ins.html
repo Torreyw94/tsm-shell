@@ -6,6 +6,34 @@
 <title>AZ Insurance Command · NPN 18818059</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Libre+Franklin:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{
   --bg:#070b11;--bg2:#0c1320;--bg3:#101a28;--panel:#0e1822;
   --border:rgba(180,150,80,.14);--border2:rgba(180,150,80,.32);
@@ -1267,6 +1295,34 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
 
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 .reb-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:900px){.reb-wrap{grid-template-columns:1fr}}
 .reb-cat{margin-bottom:14px}
@@ -2098,6 +2154,34 @@ function generateReport(type='full') {
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AZ Insurance Report · ${now}</title>
 <!-- duplicate font link removed -->
   <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Libre Franklin',sans-serif;background:#f8f7f4;color:#1a1a2e;padding:40px;max-width:900px;margin:0 auto}
     .hdr{background:linear-gradient(135deg,#1a1a2e,#0d1420);color:#fff;padding:32px 36px;border-radius:10px;margin-bottom:28px}
@@ -2313,7 +2397,7 @@ Format as a natural conversation script the agent can say word-for-word.`;
   <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
     <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
     <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <input class="ask-bar" class="ask-bar" id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
       <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
     </div>
   </div>

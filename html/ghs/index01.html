@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TSM Healthcare Command Center · BNCA</title>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root {
   --bg: #060d14;
   --panel: #0b1622;
@@ -306,7 +334,7 @@ CONFIDENCE
     </div>
     <div class="modal-body"><div class="modal-output" id="modal-output">Loading node intelligence...</div></div>
     <div class="modal-input-row">
-      <input class="modal-input" id="modal-input" placeholder="Ask this node a specific question...">
+      <input class="ask-bar" class="ask-bar" class="modal-input" id="modal-input" placeholder="Ask this node a specific question...">
       <button class="modal-send" onclick="sendNodeQuery()">ASK</button>
     </div>
   </div>

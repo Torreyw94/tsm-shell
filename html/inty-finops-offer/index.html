@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>TSM Financial Operations Layer · Inty Power</title>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 *{box-sizing:border-box}
 body{margin:0;background:#02070d;color:#d9f3ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 header{padding:28px;border-bottom:1px solid #123050;background:radial-gradient(circle at top left,#06301f,#061018 55%,#02070d)}

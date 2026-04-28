@@ -9,6 +9,34 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root {
   --bg: #020b06;
   --bg2: #061410;
@@ -1485,7 +1513,7 @@ body::before {
         <div class="chat-msg ai">⚖️ TSM Compliance AI online. I have full context on your 11 active frameworks — HIPAA, SOX, SOC-2, AML/KYC, GDPR, PCI-DSS, NIST/CMMC, ISO 27001, CCPA, OIG/CMS, and IRS/Tax. Ask me anything.</div>
       </div>
       <div class="chat-input-row">
-        <input type="text" class="chat-input" id="chatInput" placeholder="Ask compliance AI..." />
+        <input class="ask-bar" class="ask-bar" type="text" class="chat-input" id="chatInput" placeholder="Ask compliance AI..." />
         <button class="chat-send" id="chatSend" onclick="sendChat()">→</button>
       </div>
     </div>

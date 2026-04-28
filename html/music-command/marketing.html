@@ -6,6 +6,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ZY Music Command — AI Songwriting Decision Engine</title>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{
   --bg:#07080d;--panel:#0d1018;--panel2:#111622;--text:#f8fafc;--muted:#9ca3af;
   --gold:#ffd230;--purple:#a855f7;--teal:#14f195;--pink:#ff3d81;--line:rgba(255,255,255,.1);

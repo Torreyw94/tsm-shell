@@ -7,6 +7,34 @@
 <title>TSM | CONSTRUCTION COMMAND</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{
   --bg:#060b14;--bg2:#070d1a;--bg3:#040810;
   --accent:#f59e0b;--accent2:#d97706;--accent3:rgba(245,158,11,.08);
@@ -733,7 +761,7 @@ function openHowTo(){var m=document.getElementById("howto-modal");if(m)m.style.d
   <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
     <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
     <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <input class="ask-bar" class="ask-bar" id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
       <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
     </div>
   </div>

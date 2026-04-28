@@ -20,6 +20,34 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 /* MAP / GEO INTEL */
 #geo-wrap{display:flex;flex-direction:column;height:100%;gap:0}
 #geo-controls{padding:12px 14px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:9px;align-items:flex-end;flex-shrink:0}
@@ -655,7 +683,7 @@ const LIBRARY = [
   ]},
   { key:'portfolio', label:'🏦 PORTFOLIO & TAX STRATEGY', color:'var(--gold)', open:false, items:[
     {label:'§121 Exclusion Strategy', desc:'$250K/$500K exclusion · timing optimization', prompt:'Analyze the §121 primary residence capital gains exclusion strategy for a homeowner. Cover: the 2-of-5-year ownership and use requirements, partial exclusion rules for shortened occupancy, how to reset the clock for serial exclusion use, rental-to-primary conversion strategy and recapture exposure, the $250K/$500K exclusion maximization tactics, and how to combine §121 with home improvement cost basis additions to minimize taxable gain. Include examples with specific dollar amounts. Use ► section markers.'},
-    {label:'Depreciation Recapture Strategy', desc:'§1250 recapture · installment sales · timing', prompt:'Analyze depreciation recapture planning for a real estate investor selling a rental property with $180K in accumulated depreciation. Cover: §1250 unrecaptured depreciation taxed at 25%, the order of capital gain and recapture taxation, installment sale strategy to spread recapture over time, charitable remainder trust option, qualified opportunity zone deferral, and §1031 exchange as the ultimate recapture deferral tool. Calculate the total tax cost and after-tax proceeds for each strategy. Use ► section markers.'},
+    {label:'Depreciation Recapture Strategy', desc:'§1750 recapture · installment sales · timing', prompt:'Analyze depreciation recapture planning for a real estate investor selling a rental property with $180K in accumulated depreciation. Cover: §1750 unrecaptured depreciation taxed at 25%, the order of capital gain and recapture taxation, installment sale strategy to spread recapture over time, charitable remainder trust option, qualified opportunity zone deferral, and §1031 exchange as the ultimate recapture deferral tool. Calculate the total tax cost and after-tax proceeds for each strategy. Use ► section markers.'},
     {label:'Portfolio Diversification Analysis', desc:'Asset class mix · risk/return optimization', prompt:'Analyze a real estate portfolio diversification strategy for an investor with $2.4M in equity concentrated in single-family rentals in one metro. Cover: asset class diversification options (multifamily, commercial, NNN, notes, REITs, DSTs), geographic diversification benefits and mechanics, passive income options via DST or NNN for investor moving to passive role, and how to use §1031 to reposition the portfolio without triggering capital gains. Provide a 5-year portfolio evolution roadmap. Use ► section markers.'},
     {label:'Entity Structure Optimization', desc:'LLC · S-Corp · land trust · liability', prompt:'Optimize the legal entity structure for a real estate investor with 8 rental properties. Cover: single-member LLC per property vs. umbrella LLC structure, land trust anonymity benefits, Series LLC in applicable states, S-Corp election for active flippers and its self-employment tax savings, the tax treatment of rental income in each structure, and how to structure properties to maximize asset protection while maintaining favorable tax treatment. Include the annual cost-benefit analysis. Use ► section markers.'},
   ]},
@@ -688,7 +716,7 @@ const LIBRARY = [
     {label:'R&D Tax Credit Documentation Audit', desc:'QRA documentation + wage methodology', prompt:'Analyze this R&D tax credit claim for qualified research activity documentation, wage calculation methodology, and supply cost inclusion accuracy. For real estate and construction contexts: identify activities that qualify as QRAs under the 4-part test (design-build innovation, new construction techniques, sustainable building systems), wage allocation methodology errors, and supply cost inclusions that may not meet the "directly used" standard. Estimate the total credit improvement available and audit risk level. Use ► section markers.'},
     {label:'Transfer Pricing Documentation Audit', desc:'Arm\'s length + penalty protection', prompt:'Audit this transfer pricing documentation for arm\'s length standard compliance, comparables selection methodology, and penalty protection adequacy. Analyze whether intercompany charges for property management, leasing fees, and shared services meet the arm\'s length standard, whether the comparables selection is defensible under the best method rule, and whether documentation meets the contemporaneous standard for the §6662(e) penalty protection. Estimate exposure and recommend the best transfer pricing method for each intercompany transaction. Use ► section markers.'},
     {label:'FIRPTA Compliance Review', desc:'Withholding compliance + treaty benefits', prompt:'Review this real estate transaction for FIRPTA withholding compliance, treaty benefit qualification, and state conformity issues. Determine withholding obligations on foreign sellers (15% federal standard, reduced rates for principal residences under $1M), analyze whether income tax treaties reduce withholding, identify state-level withholding obligations on foreign sellers, and assess whether the transaction qualifies for FIRPTA withholding exemption (buyer use as principal residence + price under $300K). Calculate total withholding exposure and penalty risk from non-compliance. Use ► section markers.'},
-    {label:'Partnership Return Risk Analysis', desc:'Disguised sales + basis adjustments', prompt:'Analyze this real estate partnership tax return for disguised sale risk, guaranteed payment classification accuracy, and basis adjustment elections. Identify property contributions within 2 years of distributions that trigger disguised sale rules, guaranteed payments misclassified as distributive shares of income, and §754 election opportunities that create inside basis step-ups on property transfers or partner deaths. For real estate partnerships: assess §1231 gain characterization, depreciation recapture under §1250, and the qualified nonrecourse financing rules for at-risk limitations. Use ► section markers.'},
+    {label:'Partnership Return Risk Analysis', desc:'Disguised sales + basis adjustments', prompt:'Analyze this real estate partnership tax return for disguised sale risk, guaranteed payment classification accuracy, and basis adjustment elections. Identify property contributions within 2 years of distributions that trigger disguised sale rules, guaranteed payments misclassified as distributive shares of income, and §754 election opportunities that create inside basis step-ups on property transfers or partner deaths. For real estate partnerships: assess §1231 gain characterization, depreciation recapture under §1750, and the qualified nonrecourse financing rules for at-risk limitations. Use ► section markers.'},
     {label:'Estate Tax Return Compliance Audit', desc:'Valuation discounts + portability elections', prompt:'Audit this estate tax return for a real estate owner for valuation discount documentation, GSTT inclusion ratio accuracy, and portability election timeliness. Analyze FMV discounts applied to closely-held real estate interests (lack of control, lack of marketability — typically 15-40% combined), generation-skipping transfer tax calculations for direct skip transfers, whether the deceased spousal unused exclusion (DSUE) portability election was timely filed on Form 706, and whether any §6166 installment payment elections are available for illiquid real estate assets. Estimate audit exposure. Use ► section markers.'},
   ]},
 
@@ -1972,7 +2000,7 @@ setInterval(pollReoIntake, 30000);
   <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
     <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
     <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <input class="ask-bar" class="ask-bar" id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
       <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
     </div>
   </div>

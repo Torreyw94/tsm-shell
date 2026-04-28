@@ -6,6 +6,34 @@
 <title>TSMatter · Operations Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{--bg:#080c0a;--bg2:#0d120f;--bg3:#111810;--bg4:#161e15;--border:rgba(0,255,100,0.08);--border2:rgba(0,255,100,0.15);--border3:rgba(0,255,100,0.25);--g:#00ff64;--g2:#00cc50;--g3:#008f38;--gdim:rgba(0,255,100,0.12);--gold:#f0c040;--golddim:rgba(240,192,64,0.12);--red:#ff4455;--reddim:rgba(255,68,85,0.12);--amber:#ffaa00;--amberdim:rgba(255,170,0,0.12);--blue:#00aaff;--bluedim:rgba(0,170,255,0.1);--text:#c8e8c8;--text2:#6a8a6a;--text3:#3a5a3a}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
@@ -482,7 +510,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
       <div class="cm ca fi">Portal AI online. Ameris Construction context loaded — 12 nodes, 4 projects, $284K open COR exposure, 3 critical alerts. What do you need first?</div>
     </div>
     <div class="rpi-row">
-      <input class="rpi" id="chat-inp" placeholder="Ask the portal AI..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
+      <input class="ask-bar" class="ask-bar" class="rpi" id="chat-inp" placeholder="Ask the portal AI..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
       <div class="rpsb" id="chat-send" onclick="sendChat()">↑</div>
     </div>
   </div>

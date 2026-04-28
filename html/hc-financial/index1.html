@@ -7,6 +7,34 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HC FINANCIAL · TSM Healthcare</title>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
 :root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
@@ -97,6 +125,34 @@ tr:hover td{background:#0f1f0f}
 
 
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
   [id^="tab-"] { display: none !important; }
   #tab-dash.active-tab { display: block !important; }
 </style>

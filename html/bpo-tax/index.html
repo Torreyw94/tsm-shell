@@ -38,6 +38,34 @@ function getNodeSystemPrompt() {
 <title>TaxOps BPO · TSM Matter</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;600&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 :root{--bg:#06090c;--bg2:#0b1117;--bg3:#101820;--border:rgba(224,82,82,0.12);--border2:rgba(255,255,255,0.05);--accent: #FF8C00;
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;min-height:100vh}
@@ -314,7 +342,7 @@ YOUR EXPERTISE:
   * §1031 like-kind exchange: 45-day ID, 180-day close, boot, debt relief, reverse exchange, improvement exchange
   * §121 primary residence exclusion: $250K/$500K, ownership/use test, reduced exclusion
   * Cost segregation: commercial property, bonus depreciation interaction, §481 recapture risk
-  * Depreciation recapture: §1250 (25% rate), §1245, unrecaptured §1250 gain
+  * Depreciation recapture: §1750 (25% rate), §1245, unrecaptured §1750 gain
   * Opportunity Zone (QOZ): Arizona designated zones (heavy Phoenix metro coverage), deferral/exclusion rules
 - IRS Procedures:
   * CP notices: CP2000 (underreporter), CP504 (intent to levy), CP90 (final notice), LT11
@@ -499,7 +527,7 @@ setInterval(pollTaxIntake, 30000);
   <div style="position:fixed;bottom:20px;right:20px;z-index:9999;width:340px;font-family:sans-serif">
     <div id="ai-output" style="max-height:300px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:8px 8px 0 0;padding:8px;display:none"></div>
     <div style="display:flex;gap:4px">
-      <input id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
+      <input class="ask-bar" class="ask-bar" id="ai-input" placeholder="Ask anything..." style="flex:1;padding:8px;border:1px solid #ddd;border-radius:0 0 0 8px;font-size:13px;outline:none" />
       <button id="ai-btn" style="padding:8px 14px;background:#1a1a2e;color:#fff;border:none;border-radius:0 0 8px 0;cursor:pointer;font-size:13px">Ask</button>
     </div>
   </div>

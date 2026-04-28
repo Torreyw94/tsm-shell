@@ -4,6 +4,34 @@
 <meta charset="utf-8">
 <title>HC Main Strategist</title>
 <style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 body{margin:0;background:#02070d;color:#d9f3ff;font-family:monospace}
 header{padding:18px;border-bottom:1px solid #123050;background:#061018}
 h1{color:#00e0ff;letter-spacing:.14em}
