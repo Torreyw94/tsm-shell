@@ -138,6 +138,7 @@ window.TSM_OPS = {
 <div class="sub" id="sub"></div>
 <div class="price" id="price"></div>
 <button class="primary" onclick="startAutoDemo()">🎬 AUTO DEMO MODE</button>
+<button onclick="showClosingLock()">🔒 EXECUTIVE SUMMARY CLOSE</button>
 <button class="primary" onclick="OPS.runDoc()">RUN SELECTED WORKFLOW</button>
 <button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
 <button onclick="OPS.pushMain()">OPEN HC MAIN STRATEGIST</button>
@@ -360,6 +361,229 @@ window.TSM_OPS = {
     const el = document.getElementById("demoCaption");
     if(el) el.textContent = "Auto demo stopped.";
   };
+})();
+</script>
+
+<div id="closingLock" style="display:none;"></div>
+
+<script id="tsm-closing-lock-sequence">
+(function(){
+  function escapeHtml(x){
+    return String(x || "").replace(/[&<>"]/g, c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;"
+    }[c]));
+  }
+
+  window.showClosingLock = function(){
+    let el = document.getElementById("closingLock");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "closingLock";
+      document.body.appendChild(el);
+    }
+
+    const report = (() => {
+      try { return JSON.parse(localStorage.getItem("tsm_healthcare_report") || "{}"); }
+      catch(e){ return {}; }
+    })();
+
+    el.style.cssText = `
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(7px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:999999;
+      padding:18px;
+    `;
+
+    el.innerHTML = `
+      <div style="
+        background:#02070d;
+        border:1px solid #00e0ff;
+        border-radius:18px;
+        padding:28px;
+        width:780px;
+        max-width:94vw;
+        color:#d9f3ff;
+        font-family:ui-monospace,Menlo,monospace;
+        box-shadow:0 0 42px rgba(0,224,255,.22);
+      ">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <div>
+            <div style="color:#00e0ff;letter-spacing:.16em;font-weight:900;font-size:13px">
+              EXECUTIVE SUMMARY · ACTION READY
+            </div>
+            <h2 style="margin:8px 0 4px;color:#d9f3ff;font-size:26px">
+              Healthcare Operations Layer
+            </h2>
+            <div style="color:#8fb0c8;font-size:13px">
+              Demo output converted into a decision-ready pilot path.
+            </div>
+          </div>
+          <button onclick="hideClosingLock()" style="
+            background:transparent;
+            border:1px solid #123050;
+            color:#8fb0c8;
+            border-radius:8px;
+            padding:8px 10px;
+            cursor:pointer;
+          ">close</button>
+        </div>
+
+        <div style="
+          margin:20px 0;
+          display:grid;
+          grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+          gap:12px;
+        ">
+          <div style="border:1px solid #123050;border-radius:12px;padding:14px;background:#061018">
+            <b style="color:#00e0ff">Revenue At Risk</b>
+            <div style="font-size:28px;color:#00f59f;font-weight:900;margin-top:8px">$229K</div>
+            <small>claims / auth pressure</small>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:14px;background:#061018">
+            <b style="color:#00e0ff">Recoverable</b>
+            <div style="font-size:28px;color:#00f59f;font-weight:900;margin-top:8px">$78K</div>
+            <small>next 72 hours</small>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:14px;background:#061018">
+            <b style="color:#00e0ff">Time Saved</b>
+            <div style="font-size:28px;color:#00f59f;font-weight:900;margin-top:8px">15–25 hrs</div>
+            <small>monthly coordination</small>
+          </div>
+        </div>
+
+        <div style="
+          margin:18px 0;
+          padding:16px;
+          border:1px solid #123050;
+          border-radius:12px;
+          background:#061018;
+          line-height:1.65;
+        ">
+          <b style="color:#00e0ff">SYSTEM RESULT</b><br><br>
+          → Revenue at risk identified and prioritized<br>
+          → Compliance gaps surfaced before audit exposure<br>
+          → Claim / workflow actions assigned automatically<br>
+          → Executive-ready summary generated
+        </div>
+
+        <div style="
+          margin:18px 0;
+          padding:16px;
+          border:1px solid #00f59f;
+          border-radius:12px;
+          background:#031a14;
+          line-height:1.6;
+        ">
+          <b style="color:#00f59f">ROI SNAPSHOT</b><br><br>
+          Manual coordination: <b>$6K–$10K/month</b><br>
+          TSM Healthcare Layer: <b>$1,750/month</b><br>
+          Estimated time saved: <b>15–25 hours/month</b>
+        </div>
+
+        <div style="
+          color:#00e0ff;
+          font-weight:900;
+          margin:18px 0;
+          line-height:1.5;
+        ">
+          This isn’t another dashboard — this is the healthcare operations layer running in real time.
+        </div>
+
+        <div style="
+          background:#02070d;
+          border:1px solid #123050;
+          border-radius:12px;
+          padding:14px;
+          color:#d9f3ff;
+          margin-bottom:18px;
+          white-space:pre-wrap;
+          max-height:150px;
+          overflow:auto;
+        ">${escapeHtml(report.summary || "BNCA ready: prioritize denial/auth blockers, assign owner lanes, generate follow-up documentation, and relay executive summary.")}</div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onclick="startHealthcarePilot()" style="
+            background:#00e0ff;
+            color:#001018;
+            border:none;
+            padding:13px 16px;
+            border-radius:9px;
+            font-weight:900;
+            cursor:pointer;
+          ">START 30-DAY PILOT</button>
+
+          <button onclick="bookHealthcareWalkthrough()" style="
+            background:transparent;
+            border:1px solid #00e0ff;
+            color:#00e0ff;
+            padding:13px 16px;
+            border-radius:9px;
+            font-weight:900;
+            cursor:pointer;
+          ">BOOK TECHNICAL WALKTHROUGH</button>
+
+          <button onclick="location.href='/html/hc-main-strategist/index.html?v=closing-lock'" style="
+            background:transparent;
+            border:1px solid #00f59f;
+            color:#00f59f;
+            padding:13px 16px;
+            border-radius:9px;
+            font-weight:900;
+            cursor:pointer;
+          ">OPEN HC MAIN STRATEGIST</button>
+        </div>
+
+        <div style="margin-top:16px;color:#8fb0c8;font-size:12px;line-height:1.5">
+          Say: “That’s exactly what your team gets on day one. Most teams start with prior auth and denials.”
+        </div>
+      </div>
+    `;
+  };
+
+  window.hideClosingLock = function(){
+    const el = document.getElementById("closingLock");
+    if(el) el.style.display = "none";
+  };
+
+  window.startHealthcarePilot = function(){
+    localStorage.setItem("tsm_healthcare_pilot_intent", JSON.stringify({
+      ts:new Date().toISOString(),
+      suite:"healthcare",
+      option:"30-day pilot",
+      workflows:["prior authorization","denials","compliance","executive BNCA"],
+      price:"$1,750/month"
+    }));
+    alert("Pilot path captured: 30-day healthcare pilot · prior auth + denials + compliance.");
+  };
+
+  window.bookHealthcareWalkthrough = function(){
+    alert("Next step: technical walkthrough with healthcare operations, billing, compliance, and leadership.");
+  };
+
+  // Hook into Auto Demo completion without exposing internal logic
+  const hook = setInterval(() => {
+    if(typeof window.startAutoDemo === "function" && !window.__closingLockHooked){
+      window.__closingLockHooked = true;
+
+      const originalStart = window.startAutoDemo;
+      window.startAutoDemo = function(){
+        originalStart();
+        setTimeout(() => {
+          try { window.showClosingLock(); } catch(e){}
+        }, 44500);
+      };
+
+      clearInterval(hook);
+    }
+  }, 500);
 })();
 </script>
 
