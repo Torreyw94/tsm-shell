@@ -137,6 +137,7 @@ window.TSM_OPS = {
 <h1 id="title"></h1>
 <div class="sub" id="sub"></div>
 <div class="price" id="price"></div>
+<button class="primary" onclick="startAutoDemo()">🎬 AUTO DEMO MODE</button>
 <button class="primary" onclick="OPS.runDoc()">RUN SELECTED WORKFLOW</button>
 <button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
 <button onclick="OPS.pushMain()">OPEN HC MAIN STRATEGIST</button>
@@ -211,5 +212,156 @@ window.TSM_OPS = {
 </div>
 
 <script src="/html/assets/tsm/ops-presentation-layer.js?v=1"></script>
+
+<script id="tsm-auto-demo-narrator">
+(function(){
+  let demoIndex = 0;
+  let running = false;
+
+  const DEMO_STEPS = [
+    {
+      text: "This is your healthcare operation: documents, billing pressure, compliance, and execution in one visible system.",
+      action: () => scrollToTitle("LIVE HEALTHCARE WORKFLOW EXECUTION")
+    },
+    {
+      text: "We start with the actual work your team handles every day: prior authorizations, denials, clinical documentation, and compliance gaps.",
+      action: () => scrollToTitle("HEALTHCARE DOCUMENT")
+    },
+    {
+      text: "Now the system runs the selected workflow across the healthcare node chain.",
+      action: () => safeRun(() => OPS.runDoc())
+    },
+    {
+      text: "Financial review, billing pressure, compliance checks, medical documentation, and strategist synthesis all roll into one output.",
+      action: () => safeRun(() => OPS.runAll())
+    },
+    {
+      text: "The result is not just a report. It is an action plan with owner lanes, risk posture, and next best course of action.",
+      action: () => scrollToTitle("SYSTEM RESULT")
+    },
+    {
+      text: "This replaces manual coordination across EHRs, payer portals, email, spreadsheets, and office queues.",
+      action: () => scrollToTitle("WHY THIS BEATS")
+    },
+    {
+      text: "Most teams pay six to ten thousand per month for this coordination manually. TSM delivers a visible operating layer for seventeen fifty per month.",
+      action: () => scrollToTitle("WHY THIS BEATS")
+    },
+    {
+      text: "Now we relay the output to the Healthcare Main Strategist, where leadership sees exactly what to do next.",
+      action: () => safeRun(() => OPS.pushMain())
+    }
+  ];
+
+  function speak(text){
+    try{
+      speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.rate = 0.94;
+      msg.pitch = 1;
+      msg.volume = 1;
+      speechSynthesis.speak(msg);
+    }catch(e){}
+  }
+
+  function showCaption(text){
+    let el = document.getElementById("demoCaption");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "demoCaption";
+      el.style.cssText = `
+        position:fixed;
+        left:50%;
+        bottom:58px;
+        transform:translateX(-50%);
+        max-width:760px;
+        width:calc(100% - 48px);
+        background:#02070d;
+        border:1px solid #00e0ff;
+        color:#d9f3ff;
+        padding:14px 18px;
+        border-radius:12px;
+        font-family:ui-monospace,Menlo,monospace;
+        font-size:13px;
+        line-height:1.5;
+        text-align:center;
+        z-index:99999;
+        box-shadow:0 0 28px rgba(0,224,255,.22);
+      `;
+      document.body.appendChild(el);
+    }
+    el.innerHTML = `<b style="color:#00e0ff">AUTO DEMO</b><br>${escapeHtml(text)}`;
+  }
+
+  function showPulse(){
+    if(!document.getElementById("autoDemoPulseStyle")){
+      const st = document.createElement("style");
+      st.id = "autoDemoPulseStyle";
+      st.textContent = `
+        body.tsm-demo-pulse .panel,
+        body.tsm-demo-pulse .card {
+          animation: tsmPulse 2.6s ease-in-out infinite;
+        }
+        @keyframes tsmPulse {
+          0%,100% { box-shadow:0 0 0 rgba(0,224,255,0); }
+          50% { box-shadow:0 0 18px rgba(0,224,255,.16); }
+        }
+      `;
+      document.head.appendChild(st);
+    }
+    document.body.classList.add("tsm-demo-pulse");
+  }
+
+  function escapeHtml(x){
+    return String(x).replace(/[&<>"]/g, c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;"
+    }[c]));
+  }
+
+  function scrollToTitle(text){
+    const nodes = Array.from(document.querySelectorAll("h2,b,h1"));
+    const hit = nodes.find(n => (n.textContent || "").toLowerCase().includes(text.toLowerCase()));
+    if(hit) hit.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  function safeRun(fn){
+    try{ fn(); }catch(e){ console.warn("Auto demo step skipped:", e); }
+  }
+
+  function runStep(){
+    if(!running) return;
+    if(demoIndex >= DEMO_STEPS.length){
+      running = false;
+      showCaption("Demo complete. Ask: Do we start with prior auth and denials, or bring the full system live from day one?");
+      return;
+    }
+
+    const step = DEMO_STEPS[demoIndex++];
+    showCaption(step.text);
+    speak(step.text);
+    if(step.action) step.action();
+
+    setTimeout(runStep, 5200);
+  }
+
+  window.startAutoDemo = function(){
+    running = true;
+    demoIndex = 0;
+    showPulse();
+    runStep();
+  };
+
+  window.stopAutoDemo = function(){
+    running = false;
+    try{ speechSynthesis.cancel(); }catch(e){}
+    const el = document.getElementById("demoCaption");
+    if(el) el.textContent = "Auto demo stopped.";
+  };
+})();
+</script>
+
 </body>
 </html>
