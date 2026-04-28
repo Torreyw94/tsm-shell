@@ -626,6 +626,16 @@ ${text.slice(0,2500)}`,
 });
 
 
+
+// ===============================
+// FINOPS STATIC ROUTE LOCK
+// ===============================
+app.use('/html/finops-presentation', express.static(path.join(__dirname, 'html/finops-presentation')));
+app.use('/html/finops-main-strategist', express.static(path.join(__dirname, 'html/finops-main-strategist')));
+app.use('/html/financial-command', express.static(path.join(__dirname, 'html/financial-command')));
+app.use('/html/tax-prep', express.static(path.join(__dirname, 'html/tax-prep')));
+app.use('/html/compliance', express.static(path.join(__dirname, 'html/compliance')));
+
 app.use(express.static(__dirname, {
   extensions: ['html']
 }));
