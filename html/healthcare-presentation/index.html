@@ -143,10 +143,61 @@ window.TSM_OPS = {
 <button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
 <button onclick="OPS.pushMain()">OPEN HC MAIN STRATEGIST</button>
 <button onclick="OPS.exportReport()">EXPORT PDF-READY</button>
+<button onclick="document.getElementById('healthcareSuiteHighlights').scrollIntoView({behavior:'smooth',block:'center'})">VIEW 4-LAYER COMMAND FLOW</button>
 </header>
 
 <main class="wrap">
 <section class="grid" id="kpis"></section>
+
+
+<section class="panel" id="healthcareSuiteHighlights">
+  <h2>HEALTHCARE SUITE · FOUR-LAYER COMMAND FLOW</h2>
+  <div style="color:#8fb0c8;margin-bottom:14px">
+    This is how the Healthcare suite moves from frontline workflow pressure to executive decision visibility.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <b>1 · HEALTHCARE COMMAND CENTER</b>
+      <div class="val">OPERATIONS</div>
+      <p>Frontline view for claims pressure, prior authorization delays, documentation gaps, staffing throughput, and compliance drift.</p>
+      <button onclick="window.open('/html/healthcare/index.html?v=from-healthcare-presentation','_blank')">OPEN HEALTHCARE COMMAND</button>
+    </div>
+
+    <div class="card">
+      <b>2 · HC STRATEGIST</b>
+      <div class="val">BNCA</div>
+      <p>Turns healthcare node output into the Best Next Course of Action for billing, compliance, office managers, and operational leads.</p>
+      <button onclick="window.open('/html/hc-strategist/index.html?v=from-healthcare-presentation','_blank')">OPEN HC STRATEGIST</button>
+    </div>
+
+    <div class="card">
+      <b>3 · MAIN STRATEGIST</b>
+      <div class="val">ACTION RELAY</div>
+      <p>Receives the synthesized healthcare report and shows leadership what is open, what is risky, and what should happen next.</p>
+      <button onclick="window.open('/html/hc-main-strategist/index.html?v=from-healthcare-presentation','_blank')">OPEN MAIN STRATEGIST</button>
+    </div>
+
+    <div class="card">
+      <b>4 · EXECUTIVE PORTAL</b>
+      <div class="val">LEADERSHIP</div>
+      <p>Unified executive view for healthcare operations, risk posture, node reporting, and decision-ready BNCA summaries.</p>
+      <button onclick="window.open('/html/executive-portal/index.html?v=from-healthcare-presentation','_blank')">OPEN EXECUTIVE PORTAL</button>
+    </div>
+  </div>
+
+  <div class="output" style="margin-top:14px">
+DEMO NARRATIVE:
+1. Healthcare Command Center shows the frontline operational pressure.
+2. HC Strategist converts that pressure into BNCA.
+3. Main Strategist receives the action-ready summary.
+4. Executive Portal gives leadership one clear view.
+
+TALK TRACK:
+“This is not four separate apps. This is one healthcare command flow — from document pressure to operational action to executive visibility.”
+  </div>
+</section>
+
 
 <section class="panel">
 <h2>LIVE HEALTHCARE WORKFLOW EXECUTION</h2>
