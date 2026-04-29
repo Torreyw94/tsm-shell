@@ -79,15 +79,7 @@ main{padding-bottom:44px}
   </section>
 </div>
 
-<section class="close">
-  <b>30-SECOND INTY CLOSE</b>
-  <p>
-  “Right here — these are your QuickBooks transactions, AP invoices, reconciliation work, and month-end support.
-  The system flags issues before close, organizes the work immediately, and gives your controller an action-ready report.
-  Most teams pay $5K–$7K/month for this manually. TSM delivers it as a visible operating system for $1,750/month.
-  Would you rather start this alongside your current workflow, or replace part of it right away?”
-  </p>
-</section>
+
 
 </main>
 
@@ -310,7 +302,7 @@ function showConfirm(title, text){
 
   rail.innerHTML = `
     <div style="width:100%;text-align:center;font-size:12px;color:#8fb0c8;margin-bottom:2px">
-      Choose how you want to start →
+      Most teams start with a 30-day pilot
     </div>
     <button onclick="startPilot()" style="background:#00e0ff;color:#001018;border:none;padding:11px 14px;border-radius:8px;font-weight:900;cursor:pointer">
       START 30-DAY PILOT
@@ -365,7 +357,7 @@ function showConfirm(title, text){
       font-weight:900;
       letter-spacing:.05em;
     ">
-      Recommended: Start with a 30-day pilot
+      Most teams start with a 30-day pilot
     </div>
 
     <button onclick="startPilot()" style="
@@ -408,6 +400,100 @@ function showConfirm(title, text){
   document.body.appendChild(rail);
 })();
 </script>
+
+
+<section class="panel" id="finopsFinalCloseBlock" style="margin:18px 36px 120px 36px;border:1px solid #00f59f;background:#031a14;border-radius:16px;padding:18px">
+  <h2 style="color:#00f59f;margin-top:0">30-SECOND FINOPS CLOSE</h2>
+  <div style="font-size:14px;line-height:1.65;color:#d9f3ff">
+    Right here — this is your AP, reconciliation, tax readiness, compliance, and controller-reporting workload being processed instantly instead of manually.
+    <br><br>
+    Most teams handle this with staff, spreadsheets, email follow-ups, and month-end pressure — typically <b>$5K–$7K/month</b> in coordination cost.
+    <br><br>
+    TSM replaces that with a visible financial operations system at <b>$1,750/month</b>.
+  </div>
+  <div style="margin-top:14px;color:#00e0ff;font-weight:900">
+    Final line: “At this point, it’s just how you want to start — most teams begin with the 30-day pilot.”
+  </div>
+</section>
+
+
+<section class="panel" id="finopsPresentationGuide" style="margin:18px 36px 140px 36px;border:1px solid #00e0ff;background:#061018;border-radius:16px;padding:18px">
+  <h2 style="color:#00e0ff;margin-top:0">FINOPS PRESENTATION GUIDE · WHAT TO SHOW</h2>
+  <div style="color:#8fb0c8;line-height:1.6;margin-bottom:16px">
+    Use this sequence to show one connected financial accounting assistant — not separate apps.
+  </div>
+
+  <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">
+    <div class="card">
+      <b>1 · FINANCIAL COMMAND</b>
+      <div class="val">$18.4K</div>
+      <p>Shows the live operating floor: AR risk, AP invoices, tax window, compliance score, zero-trust posture, and strategist action.</p>
+      <button onclick="window.open('/html/financial-command/index.html?v=finops-final','_blank')">OPEN FINANCIAL COMMAND</button>
+    </div>
+
+    <div class="card">
+      <b>2 · FINANCIAL INTELLIGENCE / ASC 958</b>
+      <div class="val">$480K</div>
+      <p>Shows fund accounting, grant restrictions, report status, Form 990 readiness, and compliance exposure.</p>
+      <button onclick="window.open('/html/financial/index.html?v=finops-final','_blank')">OPEN FINANCIAL INTEL</button>
+    </div>
+
+    <div class="card">
+      <b>3 · FINOPS MAIN STRATEGIST</b>
+      <div class="val">BNCA</div>
+      <p>Turns accounting work into executive action: lanes, action log, outcome summary, and controller-ready recommendations.</p>
+      <button onclick="window.open('/html/finops-main-strategist/index.html?v=finops-final','_blank')">OPEN FINOPS STRATEGIST</button>
+    </div>
+
+    <div class="card">
+      <b>4 · TAX PREP</b>
+      <div class="val">1099</div>
+      <p>Shows 1099/W-9 readiness, vendor threshold review, tax deadline windows, and filing risk.</p>
+      <button onclick="window.open('/html/tax-prep/index.html?v=finops-final','_blank')">OPEN TAX PREP</button>
+    </div>
+
+    <div class="card">
+      <b>5 · COMPLIANCE SHIELD</b>
+      <div class="val">AUDIT</div>
+      <p>Shows approvals, supporting documents, audit trail, policy gaps, and controller review risk.</p>
+      <button onclick="window.open('/html/compliance/index.html?v=finops-final','_blank')">OPEN COMPLIANCE</button>
+    </div>
+
+    <div class="card">
+      <b>6 · ZERO TRUST</b>
+      <div class="val">ACCESS</div>
+      <p>Shows permission review, QuickBooks access risk, financial data exposure, and security posture.</p>
+      <button onclick="window.open('/html/zero-trust/index.html?v=finops-final','_blank')">OPEN ZERO TRUST</button>
+    </div>
+  </div>
+
+  <div class="output" style="margin-top:16px;white-space:pre-wrap">
+STEP-BY-STEP TALK TRACK:
+
+1. Start here on FinOps Presentation.
+Say: “This is the accounting workload your team already handles: AP, AR, reconciliation, tax, compliance, and close.”
+
+2. Click Bank Reconciliation or AR Ledger.
+Say: “I’m starting with one workflow because that’s where month-end pressure shows up first.”
+
+3. Click RUN DOCUMENT.
+Say: “This is the work normally chased manually across QuickBooks, bank feeds, spreadsheets, and email.”
+
+4. Open Financial Command.
+Say: “This is the live operating floor — every node has a role.”
+
+5. Open FinOps Main Strategist.
+Say: “Now it’s no longer activity. It’s a next action for the controller.”
+
+6. Click EXECUTIVE CLOSE.
+Say: “Most teams pay $5K–$7K/month to coordinate this manually. TSM gives you a visible operating system for $1,750/month.”
+
+7. Point to the rail.
+Say: “At this point, it’s just how you want to start — most teams begin with the 30-day pilot.”
+
+Then stop talking.
+  </div>
+</section>
 
 </body>
 </html>
