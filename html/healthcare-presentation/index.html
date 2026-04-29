@@ -709,11 +709,11 @@ TALK TRACK:
       workflows:["prior authorization","denials","compliance","executive BNCA"],
       price:"$1,750/month"
     }));
-    alert("Pilot path captured: 30-day healthcare pilot · prior auth + denials + compliance.");
+    // alert removed for UX
   };
 
   window.bookHealthcareWalkthrough = function(){
-    alert("Next step: technical walkthrough with healthcare operations, billing, compliance, and leadership.");
+    // alert removed for UX
   };
 
   // Hook into Auto Demo completion without exposing internal logic
@@ -810,6 +810,72 @@ TALK TRACK:
       if(rail) rail.remove();
     }
   });
+})();
+</script>
+
+
+<script id="tsm-walkthrough-confirm">
+function bookHealthcareWalkthrough(){
+  const el = document.createElement('div');
+  el.style = `
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:#02070d;
+    border:1px solid #00e0ff;
+    padding:24px;
+    border-radius:14px;
+    z-index:1000002;
+    text-align:center;
+    max-width:420px;
+    box-shadow:0 0 40px rgba(0,224,255,.3);
+  `;
+
+  el.innerHTML = `
+    <div style="font-size:18px;font-weight:900;color:#00e0ff;margin-bottom:10px">
+      Walkthrough Locked
+    </div>
+    <div style="font-size:13px;color:#8fb0c8;margin-bottom:18px">
+      We’ll walk through billing, compliance, and operations using your workflows.
+    </div>
+    <button onclick="this.parentElement.remove()" 
+      style="background:#00e0ff;color:#001018;border:none;padding:10px 16px;border-radius:8px;font-weight:900">
+      CONFIRMED
+    </button>
+  `;
+
+  document.body.appendChild(el);
+}
+</script>
+
+
+<script id="tsm-closing-rail-upgrade">
+(function(){
+  function injectDecisionLine(){
+    const rail = document.getElementById("closingLockActionRail");
+    if(!rail) return;
+
+    if(!rail.querySelector(".tsm-decision-line")){
+      const line = document.createElement("div");
+      line.className = "tsm-decision-line";
+      line.style = `
+        width:100%;
+        text-align:center;
+        font-size:12px;
+        color:#8fb0c8;
+        margin-bottom:6px;
+      `;
+      line.textContent = "Choose how you want to start →";
+
+      rail.insertBefore(line, rail.firstChild);
+    }
+  }
+
+  const observer = new MutationObserver(() => injectDecisionLine());
+  observer.observe(document.body, {childList:true, subtree:true});
+
+  setTimeout(injectDecisionLine, 500);
 })();
 </script>
 
