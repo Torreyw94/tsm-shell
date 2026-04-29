@@ -3449,6 +3449,68 @@ app.get('/api/finops/multi-report', (req,res)=>{
   res.json({ok:true,status:'TSM FinOps multi-workflow chain online',route:'/api/finops/multi-report'});
 });
 
+
+// CONSTRUCTION DOC SHOWCASE ROUTES
+app.get('/html/construction-doc-showcase', (req,res) => {
+  res.sendFile(require('path').join(__dirname,'html','construction-doc-showcase','index.html'));
+});
+app.get('/html/construction-doc-showcase/', (req,res) => {
+  res.sendFile(require('path').join(__dirname,'html','construction-doc-showcase','index.html'));
+});
+app.get('/html/construction-doc-showcase/index.html', (req,res) => {
+  res.sendFile(require('path').join(__dirname,'html','construction-doc-showcase','index.html'));
+});
+
+app.post('/api/construction/report', async (req,res) => {
+  const workflow = req.body?.workflow || 'Job Cost Report';
+  const content = req.body?.content || 'Construction project document review.';
+  res.json({
+    ok:true,
+    report:{
+      workflow,
+      risk_level:'HIGH',
+      summary:'Construction document reviewed for cost, schedule, subcontractor, and compliance risk.',
+      findings:[
+        'Cost or schedule variance requires PM/controller review.',
+        'Subcontractor/vendor exposure should be validated.',
+        'Project delivery risk should be converted into an owner action lane.'
+      ],
+      actions:[
+        'Assign PM to validate variance and supporting documentation.',
+        'Route cost exposure to controller for budget impact review.',
+        'Prepare BNCA summary for construction strategist.'
+      ],
+      project_note:'Prioritize project cost exposure, schedule blockers, and subcontractor risk before next owner update.',
+      business_outcome:'Construction document converted into project-ready actions.',
+      confidence:88
+    },
+    ts:new Date().toISOString()
+  });
+});
+// END CONSTRUCTION DOC SHOWCASE ROUTES
+
+// FINOPS MULTI-WORKFLOW CHAIN ROUTES
+app.post('/api/finops/multi-report', async (req,res) => {
+  const workflows = req.body?.workflows || ['AP Aging','AR Ledger','1099 Tracker'];
+  res.json({
+    ok:true,
+    chain:workflows,
+    priority_rank:[
+      {rank:1,lane:'AP',issue:'12 vendor invoices need validation/support',impact:'$18.4K payment timing exposure',owner:'Staff Accountant',status:'ACTION REQUIRED'},
+      {rank:2,lane:'AR',issue:'Collections follow-up required on aging balances',impact:'Cash timing pressure',owner:'AR Specialist / Controller',status:'WATCH'},
+      {rank:3,lane:'Tax',issue:'7 vendors need W-9 / 1099 threshold review',impact:'$34K tax-readiness window',owner:'Tax Prep',status:'DUE BEFORE FILING'}
+    ],
+    combined_bnca:'Prioritize AP invoice validation first, run AR collections follow-up second, and complete 1099/W-9 readiness review before the filing window. Route final summary to Controller Action Plan.',
+    controller_note:'AP support gaps are the highest immediate blocker. AR and tax readiness should be reviewed in the same close cycle.',
+    business_outcome:'AP + AR + Tax workflows combined into one controller-ranked action plan.',
+    confidence:89,
+    ts:new Date().toISOString()
+  });
+});
+app.get('/api/finops/multi-report',(req,res)=>res.json({ok:true,status:'TSM FinOps multi-workflow chain online'}));
+// END FINOPS MULTI-WORKFLOW CHAIN ROUTES
+
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
 

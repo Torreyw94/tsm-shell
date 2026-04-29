@@ -144,7 +144,7 @@ input[type=file]{display:none}
       </div>
       <div style="padding:10px;border:1px solid #1e3a1e;border-radius:4px;background:#0b120b">
         <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:#00ff88;margin-bottom:6px">💡 BEST DEMO DOCS</div>
-        <div style="font-size:11px;color:#889988;line-height:1.6">Job cost report · vendor payables · change order log · safety report · schedule variance · budget variance. Any of these will produce the strongest AI output.</div>
+        <div style="font-size:11px;color:#889988;line-height:1.6">Bank reconciliation · AP aging · GL extract · Denial report · Variance report · Audit finding. Any of these will produce the strongest AI output.</div>
       </div>
     </div>
   </div>
@@ -309,38 +309,8 @@ async function runAI(label,content,ob,os){
   await delay(500); setPipe(1); ob.textContent='> Parsing structure...'; os.textContent='PARSING';
   await delay(600); setPipe(2); ob.textContent='> TSM AI node chain analyzing...'; os.textContent='ANALYZING';
   const prompt=content
-    ?`You are a construction operations intelligence AI for TSMatter.
-
-Analyze this construction document:
-
-Document: ${label}
-Content: ${content}
-
-Return EXACTLY:
-
-PROJECT SUMMARY
-[2-3 sentences explaining what is happening operationally]
-
-KEY FINDINGS
-• [cost, delay, or compliance issue]
-• [second issue]
-• [third issue]
-
-RISK LEVEL: [LOW/MEDIUM/HIGH/CRITICAL]
-[why this matters to project delivery]
-
-FLAGS: [number]
-
-BEST NEXT COURSE OF ACTION
-1. [immediate action for PM or controller]
-2. [cost or schedule control step]
-3. [risk mitigation step]
-
-CONFIDENCE: [XX%]
-
-Focus on cost overruns, schedule delays, subcontractor risk, compliance gaps, payables pressure, and project delivery impact.`
-    :`You are a TSMatter construction analyst. File uploaded: "${label}". Generate a realistic construction intelligence analysis with PROJECT SUMMARY, KEY FINDINGS, RISK LEVEL, FLAGS, BEST NEXT COURSE OF ACTION, CONFIDENCE %.`;
-
+    ?`You are a TSMatter financial and operational analyst AI. Analyze this document:\n\nDocument: ${label}\nContent: ${content}\n\nReturn in this exact format:\nDOCUMENT SUMMARY\n[2-3 sentences]\n\nKEY FINDINGS\n• [finding 1]\n• [finding 2]\n• [finding 3]\n\nPROJECT RISK: [LOW/MEDIUM/HIGH/CRITICAL]\n[one sentence why]\n\nFLAGS: [number]\n\nBEST NEXT COURSE OF ACTION\n1. [action]\n2. [action]\n3. [action]\n\nAI CONFIDENCE: [XX%]`
+    :`You are a TSMatter analyst. File uploaded: "${label}". Generate a realistic analysis in TSMatter terminal style with: DOCUMENT SUMMARY, KEY FINDINGS (3 bullets), PROJECT RISK, FLAGS count, BEST NEXT COURSE OF ACTION (3 steps), AI CONFIDENCE %.`;
   try{
     const res=await fetch('https://tsm-core.fly.dev/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:'doc-showcase',messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
