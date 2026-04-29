@@ -1,0 +1,8 @@
+nohup: ignoring input
+127.0.0.1 - - [29/Apr/2026 16:12:26] "GET /html/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [29/Apr/2026 16:12:26] "GET /html/healthcare/hc-taxprep/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [29/Apr/2026 16:12:26] code 404, message File not found
+127.0.0.1 - - [29/Apr/2026 16:12:26] "GET /html/ins-suite/zero-trust/index.html HTTP/1.1" 404 -
+127.0.0.1 - - [29/Apr/2026 16:13:35] code 404, message File not found
+127.0.0.1 - - [29/Apr/2026 16:13:35] "GET /html/ins-suite/zero-trust/index.html HTTP/1.1" 404 -
+127.0.0.1 - - [29/Apr/2026 16:14:57] "GET /html/ins-suite/zero-trust/index.html HTTP/1.1" 200 -
