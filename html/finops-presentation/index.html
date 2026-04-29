@@ -93,6 +93,74 @@ body[data-mode="executive"] .controller-only{display:none!important}
   </div>
 </section>
 
+<section class="panel operator-only" id="finopsOperatorWorkflowBoard" style="margin:18px 36px;border:1px solid #00f59f;background:#031a14;border-radius:16px;padding:18px">
+  <h2 style="color:#00f59f;margin-top:0">OPERATOR WORKFLOW · HOW WORK MOVES FASTER</h2>
+  <div style="color:#d9f3ff;line-height:1.6;margin-bottom:16px">
+    This is the daily Staff Accountant flow. Instead of chasing AP, AR, recs, tax, and support across QuickBooks, email, spreadsheets, and folders, the work moves through one visible lane.
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+    <div class="card" style="border-color:#00e0ff">
+      <b>1 · INTAKE</b>
+      <div class="val">DOCS</div>
+      <span>Bank rec, AP aging, AR ledger, GL, 1099, audit notes</span>
+    </div>
+    <div class="card" style="border-color:#00e0ff">
+      <b>2 · REVIEW</b>
+      <div class="val">CHECK</div>
+      <span>Balances, approvals, missing support, deadlines</span>
+    </div>
+    <div class="card" style="border-color:#ffc400">
+      <b>3 · FLAG</b>
+      <div class="val">RISK</div>
+      <span>Exceptions, overdue vendors, missing W-9s, audit gaps</span>
+    </div>
+    <div class="card" style="border-color:#00f59f">
+      <b>4 · ASSIGN</b>
+      <div class="val">OWNER</div>
+      <span>Who needs to fix, approve, collect, or document</span>
+    </div>
+    <div class="card" style="border-color:#00f59f">
+      <b>5 · REPORT</b>
+      <div class="val">BNCA</div>
+      <span>Next action plan for controller review</span>
+    </div>
+    <div class="card" style="border-color:#00f59f">
+      <b>6 · CLOSE</b>
+      <div class="val">READY</div>
+      <span>Controller packet, audit trail, month-end support</span>
+    </div>
+  </div>
+
+  <div class="output" style="margin-top:16px;white-space:pre-wrap">
+WHAT THIS IMPROVES:
+
+Before TSM:
+• Work is scattered across QuickBooks, bank feeds, spreadsheets, email, and shared folders.
+• Staff has to manually find what is missing.
+• Controller receives status late or incomplete.
+• Month-end close becomes reactive.
+
+With TSM:
+• Accounting work enters one workflow.
+• Exceptions are flagged before close.
+• Missing support is visible.
+• Next actions are assigned.
+• Controller gets a ready summary.
+
+BEST LINE:
+“This does not replace accounting judgment. It removes the chasing, sorting, and status confusion so the accountant and controller can act faster.”
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px">
+    <button onclick="document.querySelectorAll('.doc,.doc-card')[0]?.click()">1 · Select Work</button>
+    <button onclick="typeof runDoc==='function'?runDoc():null">2 · Run Workflow</button>
+    <button onclick="typeof openMain==='function'?openMain():window.open('/html/finops-main-strategist/index.html','_blank')">3 · Open Controller Action Plan</button>
+    <button onclick="typeof showClose==='function'?showClose():null">4 · Show ROI / Pilot</button>
+  </div>
+</section>
+
+
 <section class="role-panel controller-only">
   <h2>CONTROLLER MODE · WHAT NEEDS ATTENTION?</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
