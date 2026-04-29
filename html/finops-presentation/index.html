@@ -27,6 +27,45 @@ button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
 .footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
 main{padding-bottom:44px}
 </style>
+
+<style id="finops-role-mode-style">
+#finopsRoleModes{
+  margin:16px 36px;
+  padding:14px;
+  border:1px solid #00e0ff;
+  border-radius:14px;
+  background:#061018;
+}
+#finopsRoleModes button{
+  margin:4px;
+  padding:10px 14px;
+  border-radius:8px;
+  border:1px solid #00e0ff;
+  background:transparent;
+  color:#00e0ff;
+  font-weight:900;
+  cursor:pointer;
+}
+#finopsRoleModes button.active{
+  background:#00e0ff;
+  color:#001018;
+}
+.role-panel{
+  margin:12px 36px;
+  padding:16px;
+  border:1px solid #123050;
+  border-radius:14px;
+  background:#02070d;
+}
+.role-panel h2{margin-top:0;color:#00e0ff}
+body[data-mode="operator"] .controller-only,
+body[data-mode="operator"] .executive-only{display:none!important}
+body[data-mode="controller"] .operator-only,
+body[data-mode="controller"] .executive-only{display:none!important}
+body[data-mode="executive"] .operator-only,
+body[data-mode="executive"] .controller-only{display:none!important}
+</style>
+
 </head>
 <body>
 <header>
@@ -36,7 +75,54 @@ main{padding-bottom:44px}
 
 <main class="wrap">
 
-<section class="panel" id="finopsOperatorMode" style="margin:18px 36px;border:1px solid #00e0ff;background:#061018;border-radius:16px;padding:18px">
+
+<section id="finopsRoleModes">
+  <div style="color:#8fb0c8;font-size:12px;margin-bottom:8px">
+    Choose your view:
+  </div>
+  <button id="modeBtnOperator" onclick="setFinopsMode('operator')">Operator · Staff Accountant</button>
+  <button id="modeBtnController" onclick="setFinopsMode('controller')">Controller · Finance Lead</button>
+  <button id="modeBtnExecutive" onclick="setFinopsMode('executive')">Executive · CFO / Owner</button>
+</section>
+
+<section class="role-panel operator-only">
+  <h2>OPERATOR MODE · WHAT DO I DO?</h2>
+  <div style="line-height:1.65">
+    Use this like a daily accounting checklist. Select AP, AR, reconciliation, 1099, GL, variance, or audit work.
+    Run the workflow, review missing support or risks, then open the Controller Action Plan.
+  </div>
+</section>
+
+<section class="role-panel controller-only">
+  <h2>CONTROLLER MODE · WHAT NEEDS ATTENTION?</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+    <div class="card"><b>Priority 1</b><div class="val">AP</div><span>12 invoices need validation/support.</span></div>
+    <div class="card"><b>Priority 2</b><div class="val">REC</div><span>3 reconciling items need documentation.</span></div>
+    <div class="card"><b>Priority 3</b><div class="val">1099</div><span>7 vendors need W-9 / threshold review.</span></div>
+  </div>
+  <div class="output" style="margin-top:14px;white-space:pre-wrap">
+CONTROLLER NEXT ACTIONS:
+→ Approve AP queue after invoice/support review.
+→ Resolve bank reconciliation exceptions before month-end close.
+→ Validate 1099/W-9 readiness before filing deadline.
+→ Send summary to executive view when ready.
+  </div>
+</section>
+
+<section class="role-panel executive-only">
+  <h2>EXECUTIVE MODE · WHAT IS THE OUTCOME?</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+    <div class="card"><b>Manual Coordination</b><div class="val">$5K–$7K/mo</div><span>staff, spreadsheets, follow-ups</span></div>
+    <div class="card"><b>TSM Operating System</b><div class="val">$1,750/mo</div><span>visible accounting workflow layer</span></div>
+    <div class="card"><b>Time Saved</b><div class="val">12–18 hrs</div><span>monthly coordination reduced</span></div>
+  </div>
+  <div class="output" style="margin-top:14px;white-space:pre-wrap">
+EXECUTIVE SUMMARY:
+This is not another dashboard. It is the financial operations layer that turns AP, AR, reconciliation, tax readiness, compliance, and controller reporting into visible next actions.
+  </div>
+</section>
+
+<section class="panel operator-only" id="finopsOperatorMode" style="margin:18px 36px;border:1px solid #00e0ff;background:#061018;border-radius:16px;padding:18px">
   <h2 style="color:#00e0ff;margin-top:0">START HERE · STAFF ACCOUNTANT WORKFLOW</h2>
   <div style="color:#d9f3ff;line-height:1.65">
     This system works like a daily accounting checklist:
@@ -618,6 +704,28 @@ Goal: prove measurable value before expanding across all financial workflows.`
   };
   document.getElementById('finopsOperatorAnswer').textContent = a[topic] || 'Guide unavailable.';
 }
+</script>
+
+
+<script id="finops-role-mode-engine">
+function setFinopsMode(mode){
+  document.body.setAttribute("data-mode", mode);
+  localStorage.setItem("finops_role_mode", mode);
+
+  ["Operator","Controller","Executive"].forEach(x=>{
+    const btn=document.getElementById("modeBtn"+x);
+    if(btn) btn.classList.remove("active");
+  });
+
+  const key = mode.charAt(0).toUpperCase()+mode.slice(1);
+  const active = document.getElementById("modeBtn"+key);
+  if(active) active.classList.add("active");
+}
+
+(function(){
+  const saved = localStorage.getItem("finops_role_mode") || "operator";
+  setTimeout(()=>setFinopsMode(saved), 100);
+})();
 </script>
 
 </body>
