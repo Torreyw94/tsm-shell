@@ -327,5 +327,87 @@ function showConfirm(title, text){
 })();
 </script>
 
+
+<script id="tsm-finops-default-path-lock">
+(function(){
+  if(document.getElementById("finopsCloseRail")) return;
+
+  const rail = document.createElement("div");
+  rail.id = "finopsCloseRail";
+
+  rail.style = `
+    position:fixed;
+    bottom:38px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#02070d;
+    border:1px solid #00e0ff;
+    padding:14px 20px;
+    border-radius:14px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:12px;
+    width:calc(100% - 44px);
+    max-width:860px;
+    z-index:99999;
+    box-shadow:0 0 30px rgba(0,224,255,.25);
+    font-family:ui-monospace,Menlo,monospace;
+  `;
+
+  rail.innerHTML = `
+    <div style="
+      width:100%;
+      text-align:center;
+      font-size:12px;
+      color:#00e0ff;
+      margin-bottom:6px;
+      font-weight:900;
+      letter-spacing:.05em;
+    ">
+      Recommended: Start with a 30-day pilot
+    </div>
+
+    <button onclick="startPilot()" style="
+      background:#00e0ff;
+      color:#001018;
+      border:none;
+      padding:12px 18px;
+      border-radius:8px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 0 18px rgba(0,224,255,.5);
+    ">
+      START 30-DAY PILOT
+    </button>
+
+    <button onclick="bookWalkthrough()" style="
+      background:transparent;
+      color:#00e0ff;
+      border:1px solid #00e0ff;
+      padding:12px 18px;
+      border-radius:8px;
+      font-weight:700;
+      cursor:pointer;
+    ">
+      SEE HOW IT WORKS
+    </button>
+
+    <button onclick="openMain()" style="
+      background:transparent;
+      color:#6b8ca3;
+      border:1px solid #123050;
+      padding:12px 18px;
+      border-radius:8px;
+      cursor:pointer;
+    ">
+      EXPLORE STRATEGIST
+    </button>
+  `;
+
+  document.body.appendChild(rail);
+})();
+</script>
+
 </body>
 </html>
