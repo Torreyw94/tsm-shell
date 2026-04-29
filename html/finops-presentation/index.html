@@ -66,6 +66,87 @@ body[data-mode="executive"] .operator-only,
 body[data-mode="executive"] .controller-only{display:none!important}
 </style>
 
+
+<style id="finops-guided-operator-ui-style">
+#finopsGuidedOperatorUI{
+  margin:18px 36px;
+  border:1px solid rgba(0,245,159,.35);
+  border-radius:18px;
+  background:#06130a;
+  color:#d9f3ff;
+  overflow:hidden;
+  box-shadow:0 0 36px rgba(0,245,159,.12);
+}
+#finopsGuidedOperatorUI .op-top{
+  display:flex;align-items:center;gap:18px;
+  padding:18px 22px;
+  border-bottom:1px solid rgba(0,245,159,.25);
+}
+#finopsGuidedOperatorUI .dot{width:14px;height:14px;border-radius:50%;display:inline-block}
+#finopsGuidedOperatorUI .brand{
+  color:#00f59f;font-size:20px;font-weight:900;letter-spacing:.28em;
+}
+#finopsGuidedOperatorUI .mode{
+  color:#4f8f48;font-size:14px;letter-spacing:.18em;
+}
+#finopsGuidedOperatorUI .op-body{padding:30px 28px}
+#finopsGuidedOperatorUI h2{
+  margin:0;color:#00f59f;font-size:24px;letter-spacing:.28em;
+}
+#finopsGuidedOperatorUI .subtitle{
+  margin-top:12px;color:#4f8f48;letter-spacing:.2em;font-size:14px;
+}
+#finopsGuidedOperatorUI .steps{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  align-items:center;
+  gap:18px;
+  margin:34px 0 26px;
+}
+#finopsGuidedOperatorUI .step{
+  border:1px solid rgba(0,245,159,.45);
+  border-radius:16px;
+  padding:18px;
+  min-height:145px;
+  background:#031008;
+}
+#finopsGuidedOperatorUI .step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid #00f59f;color:#00f59f;
+  font-weight:900;margin-bottom:12px;
+}
+#finopsGuidedOperatorUI .step-title{
+  color:#00f59f;font-weight:900;letter-spacing:.12em;margin-bottom:8px;
+}
+#finopsGuidedOperatorUI .step-copy{
+  color:#bfe8d1;font-size:13px;line-height:1.55;
+}
+#finopsGuidedOperatorUI .operator-actions{
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;
+}
+#finopsGuidedOperatorUI button{
+  border-radius:10px;padding:12px 16px;font-weight:900;cursor:pointer;
+  font-family:ui-monospace,Menlo,monospace;
+}
+#finopsGuidedOperatorUI .primary{
+  background:#00f59f;color:#001018;border:none;
+  box-shadow:0 0 22px rgba(0,245,159,.34);
+}
+#finopsGuidedOperatorUI .secondary{
+  background:transparent;color:#00f59f;border:1px solid #00f59f;
+}
+#finopsGuidedOperatorUI .operator-value{
+  margin-top:22px;padding:16px;
+  border:1px solid rgba(0,224,255,.35);
+  border-radius:14px;background:#02070d;
+  color:#d9f3ff;line-height:1.6;
+}
+@media(max-width:900px){
+  #finopsGuidedOperatorUI .steps{grid-template-columns:1fr}
+}
+</style>
+
 </head>
 <body>
 <header>
@@ -84,6 +165,63 @@ body[data-mode="executive"] .controller-only{display:none!important}
   <button id="modeBtnController" onclick="setFinopsMode('controller')">Controller · Finance Lead</button>
   <button id="modeBtnExecutive" onclick="setFinopsMode('executive')">Executive · CFO / Owner</button>
 </section>
+
+<section class="operator-only" id="finopsGuidedOperatorUI">
+  <div class="op-top">
+    <span class="dot" style="background:#00f59f"></span>
+    <span class="dot" style="background:#ffc400"></span>
+    <span class="dot" style="background:#ff4d4d"></span>
+    <div class="brand">TSM · FINANCIAL OPS</div>
+    <div class="mode">// OPERATOR MODE</div>
+  </div>
+
+  <div class="op-body">
+    <h2>● START HERE</h2>
+    <div class="subtitle">STAFF ACCOUNTANT GUIDED WORKFLOW · SELECT + RUN IN 3 STEPS</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">WORKFLOWS</div>
+        <div class="step-copy">
+          Choose the accounting work: AP aging, AR ledger, bank reconciliation, GL detail, 1099 readiness, or audit findings.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">DATA SOURCE</div>
+        <div class="step-copy">
+          Use the sample workflow, uploaded file, or connected finance view. The goal is simple: get the work into one visible lane.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">REVIEW + RUN</div>
+        <div class="step-copy">
+          Run the review. The system flags missing support, exceptions, timing risks, and next actions for controller review.
+        </div>
+      </div>
+    </div>
+
+    <div class="operator-actions">
+      <button class="primary" onclick="typeof runDoc==='function'?runDoc():null">▶ RUN ACCOUNTING WORKFLOW</button>
+      <button class="secondary" onclick="typeof startFinopsFlowGuide==='function'?startFinopsFlowGuide():null">✨ GUIDE ME THROUGH IT</button>
+      <button class="secondary" onclick="typeof openMain==='function'?openMain():window.open('/html/finops-main-strategist/index.html','_blank')">OPEN CONTROLLER ACTION PLAN</button>
+    </div>
+
+    <div class="operator-value">
+      <b style="color:#00e0ff">Why this helps:</b><br>
+      Instead of chasing work across QuickBooks, bank feeds, spreadsheets, email, and folders, the accountant sees one flow:
+      <b>Intake → Review → Flag → Assign → Report → Close.</b><br><br>
+      <b style="color:#00f59f">Plain English:</b>
+      select the work, run the review, see what is missing, and send clear next actions to the controller.
+    </div>
+  </div>
+</section>
+
+
 
 <section class="operator-only" id="finopsStartAnchor" style="
   margin:16px 36px;
