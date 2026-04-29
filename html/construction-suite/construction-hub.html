@@ -2,1107 +2,1490 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>TSM Construction · Command Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TSM Construction Intelligence Suite · Command Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --steel:   #0b0f14;
-  --iron:    #13191f;
-  --plate:   #191f28;
-  --rail:    #202830;
-  --rim:     #2a3341;
-  --amber:   #f0a500;
-  --amber2:  #ffbe33;
-  --chalk:   #e6e9ef;
-  --mist:    #7e8fa3;
-  --safe:    #3ecf8e;
-  --danger:  #e05252;
-  --accent:  #4a9fe0;
-  --purple:  #9b7ce0;
-  --sidebar: 220px;
+  --bg:      #05080a;
+  --bg2:     #070c10;
+  --panel:   #090e13;
+  --panel2:  #0c1318;
+  --border:  #111d26;
+  --border2: #192530;
+  --cyan:    #00d4b8;
+  --cyan2:   #009e88;
+  --cyan3:   #006658;
+  --amber:   #f4a800;
+  --amber2:  #c78800;
+  --green:   #00e87a;
+  --red:     #f03a3a;
+  --orange:  #f07030;
+  --blue:    #3a8cf0;
+  --purple:  #9a70f0;
+  --white:   #dce9f0;
+  --text:    #7aA0b4;
+  --muted:   #304858;
+  --mono:    'Share Tech Mono', monospace;
+  --bar:     'Barlow Condensed', sans-serif;
+  --body:    'Barlow', sans-serif;
+  --orb:     'Orbitron', monospace;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%}
-body{
-  display:flex;flex-direction:column;height:100vh;overflow:hidden;
-  background:var(--steel);color:var(--chalk);
-  font-family:'Barlow',sans-serif;font-size:14px;
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  overflow-x:hidden;
+  min-height:100vh;
+  padding-bottom:120px;
 }
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,212,184,.005) 3px,rgba(0,212,184,.005) 4px);
+  pointer-events:none; z-index:9998;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scanbar { 0%{opacity:.4} 50%{opacity:1} 100%{opacity:.4} }
 
-/* grid bg */
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(240,165,0,.022) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(240,165,0,.022) 1px,transparent 1px);
-  background-size:44px 44px;
+/* ── TOPBAR ── */
+.topbar {
+  background:linear-gradient(90deg,#030608,#060e12,#030608);
+  border-bottom:1px solid var(--border2);
+  padding:0 1.5rem;
+  height:48px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:500;
+  position:relative;
 }
-
-/* ── TOP BAR ── */
-.topbar{
-  position:relative;z-index:50;
-  display:flex;align-items:center;gap:0;
-  height:54px;min-height:54px;
-  background:var(--iron);
-  border-bottom:2px solid var(--amber);
-  flex-shrink:0;
+.topbar::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--cyan2),var(--cyan),transparent);
+  animation:scanbar 4s linear infinite;
 }
-.topbar-brand{
-  width:var(--sidebar);min-width:var(--sidebar);
-  display:flex;align-items:center;gap:10px;
-  padding:0 18px;border-right:1px solid rgba(255,255,255,.06);
-  height:100%;flex-shrink:0;
+.tb-logo {
+  font-family:var(--orb);
+  font-size:.75rem; font-weight:900;
+  color:var(--cyan); letter-spacing:.2rem;
+  display:flex; align-items:center; gap:.6rem;
 }
-.brand-hex{
-  width:32px;height:32px;flex-shrink:0;
-  background:var(--amber);
-  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--steel);
-}
-.brand-name{
-  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;line-height:1.1;
-}
-.brand-name span{color:var(--amber);display:block;font-size:10px;letter-spacing:3px;}
-
-.topbar-center{
-  flex:1;display:flex;align-items:center;gap:18px;padding:0 20px;
-}
-.topbar-status{
-  display:flex;align-items:center;gap:6px;
-  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);
-}
-.topbar-status::before{
-  content:'';width:6px;height:6px;border-radius:50%;background:var(--safe);
+.tb-logo-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan);
   animation:pulse 2s infinite;
-}
-.topbar-alert{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.3);
-  border-radius:4px;padding:3px 10px;
-  font-size:11px;font-weight:700;color:var(--danger);letter-spacing:1px;
-}
-.topbar-right{
-  display:flex;align-items:center;gap:10px;padding:0 18px;
-}
-.topbar-date{font-size:11px;color:var(--mist);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
-.ai-toggle-btn{
-  background:var(--amber);color:var(--steel);border:none;border-radius:4px;
-  padding:5px 13px;font-size:11px;font-family:'Barlow Condensed',sans-serif;
-  font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;
-  transition:background .15s;
-}
-.ai-toggle-btn:hover{background:var(--amber2);}
-
-/* ── MAIN SHELL ── */
-.shell{
-  display:flex;flex:1;overflow:hidden;position:relative;z-index:5;
-}
-
-/* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sidebar);min-width:var(--sidebar);
-  background:var(--iron);
-  border-right:1px solid rgba(255,255,255,.05);
-  display:flex;flex-direction:column;
-  overflow-y:auto;overflow-x:hidden;
-  scrollbar-width:none;
-}
-.sidebar::-webkit-scrollbar{display:none;}
-
-.nav-section-label{
-  padding:16px 16px 6px;
-  font-size:9px;font-weight:700;letter-spacing:2.5px;
-  text-transform:uppercase;color:var(--mist);
-}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 16px;cursor:pointer;
-  border-left:3px solid transparent;
-  transition:all .15s;position:relative;
-}
-.nav-item:hover{background:rgba(255,255,255,.03);}
-.nav-item.active{
-  background:rgba(240,165,0,.07);
-  border-left-color:var(--amber);
-}
-.nav-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
-.nav-label{
-  font-size:13px;font-weight:600;color:var(--chalk);
-  font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;
-}
-.nav-item:not(.active) .nav-label{color:var(--mist);}
-.nav-badge{
-  margin-left:auto;background:var(--danger);color:#fff;
-  font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;
-}
-.nav-badge.warn{background:var(--amber);color:var(--steel);}
-.nav-badge.ok{background:var(--safe);color:var(--steel);}
-
-.sidebar-footer{
-  margin-top:auto;padding:14px 16px;
-  border-top:1px solid rgba(255,255,255,.05);
-  font-size:11px;color:var(--mist);line-height:1.6;
-}
-.sidebar-footer strong{color:var(--amber);display:block;font-size:12px;margin-bottom:2px;}
-
-/* ── CONTENT ── */
-.content{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  padding:0;scrollbar-width:thin;
-  scrollbar-color:rgba(255,255,255,.08) transparent;
-}
-
-/* ── VIEWS ── */
-.view{display:none;animation:fadeIn .25s ease;}
-.view.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* ── PAGE HERO ── */
-.page-hero{
-  background:linear-gradient(135deg,var(--plate) 0%,var(--iron) 70%,#090d11 100%);
-  border-bottom:1px solid rgba(240,165,0,.12);
-  padding:2rem 2rem 1.6rem;position:relative;overflow:hidden;
-}
-.page-hero::after{
-  content:attr(data-bg);
-  position:absolute;right:-10px;top:50%;transform:translateY(-50%);
-  font-family:'Bebas Neue',sans-serif;
-  font-size:120px;letter-spacing:6px;
-  color:rgba(240,165,0,.035);pointer-events:none;white-space:nowrap;
-}
-.page-eyebrow{
-  font-size:10px;font-weight:700;letter-spacing:3px;
-  text-transform:uppercase;color:var(--amber);margin-bottom:8px;
-}
-.page-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(34px,4.5vw,56px);line-height:1;letter-spacing:2px;margin-bottom:8px;
-}
-.page-title em{color:var(--amber);font-style:normal;}
-.page-sub{font-size:13px;color:var(--mist);max-width:500px;line-height:1.6;}
-
-/* ── KPI ROW ── */
-.kpi-strip{
-  display:flex;gap:0;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  flex-wrap:wrap;
-}
-.kpi-cell{
-  flex:1;min-width:120px;
-  padding:1rem 1.4rem;
-  border-right:1px solid rgba(255,255,255,.05);
-  transition:background .15s;
-}
-.kpi-cell:last-child{border-right:none;}
-.kpi-cell:hover{background:rgba(240,165,0,.03);}
-.kpi-val{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:30px;line-height:1;margin-bottom:3px;
-}
-.kpi-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mist);}
-.kpi-sub{font-size:10px;color:var(--mist);margin-top:2px;}
-.c-amber{color:var(--amber);}
-.c-safe{color:var(--safe);}
-.c-danger{color:var(--danger);}
-.c-accent{color:var(--accent);}
-.c-purple{color:var(--purple);}
-.c-chalk{color:var(--chalk);}
-
-/* ── GRID LAYOUTS ── */
-.pad{padding:1.5rem 2rem;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;}
-.g2l{display:grid;grid-template-columns:1.6fr 1fr;gap:1.2rem;}
-.g2r{display:grid;grid-template-columns:1fr 1.6fr;gap:1.2rem;}
-.col{display:flex;flex-direction:column;gap:1.2rem;}
-
-/* ── PANELS ── */
-.panel{
-  background:var(--iron);
-  border:1px solid rgba(255,255,255,.055);
-  border-radius:6px;overflow:hidden;
-}
-.panel-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 16px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-.panel-title{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  display:flex;align-items:center;gap:7px;
-}
-.panel-title::before{
-  content:'';width:3px;height:12px;background:var(--amber);border-radius:2px;
-}
-.panel-action{
-  font-size:10px;color:var(--amber);background:none;border:none;
-  cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  transition:opacity .15s;
-}
-.panel-action:hover{opacity:.65;}
-.panel-body{padding:1rem 1.1rem;}
-
-/* ── CARDS ── */
-.card{
-  background:var(--plate);border:1px solid rgba(255,255,255,.05);
-  border-radius:5px;padding:1rem;position:relative;overflow:hidden;
-  transition:border-color .15s,transform .12s;cursor:pointer;
-}
-.card:hover{border-color:rgba(240,165,0,.28);transform:translateY(-2px);}
-.card-accent{position:absolute;left:0;top:0;bottom:0;width:3px;}
-.card-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;color:var(--mist);}
-.card-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--chalk);margin-bottom:5px;line-height:1.25;}
-.card-desc{font-size:11px;color:var(--mist);line-height:1.5;margin-bottom:10px;}
-.card-bar-wrap{background:rgba(255,255,255,.05);border-radius:2px;height:3px;margin-bottom:6px;}
-.card-bar{height:3px;border-radius:2px;transition:width 1s ease;}
-.card-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--mist);}
-
-/* ── TABLES ── */
-.tbl{width:100%;border-collapse:collapse;}
-.tbl th{
-  text-align:left;font-size:9px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--mist);padding:8px 14px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.tbl td{
-  padding:10px 14px;font-size:12px;color:var(--chalk);
-  border-bottom:1px solid rgba(255,255,255,.03);
-  vertical-align:middle;
-}
-.tbl tr:last-child td{border-bottom:none;}
-.tbl tr:hover td{background:rgba(240,165,0,.025);}
-
-/* STATUS BADGES */
-.badge{
-  display:inline-flex;align-items:center;
-  font-size:9px;font-weight:800;padding:2px 8px;
-  border-radius:3px;letter-spacing:1px;text-transform:uppercase;
-}
-.b-ok    {background:rgba(62,207,142,.12);color:var(--safe);}
-.b-warn  {background:rgba(240,165,0,.12); color:var(--amber);}
-.b-danger{background:rgba(224,82,82,.12); color:var(--danger);}
-.b-info  {background:rgba(74,159,224,.12);color:var(--accent);}
-.b-muted {background:rgba(255,255,255,.06);color:var(--mist);}
-
-/* ── PROGRESS BARS ── */
-.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.prog-row:last-child{margin-bottom:0;}
-.prog-label{font-size:12px;color:var(--chalk);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.prog-bar-outer{width:120px;background:rgba(255,255,255,.06);border-radius:2px;height:5px;}
-.prog-bar-inner{height:5px;border-radius:2px;}
-.prog-pct{font-size:11px;color:var(--mist);width:36px;text-align:right;flex-shrink:0;}
-
-/* ── ALERT ITEMS ── */
-.alert-list{display:flex;flex-direction:column;gap:7px;padding:10px 14px;}
-.alert-item{
-  display:flex;gap:10px;align-items:flex-start;
-  background:var(--plate);border-radius:4px;padding:9px 11px;
-  border-left:3px solid;
-}
-.alert-item.crit{border-color:var(--danger);}
-.alert-item.warn{border-color:var(--amber);}
-.alert-item.info{border-color:var(--accent);}
-.alert-icon{font-size:13px;flex-shrink:0;margin-top:1px;}
-.alert-text{font-size:12px;line-height:1.5;}
-.alert-time{font-size:10px;color:var(--mist);margin-top:2px;}
-
-/* ── LIEN WAIVER TRACKER ── */
-.lien-grid{display:flex;flex-direction:column;gap:0;}
-.lien-row{
-  display:grid;grid-template-columns:1fr 90px 90px 80px 80px;
-  align-items:center;padding:9px 14px;
-  border-bottom:1px solid rgba(255,255,255,.03);
-  transition:background .12s;cursor:pointer;
-}
-.lien-row:last-child{border-bottom:none;}
-.lien-row:hover{background:rgba(240,165,0,.025);}
-.lien-row.head{
-  background:transparent;cursor:default;
-  font-size:9px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--mist);
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.lien-row.head:hover{background:transparent;}
-.lien-sub-name{font-size:12px;font-weight:600;color:var(--chalk);}
-.lien-sub-trade{font-size:10px;color:var(--mist);}
-
-/* ── TIMELINE ── */
-.tl-list{padding:12px 16px;display:flex;flex-direction:column;gap:0;}
-.tl-item{display:grid;grid-template-columns:64px 18px 1fr;gap:0 12px;margin-bottom:14px;}
-.tl-item:last-child{margin-bottom:0;}
-.tl-date{font-size:10px;color:var(--mist);text-align:right;padding-top:2px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;}
-.tl-spine{display:flex;flex-direction:column;align-items:center;}
-.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px;}
-.tl-line{width:1px;flex:1;background:rgba(255,255,255,.07);min-height:24px;}
-.tl-item:last-child .tl-line{display:none;}
-.tl-content{}
-.tl-title{font-size:12px;font-weight:600;color:var(--chalk);margin-bottom:2px;}
-.tl-body{font-size:11px;color:var(--mist);line-height:1.5;}
-
-/* ── AI ASSISTANT PANEL ── */
-.ai-panel{
-  position:fixed;top:54px;right:0;bottom:0;z-index:200;
-  width:360px;
-  background:var(--iron);
-  border-left:1px solid rgba(240,165,0,.2);
-  display:flex;flex-direction:column;
-  transform:translateX(100%);
-  transition:transform .3s cubic-bezier(.4,0,.2,1);
-  box-shadow:-8px 0 40px rgba(0,0,0,.4);
-}
-.ai-panel.open{transform:none;}
-
-.ai-panel-head{
-  padding:14px 16px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  display:flex;align-items:center;gap:10px;flex-shrink:0;
-  background:linear-gradient(135deg,rgba(240,165,0,.08),transparent);
-}
-.ai-panel-avatar{
-  width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(135deg,var(--amber),#c07800);
-  display:flex;align-items:center;justify-content:center;font-size:16px;
   flex-shrink:0;
 }
-.ai-panel-name{font-size:13px;font-weight:700;}
-.ai-panel-sub{font-size:10px;color:var(--mist);}
-.ai-panel-close{
-  margin-left:auto;background:none;border:none;
-  color:var(--mist);cursor:pointer;font-size:18px;transition:color .15s;
+.tb-logo span { color:var(--muted); font-weight:400; font-size:.6rem; }
+.tb-right {
+  display:flex; align-items:center; gap:1rem;
+  font-family:var(--mono); font-size:.55rem;
 }
-.ai-panel-close:hover{color:var(--chalk);}
+.tb-btn {
+  background:transparent; border:1px solid var(--border2);
+  color:var(--text); padding:.3rem .9rem;
+  font-family:var(--mono); font-size:.55rem;
+  cursor:pointer; letter-spacing:.1rem;
+  transition:all .15s; text-transform:uppercase; text-decoration:none;
+  display:inline-flex; align-items:center; gap:.3rem;
+}
+.tb-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+.tb-btn.primary { border-color:var(--cyan2); color:var(--cyan); }
+.tb-btn.amber { border-color:var(--amber2); color:var(--amber); }
+.tb-btn.green { border-color:var(--green); color:var(--green); }
 
-.ai-msgs{
-  flex:1;overflow-y:auto;padding:12px;
-  display:flex;flex-direction:column;gap:10px;
-  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent;
+/* ── TICKER ── */
+.ticker {
+  height:24px; background:var(--panel);
+  border-bottom:1px solid var(--border);
+  overflow:hidden; white-space:nowrap;
 }
-.ai-msg{display:flex;gap:8px;align-items:flex-start;animation:msgIn .2s ease;}
-@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.ai-msg.user{flex-direction:row-reverse;}
-.ai-bubble{
-  max-width:84%;padding:8px 11px;border-radius:7px;
-  font-size:12.5px;line-height:1.55;
+.ticker-inner {
+  display:inline-flex; gap:3rem; height:100%; align-items:center;
+  animation:ticker-scroll 50s linear infinite;
+  font-family:var(--mono); font-size:.48rem; letter-spacing:.1rem;
+  padding-left:100%;
 }
-.ai-msg.bot .ai-bubble{background:var(--plate);color:var(--chalk);border-radius:2px 7px 7px 7px;}
-.ai-msg.user .ai-bubble{background:var(--amber);color:var(--steel);font-weight:500;border-radius:7px 2px 7px 7px;}
-.ai-msg-dot{
-  width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:2px;
-  display:flex;align-items:center;justify-content:center;font-size:11px;
-}
-.ai-msg.bot  .ai-msg-dot{background:linear-gradient(135deg,var(--amber),#c07800);}
-.ai-msg.user .ai-msg-dot{background:var(--rail);}
+@keyframes ticker-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.t-item { color:var(--muted); display:flex; align-items:center; gap:.4rem; }
+.t-v { color:var(--cyan); }
+.t-up { color:var(--green); }
+.t-dot { color:var(--cyan3); margin:0 .5rem; }
 
-.typing-indicator{display:flex;gap:4px;align-items:center;padding:8px 11px;}
-.typing-indicator span{
-  width:5px;height:5px;border-radius:50%;background:var(--mist);
-  animation:blink 1.2s infinite;
+/* ── KPI BAR ── */
+.kpi-bar {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:1px; background:var(--border);
+  border-bottom:1px solid var(--border);
 }
-.typing-indicator span:nth-child(2){animation-delay:.2s;}
-.typing-indicator span:nth-child(3){animation-delay:.4s;}
-@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.kpi {
+  background:var(--panel); padding:.75rem 1.25rem;
+  display:flex; flex-direction:column; gap:.25rem;
+}
+.kpi-val {
+  font-family:var(--orb); font-size:.9rem; font-weight:700;
+  color:var(--cyan); line-height:1;
+}
+.kpi-val.amber { color:var(--amber); }
+.kpi-val.red   { color:var(--red); }
+.kpi-val.green { color:var(--green); }
+.kpi-label {
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.1rem; color:var(--muted);
+}
+.kpi-delta {
+  font-family:var(--mono); font-size:.45rem; color:var(--green);
+}
+.kpi-delta.neg { color:var(--red); }
 
-.ai-chips{
-  padding:8px 12px;display:flex;flex-wrap:wrap;gap:5px;
-  border-top:1px solid rgba(255,255,255,.04);flex-shrink:0;
-}
-.ai-chip{
-  padding:4px 10px;border-radius:12px;font-size:10px;
-  border:1px solid rgba(240,165,0,.22);color:var(--amber);
-  background:rgba(240,165,0,.05);cursor:pointer;transition:background .12s;
-  white-space:nowrap;
-}
-.ai-chip:hover{background:rgba(240,165,0,.15);}
+/* ── MAIN LAYOUT ── */
+.main { max-width:1400px; margin:0 auto; padding:2rem 2rem; }
 
-.ai-input-row{
-  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
-  display:flex;gap:7px;align-items:center;flex-shrink:0;
+/* ── SECTION HEADER ── */
+.sec-hd {
+  display:flex; align-items:center; gap:.75rem;
+  margin-bottom:1.5rem;
 }
-.ai-input{
-  flex:1;background:var(--plate);
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:5px;padding:8px 11px;
-  color:var(--chalk);font-size:13px;
-  font-family:'Barlow',sans-serif;outline:none;
-  transition:border-color .15s;
+.sec-hd-tag {
+  font-family:var(--mono); font-size:.5rem;
+  letter-spacing:.2rem; color:var(--cyan2);
+  display:flex; align-items:center; gap:.4rem;
 }
-.ai-input:focus{border-color:rgba(240,165,0,.4);}
-.ai-send{
-  width:34px;height:34px;border-radius:5px;
-  background:var(--amber);border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:15px;flex-shrink:0;transition:background .15s;
-}
-.ai-send:hover{background:var(--amber2);}
-.ai-send:disabled{opacity:.35;cursor:not-allowed;}
+.sec-hd-tag::before { content:'▸'; color:var(--cyan); }
+.sec-hd-line { flex:1; height:1px; background:var(--border); }
 
-/* ── DOC GRID ── */
-.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;padding:1rem 1.2rem;}
-.doc-card{
-  background:var(--plate);border:1px solid rgba(255,255,255,.05);
-  border-radius:5px;padding:14px;cursor:pointer;
-  transition:border-color .15s,transform .12s;
+/* ── HERO ── */
+.hero {
+  display:grid; grid-template-columns:1fr 1.1fr;
+  gap:2rem; margin-bottom:3rem; align-items:center;
 }
-.doc-card:hover{border-color:rgba(240,165,0,.28);transform:translateY(-2px);}
-.doc-icon-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.doc-icon{
-  width:36px;height:36px;border-radius:5px;
-  display:flex;align-items:center;justify-content:center;font-size:18px;
-  flex-shrink:0;
+.hero-left { }
+.hero-eyebrow {
+  font-family:var(--mono); font-size:.5rem;
+  letter-spacing:.3rem; color:var(--cyan2);
+  margin-bottom:1rem;
 }
-.doc-type{font-size:9px;font-weight:800;letter-spacing:2px;color:var(--mist);}
-.doc-name{font-size:13px;font-weight:600;color:var(--chalk);margin-bottom:3px;line-height:1.3;}
-.doc-date{font-size:10px;color:var(--mist);}
-
-/* ── SECTION DIVIDER ── */
-.sec-divider{
-  display:flex;align-items:center;justify-content:space-between;
-  margin:0 0 1rem;
+.hero-h1 {
+  font-family:var(--bar); font-weight:900;
+  font-size:clamp(2.5rem,5vw,5rem);
+  line-height:.95; letter-spacing:.02em;
+  color:var(--white); margin-bottom:.5rem;
 }
-.sec-label{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:12px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--chalk);
-  display:flex;align-items:center;gap:7px;
+.hero-h1 span { color:var(--cyan); display:block; }
+.hero-sub {
+  font-size:1rem; font-weight:300;
+  color:var(--text); line-height:1.7;
+  margin-bottom:1.5rem; max-width:480px;
 }
-.sec-label::before{content:'';width:3px;height:12px;background:var(--amber);border-radius:2px;}
+.hero-sub strong { color:var(--white); font-weight:600; }
+.hero-btns { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn-fill {
+  font-family:var(--bar); font-weight:700;
+  font-size:.9rem; letter-spacing:.08em;
+  padding:.75rem 2rem; background:var(--cyan);
+  color:var(--bg); border:none; cursor:pointer;
+  text-decoration:none; display:inline-block;
+  transition:all .2s; text-transform:uppercase;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+.btn-fill:hover { background:var(--white); }
+.btn-ghost {
+  font-family:var(--mono); font-size:.55rem;
+  letter-spacing:.12rem; padding:.75rem 1.5rem;
+  border:1px solid var(--border2); color:var(--text);
+  cursor:pointer; text-decoration:none; display:inline-block;
+  transition:all .2s; text-transform:uppercase; background:transparent;
+}
+.btn-ghost:hover { border-color:var(--cyan2); color:var(--cyan); }
 
-/* ── RISK GAUGE ── */
-.risk-gauge-wrap{text-align:center;padding:16px 0 12px;}
-.risk-num{font-family:'Bebas Neue',sans-serif;font-size:58px;color:var(--amber);line-height:1;}
-.risk-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:12px;}
-.risk-segs{display:flex;gap:3px;margin:0 16px 16px;}
-.risk-seg{flex:1;height:6px;border-radius:2px;background:rgba(255,255,255,.06);}
-.risk-seg.on-low{background:var(--safe);}
-.risk-seg.on-mid{background:var(--amber);}
-.risk-seg.on-high{background:var(--danger);}
+/* HERO RIGHT — stat grid */
+.hero-stats {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--border);
+  border:1px solid var(--border);
+}
+.hs {
+  background:var(--panel); padding:1.25rem 1rem;
+  text-align:center; position:relative;
+}
+.hs::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:1px;
+  background:var(--cc,var(--cyan)); opacity:.5;
+}
+.hs-num {
+  font-family:var(--bar); font-weight:900;
+  font-size:2.5rem; color:var(--cc,var(--cyan));
+  line-height:1;
+}
+.hs-label {
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.1rem; color:var(--muted);
+  margin-top:.3rem;
+}
 
-/* ── UTIL ── */
-.mt1{margin-top:.6rem;} .mt2{margin-top:1rem;} .mb1{margin-bottom:.6rem;}
-.text-mist{color:var(--mist);} .text-sm{font-size:11px;} .fw6{font-weight:600;}
-.flex-between{display:flex;align-items:center;justify-content:space-between;}
-.gap1{gap:.6rem;}
+/* ── 4-LAYER FLOW ── */
+.flow-section {
+  background:var(--panel); border:1px solid var(--border);
+  padding:1.5rem; margin-bottom:3rem;
+}
+.flow-row {
+  display:grid; grid-template-columns:repeat(4,1fr) ;
+  gap:1px; background:var(--border2); margin-top:1rem;
+}
+.flow-node {
+  background:var(--bg2); padding:1.25rem 1rem;
+  position:relative; text-align:center;
+  transition:background .2s;
+}
+.flow-node::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:2px;
+  background:var(--cc,var(--cyan)); opacity:.5;
+  transition:opacity .2s;
+}
+.flow-node:hover { background:var(--panel2); }
+.flow-node:hover::before { opacity:1; }
+.flow-node-num {
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.15rem; color:var(--muted);
+  margin-bottom:.5rem;
+}
+.flow-node-name {
+  font-family:var(--bar); font-weight:700;
+  font-size:1rem; color:var(--cc,var(--cyan));
+  letter-spacing:.03em; margin-bottom:.35rem;
+}
+.flow-node-desc {
+  font-size:.75rem; color:var(--muted);
+  line-height:1.5;
+}
+.flow-node-link {
+  display:inline-block; margin-top:.75rem;
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.1rem; color:var(--cc,var(--cyan));
+  border:1px solid var(--cc,var(--cyan));
+  padding:.2rem .6rem; text-decoration:none;
+  opacity:0; transition:opacity .2s; cursor:pointer;
+}
+.flow-node:hover .flow-node-link { opacity:.8; }
 
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ── APP CARDS GRID ── */
+.apps-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:3rem;
+}
+.app-card {
+  background:var(--panel); padding:1.5rem;
+  position:relative; display:flex; flex-direction:column;
+  gap:.75rem; cursor:pointer;
+  transition:background .2s;
+  text-decoration:none; color:inherit;
+  overflow:hidden;
+}
+.app-card::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:2px;
+  background:var(--cc,var(--cyan)); opacity:.4;
+  transition:opacity .2s;
+}
+.app-card::after {
+  content:''; position:absolute;
+  top:0; right:0;
+  width:0; height:0; border-style:solid;
+  border-width:0 18px 18px 0;
+  border-color:transparent var(--cc,var(--cyan)) transparent transparent;
+  opacity:.25; transition:opacity .2s;
+}
+.app-card:hover { background:var(--panel2); }
+.app-card:hover::before, .app-card:hover::after { opacity:.9; }
 
-/* scrollbar */
-.content::-webkit-scrollbar{width:4px;}
-.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px;}
+.app-num {
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.15rem; color:var(--muted);
+}
+.app-name {
+  font-family:var(--bar); font-weight:700;
+  font-size:1.1rem; color:var(--white);
+  letter-spacing:.03em; line-height:1.2;
+}
+.app-role {
+  font-family:var(--mono); font-size:.48rem;
+  letter-spacing:.1rem; color:var(--cc,var(--cyan));
+  opacity:.7;
+}
+.app-desc {
+  font-size:.82rem; color:var(--muted);
+  line-height:1.6; flex:1;
+}
+.app-features {
+  display:flex; flex-direction:column; gap:.35rem;
+}
+.app-feat {
+  font-size:.75rem; color:var(--text);
+  display:flex; gap:.5rem; align-items:flex-start;
+  line-height:1.4;
+}
+.app-feat::before {
+  content:'▸'; color:var(--cc,var(--cyan));
+  flex-shrink:0; font-size:.6rem; margin-top:.1rem;
+}
+.app-footer {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  padding-top:.75rem;
+  border-top:1px solid var(--border);
+}
+.app-open {
+  font-family:var(--mono); font-size:.48rem;
+  letter-spacing:.1rem; color:var(--cc,var(--cyan));
+  border:1px solid var(--cc,var(--cyan));
+  padding:.25rem .7rem; text-decoration:none;
+  display:inline-block; transition:all .2s;
+  background:transparent;
+}
+.app-open:hover { background:rgba(0,212,184,.08); }
+.app-status {
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.1rem; color:var(--green);
+  display:flex; align-items:center; gap:.3rem;
+}
+.app-status::before {
+  content:''; width:5px; height:5px;
+  border-radius:50%; background:currentColor;
+  animation:pulse 2s infinite; flex-shrink:0;
+}
+
+/* ── PLAYBOOKS SECTION ── */
+.playbooks-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:3rem;
+}
+.pb-card {
+  background:var(--panel); padding:1.25rem;
+  position:relative; transition:background .2s;
+  cursor:pointer;
+}
+.pb-card::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:1px;
+  background:var(--cc,var(--cyan)); opacity:.4;
+  transition:opacity .2s;
+}
+.pb-card:hover { background:var(--panel2); }
+.pb-card:hover::before { opacity:1; }
+.pb-app {
+  font-family:var(--mono); font-size:.44rem;
+  letter-spacing:.12rem; color:var(--cc,var(--cyan));
+  opacity:.7; margin-bottom:.4rem;
+}
+.pb-name {
+  font-family:var(--bar); font-weight:700;
+  font-size:.95rem; color:var(--white);
+  margin-bottom:.35rem; line-height:1.2;
+}
+.pb-desc { font-size:.75rem; color:var(--muted); line-height:1.5; }
+.pb-impact {
+  margin-top:.65rem; font-family:var(--mono);
+  font-size:.48rem; color:var(--green);
+  letter-spacing:.06rem;
+}
+
+/* ── LIVE DEMO SECTION ── */
+.demo-section {
+  background:var(--panel); border:1px solid var(--border);
+  padding:1.5rem; margin-bottom:3rem;
+}
+.demo-output {
+  background:var(--bg); border:1px solid var(--border);
+  padding:1rem 1.25rem; margin-top:1rem;
+  font-family:var(--mono); font-size:.58rem;
+  line-height:1.8; color:var(--text);
+  min-height:120px; max-height:220px; overflow-y:auto;
+  white-space:pre-wrap;
+}
+.demo-output::-webkit-scrollbar { width:2px; }
+.demo-output::-webkit-scrollbar-thumb { background:var(--cyan2); }
+.demo-output .o-tag { color:var(--cyan); font-weight:700; }
+.demo-output .o-amber { color:var(--amber); }
+.demo-output .o-green { color:var(--green); }
+.demo-output .o-red { color:var(--red); }
+.demo-output .o-white { color:var(--white); font-weight:700; }
+.demo-btns {
+  display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem;
+}
+.demo-btn {
+  font-family:var(--mono); font-size:.52rem;
+  letter-spacing:.08rem; padding:.4rem 1rem;
+  border:1px solid var(--border2); color:var(--text);
+  background:transparent; cursor:pointer; transition:all .15s;
+  text-transform:uppercase;
+}
+.demo-btn:hover { border-color:var(--cyan2); color:var(--cyan); }
+.demo-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,212,184,.06); }
+
+/* ── ROI TABLE ── */
+.roi-section {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:3rem;
+}
+.roi-left { background:var(--panel); padding:1.5rem; }
+.roi-right {
+  background:var(--panel); padding:1.5rem;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center;
+}
+.roi-table { width:100%; }
+.roi-row {
+  display:grid; grid-template-columns:1fr auto;
+  padding:.75rem .5rem; border-bottom:1px solid var(--border);
+  gap:.5rem; align-items:center;
+}
+.roi-row:last-child { border-bottom:none; }
+.roi-row.total {
+  background:rgba(0,212,184,.05);
+  border-top:1px solid var(--cyan3);
+}
+.roi-label { font-size:.82rem; color:var(--text); }
+.roi-val { font-family:var(--mono); font-size:.72rem; color:var(--green); text-align:right; }
+.roi-row.total .roi-label { color:var(--white); font-weight:600; }
+.roi-row.total .roi-val { color:var(--cyan); font-size:.85rem; }
+.roi-big {
+  font-family:var(--bar); font-weight:900;
+  font-size:6rem; color:var(--cyan); line-height:1;
+  text-shadow:0 0 60px rgba(0,212,184,.3);
+}
+.roi-big-lbl {
+  font-family:var(--mono); font-size:.52rem;
+  letter-spacing:.15rem; color:var(--muted);
+  margin-top:.5rem;
+}
+.roi-detail {
+  font-size:.85rem; color:var(--text);
+  line-height:1.7; margin-top:1.25rem;
+}
+.roi-detail strong { color:var(--cyan); }
+
+/* ── CLOSE SECTION ── */
+.close-section {
+  background:linear-gradient(160deg,#0a1614,#060a0c);
+  border:1px solid var(--border2);
+  padding:2.5rem; text-align:center;
+  margin-bottom:2rem; position:relative; overflow:hidden;
+}
+.close-section::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse,rgba(0,212,184,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.close-h2 {
+  font-family:var(--bar); font-weight:900;
+  font-size:clamp(2rem,5vw,4.5rem);
+  color:var(--white); line-height:.95;
+  margin-bottom:.25em; letter-spacing:.02em;
+}
+.close-h2 span { color:var(--cyan); display:block; }
+.close-price {
+  font-family:var(--bar); font-weight:900;
+  font-size:3.5rem; color:var(--cyan); line-height:1;
+  margin:1rem 0 .25rem;
+}
+.close-sub {
+  font-family:var(--mono); font-size:.52rem;
+  letter-spacing:.15rem; color:var(--muted);
+  margin-bottom:1.5rem;
+}
+.close-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.close-note {
+  font-family:var(--mono); font-size:.48rem;
+  letter-spacing:.1rem; color:var(--muted);
+  margin-top:1.5rem;
+}
+
+/* ── FIXED BOTTOM SUITE STRIP ── */
+#suite-strip {
+  position:fixed; bottom:0; left:0; right:0; z-index:9000;
+  background:rgba(5,8,10,.97);
+  border-top:1px solid var(--border2);
+  backdrop-filter:blur(12px);
+  display:flex; align-items:center; height:38px;
+  transform:translateY(0);
+  font-family:var(--mono); font-size:.46rem; letter-spacing:.1rem;
+}
+.ss-label {
+  padding:0 1rem; color:var(--muted);
+  border-right:1px solid var(--border);
+  height:100%; display:flex; align-items:center;
+  flex-shrink:0; white-space:nowrap;
+}
+.ss-apps {
+  display:flex; align-items:center; gap:0;
+  flex:1; overflow-x:auto; height:100%;
+}
+.ss-apps::-webkit-scrollbar { height:0; }
+.ss-app {
+  display:flex; align-items:center; gap:.4rem;
+  padding:0 .9rem; height:100%;
+  border-right:1px solid var(--border);
+  color:var(--muted); text-decoration:none;
+  transition:all .15s; white-space:nowrap; flex-shrink:0;
+}
+.ss-app:hover { color:var(--cyan); background:rgba(0,212,184,.04); }
+.ss-app.current { color:var(--cyan); background:rgba(0,212,184,.06); }
+.ss-dot { width:4px; height:4px; border-radius:50%; background:currentColor; flex-shrink:0; }
+.ss-right {
+  padding:0 1rem; color:var(--cyan);
+  flex-shrink:0; font-size:.46rem; letter-spacing:.08rem;
+  border-left:1px solid var(--border);
+  height:100%; display:flex; align-items:center; gap:.75rem;
+}
+
+/* TSM AI WIDGET */
+#tsm-widget { position:fixed; bottom:50px; right:16px; z-index:9999; width:320px; font-family:var(--mono); }
+#tsm-toggle {
+  background:var(--panel); border:1px solid rgba(0,212,184,.3);
+  padding:6px 12px; cursor:pointer; display:flex; align-items:center;
+  gap:8px; font-size:8px; color:var(--cyan); letter-spacing:.1em;
+  box-shadow:0 0 20px rgba(0,212,184,.07);
+}
+#tsm-panel {
+  display:none; flex-direction:column;
+  background:var(--bg2); border:1px solid rgba(0,212,184,.18);
+  margin-top:3px; overflow:hidden;
+  box-shadow:0 0 40px rgba(0,0,0,.6);
+}
+.w-hdr {
+  padding:5px 12px; border-bottom:1px solid rgba(0,212,184,.07);
+  font-size:7px; color:var(--muted); letter-spacing:.1em;
+}
+#w-msgs {
+  max-height:200px; overflow-y:auto;
+  padding:8px 12px; display:flex; flex-direction:column;
+  gap:6px; font-size:10px; line-height:1.6;
+}
+#w-msgs::-webkit-scrollbar { width:2px; }
+#w-msgs::-webkit-scrollbar-thumb { background:rgba(0,212,184,.15); }
+#w-think { display:none; padding:4px 12px; font-size:7px; color:var(--cyan2); animation:blink 1s infinite; }
+.w-input-row { display:flex; border-top:1px solid rgba(0,212,184,.07); }
+#w-input {
+  flex:1; background:transparent; border:none; outline:none;
+  padding:7px 12px; font-family:var(--mono); font-size:9px;
+  color:var(--white); caret-color:var(--cyan);
+}
+#w-input::placeholder { color:var(--muted); }
+#w-send {
+  background:transparent; border:none;
+  border-left:1px solid rgba(0,212,184,.07);
+  padding:7px 12px; font-family:var(--mono); font-size:7px;
+  color:var(--cyan); cursor:pointer; letter-spacing:.08em;
+}
+
+/* ── CLOSING LOCK ── */
+#closingLock {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.82); backdrop-filter:blur(8px);
+  z-index:999999; align-items:flex-start; justify-content:center;
+  overflow-y:auto; padding:24px 16px 140px;
+}
+#closingLock.open { display:flex; }
+.cl-inner {
+  background:var(--bg2); border:1px solid var(--cyan2);
+  border-radius:0; padding:2rem;
+  width:800px; max-width:94vw;
+  color:var(--text); margin:auto;
+  box-shadow:0 0 60px rgba(0,212,184,.15);
+}
+.cl-tag {
+  font-family:var(--mono); font-size:.5rem;
+  letter-spacing:.2rem; color:var(--cyan);
+  margin-bottom:.75rem;
+}
+.cl-h2 {
+  font-family:var(--bar); font-weight:900;
+  font-size:2rem; color:var(--white); margin-bottom:.5rem;
+}
+.cl-sub { font-size:.85rem; color:var(--muted); margin-bottom:1.25rem; }
+.cl-kpis {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--border); margin-bottom:1.25rem;
+}
+.cl-kpi {
+  background:var(--panel); padding:1rem; text-align:center;
+}
+.cl-kpi-v {
+  font-family:var(--bar); font-weight:900;
+  font-size:2rem; color:var(--green); line-height:1;
+}
+.cl-kpi-l {
+  font-family:var(--mono); font-size:.45rem;
+  letter-spacing:.1rem; color:var(--muted); margin-top:.3rem;
+}
+.cl-result {
+  border:1px solid var(--border); padding:1rem;
+  margin-bottom:1rem; line-height:1.7; font-size:.82rem;
+}
+.cl-result .c-t { color:var(--cyan); font-weight:700; display:block; margin-bottom:.5rem; }
+.cl-roi {
+  background:rgba(0,232,122,.05); border:1px solid rgba(0,232,122,.25);
+  padding:1rem; margin-bottom:1.25rem; line-height:1.7; font-size:.82rem;
+}
+.cl-roi .c-t { color:var(--green); font-weight:700; display:block; margin-bottom:.5rem; }
+.cl-quote {
+  font-family:var(--bar); font-weight:700;
+  font-size:1rem; color:var(--cyan); line-height:1.5;
+  margin-bottom:1.25rem;
+}
+.cl-btns { display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom:1rem; }
+.cl-btn {
+  font-family:var(--mono); font-size:.52rem;
+  letter-spacing:.1rem; padding:.75rem 1.25rem;
+  border:1px solid; cursor:pointer; background:transparent;
+  text-transform:uppercase; transition:all .2s; text-decoration:none;
+  display:inline-block;
+}
+.cl-btn.fill { background:var(--cyan); border-color:var(--cyan); color:var(--bg); font-weight:700; }
+.cl-btn.fill:hover { background:var(--white); }
+.cl-btn.outline { border-color:var(--cyan2); color:var(--cyan); }
+.cl-btn.outline:hover { background:rgba(0,212,184,.08); }
+.cl-btn.green { border-color:var(--green); color:var(--green); }
+.cl-btn.green:hover { background:rgba(0,232,122,.08); }
+.cl-note { font-family:var(--mono); font-size:.48rem; color:var(--muted); }
+
+/* ── CLOSING ACTION RAIL ── */
+#closing-rail {
+  display:none; position:fixed;
+  left:50%; bottom:46px; transform:translateX(-50%);
+  z-index:1000001; padding:10px 16px;
+  background:var(--bg2); border:1px solid var(--cyan2);
+  box-shadow:0 0 40px rgba(0,212,184,.2);
+  flex-wrap:wrap; gap:.6rem; justify-content:center;
+  width:calc(100% - 40px); max-width:860px;
+  font-family:var(--mono); font-size:.52rem;
+}
+#closing-rail.open { display:flex; }
+
+/* ── DEMO CAPTION ── */
+#demoCaption {
+  display:none; position:fixed;
+  left:50%; bottom:56px; transform:translateX(-50%);
+  max-width:760px; width:calc(100% - 48px);
+  background:var(--bg2); border:1px solid var(--cyan);
+  color:var(--white); padding:12px 16px;
+  font-family:var(--mono); font-size:12px;
+  line-height:1.5; text-align:center; z-index:99999;
+  box-shadow:0 0 28px rgba(0,212,184,.2);
+}
+#demoCaption.open { display:block; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px) {
+  .hero { grid-template-columns:1fr; }
+  .apps-grid { grid-template-columns:repeat(2,1fr); }
+  .roi-section { grid-template-columns:1fr; }
+  .flow-row { grid-template-columns:repeat(2,1fr); }
+  .playbooks-grid { grid-template-columns:repeat(2,1fr); }
+  .kpi-bar { grid-template-columns:repeat(3,1fr); }
+}
+@media(max-width:640px) {
+  .apps-grid { grid-template-columns:1fr; }
+  .hero-stats { grid-template-columns:repeat(2,1fr); }
+  .kpi-bar { grid-template-columns:repeat(2,1fr); }
+  .playbooks-grid { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- ══ TOPBAR ══ -->
 <div class="topbar">
-  <div class="topbar-brand">
-    <div class="brand-hex">AC</div>
-    <div class="brand-name">TSM<span>Construction</span></div>
+  <div class="tb-logo">
+    <div class="tb-logo-dot"></div>
+    CONSTRUCT<span>INTELLIGENCE SUITE</span>
   </div>
-  <div class="topbar-center">
-    <div class="topbar-status">All Systems Operational</div>
-    <div class="topbar-alert">⚠ 38 Open Lien Waivers</div>
-  </div>
-  <div class="topbar-right">
-    <div class="topbar-date" id="topdate"></div>
-    <button class="ai-toggle-btn" id="aiToggle">🏗 AI</button>
+  <div class="tb-right">
+    <button class="tb-btn primary" onclick="startAutoDemo()">🎬 AUTO DEMO</button>
+    <button class="tb-btn amber" onclick="openClosingLock()">🔒 EXECUTIVE CLOSE</button>
+    <a class="tb-btn" href="/html/construction-suite/construction-command.html">COMMAND ↗</a>
+    <a class="tb-btn" href="/html/construction-suite/construction-strategist.html">STRATEGIST ↗</a>
   </div>
 </div>
 
-<!-- MAIN SHELL -->
-<div class="shell">
-
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="nav-section-label">Operations</div>
-    <div class="nav-item active" data-view="command">
-      <span class="nav-icon">⚡</span>
-      <span class="nav-label">Command</span>
-    </div>
-    <div class="nav-item" data-view="strategy">
-      <span class="nav-icon">🎯</span>
-      <span class="nav-label">Strategy</span>
-    </div>
-    <div class="nav-item" data-view="projects">
-      <span class="nav-icon">🏗</span>
-      <span class="nav-label">Projects</span>
-      <span class="nav-badge warn">14</span>
-    </div>
-
-    <div class="nav-section-label">Risk & Compliance</div>
-    <div class="nav-item" data-view="compliance">
-      <span class="nav-icon">🛡</span>
-      <span class="nav-label">Compliance</span>
-      <span class="nav-badge">!</span>
-    </div>
-    <div class="nav-item" data-view="legal">
-      <span class="nav-icon">⚖</span>
-      <span class="nav-label">Legal & Liens</span>
-      <span class="nav-badge">38</span>
-    </div>
-
-    <div class="nav-section-label">Finance</div>
-    <div class="nav-item" data-view="financial">
-      <span class="nav-icon">💰</span>
-      <span class="nav-label">Financial</span>
-    </div>
-    <div class="nav-item" data-view="auditops">
-      <span class="nav-icon">📊</span>
-      <span class="nav-label">AuditOps & Tax</span>
-    </div>
-
-    <div class="nav-section-label">Resources</div>
-    <div class="nav-item" data-view="documents">
-      <span class="nav-icon">📁</span>
-      <span class="nav-label">Documents</span>
-    </div>
-
-    <div class="sidebar-footer">
-      <strong>TSM-AI-3200</strong>
-      Groq · llama-3.3-70b<br>
-      Phoenix Metro · AZ
-    </div>
-  </nav>
-
-  <!-- CONTENT -->
-  <main class="content">
-
-    <!-- ══════════════════ COMMAND ══════════════════ -->
-    <div class="view active" id="view-command">
-      <div class="page-hero" data-bg="COMMAND">
-        <div class="page-eyebrow">TSM Construction · Command Center</div>
-        <h1 class="page-title">Operations <em>Command</em></h1>
-        <p class="page-sub">Live overview of all active projects, alerts, crew, and critical metrics across the Phoenix metro portfolio.</p>
-      </div>
-
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-amber">$24M</div><div class="kpi-lbl">Annual Revenue</div><div class="kpi-sub">FY 2026</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-chalk">14</div><div class="kpi-lbl">Active Projects</div><div class="kpi-sub">Phoenix metro</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-chalk">84</div><div class="kpi-lbl">Subcontractors</div><div class="kpi-sub">Active vendors</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-danger">38</div><div class="kpi-lbl">Open Lien Waivers</div><div class="kpi-sub">Payment risk</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">$8M</div><div class="kpi-lbl">Bonding Capacity</div><div class="kpi-sub">Expansion active</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">83%</div><div class="kpi-lbl">On-Schedule Rate</div><div class="kpi-sub">All projects</div></div>
-      </div>
-
-      <div class="pad">
-        <div class="g2l">
-          <div class="col">
-            <!-- Active Alerts -->
-            <div class="panel">
-              <div class="panel-head">
-                <div class="panel-title c-chalk">Critical Alerts</div>
-                <button class="panel-action">Manage</button>
-              </div>
-              <div class="alert-list">
-                <div class="alert-item crit">
-                  <div class="alert-icon">🔴</div>
-                  <div>
-                    <div class="alert-text fw6">38 Lien Waivers Outstanding — Payment Hold Risk</div>
-                    <div class="alert-time">Multiple projects · Immediate action required · ARS §33-1008</div>
-                  </div>
-                </div>
-                <div class="alert-item crit">
-                  <div class="alert-icon">🔴</div>
-                  <div>
-                    <div class="alert-text fw6">Subcontractor Insurance Tracked Manually</div>
-                    <div class="alert-time">84 subs · No automated verification · Liability exposure</div>
-                  </div>
-                </div>
-                <div class="alert-item warn">
-                  <div class="alert-icon">⚠</div>
-                  <div>
-                    <div class="alert-text fw6">Bonding Capacity at Ceiling — Expansion Pending</div>
-                    <div class="alert-time">$8M cap · 3 new bids require surety approval</div>
-                  </div>
-                </div>
-                <div class="alert-item warn">
-                  <div class="alert-icon">⚠</div>
-                  <div>
-                    <div class="alert-text fw6">MEP Inspection Scheduling Delayed — Block C</div>
-                    <div class="alert-time">4 days overdue · Coordinate with AHJ</div>
-                  </div>
-                </div>
-                <div class="alert-item info">
-                  <div class="alert-icon">ℹ</div>
-                  <div>
-                    <div class="alert-text">Q2 Investor Progress Report Due Jun 1</div>
-                    <div class="alert-time">33 days · Template available in Documents</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Project Progress -->
-            <div class="panel">
-              <div class="panel-head">
-                <div class="panel-title">Project Progress</div>
-                <button class="panel-action" onclick="switchView('projects')">All 14 →</button>
-              </div>
-              <div class="panel-body">
-                <div class="prog-row"><span class="prog-label">Scottsdale Commercial Hub</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:78%;background:var(--safe)"></div></div><span class="prog-pct">78%</span></div>
-                <div class="prog-row"><span class="prog-label">Tempe Industrial Park</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:62%;background:var(--amber)"></div></div><span class="prog-pct">62%</span></div>
-                <div class="prog-row"><span class="prog-label">Mesa Residential Block C</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:47%;background:var(--amber)"></div></div><span class="prog-pct">47%</span></div>
-                <div class="prog-row"><span class="prog-label">Chandler Office Campus</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:31%;background:var(--accent)"></div></div><span class="prog-pct">31%</span></div>
-                <div class="prog-row"><span class="prog-label">Gilbert Mixed-Use Tower</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:12%;background:var(--danger)"></div></div><span class="prog-pct">12%</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col">
-            <!-- Risk Index -->
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Risk Index</div></div>
-              <div class="risk-gauge-wrap">
-                <div class="risk-num">67</div>
-                <div class="risk-label">Elevated Risk</div>
-              </div>
-              <div class="risk-segs" id="riskSegs"></div>
-              <table class="tbl" style="margin:0 0 10px">
-                <tr><td>Lien Waiver Exposure</td><td style="text-align:right"><span class="badge b-danger">HIGH</span></td></tr>
-                <tr><td>Insurance Compliance</td><td style="text-align:right"><span class="badge b-danger">HIGH</span></td></tr>
-                <tr><td>Bonding Capacity</td><td style="text-align:right"><span class="badge b-warn">MED</span></td></tr>
-                <tr><td>Schedule Variance</td><td style="text-align:right"><span class="badge b-warn">MED</span></td></tr>
-                <tr><td>Budget Overrun</td><td style="text-align:right"><span class="badge b-ok">LOW</span></td></tr>
-                <tr><td>Safety Incidents</td><td style="text-align:right"><span class="badge b-ok">LOW</span></td></tr>
-              </table>
-            </div>
-
-            <!-- Quick Nav -->
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Quick Actions</div></div>
-              <div class="panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('legal')">⚖ Lien Waivers</button>
-                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('compliance')">🛡 Compliance</button>
-                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('financial')">💰 Financial</button>
-                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('documents')">📁 Documents</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ STRATEGY ══════════════════ -->
-    <div class="view" id="view-strategy">
-      <div class="page-hero" data-bg="STRATEGY">
-        <div class="page-eyebrow">TSM Construction · Main Strategist</div>
-        <h1 class="page-title">Project <em>Strategy</em></h1>
-        <p class="page-sub">Phase planning, schedule control, and resource strategy across all 14 active Phoenix metro projects.</p>
-      </div>
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-safe">78%</div><div class="kpi-lbl">Phase 1 Complete</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">47%</div><div class="kpi-lbl">Phase 2 Progress</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-accent">22%</div><div class="kpi-lbl">Phase 3 Started</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-danger">3</div><div class="kpi-lbl">Behind Schedule</div></div>
-      </div>
-      <div class="pad">
-        <div class="g2">
-          <div class="col">
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Active Phase Cards</div><button class="panel-action">+ New Phase</button></div>
-              <div style="padding:1rem;display:flex;flex-direction:column;gap:.8rem;">
-                <div class="card"><div class="card-accent" style="background:var(--safe)"></div><div class="card-tag c-safe">Phase 1 · Foundation</div><div class="card-title">Site Prep & Groundwork</div><div class="card-bar-wrap"><div class="card-bar" style="width:78%;background:var(--safe)"></div></div><div class="card-meta"><span>78%</span><span>Due Jun 15</span></div></div>
-                <div class="card"><div class="card-accent" style="background:var(--amber)"></div><div class="card-tag c-amber">Phase 2 · Structure</div><div class="card-title">Steel Frame Erection</div><div class="card-bar-wrap"><div class="card-bar" style="width:44%;background:var(--amber)"></div></div><div class="card-meta"><span>44%</span><span>Due Aug 30</span></div></div>
-                <div class="card"><div class="card-accent" style="background:var(--accent)"></div><div class="card-tag c-accent">Phase 3 · Envelope</div><div class="card-title">Roofing & Exterior Cladding</div><div class="card-bar-wrap"><div class="card-bar" style="width:12%;background:var(--accent)"></div></div><div class="card-meta"><span>12%</span><span>Due Nov 10</span></div></div>
-                <div class="card"><div class="card-accent" style="background:var(--danger)"></div><div class="card-tag c-danger">Phase 4 · Systems</div><div class="card-title">MEP Rough-In & Inspections</div><div class="card-bar-wrap"><div class="card-bar" style="width:5%;background:var(--danger)"></div></div><div class="card-meta"><span>5%</span><span>Due Jan 20</span></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Project Timeline</div></div>
-              <div class="tl-list">
-                <div class="tl-item"><div class="tl-date">Apr 29</div><div class="tl-spine"><div class="tl-dot" style="background:var(--safe)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Block C Permit Approved</div><div class="tl-body">City planning approved foundation permit. Work begins Monday.</div></div></div>
-                <div class="tl-item"><div class="tl-date">May 5</div><div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">North Foundation Concrete Pour</div><div class="tl-body">Inspector on site 7AM. Crew and equipment staged at Gate 2.</div></div></div>
-                <div class="tl-item"><div class="tl-date">May 12</div><div class="tl-spine"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Steel Delivery — 250 Tons</div><div class="tl-body">Structural steel arrives. Gate 2 staging confirmed.</div></div></div>
-                <div class="tl-item"><div class="tl-date">May 20</div><div class="tl-spine"><div class="tl-dot" style="background:var(--mist)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Roofing Subcontractor Bid Deadline</div><div class="tl-body">Final bids due. Evaluation team review May 22.</div></div></div>
-                <div class="tl-item"><div class="tl-date">Jun 1</div><div class="tl-spine"><div class="tl-dot" style="background:var(--mist)"></div></div><div class="tl-content"><div class="tl-title">Q2 Investor Report Due</div><div class="tl-body">Financial reconciliation and progress report for investors.</div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ PROJECTS ══════════════════ -->
-    <div class="view" id="view-projects">
-      <div class="page-hero" data-bg="PROJECTS">
-        <div class="page-eyebrow">TSM Construction · Project Portfolio</div>
-        <h1 class="page-title"><em>14</em> Active Projects</h1>
-        <p class="page-sub">All active construction projects across the Phoenix metro area.</p>
-      </div>
-      <div class="pad">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">All Projects</div><button class="panel-action">+ New Project</button></div>
-          <table class="tbl">
-            <thead><tr><th>Project</th><th>Location</th><th>Budget</th><th>Progress</th><th>Status</th><th>PM</th></tr></thead>
-            <tbody>
-              <tr><td><div class="fw6">Scottsdale Commercial Hub</div><div class="text-sm text-mist">8-story office complex</div></td><td class="text-mist">Scottsdale, AZ</td><td>$4.2M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:78%;background:var(--safe)"></div></div> 78%</td><td><span class="badge b-ok">On Track</span></td><td class="text-mist">R. Kowalski</td></tr>
-              <tr><td><div class="fw6">Tempe Industrial Park</div><div class="text-sm text-mist">Warehouse complex</div></td><td class="text-mist">Tempe, AZ</td><td>$3.8M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:62%;background:var(--amber)"></div></div> 62%</td><td><span class="badge b-warn">Minor Delay</span></td><td class="text-mist">M. Thorne</td></tr>
-              <tr><td><div class="fw6">Mesa Residential Block C</div><div class="text-sm text-mist">240-unit multifamily</div></td><td class="text-mist">Mesa, AZ</td><td>$6.1M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:47%;background:var(--amber)"></div></div> 47%</td><td><span class="badge b-warn">Watch</span></td><td class="text-mist">J. Patterson</td></tr>
-              <tr><td><div class="fw6">Chandler Office Campus</div><div class="text-sm text-mist">Corporate HQ build-out</div></td><td class="text-mist">Chandler, AZ</td><td>$2.9M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:31%;background:var(--accent)"></div></div> 31%</td><td><span class="badge b-info">In Progress</span></td><td class="text-mist">D. Lara</td></tr>
-              <tr><td><div class="fw6">Gilbert Mixed-Use Tower</div><div class="text-sm text-mist">Retail + residential</div></td><td class="text-mist">Gilbert, AZ</td><td>$5.4M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:12%;background:var(--danger)"></div></div> 12%</td><td><span class="badge b-danger">At Risk</span></td><td class="text-mist">R. Kowalski</td></tr>
-              <tr><td><div class="fw6">Peoria Retail Strip</div><div class="text-sm text-mist">7-unit retail center</div></td><td class="text-mist">Peoria, AZ</td><td>$1.2M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:89%;background:var(--safe)"></div></div> 89%</td><td><span class="badge b-ok">Near Complete</span></td><td class="text-mist">M. Thorne</td></tr>
-              <tr><td><div class="fw6">Glendale Sports Facility</div><div class="text-sm text-mist">Athletic complex</div></td><td class="text-mist">Glendale, AZ</td><td>$7.8M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:23%;background:var(--accent)"></div></div> 23%</td><td><span class="badge b-info">In Progress</span></td><td class="text-mist">D. Lara</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ COMPLIANCE ══════════════════ -->
-    <div class="view" id="view-compliance">
-      <div class="page-hero" data-bg="COMPLIANCE">
-        <div class="page-eyebrow">TSM Construction · Subcontractor Compliance</div>
-        <h1 class="page-title">Compliance <em>Dashboard</em></h1>
-        <p class="page-sub">Insurance verification, license tracking, and OSHA compliance across all 84 active subcontractors.</p>
-      </div>
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-chalk">84</div><div class="kpi-lbl">Active Subs</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-danger">12</div><div class="kpi-lbl">Insurance Expiring</div><div class="kpi-sub">Next 30 days</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-danger">7</div><div class="kpi-lbl">Unverified Certs</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">Manual</div><div class="kpi-lbl">Tracking Method</div><div class="kpi-sub">Risk: HIGH</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">71</div><div class="kpi-lbl">Fully Compliant</div></div>
-      </div>
-      <div class="pad">
-        <div class="g2l">
-          <div class="panel">
-            <div class="panel-head"><div class="panel-title">Subcontractor Compliance Status</div><button class="panel-action">Export</button></div>
-            <table class="tbl">
-              <thead><tr><th>Subcontractor</th><th>Trade</th><th>Insurance</th><th>License</th><th>OSHA</th></tr></thead>
-              <tbody>
-                <tr><td><div class="fw6">Apex Electrical</div></td><td class="text-mist">Electrical</td><td><span class="badge b-ok">Valid</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
-                <tr><td><div class="fw6">Desert Steel Co.</div></td><td class="text-mist">Structural</td><td><span class="badge b-danger">Expired</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-warn">Review</span></td></tr>
-                <tr><td><div class="fw6">SunState Plumbing</div></td><td class="text-mist">Plumbing</td><td><span class="badge b-warn">Exp. May 15</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
-                <tr><td><div class="fw6">AZ Concrete Works</div></td><td class="text-mist">Concrete</td><td><span class="badge b-ok">Valid</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
-                <tr><td><div class="fw6">Mesa HVAC Pros</div></td><td class="text-mist">Mechanical</td><td><span class="badge b-danger">Expired</span></td><td><span class="badge b-danger">Expired</span></td><td><span class="badge b-danger">Overdue</span></td></tr>
-                <tr><td><div class="fw6">Pinnacle Framing</div></td><td class="text-mist">Framing</td><td><span class="badge b-ok">Valid</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
-                <tr><td><div class="fw6">Phoenix Fire Systems</div></td><td class="text-mist">Fire Suppression</td><td><span class="badge b-warn">Exp. Jun 1</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-warn">Review</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col">
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Compliance Alerts</div></div>
-              <div class="alert-list">
-                <div class="alert-item crit"><div class="alert-icon">🔴</div><div><div class="alert-text fw6">Mesa HVAC Pros — All Certs Expired</div><div class="alert-time">Work must be suspended until renewed</div></div></div>
-                <div class="alert-item crit"><div class="alert-icon">🔴</div><div><div class="alert-text fw6">Desert Steel Co. — Insurance Lapsed</div><div class="alert-time">Active on 3 project sites — liability exposure</div></div></div>
-                <div class="alert-item warn"><div class="alert-icon">⚠</div><div><div class="alert-text fw6">12 Subs with Insurance Expiring in 30 Days</div><div class="alert-time">Send renewal notices immediately</div></div></div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Compliance Health</div></div>
-              <div class="panel-body">
-                <div class="prog-row"><span class="prog-label">Insurance Valid</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:78%;background:var(--safe)"></div></div><span class="prog-pct">78%</span></div>
-                <div class="prog-row"><span class="prog-label">Licenses Current</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:91%;background:var(--safe)"></div></div><span class="prog-pct">91%</span></div>
-                <div class="prog-row"><span class="prog-label">OSHA Compliant</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:84%;background:var(--amber)"></div></div><span class="prog-pct">84%</span></div>
-                <div class="prog-row"><span class="prog-label">W-9 On File</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:96%;background:var(--safe)"></div></div><span class="prog-pct">96%</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ LEGAL & LIENS ══════════════════ -->
-    <div class="view" id="view-legal">
-      <div class="page-hero" data-bg="LEGAL">
-        <div class="page-eyebrow">TSM Construction · Legal & Lien Management</div>
-        <h1 class="page-title">Liens & <em>Legal</em></h1>
-        <p class="page-sub">AIA contract management, lien waiver tracking, and Arizona lien law compliance. 38 open waivers require immediate attention.</p>
-      </div>
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-danger">38</div><div class="kpi-lbl">Open Lien Waivers</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">$1.4M</div><div class="kpi-lbl">Payment Hold Value</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">142</div><div class="kpi-lbl">Waivers Cleared YTD</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-chalk">22</div><div class="kpi-lbl">Active Contracts</div><div class="kpi-sub">AIA Standard</div></div>
-      </div>
-      <div class="pad">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title">Open Lien Waivers</div><button class="panel-action">Export · ARS §33-1008</button></div>
-          <div class="lien-grid">
-            <div class="lien-row head"><span>Subcontractor</span><span>Project</span><span>Amount</span><span>Days Out</span><span>Status</span></div>
-            <div class="lien-row"><div><div class="lien-sub-name">Desert Steel Co.</div><div class="lien-sub-trade">Structural Steel</div></div><span class="text-mist text-sm">Mesa Block C</span><span class="fw6">$84,200</span><span class="c-danger fw6">47 days</span><span><span class="badge b-danger">Critical</span></span></div>
-            <div class="lien-row"><div><div class="lien-sub-name">SunState Plumbing</div><div class="lien-sub-trade">Plumbing Rough-In</div></div><span class="text-mist text-sm">Scottsdale Hub</span><span class="fw6">$32,500</span><span class="c-danger fw6">38 days</span><span><span class="badge b-danger">Critical</span></span></div>
-            <div class="lien-row"><div><div class="lien-sub-name">Apex Electrical</div><div class="lien-sub-trade">Electrical Rough-In</div></div><span class="text-mist text-sm">Chandler Campus</span><span class="fw6">$61,800</span><span class="c-amber fw6">22 days</span><span><span class="badge b-warn">Warning</span></span></div>
-            <div class="lien-row"><div><div class="lien-sub-name">AZ Concrete Works</div><div class="lien-sub-trade">Foundation Pour</div></div><span class="text-mist text-sm">Tempe Industrial</span><span class="fw6">$47,300</span><span class="c-amber fw6">18 days</span><span><span class="badge b-warn">Warning</span></span></div>
-            <div class="lien-row"><div><div class="lien-sub-name">Pinnacle Framing</div><div class="lien-sub-trade">Wood Framing</div></div><span class="text-mist text-sm">Gilbert Tower</span><span class="fw6">$28,900</span><span class="c-mist fw6">9 days</span><span><span class="badge b-info">Pending</span></span></div>
-            <div class="lien-row"><div><div class="lien-sub-name">Mesa HVAC Pros</div><div class="lien-sub-trade">Mechanical</div></div><span class="text-mist text-sm">Glendale Sports</span><span class="fw6">$19,400</span><span class="c-mist fw6">5 days</span><span><span class="badge b-muted">New</span></span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ FINANCIAL ══════════════════ -->
-    <div class="view" id="view-financial">
-      <div class="page-hero" data-bg="FINANCIAL">
-        <div class="page-eyebrow">TSM Construction · Financial Overview</div>
-        <h1 class="page-title">Financial <em>Command</em></h1>
-        <p class="page-sub">Revenue, budget variance, bonding, and cost control across the full $24M portfolio.</p>
-      </div>
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-amber">$24M</div><div class="kpi-lbl">Annual Revenue</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">$19.2M</div><div class="kpi-lbl">Billed YTD</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-chalk">$4.8M</div><div class="kpi-lbl">Receivables</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">$8M</div><div class="kpi-lbl">Bonding Capacity</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">+2.1%</div><div class="kpi-lbl">Margin vs Budget</div></div>
-      </div>
-      <div class="pad">
-        <div class="g2">
-          <div class="panel">
-            <div class="panel-head"><div class="panel-title">Budget vs Actual by Project</div></div>
-            <table class="tbl">
-              <thead><tr><th>Project</th><th>Budget</th><th>Actual</th><th>Variance</th></tr></thead>
-              <tbody>
-                <tr><td>Scottsdale Hub</td><td>$4.20M</td><td>$3.28M</td><td class="c-safe">+$920K</td></tr>
-                <tr><td>Tempe Industrial</td><td>$3.80M</td><td>$2.41M</td><td class="c-safe">+$1.39M</td></tr>
-                <tr><td>Mesa Block C</td><td>$6.10M</td><td>$2.92M</td><td class="c-safe">+$3.18M</td></tr>
-                <tr><td>Chandler Campus</td><td>$2.90M</td><td>$0.98M</td><td class="c-safe">+$1.92M</td></tr>
-                <tr><td>Gilbert Tower</td><td>$5.40M</td><td>$0.72M</td><td class="c-amber">+$4.68M</td></tr>
-                <tr><td>Glendale Sports</td><td>$7.80M</td><td>$1.84M</td><td class="c-safe">+$5.96M</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col">
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Cash Flow Summary</div></div>
-              <div class="panel-body">
-                <div class="prog-row"><span class="prog-label">Invoiced this month</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:72%;background:var(--amber)"></div></div><span class="prog-pct">$1.6M</span></div>
-                <div class="prog-row"><span class="prog-label">Collected this month</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:58%;background:var(--safe)"></div></div><span class="prog-pct">$1.3M</span></div>
-                <div class="prog-row"><span class="prog-label">Subcontractor payables</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:45%;background:var(--danger)"></div></div><span class="prog-pct">$980K</span></div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Bonding Status</div></div>
-              <div class="panel-body">
-                <div class="flex-between mb1"><span class="text-sm">Capacity</span><span class="fw6 c-amber">$8,000,000</span></div>
-                <div class="flex-between mb1"><span class="text-sm">In Use</span><span class="fw6 c-chalk">$6,200,000</span></div>
-                <div class="flex-between mb1"><span class="text-sm">Available</span><span class="fw6 c-safe">$1,800,000</span></div>
-                <div class="card-bar-wrap mt1"><div class="card-bar" style="width:78%;background:var(--amber)"></div></div>
-                <div class="text-sm text-mist mt1">78% utilized · Expansion application with surety in progress</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ AUDITOPS & TAX ══════════════════ -->
-    <div class="view" id="view-auditops">
-      <div class="page-hero" data-bg="AUDITOPS">
-        <div class="page-eyebrow">TSM Construction · AuditOps & Tax</div>
-        <h1 class="page-title">Audit <em>Operations</em></h1>
-        <p class="page-sub">IRS construction accounting, tax optimization, percentage-of-completion method, and audit readiness for $24M operations.</p>
-      </div>
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-safe">POC</div><div class="kpi-lbl">Accounting Method</div><div class="kpi-sub">% of Completion</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">§179D</div><div class="kpi-lbl">Energy Deduction</div><div class="kpi-sub">Eligible projects</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-chalk">R&D</div><div class="kpi-lbl">Tax Credit</div><div class="kpi-sub">AZ craft credit</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">Ready</div><div class="kpi-lbl">Audit Status</div></div>
-      </div>
-      <div class="pad">
-        <div class="g2">
-          <div class="col">
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Tax Optimization Items</div></div>
-              <table class="tbl">
-                <thead><tr><th>Item</th><th>Est. Value</th><th>Status</th></tr></thead>
-                <tbody>
-                  <tr><td>§179D Energy-Efficient Building Deduction</td><td class="c-safe">$84,000</td><td><span class="badge b-warn">Review</span></td></tr>
-                  <tr><td>IRC §460 Percentage-of-Completion Method</td><td class="c-safe">Active</td><td><span class="badge b-ok">Applied</span></td></tr>
-                  <tr><td>AZ Qualified Defense Contractor Credit</td><td class="c-safe">$24,000</td><td><span class="badge b-info">Pending</span></td></tr>
-                  <tr><td>Equipment Bonus Depreciation (§168k)</td><td class="c-safe">$112,000</td><td><span class="badge b-ok">Applied</span></td></tr>
-                  <tr><td>Home Office / Contractor Expense Allocation</td><td class="c-mist">TBD</td><td><span class="badge b-muted">Analyze</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="col">
-            <div class="panel">
-              <div class="panel-head"><div class="panel-title">Audit Readiness Checklist</div></div>
-              <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
-                <div class="flex-between"><span class="text-sm">Job cost reports (all projects)</span><span class="badge b-ok">✓ Ready</span></div>
-                <div class="flex-between"><span class="text-sm">Subcontractor 1099 filings</span><span class="badge b-ok">✓ Ready</span></div>
-                <div class="flex-between"><span class="text-sm">Certified payroll records</span><span class="badge b-warn">⚠ Partial</span></div>
-                <div class="flex-between"><span class="text-sm">Retainage documentation</span><span class="badge b-ok">✓ Ready</span></div>
-                <div class="flex-between"><span class="text-sm">Change order log (all projects)</span><span class="badge b-ok">✓ Ready</span></div>
-                <div class="flex-between"><span class="text-sm">AIA G702/G703 billing forms</span><span class="badge b-ok">✓ Ready</span></div>
-                <div class="flex-between"><span class="text-sm">Arizona TPT license compliance</span><span class="badge b-warn">⚠ Renewing</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════ DOCUMENTS ══════════════════ -->
-    <div class="view" id="view-documents">
-      <div class="page-hero" data-bg="DOCUMENTS">
-        <div class="page-eyebrow">TSM Construction · Document Hub</div>
-        <h1 class="page-title">Project <em>Documents</em></h1>
-        <p class="page-sub">Plans, permits, contracts, AIA forms, safety plans, and compliance files — centralized across all 14 projects.</p>
-      </div>
-      <div class="kpi-strip">
-        <div class="kpi-cell"><div class="kpi-val c-chalk">148</div><div class="kpi-lbl">Total Documents</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-amber">12</div><div class="kpi-lbl">Awaiting Review</div></div>
-        <div class="kpi-cell"><div class="kpi-val c-safe">3</div><div class="kpi-lbl">Approved Today</div></div>
-      </div>
-      <div class="pad">
-        <div class="sec-divider"><div class="sec-label">Recent Documents</div></div>
-        <div class="doc-grid">
-          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(74,159,224,.12);color:var(--accent)">📐</div><div class="doc-type">PDF · 14.2MB</div></div><div class="doc-name">Foundation Plans — Block C Full Set</div><div class="doc-date">Rev 4 · Apr 27 · <span class="badge b-ok">Final</span></div></div>
-          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(62,207,142,.12);color:var(--safe)">📋</div><div class="doc-type">DOCX · 2.8MB</div></div><div class="doc-name">GC Agreement — Phase 2 Steel Frame</div><div class="doc-date">Apr 15 · <span class="badge b-ok">Signed</span></div></div>
-          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(240,165,0,.12);color:var(--amber)">📊</div><div class="doc-type">XLSX · 1.1MB</div></div><div class="doc-name">Q1 2026 Budget Reconciliation</div><div class="doc-date">Apr 1 · <span class="badge b-ok">Final</span></div></div>
-          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(240,165,0,.12);color:var(--amber)">🏛</div><div class="doc-type">PDF · 0.4MB</div></div><div class="doc-name">Building Permit — Block C Foundation</div><div class="doc-date">Apr 29 · <span class="badge b-info">Approved</span></div></div>
-          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(224,82,82,.12);color:var(--danger)">⛑</div><div class="doc-type">PDF · 2.1MB</div></div><div class="doc-name">OSHA Safety Plan — 2026</div><div class="doc-date">Jan 10 · <span class="badge b-ok">Final</span></div></div>
-          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(155,124,224,.12);color:var(--purple)">💰</div><div class="doc-type">PDF · 0.6MB</div></div><div class="doc-name">Change Order #7 — Foundation Scope</div><div class="doc-date">Apr 20 · <span class="badge b-warn">Review</span></div></div>
-        </div>
-      </div>
-    </div>
-
-  </main><!-- /content -->
-
-</div><!-- /shell -->
-
-<!-- AI PANEL -->
-<div class="ai-panel" id="aiPanel">
-  <div class="ai-panel-head">
-    <div class="ai-panel-avatar">🏗</div>
-    <div>
-      <div class="ai-panel-name">TSM-AI-3200</div>
-      <div class="ai-panel-sub">TSM Construction · Groq llama-3.3-70b</div>
-    </div>
-    <button class="ai-panel-close" id="aiClose">✕</button>
+<!-- ══ TICKER ══ -->
+<div class="ticker">
+  <div class="ticker-inner" aria-hidden="true">
+    <span class="t-item">▸ OSHA COMPLIANCE AUDIT <span class="t-v">FINE EXPOSURE + 30-DAY REMEDIATION</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ CASH FLOW STRESS TEST <span class="t-v">3-SCENARIO MODELING</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ LIEN DEADLINE TRACKING <span class="t-v">ALL 50 STATES</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ MATERIAL THEFT PREVENTION <span class="t-up">60–80% SHRINKAGE REDUCTION</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ SUBCONTRACTOR DEFAULT RISK <span class="t-v">SCORED + FLAGGED EARLY</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ DAVIS-BACON AUDIT <span class="t-v">CERTIFIED PAYROLL COMPLIANCE</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ CRITICAL PATH ACCELERATION <span class="t-v">CRASH OPTIONS + DELAY DOCS</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ BID MARGIN ANALYSIS <span class="t-up">18–22% GROSS MARGIN TARGET</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ OSHA COMPLIANCE AUDIT <span class="t-v">FINE EXPOSURE + 30-DAY REMEDIATION</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ CASH FLOW STRESS TEST <span class="t-v">3-SCENARIO MODELING</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ LIEN DEADLINE TRACKING <span class="t-v">ALL 50 STATES</span></span>
+    <span class="t-dot">///</span>
+    <span class="t-item">▸ MATERIAL THEFT PREVENTION <span class="t-up">60–80% SHRINKAGE REDUCTION</span></span>
+    <span class="t-dot">///</span>
   </div>
+</div>
 
-  <div class="ai-msgs" id="aiMsgs">
-    <div class="ai-msg bot">
-      <div class="ai-msg-dot">🏗</div>
-      <div class="ai-bubble">I'm your TSM Construction intelligence engine. I know your 14 active projects, 84 subcontractors, 38 open lien waivers, and your $24M portfolio. What do you need?</div>
+<!-- ══ KPI BAR ══ -->
+<div class="kpi-bar">
+  <div class="kpi">
+    <div class="kpi-val">$184K</div>
+    <div class="kpi-label">PREMIUM AT LAPSE RISK</div>
+    <div class="kpi-delta neg">within 30 days</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val amber">$847K</div>
+    <div class="kpi-label">OPEN CLAIMS EXPOSURE</div>
+    <div class="kpi-delta neg">reserves under review</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val green">$78K</div>
+    <div class="kpi-label">RECOVERABLE NOW</div>
+    <div class="kpi-delta">subrogation + overruns</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val red">6</div>
+    <div class="kpi-label">COMPLIANCE FLAGS</div>
+    <div class="kpi-delta neg">OSHA + DOI + Davis-Bacon</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val">9</div>
+    <div class="kpi-label">NODES REPORTING</div>
+    <div class="kpi-delta">construction suite live</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- HERO -->
+  <section class="hero" id="hero" style="margin-bottom:2.5rem;margin-top:.5rem;">
+    <div class="hero-left">
+      <div class="hero-eyebrow">TSM CONSTRUCTION INTELLIGENCE SUITE</div>
+      <h1 class="hero-h1">
+        STOP LOSING<br>
+        <span>MONEY ON EVERY<br>JOB SITE.</span>
+      </h1>
+      <p class="hero-sub">
+        Nine specialized AI applications covering every domain of construction operations.
+        <strong>From OSHA audits to cash flow stress tests, lien law to subcontractor default risk — every decision backed by expert analysis in under 90 seconds.</strong>
+      </p>
+      <div class="hero-btns">
+        <button class="btn-fill" onclick="startAutoDemo()">🎬 Auto Demo Mode</button>
+        <a class="btn-ghost" href="/html/construction-suite/construction-command.html">Open Command ↗</a>
+        <button class="btn-ghost" onclick="openClosingLock()">Executive Close →</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs" style="--cc:var(--red)"><div class="hs-num" style="color:var(--red)">9</div><div class="hs-label">Suite Apps</div></div>
+      <div class="hs" style="--cc:var(--amber)"><div class="hs-num" style="color:var(--amber)">54+</div><div class="hs-label">AI Modules</div></div>
+      <div class="hs" style="--cc:var(--green)"><div class="hs-num" style="color:var(--green)">7</div><div class="hs-label">Playbooks</div></div>
+      <div class="hs" style="--cc:var(--cyan)"><div class="hs-num" style="color:var(--cyan)">50</div><div class="hs-label">States Covered</div></div>
+      <div class="hs" style="--cc:var(--orange)"><div class="hs-num" style="color:var(--orange)">90s</div><div class="hs-label">Analysis Time</div></div>
+      <div class="hs" style="--cc:var(--purple)"><div class="hs-num" style="color:var(--purple)">$0</div><div class="hs-label">Hidden Fees</div></div>
+    </div>
+  </section>
+
+  <!-- 4-LAYER COMMAND FLOW -->
+  <section id="flow">
+    <div class="sec-hd">
+      <div class="sec-hd-tag">HOW IT WORKS</div>
+      <div class="sec-hd-line"></div>
+    </div>
+    <div class="flow-section">
+      <div style="font-size:.9rem;color:var(--muted);margin-bottom:1rem;">One system moving from frontline job-site pressure to executive decision visibility.</div>
+      <div class="flow-row">
+        <div class="flow-node" style="--cc:var(--cyan)">
+          <div class="flow-node-num">LAYER 1</div>
+          <div class="flow-node-name">OPERATIONS</div>
+          <div class="flow-node-desc">Construction Command · AuditOps Pro<br>The frontline — where safety, finance, compliance, and legal pressure live.</div>
+          <a class="flow-node-link" href="/html/construction-suite/construction-command.html">OPEN COMMAND ↗</a>
+        </div>
+        <div class="flow-node" style="--cc:var(--amber)">
+          <div class="flow-node-num">LAYER 2</div>
+          <div class="flow-node-name">INTELLIGENCE</div>
+          <div class="flow-node-desc">Compliance · Financial · Legal · Tax<br>Specialist nodes analyzing every domain simultaneously with dollar-specific outputs.</div>
+          <a class="flow-node-link" href="/html/construction-suite/construction-pro.html">OPEN AUDITOPS ↗</a>
+        </div>
+        <div class="flow-node" style="--cc:var(--orange)">
+          <div class="flow-node-num">LAYER 3</div>
+          <div class="flow-node-name">BNCA ENGINE</div>
+          <div class="flow-node-desc">Construction Strategist<br>Reads all node outputs and generates one ranked, dollar-prioritized Best Next Course of Action.</div>
+          <a class="flow-node-link" href="/html/construction-suite/construction-strategist.html">OPEN STRATEGIST ↗</a>
+        </div>
+        <div class="flow-node" style="--cc:var(--purple)">
+          <div class="flow-node-num">LAYER 4</div>
+          <div class="flow-node-name">EXECUTIVE</div>
+          <div class="flow-node-desc">Document Showcase · Report Builder<br>Board-ready reporting, combined outputs, and exportable executive summaries.</div>
+          <a class="flow-node-link" href="/html/construction-suite/document-showcase.html">OPEN DOCS ↗</a>
+        </div>
+      </div>
+      <div style="margin-top:1rem;font-family:var(--mono);font-size:.5rem;color:var(--muted);letter-spacing:.08rem;">
+        <span style="color:var(--cyan)">Client question or job-site document</span> → 
+        <span style="color:var(--white)">Specialist nodes analyze simultaneously</span> → 
+        <span style="color:var(--amber)">Strategist synthesizes</span> → 
+        <span style="color:var(--green)">BNCA generated with dollar amounts</span> → 
+        <span style="color:var(--cyan)">Owner acts · audit trail complete</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALL APPS -->
+  <section id="apps" style="margin-top:2.5rem;">
+    <div class="sec-hd">
+      <div class="sec-hd-tag">THE FULL SUITE</div>
+      <div class="sec-hd-line"></div>
+    </div>
+    <div class="apps-grid">
+
+      <!-- Construction Command -->
+      <a class="app-card" href="/html/construction-suite/construction-command.html" style="--cc:var(--cyan)">
+        <div class="app-num">01 · COMMAND CENTER</div>
+        <div class="app-name">Construction Command</div>
+        <div class="app-role">MULTI-NODE INTELLIGENCE HUB</div>
+        <div class="app-desc">The central operating layer. Deploy queries to all specialist nodes simultaneously and synthesize unified intelligence recommendations across every domain.</div>
+        <div class="app-features">
+          <div class="app-feat">Multi-node query deployment — all nodes answer simultaneously</div>
+          <div class="app-feat">7 pre-built playbooks — one click fires full cross-domain analysis</div>
+          <div class="app-feat">Synthesize button — Strategist combines all outputs into BNCA</div>
+          <div class="app-feat">Document upload — PDF, CSV, TXT analyzed against real operations data</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE</span>
+        </div>
+      </a>
+
+      <!-- AuditOps Pro -->
+      <a class="app-card" href="/html/construction-suite/construction-pro.html" style="--cc:var(--amber)">
+        <div class="app-num">02 · INTELLIGENCE CORE</div>
+        <div class="app-name">AuditOps · Construction Pro</div>
+        <div class="app-role">30 MODULES · 7 DOMAINS</div>
+        <div class="app-desc">The deepest intelligence layer. 30 specialized AI modules covering every domain — Safety, Finance, Logistics, Compliance, Operations, Geotech, and Legal.</div>
+        <div class="app-features">
+          <div class="app-feat">OSHA audit — fine exposure calculation + 30-day remediation</div>
+          <div class="app-feat">Cash flow optimization — 20+ day improvement on cash on hand</div>
+          <div class="app-feat">Critical path acceleration — crash options + delay documentation</div>
+          <div class="app-feat">Lien & contract risk — filing deadlines + rights waiver value</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE · 30 MODULES</span>
+        </div>
+      </a>
+
+      <!-- Construction Strategist -->
+      <a class="app-card" href="/html/construction-suite/construction-strategist.html" style="--cc:var(--orange)">
+        <div class="app-num">03 · SOVEREIGN CORE</div>
+        <div class="app-name">Construction Strategist</div>
+        <div class="app-role">EXECUTIVE BNCA SYNTHESIS</div>
+        <div class="app-desc">The executive intelligence layer. Reads all specialist node outputs and generates a single ranked, dollar-prioritized Best Next Course of Action for your operation.</div>
+        <div class="app-features">
+          <div class="app-feat">Cross-domain synthesis — all nodes combined into one BNCA</div>
+          <div class="app-feat">Dollar-ranked priority — highest impact actions surfaced first</div>
+          <div class="app-feat">90-day action horizon — immediate, short, and strategic tiers</div>
+          <div class="app-feat">Board-ready export — executive summary in one click</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE</span>
+        </div>
+      </a>
+
+      <!-- Compliance -->
+      <a class="app-card" href="/html/construction-suite/compliance.html" style="--cc:var(--red)">
+        <div class="app-num">04 · COMPLIANCE SHIELD</div>
+        <div class="app-name">Construction Compliance</div>
+        <div class="app-role">OSHA · DAVIS-BACON · EPA · SWPPP</div>
+        <div class="app-desc">Dollar-quantified fine exposure with 30-day remediation protocols for every compliance gap — before the inspector finds it.</div>
+        <div class="app-features">
+          <div class="app-feat">OSHA 300 log audit — recordkeeping + citation exposure</div>
+          <div class="app-feat">Davis-Bacon prevailing wage — certified payroll compliance</div>
+          <div class="app-feat">Environmental audit — SWPPP + EPA + air quality</div>
+          <div class="app-feat">Workforce compliance — I-9 + OSHA certs + prevailing wage</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE</span>
+        </div>
+      </a>
+
+      <!-- Financial -->
+      <a class="app-card" href="/html/construction-suite/financial.html" style="--cc:var(--green)">
+        <div class="app-num">05 · FINANCIAL INTEL</div>
+        <div class="app-name">Construction Financial</div>
+        <div class="app-role">CASH FLOW · MARGINS · RETAINAGE</div>
+        <div class="app-desc">Every analysis includes specific dollar targets. Job costing, cash flow stress testing, retainage release strategy, and cost overrun recovery.</div>
+        <div class="app-features">
+          <div class="app-feat">Cash flow stress test — 3 scenario modeling with break points</div>
+          <div class="app-feat">Cost overrun recovery — quick wins vs structural fixes</div>
+          <div class="app-feat">Retainage release strategy — retention billing optimization</div>
+          <div class="app-feat">Bid margin analysis — win rate + profitability targeting</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE</span>
+        </div>
+      </a>
+
+      <!-- Legal -->
+      <a class="app-card" href="/html/construction-suite/legal.html" style="--cc:var(--blue)">
+        <div class="app-num">06 · LEGAL COMMAND</div>
+        <div class="app-name">Construction Legal</div>
+        <div class="app-role">LIENS · DISPUTES · BONDS · DEFAULT</div>
+        <div class="app-desc">Mechanics lien deadlines across all 50 states. Subcontractor default risk scoring, Eichleay formula dispute claims, and insurance coverage gap analysis.</div>
+        <div class="app-features">
+          <div class="app-feat">Lien & contract risk — filing deadlines + rights waiver value</div>
+          <div class="app-feat">Subcontractor default — performance scoring + bond exposure</div>
+          <div class="app-feat">Dispute strategy — Eichleay formula + recovery rates</div>
+          <div class="app-feat">Insurance & bonds — coverage gaps + open claims</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE · 50 STATES</span>
+        </div>
+      </a>
+
+      <!-- AuditOps Tax -->
+      <a class="app-card" href="/html/construction-suite/auditops-tax.html" style="--cc:var(--purple)">
+        <div class="app-num">07 · TAX INTELLIGENCE</div>
+        <div class="app-name">Construction Tax Prep</div>
+        <div class="app-role">§179 · S-CORP · DEPRECIATION · QBI</div>
+        <div class="app-desc">§179 equipment expensing, contractor classification, job-site depreciation, S-Corp optimization, and quarterly tax planning for construction entities.</div>
+        <div class="app-features">
+          <div class="app-feat">§179 equipment expensing — deadline tracking + max deduction</div>
+          <div class="app-feat">S-Corp optimization — officer comp + safe harbor review</div>
+          <div class="app-feat">QBI deduction — structure optimization + savings estimate</div>
+          <div class="app-feat">Contractor vs employee — classification risk audit</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE</span>
+        </div>
+      </a>
+
+      <!-- Document Showcase -->
+      <a class="app-card" href="/html/construction-suite/document-showcase.html" style="--cc:var(--cyan2)">
+        <div class="app-num">08 · DOCUMENT INTELLIGENCE</div>
+        <div class="app-name">Document Showcase</div>
+        <div class="app-role">DOC ANALYSIS · REPORT BUILDER</div>
+        <div class="app-desc">Upload real construction documents — contracts, soil reports, OSHA logs, pay applications — and run them through the full node chain instantly.</div>
+        <div class="app-features">
+          <div class="app-feat">Contract risk scan — clause flags + exposure quantification</div>
+          <div class="app-feat">Geotech report review — bearing capacity + remediation cost</div>
+          <div class="app-feat">Pay app analysis — billing accuracy + lien waiver status</div>
+          <div class="app-feat">Export combined report — board-ready PDF-formatted output</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open">OPEN APP ↗</span>
+          <span class="app-status">LIVE</span>
+        </div>
+      </a>
+
+      <!-- Construction Hub (this page) -->
+      <div class="app-card" style="--cc:var(--muted);cursor:default;">
+        <div class="app-num">09 · SUITE HUB</div>
+        <div class="app-name">Construction Hub</div>
+        <div class="app-role">YOU ARE HERE</div>
+        <div class="app-desc">The unified entry point for the entire construction intelligence suite. Navigate to any app, run demos, view ROI, and generate executive summaries from one place.</div>
+        <div class="app-features">
+          <div class="app-feat">Auto-demo mode — narrated walk-through of the full suite</div>
+          <div class="app-feat">Executive close — modal with pilot offer and ROI summary</div>
+          <div class="app-feat">Suite strip navigation — persistent bottom bar across all apps</div>
+          <div class="app-feat">Live KPI feed — real-time operations posture at a glance</div>
+        </div>
+        <div class="app-footer">
+          <span class="app-open" style="border-color:var(--muted);color:var(--muted)">CURRENT PAGE</span>
+          <span class="app-status" style="color:var(--cyan)">ACTIVE</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PLAYBOOKS -->
+  <section id="playbooks" style="margin-top:2.5rem;">
+    <div class="sec-hd">
+      <div class="sec-hd-tag">PLAYBOOKS</div>
+      <div class="sec-hd-line"></div>
+    </div>
+    <div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem;">
+      7 pre-built analyses. One click fires multiple nodes simultaneously and delivers a complete operational picture.
+    </div>
+    <div class="playbooks-grid">
+      <div class="pb-card" style="--cc:var(--red)" onclick="runDemo('material-theft')">
+        <div class="pb-app">SAFETY + COMPLIANCE</div>
+        <div class="pb-name">Material Theft Prevention</div>
+        <div class="pb-desc">Stolen material costs, surveillance ROI, sub accountability, insurance protocol, and a 60–80% shrinkage reduction plan.</div>
+        <div class="pb-impact">↑ Recovers $20K–$80K per project cycle</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--amber)" onclick="runDemo('safety-protocol')">
+        <div class="pb-app">COMPLIANCE SHIELD</div>
+        <div class="pb-name">Safety Protocol Audit</div>
+        <div class="pb-desc">OSHA 300 log accuracy, required programs, toolbox talk documentation, PPE enforcement, top 10 citation prevention.</div>
+        <div class="pb-impact">↑ Avoids $15K–$156K per citation</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--green)" onclick="runDemo('subcontractor-exposure')">
+        <div class="pb-app">FINANCIAL + LEGAL</div>
+        <div class="pb-name">Subcontractor Exposure</div>
+        <div class="pb-desc">Payment bond adequacy, lien waiver collection, insurance certificate compliance, default risk across all active subs.</div>
+        <div class="pb-impact">↑ Prevents $85K–$340K default exposure</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--cyan)" onclick="runDemo('cash-flow')">
+        <div class="pb-app">FINANCIAL COMMAND</div>
+        <div class="pb-name">Cash Flow Stress Test</div>
+        <div class="pb-desc">3-scenario modeling: delayed owner payment, sub default, materials spike. Break-point calculation with specific liquidity response plans.</div>
+        <div class="pb-impact">↑ 20+ days cash on hand improvement</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--orange)" onclick="runDemo('osha-audit')">
+        <div class="pb-app">COMPLIANCE SHIELD</div>
+        <div class="pb-name">OSHA Readiness Audit</div>
+        <div class="pb-desc">Full inspection prep: SDS, HAZCOM, fall arrest, scaffold records, confined space, LOTO. Top 10 citations and penalty ranges.</div>
+        <div class="pb-impact">↑ Zero-citation inspection probability</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--blue)" onclick="runDemo('lien-exposure')">
+        <div class="pb-app">LEGAL COMMAND</div>
+        <div class="pb-name">Lien Exposure Review</div>
+        <div class="pb-desc">Preliminary notice requirements by state for all tiers, lien deadline calculation, conditional vs unconditional release tracking.</div>
+        <div class="pb-impact">↑ Preserves $40K–$200K per project</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--purple)" onclick="runDemo('bid-strategy')">
+        <div class="pb-app">FINANCIAL + STRATEGIST</div>
+        <div class="pb-name">Bid Strategy Analysis</div>
+        <div class="pb-desc">High-margin project identification, estimating accuracy, overhead allocation, bid scoring model targeting 18–22% gross margin.</div>
+        <div class="pb-impact">↑ 2–4% margin improvement per project</div>
+      </div>
+      <div class="pb-card" style="--cc:var(--cyan)" onclick="runDemo('bnca')">
+        <div class="pb-app">STRATEGIST · ALL NODES</div>
+        <div class="pb-name">⚡ Best Next Course of Action</div>
+        <div class="pb-desc">The Strategist reads all active node outputs and produces a single ranked executive action list sorted by 90-day dollar impact.</div>
+        <div class="pb-impact">↑ Full cross-suite prioritization</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DEMO SECTION -->
+  <section id="demo" style="margin-top:2.5rem;">
+    <div class="sec-hd">
+      <div class="sec-hd-tag">LIVE DEMO RUNNER</div>
+      <div class="sec-hd-line"></div>
+    </div>
+    <div class="demo-section">
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem;">
+        Click a playbook above or use the buttons below to run a live analysis. Output streams into the feed.
+      </div>
+      <div class="demo-btns" id="demoBtns">
+        <button class="demo-btn" onclick="runDemo('osha-audit')">▶ OSHA Audit</button>
+        <button class="demo-btn" onclick="runDemo('cash-flow')">▶ Cash Flow Stress</button>
+        <button class="demo-btn" onclick="runDemo('lien-exposure')">▶ Lien Exposure</button>
+        <button class="demo-btn" onclick="runDemo('subcontractor-exposure')">▶ Sub Exposure</button>
+        <button class="demo-btn" onclick="runDemo('bnca')">▶ ⚡ Run BNCA</button>
+        <button class="demo-btn" onclick="openStrategist()">▸ Open Strategist</button>
+        <button class="demo-btn" onclick="openCommand()">▸ Open Command</button>
+      </div>
+      <div class="demo-output" id="demoOut"><span style="color:var(--muted)">Select a playbook or workflow above to run analysis. Output will appear here.</span></div>
+    </div>
+  </section>
+
+  <!-- ROI -->
+  <section id="roi" style="margin-top:2.5rem;">
+    <div class="sec-hd">
+      <div class="sec-hd-tag">RETURN ON INVESTMENT</div>
+      <div class="sec-hd-line"></div>
+    </div>
+    <div class="roi-section">
+      <div class="roi-left">
+        <div style="font-family:var(--mono);font-size:.5rem;letter-spacing:.15rem;color:var(--muted);margin-bottom:1rem;">TYPICAL ANNUAL IMPACT — $25M GC</div>
+        <div class="roi-table">
+          <div class="roi-row"><div class="roi-label">OSHA fine avoidance (per audit cycle)</div><div class="roi-val">$15K – $156K</div></div>
+          <div class="roi-row"><div class="roi-label">Lien rights preserved (per project)</div><div class="roi-val">$40K – $200K</div></div>
+          <div class="roi-row"><div class="roi-label">Cash flow improvement (20+ days)</div><div class="roi-val">$80K – $300K</div></div>
+          <div class="roi-row"><div class="roi-label">Cost overrun recovery (mid-project)</div><div class="roi-val">$60K – $180K</div></div>
+          <div class="roi-row"><div class="roi-label">Labor productivity to 90%+</div><div class="roi-val">$120K – $400K</div></div>
+          <div class="roi-row"><div class="roi-label">Sub default early detection</div><div class="roi-val">$85K – $340K</div></div>
+          <div class="roi-row"><div class="roi-label">Tax optimization (§179 + S-Corp)</div><div class="roi-val">$18K – $80K</div></div>
+          <div class="roi-row total"><div class="roi-label">Annual impact — typical $25M GC</div><div class="roi-val">$400K – $1.5M+</div></div>
+        </div>
+      </div>
+      <div class="roi-right">
+        <div class="roi-big">47×</div>
+        <div class="roi-big-lbl">AVERAGE RETURN ON SUBSCRIPTION COST</div>
+        <div class="roi-detail">
+          At <strong>$1,750/month</strong>, a single prevented OSHA citation pays for 9–12 months of the entire system. One recovered lien position covers the annual cost. One avoided subcontractor default pays for 3 years.
+          <br><br>
+          <strong>This isn't a software expense. It's the most leveraged dollar in your operation.</strong>
+        </div>
+        <button class="btn-fill" style="margin-top:1.5rem;font-size:.85rem;padding:.65rem 1.75rem;" onclick="openClosingLock()">🔒 Executive Close</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section id="close" style="margin-top:2.5rem;">
+    <div class="close-section">
+      <div class="close-h2" style="position:relative;z-index:1;">
+        STOP GUESSING.
+        <span>START COMMANDING.</span>
+      </div>
+      <div class="close-price" style="position:relative;z-index:1;">$1,750<span style="font-size:1.5rem;font-weight:400;color:var(--muted)">/mo</span></div>
+      <div class="close-sub" style="position:relative;z-index:1;">9 APPS · 54+ MODULES · ALL 50 STATES · FULL SUITE ACCESS</div>
+      <div style="font-size:.95rem;color:var(--text);max-width:580px;margin:0 auto 1.5rem;line-height:1.7;position:relative;z-index:1;">
+        The average GC leaves $400K–$1.5M on the table every year through avoidable OSHA citations, missed lien deadlines, cash flow gaps, and cost overruns caught too late. The suite pays for itself on the first analysis.
+      </div>
+      <div class="close-btns" style="position:relative;z-index:1;">
+        <button class="btn-fill" onclick="openClosingLock()">🔒 Get Executive Summary</button>
+        <a class="btn-ghost" href="/html/construction-suite/construction-command.html">Open Command Center ↗</a>
+      </div>
+      <div class="close-note" style="position:relative;z-index:1;">TSM AMS IMPACT GROUP · CONSTRUCTION INTELLIGENCE SUITE · AI-GENERATED ANALYSIS FOR OPERATIONAL DECISION SUPPORT</div>
+    </div>
+  </section>
+
+</div><!-- /main -->
+
+<!-- ══ SUITE STRIP ══ -->
+<div id="suite-strip">
+  <div class="ss-label">▸ CONSTRUCTION SUITE</div>
+  <div class="ss-apps">
+    <a href="/html/construction-suite/construction-hub.html" class="ss-app current"><span class="ss-dot" style="background:var(--cyan)"></span>HUB</a>
+    <a href="/html/construction-suite/construction-command.html" class="ss-app"><span class="ss-dot" style="background:var(--cyan)"></span>COMMAND</a>
+    <a href="/html/construction-suite/construction-pro.html" class="ss-app"><span class="ss-dot" style="background:var(--amber)"></span>AUDITOPS PRO</a>
+    <a href="/html/construction-suite/construction-strategist.html" class="ss-app"><span class="ss-dot" style="background:var(--orange)"></span>STRATEGIST</a>
+    <a href="/html/construction-suite/compliance.html" class="ss-app"><span class="ss-dot" style="background:var(--red)"></span>COMPLIANCE</a>
+    <a href="/html/construction-suite/financial.html" class="ss-app"><span class="ss-dot" style="background:var(--green)"></span>FINANCIAL</a>
+    <a href="/html/construction-suite/legal.html" class="ss-app"><span class="ss-dot" style="background:var(--blue)"></span>LEGAL</a>
+    <a href="/html/construction-suite/auditops-tax.html" class="ss-app"><span class="ss-dot" style="background:var(--purple)"></span>TAX PREP</a>
+    <a href="/html/construction-suite/document-showcase.html" class="ss-app"><span class="ss-dot" style="background:var(--cyan2)"></span>DOCS</a>
+  </div>
+  <div class="ss-right">
+    <span>$1,750/MO</span>
+    <button class="tb-btn amber" onclick="openClosingLock()" style="font-size:.44rem;padding:.2rem .6rem;">🔒 CLOSE</button>
+  </div>
+</div>
+
+<!-- ══ TSM AI WIDGET ══ -->
+<div id="tsm-widget">
+  <div id="tsm-toggle" onclick="toggleWidget()">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0;"></span>
+    TSM AI · CONSTRUCTION SUITE · LIVE
+  </div>
+  <div id="tsm-panel">
+    <div class="w-hdr">// ASK ABOUT THE CONSTRUCTION SUITE</div>
+    <div id="w-msgs"></div>
+    <div id="w-think">// PROCESSING…</div>
+    <div class="w-input-row">
+      <input id="w-input" placeholder="What modules cover OSHA?…" onkeydown="if(event.key==='Enter')widgetAsk()"/>
+      <button id="w-send" onclick="widgetAsk()">SEND</button>
     </div>
   </div>
+</div>
 
-  <div class="ai-chips" id="aiChips">
-    <span class="ai-chip" onclick="chipSend(this)">How do I resolve the 38 lien waivers?</span>
-    <span class="ai-chip" onclick="chipSend(this)">Desert Steel insurance risk</span>
-    <span class="ai-chip" onclick="chipSend(this)">Bonding expansion strategy</span>
-    <span class="ai-chip" onclick="chipSend(this)">Arizona lien law deadline</span>
-    <span class="ai-chip" onclick="chipSend(this)">§179D deduction eligibility</span>
-    <span class="ai-chip" onclick="chipSend(this)">Gilbert Tower at-risk recovery plan</span>
-  </div>
+<!-- ══ DEMO CAPTION ══ -->
+<div id="demoCaption"></div>
 
-  <div class="ai-input-row">
-    <input class="ai-input" id="aiInput" placeholder="Ask anything about TSM…" autocomplete="off"/>
-    <button class="ai-send" id="aiSend">➤</button>
+<!-- ══ CLOSING LOCK ══ -->
+<div id="closingLock">
+  <div class="cl-inner">
+    <div class="cl-tag">EXECUTIVE SUMMARY · ACTION READY</div>
+    <h2 class="cl-h2">Construction Intelligence Suite</h2>
+    <div class="cl-sub">Demo output converted into a decision-ready pilot path.</div>
+    <div class="cl-kpis">
+      <div class="cl-kpi"><div class="cl-kpi-v">$184K</div><div class="cl-kpi-l">PREMIUM AT LAPSE RISK</div></div>
+      <div class="cl-kpi"><div class="cl-kpi-v">$78K</div><div class="cl-kpi-l">RECOVERABLE NOW</div></div>
+      <div class="cl-kpi"><div class="cl-kpi-v">15–20h</div><div class="cl-kpi-l">TIME SAVED / MONTH</div></div>
+    </div>
+    <div class="cl-result">
+      <span class="c-t">SYSTEM RESULT</span>
+      → Policy lapse risk identified and prioritized before cancellation<br>
+      → OSHA compliance gaps surfaced before inspector arrival<br>
+      → Lien rights tracked and preserved across all active projects<br>
+      → Executive-ready BNCA generated — owner acts, not chases
+    </div>
+    <div class="cl-roi">
+      <span class="c-t">ROI IN PLAIN LANGUAGE</span>
+      Manual coordination across portals, spreadsheets, and email: <strong>$6K–$10K/month</strong><br>
+      TSM Construction Intelligence Suite: <strong>$1,750/month · 9 apps · 54+ modules</strong><br>
+      First OSHA citation prevented: <strong>covers 9–12 months of subscription cost</strong>
+    </div>
+    <div id="cl-bnca-output" style="display:none;background:var(--bg);border:1px solid var(--border);padding:1rem;margin-bottom:1rem;font-family:var(--mono);font-size:.55rem;line-height:1.8;color:var(--text);max-height:120px;overflow:auto;white-space:pre-wrap;"></div>
+    <div class="cl-quote">"At this point, it's just how you want to start — we can run a 30-day pilot, or walk your team through it live."</div>
+    <div class="cl-btns">
+      <button class="cl-btn fill" onclick="startPilot()">START 30-DAY PILOT</button>
+      <button class="cl-btn outline" onclick="bookWalkthrough()">BOOK TECHNICAL WALKTHROUGH</button>
+      <a class="cl-btn green" href="/html/construction-suite/construction-strategist.html" target="_blank">OPEN STRATEGIST ↗</a>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="cl-note">NPN · TSM AMS IMPACT GROUP · $1,750/MO · ALL 50 STATES</div>
+      <button onclick="closeClosingLock()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:.25rem .75rem;cursor:pointer;font-family:var(--mono);font-size:.5rem;">✕ CLOSE</button>
+    </div>
   </div>
+</div>
+
+<!-- ══ CLOSING RAIL ══ -->
+<div id="closing-rail">
+  <button class="cl-btn fill" onclick="startPilot()" style="font-size:.5rem;padding:.5rem 1rem;">START 30-DAY PILOT</button>
+  <button class="cl-btn outline" onclick="bookWalkthrough()" style="font-size:.5rem;padding:.5rem 1rem;">BOOK WALKTHROUGH</button>
+  <a class="cl-btn green" href="/html/construction-suite/construction-strategist.html" target="_blank" style="font-size:.5rem;padding:.5rem 1rem;">OPEN STRATEGIST ↗</a>
 </div>
 
 <script>
-// ── DATE ──
-document.getElementById('topdate').textContent =
-  new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+// ── DEMO OUTPUT STREAMS ──────────────────────────────────────────
+const PLAYBOOKS = {
+  'material-theft': `[PLAYBOOK] MATERIAL THEFT PREVENTION\n\n► MOST STOLEN MATERIALS & COSTS\nCopper wire: $8–$14/lb replacement + labor. Lumber: avg $340/unit exposed. Tools & equipment: $2,200 avg per theft event. Diesel fuel: $4,800/month untracked.\n\n► SURVEILLANCE & INVENTORY ROI\nCamera system + GPS tags: $12,000 install. Shrinkage reduction: 68% average. Break-even: 2.3 months on $25M project.\n\n► BNCA — BEST NEXT COURSE OF ACTION\nInstall perimeter cameras on material staging areas this week. Implement daily tool sign-out log. Require sub foremen to sign inventory sheets at shift end. File police report on all theft events >$500 to preserve insurance claim rights.`,
 
-// ── RISK SEGS ──
-(function(){
-  const wrap = document.getElementById('riskSegs');
-  for(let i=0;i<10;i++){
-    const s=document.createElement('div');s.className='risk-seg';
-    if(i<3)s.classList.add('on-low');
-    else if(i<7)s.classList.add('on-mid');
-    else s.classList.add('on-high');
-    // only light up first 6 (score 67/100 ≈ 6.7 segs)
-    if(i>=7)s.style.opacity='.25';
-    wrap.appendChild(s);
-  }
-})();
+  'safety-protocol': `[PLAYBOOK] SAFETY PROTOCOL AUDIT\n\n► OSHA 300 LOG STATUS\n3 recordable incidents misclassified as first aid. 1 reportable amputation not filed within 24 hours (citation exposure: $15,625). OSHA 300 posting missing for Q1.\n\n► TOP 5 LIKELY CITATIONS — CURRENT SITE\n1. Fall protection gap — $15,625/violation\n2. Scaffold inspection records missing — $4,500\n3. Toolbox talks not documented — $2,200\n4. PPE audit overdue — $3,800\n5. HAZCOM labels not current — $1,900\n\n► BNCA\nCorrect OSHA 300 classifications within 48 hours. File late amputation report with explanation letter. Schedule PPE audit and toolbox talk documentation sweep this week. Total fine exposure: $28,045 — all preventable.`,
 
-// ── NAV ──
-function switchView(id){
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  const nav=document.querySelector(`[data-view="${id}"]`);
-  const view=document.getElementById(`view-${id}`);
-  if(nav)nav.classList.add('active');
-  if(view)view.classList.add('active');
-  document.querySelector('.content').scrollTop=0;
-}
-document.querySelectorAll('.nav-item').forEach(n=>{
-  n.addEventListener('click',()=>switchView(n.dataset.view));
-});
+  'subcontractor-exposure': `[PLAYBOOK] SUBCONTRACTOR EXPOSURE REVIEW\n\n► PAYMENT BOND STATUS\n3 of 15 active subs lack adequate payment bonds. Exposure: $840,000 in unbonded work.\n\n► TOP DEFAULT RISK INDICATORS\n• Sub #4: 14-day payment delay pattern, declining crew size — HIGH RISK\n• Sub #7: Insurance expired 12 days ago — IMMEDIATE ACTION\n• Sub #11: Lien waiver collection 40 days behind schedule\n\n► LIEN WAIVER GAP\n$214,000 in payments made without signed conditional waivers. Lien rights exposure on 3 projects.\n\n► BNCA\nCollect updated insurance certificate from Sub #7 today — work stoppage authority if not received. Initiate payment plan review with Sub #4. Request conditional lien waivers for all outstanding payments before next draw.`,
 
-// ── AI PANEL ──
-const panel=document.getElementById('aiPanel');
-document.getElementById('aiToggle').addEventListener('click',()=>panel.classList.toggle('open'));
-document.getElementById('aiClose').addEventListener('click',()=>panel.classList.remove('open'));
+  'cash-flow': `[PLAYBOOK] CASH FLOW STRESS TEST — 3 SCENARIOS\n\n► SCENARIO 1: Owner delayed 30 days on 2 projects\nCash impact: -$340,000. Break point: Day 22 with current burn rate. Response: Draw on $500K LOC, defer discretionary purchases, accelerate billing on other projects.\n\n► SCENARIO 2: Major sub default — replacement required\nEstimated replacement cost: $185,000 premium over original sub. Cash impact: -$185,000 + 18-day schedule delay = $54,000 extended GC overhead. Break point: Day 31. Response: Surety bond claim, mobilize backup sub list.\n\n► SCENARIO 3: Materials spike +15%\nCost impact across 4 projects: $127,000. Cash impact: -$127,000 over 60 days. Response: Escalation clause activation on 2 projects, material substitution on 1.\n\n► BNCA\nLiquidity is adequate for Scenario 1 and 3. Scenario 2 requires immediate LOC draw approval. Recommend 45-day cash reserve target of $420,000.`,
 
-const aiMsgs=document.getElementById('aiMsgs');
-const aiInput=document.getElementById('aiInput');
-const aiSend=document.getElementById('aiSend');
+  'osha-audit': `[PLAYBOOK] OSHA INSPECTION READINESS AUDIT\n\n► DOCUMENTATION STATUS\nSDS binder: current ✓\nHAZCOM program: posted ✓\nEmergency action plan: needs update — last reviewed 14 months ago\nPre-use inspection logs: 3 pieces of equipment missing logs\n\n► TOP 10 LIKELY CITATIONS & PENALTY RANGES\n1. Inadequate fall protection — $15,625 per instance (REPEAT: $156,259)\n2. Scaffold inspection records missing — $4,500\n3. Emergency action plan not current — $2,200\n4. Pre-use inspection log gaps — $3,800\n5. Confined space program not posted — $4,500\n6. LOTO procedures not site-specific — $6,500\n7. Ladder inspection records absent — $1,900\n8. First aid kit incomplete — $1,200\n9. Fire extinguisher monthly check missing — $900\n10. Silica exposure controls undocumented — $9,500\n\n► BNCA\nUpdate emergency action plan today. Complete pre-use inspection logs for 3 equipment items. Post confined space program. Estimated total fine exposure if cited: $51,625 — all correctable before inspector arrival.`,
 
-let history=[];let busy=false;
+  'lien-exposure': `[PLAYBOOK] LIEN EXPOSURE REVIEW\n\n► PRELIMINARY NOTICE STATUS\nProject 1 (AZ): Prelim notice required within 20 days of first work. Current: Day 18 — URGENT.\nProject 2 (TX): No prelim required — constitutional lien state ✓\nProject 3 (CA): 20-day prelim notice — 3 sub-tier suppliers NOT noticed — EXPOSURE: $84,000\n\n► LIEN DEADLINE CALENDAR\nProject 1 AZ: Lien must be recorded within 120 days of completion\nProject 3 CA: Lien within 90 days — CRITICAL: 67 days remaining\nProject 4 NV: Lien within 90 days — 44 days remaining\n\n► LIEN WAIVER ERRORS IDENTIFIED\n$214,000 in payments made with unconditional waivers before payment cleared. Rights waived prematurely.\n\n► BNCA\nServe preliminary notice on CA Project 3 sub-tier suppliers TODAY via certified mail. Record lien on NV Project 4 within 44 days — calendar now. Switch all lien waivers to conditional until payment clears.`,
 
-function chipSend(el){
-  aiInput.value=el.textContent;
-  sendMsg();
-  document.getElementById('aiChips').style.display='none';
-}
+  'bid-strategy': `[PLAYBOOK] BID STRATEGY ANALYSIS\n\n► HIGH-MARGIN PROJECT TYPES (THIS MARKET)\nMedical/healthcare renovation: avg 22–26% GM\nEducation (K-12): avg 19–23% GM\nLight industrial: avg 18–22% GM\nAvoid: public works under $2M — avg 11% GM, high retainage risk\n\n► ESTIMATING ACCURACY GAPS\nLast 6 bids: labor underestimated avg 8.4%. Material waste avg 6.1% over estimate. General conditions underbid on 4 of 6 projects.\n\n► BID SCORING MODEL — TARGETS\nDirect labor: 28–32% of total\nMaterials: 38–42%\nSubcontractors: not to exceed 35%\nGeneral conditions: 8–11%\nOverhead & profit: 18–22%\n\n► BNCA\nRaise labor contingency by 8% on all bids submitted this quarter. Add material escalation allowance of 4%. Target healthcare renovation sector — 2 RFPs open in market now. Projected margin improvement: +3.2% per project at current volume.`,
 
-function appendMsg(role,text){
-  const d=document.createElement('div');
-  d.className=`ai-msg ${role==='user'?'user':'bot'}`;
-  d.innerHTML=`<div class="ai-msg-dot">${role==='user'?'👤':'🏗'}</div>
-    <div class="ai-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code style="background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;font-size:11px">$1</code>')}</div>`;
-  aiMsgs.appendChild(d);
-  aiMsgs.scrollTop=aiMsgs.scrollHeight;
-}
+  'bnca': `[STRATEGIST] ⚡ BEST NEXT COURSE OF ACTION — FULL CROSS-SUITE\n\n► PRIORITY 1 · IMMEDIATE (TODAY)\nSub #7 insurance expired — stop work authority if certificate not received by 5pm. Estimated exposure if incident occurs: $840,000 uninsured.\n\n► PRIORITY 2 · THIS WEEK ($28K exposure)\nOSHA compliance gaps: update emergency action plan, complete equipment pre-use logs, post confined space program. Total fine exposure if cited: $51,625.\n\n► PRIORITY 3 · 7 DAYS ($84K exposure)\nServe preliminary notice on CA Project 3 sub-tier suppliers before Day 20 deadline. Rights expire in 2 days.\n\n► PRIORITY 4 · 30 DAYS ($214K exposure)\nConvert all lien waivers to conditional. Collect outstanding conditional waivers from last 3 payment cycles.\n\n► PRIORITY 5 · 60 DAYS (cash position)\nScenario 2 stress test: ensure LOC draw authority approved before next pay period. Cash reserve target: $420,000.\n\n► 90-DAY STRATEGIC\nShift bid focus to healthcare and education projects — +3.2% margin improvement projected. Raise labor contingency 8% on all bids.`
+};
 
-function showTyping(){
-  const d=document.createElement('div');d.className='ai-msg bot';d.id='typing';
-  d.innerHTML=`<div class="ai-msg-dot">🏗</div><div class="ai-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
-  aiMsgs.appendChild(d);aiMsgs.scrollTop=aiMsgs.scrollHeight;
-}
+let demoRunning = false;
 
-async function sendMsg(){
-  const text=aiInput.value.trim();
-  if(!text||busy)return;
-  busy=true;aiInput.value='';aiSend.disabled=true;
-  appendMsg('user',text);
-  history.push({role:'user',content:text});
-  showTyping();
+async function runDemo(key) {
+  const out = document.getElementById('demoOut');
+  const text = PLAYBOOKS[key] || `[ANALYSIS] Running ${key}...\n\nConnecting to construction intelligence nodes...`;
 
-  try{
-    const res=await fetch('/api/v1/bridge',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({messages:history})
+  // Button active state
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pb-card').forEach(b => b.style.opacity = '.5');
+
+  out.innerHTML = '<span style="color:var(--muted)">Analyzing...</span>';
+
+  // Try live API first
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app: 'construction',
+        messages: [
+          { role: 'system', content: 'You are the TSM Construction Intelligence Strategist. Expert-level knowledge of OSHA, construction finance, lien law, subcontractor management, and job-site operations. Always respond with ► section headers. Include specific dollar amounts and timelines.' },
+          { role: 'user', content: PLAYBOOKS[key] ? `Run the ${key.replace(/-/g,' ')} playbook for a mid-size commercial GC. Use ► section markers. Be specific with dollar amounts.` : key }
+        ]
+      })
     });
-    const data=await res.json();
-    const reply=data.response||data.answer||data.content||'No response received.';
-    document.getElementById('typing')?.remove();
-    appendMsg('bot',reply);
-    history.push({role:'assistant',content:reply});
-  }catch(err){
-    document.getElementById('typing')?.remove();
-    appendMsg('bot','⚠ Could not reach /api/v1/bridge. Check your Fly server is running.');
+    const data = await res.json();
+    const liveText = data.reply || data.answer || data.response || data.content || null;
+    if (liveText && liveText.length > 50) {
+      streamText(liveText, out);
+      saveReport(key, liveText);
+      document.querySelectorAll('.pb-card').forEach(b => b.style.opacity = '1');
+      return;
+    }
+  } catch(e) {}
+
+  // Fall back to scenario text
+  streamText(text, out);
+  saveReport(key, text);
+  document.querySelectorAll('.pb-card').forEach(b => b.style.opacity = '1');
+}
+
+function streamText(text, el) {
+  const formatted = text
+    .replace(/►\s*/g, '\n<span class="o-amber">►</span> ')
+    .replace(/\[STRATEGIST\]/g, '<span class="o-tag">[STRATEGIST]</span>')
+    .replace(/\[PLAYBOOK\]/g, '<span class="o-tag">[PLAYBOOK]</span>')
+    .replace(/\[ANALYSIS\]/g, '<span class="o-tag">[ANALYSIS]</span>')
+    .replace(/BNCA/g, '<span class="o-green">BNCA</span>')
+    .replace(/URGENT|CRITICAL|HIGH RISK|IMMEDIATE/g, m => `<span class="o-red">${m}</span>`);
+
+  el.innerHTML = '';
+  const words = formatted.split(' ');
+  let i = 0;
+  const stream = setInterval(() => {
+    if (i >= words.length) { clearInterval(stream); return; }
+    el.innerHTML += (i > 0 ? ' ' : '') + words[i++];
+    el.scrollTop = el.scrollHeight;
+  }, 18);
+}
+
+function saveReport(key, text) {
+  try {
+    localStorage.setItem('tsm_construction_report', JSON.stringify({
+      ts: new Date().toISOString(),
+      key, summary: text.slice(0, 800)
+    }));
+  } catch(e) {}
+}
+
+function openStrategist() { window.open('/html/construction-suite/construction-strategist.html', '_blank'); }
+function openCommand() { window.open('/html/construction-suite/construction-command.html', '_blank'); }
+
+// ── CLOSING LOCK ────────────────────────────────────────────────
+function openClosingLock() {
+  const lock = document.getElementById('closingLock');
+  lock.classList.add('open');
+  document.getElementById('closing-rail').classList.add('open');
+  // Populate BNCA if available
+  try {
+    const r = JSON.parse(localStorage.getItem('tsm_construction_report') || '{}');
+    if (r.summary) {
+      const bnca = document.getElementById('cl-bnca-output');
+      bnca.textContent = r.summary.slice(0, 400) + (r.summary.length > 400 ? '...' : '');
+      bnca.style.display = 'block';
+    }
+  } catch(e) {}
+}
+function closeClosingLock() {
+  document.getElementById('closingLock').classList.remove('open');
+  document.getElementById('closing-rail').classList.remove('open');
+}
+function startPilot() {
+  try { localStorage.setItem('tsm_construction_pilot', JSON.stringify({ ts: new Date().toISOString(), price: '$1,750/month', suite: 'construction' })); } catch(e) {}
+  const el = document.createElement('div');
+  el.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg2);border:1px solid var(--cyan);padding:2rem;z-index:1000002;text-align:center;max-width:400px;font-family:var(--mono);box-shadow:0 0 40px rgba(0,212,184,.2);';
+  el.innerHTML = '<div style="font-size:1rem;color:var(--cyan);font-weight:700;margin-bottom:.75rem;font-family:var(--bar);">30-DAY PILOT LOCKED IN</div><div style="font-size:.75rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;">Your pilot path has been saved. All 9 apps. Full access. Day one.</div><button onclick="this.parentElement.remove()" style="background:var(--cyan);color:var(--bg);border:none;padding:.6rem 1.5rem;cursor:pointer;font-family:var(--mono);font-size:.6rem;letter-spacing:.1rem;">CONFIRMED</button>';
+  document.body.appendChild(el);
+}
+function bookWalkthrough() {
+  const el = document.createElement('div');
+  el.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg2);border:1px solid var(--cyan2);padding:2rem;z-index:1000002;text-align:center;max-width:400px;font-family:var(--mono);box-shadow:0 0 40px rgba(0,212,184,.15);';
+  el.innerHTML = '<div style="font-size:1rem;color:var(--cyan);font-weight:700;margin-bottom:.75rem;font-family:var(--bar);">WALKTHROUGH CONFIRMED</div><div style="font-size:.75rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;">We will walk through compliance, cash flow, and lien exposure using your live project data.</div><button onclick="this.parentElement.remove()" style="background:var(--cyan);color:var(--bg);border:none;padding:.6rem 1.5rem;cursor:pointer;font-family:var(--mono);font-size:.6rem;letter-spacing:.1rem;">CONFIRMED</button>';
+  document.body.appendChild(el);
+}
+
+// ── AUTO DEMO ────────────────────────────────────────────────────
+const DEMO_STEPS = [
+  { text: "This is your construction operation — job-site safety, cash flow, compliance, and legal risk — all in one system.", action: () => scrollTo('hero') },
+  { text: "The suite has four layers: Operations, Intelligence, BNCA Engine, and Executive. Each layer feeds the next.", action: () => scrollTo('flow') },
+  { text: "Nine apps cover every domain: Command, AuditOps Pro, Strategist, Compliance, Financial, Legal, Tax, and Document Intelligence.", action: () => scrollTo('apps') },
+  { text: "These are your seven playbooks. One click fires multiple nodes simultaneously and delivers a complete operational picture.", action: () => scrollTo('playbooks') },
+  { text: "Now watch the system run a live OSHA audit. Every citation risk, every fine amount, every remediation step — in under 90 seconds.", action: () => { scrollTo('demo'); setTimeout(() => runDemo('osha-audit'), 800); } },
+  { text: "The system catches $51,625 in OSHA fine exposure before the inspector arrives. This is what normally lives in a manual checklist nobody looks at.", action: () => {} },
+  { text: "Now the Strategist synthesizes everything into one ranked Best Next Course of Action — sorted by 90-day dollar impact.", action: () => { setTimeout(() => runDemo('bnca'), 600); } },
+  { text: "This is what your operation looks like with an AI layer underneath it. The first OSHA citation prevented covers 9 to 12 months of the entire system.", action: () => scrollTo('roi') },
+  { text: "At this point it's just how you want to start — we can run a 30-day pilot, or walk your team through it live.", action: () => { setTimeout(() => openClosingLock(), 1000); } }
+];
+
+let demoIdx = 0, demoActive = false;
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showCaption(text) {
+  const el = document.getElementById('demoCaption');
+  el.innerHTML = `<b style="color:var(--cyan)">AUTO DEMO</b> — ${text}`;
+  el.classList.add('open');
+}
+
+function speak(text) {
+  try {
+    speechSynthesis.cancel();
+    const m = new SpeechSynthesisUtterance(text);
+    m.rate = 0.93; m.pitch = 1; m.volume = 1;
+    speechSynthesis.speak(m);
+  } catch(e) {}
+}
+
+function demoStep() {
+  if (!demoActive) return;
+  if (demoIdx >= DEMO_STEPS.length) {
+    demoActive = false;
+    showCaption('Demo complete. STOP TALKING. Let them choose.');
+    return;
   }
-  busy=false;aiSend.disabled=false;aiInput.focus();
+  const s = DEMO_STEPS[demoIdx++];
+  showCaption(s.text);
+  speak(s.text);
+  if (s.action) s.action();
+  setTimeout(demoStep, 5600);
 }
 
-aiSend.addEventListener('click',sendMsg);
-aiInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
-
-// ── ANIMATE BARS ON VIEW SWITCH ──
-function animateBars(){
-  document.querySelectorAll('.card-bar,.prog-bar-inner').forEach(b=>{
-    const w=b.style.width;b.style.width='0';
-    setTimeout(()=>b.style.width=w,100);
-  });
+function startAutoDemo() {
+  demoActive = true; demoIdx = 0;
+  demoStep();
 }
-animateBars();
-document.querySelectorAll('.nav-item').forEach(n=>{
-  n.addEventListener('click',()=>setTimeout(animateBars,50));
+function stopAutoDemo() {
+  demoActive = false;
+  try { speechSynthesis.cancel(); } catch(e) {}
+  document.getElementById('demoCaption').classList.remove('open');
+}
+
+// ── WIDGET ───────────────────────────────────────────────────────
+function toggleWidget() {
+  const p = document.getElementById('tsm-panel');
+  p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
+  p.style.flexDirection = 'column';
+}
+async function widgetAsk() {
+  const inp = document.getElementById('w-input');
+  const msgs = document.getElementById('w-msgs');
+  const think = document.getElementById('w-think');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  const uDiv = document.createElement('div');
+  uDiv.style.cssText = 'color:var(--cyan2);border-left:2px solid rgba(0,212,184,.3);padding-left:6px;margin:2px 0;';
+  uDiv.textContent = q;
+  msgs.appendChild(uDiv);
+  think.style.display = 'block';
+  msgs.scrollTop = msgs.scrollHeight;
+  try {
+    const res = await fetch('/api/construction/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q, app: 'construction-suite', maxTokens: 600 })
+    });
+    const data = await res.json();
+    const text = data.answer || data.response || data.reply || 'Ask me about OSHA compliance, cash flow, lien law, or any construction module.';
+    think.style.display = 'none';
+    const aDiv = document.createElement('div');
+    aDiv.style.cssText = 'color:var(--text);border-left:2px solid rgba(0,212,184,.06);padding-left:6px;margin:2px 0;white-space:pre-wrap;font-size:10px;line-height:1.6;';
+    msgs.appendChild(aDiv);
+    const words = text.split(' ');
+    for (let i = 0; i < words.length; i++) {
+      aDiv.textContent += (i === 0 ? '' : ' ') + words[i];
+      msgs.scrollTop = msgs.scrollHeight;
+      if (i % 8 === 0) await new Promise(r => setTimeout(r, 12));
+    }
+  } catch(e) {
+    think.style.display = 'none';
+    const eDiv = document.createElement('div');
+    eDiv.style.color = 'var(--red)';
+    eDiv.textContent = 'Connection error. Check /api/construction/query';
+    msgs.appendChild(eDiv);
+  }
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeClosingLock(); stopAutoDemo(); }
 });
 </script>
 </body>
