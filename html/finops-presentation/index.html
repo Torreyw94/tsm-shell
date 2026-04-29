@@ -85,6 +85,53 @@ body[data-mode="executive"] .controller-only{display:none!important}
   <button id="modeBtnExecutive" onclick="setFinopsMode('executive')">Executive · CFO / Owner</button>
 </section>
 
+<section class="operator-only" id="finopsStartAnchor" style="
+  margin:16px 36px;
+  padding:16px;
+  border:2px solid #00f59f;
+  border-radius:14px;
+  background:#02221a;
+  text-align:center;
+  box-shadow:0 0 30px rgba(0,245,159,.2);
+">
+  <div style="font-size:14px;color:#00f59f;font-weight:900;margin-bottom:8px">
+    START HERE
+  </div>
+
+  <div style="font-size:13px;color:#d9f3ff;margin-bottom:12px">
+    Select your accounting work and run the workflow
+  </div>
+
+  <button id="finopsRunAnchorBtn" onclick="typeof runDoc==='function'?runDoc():null" style="
+    background:#00f59f;
+    color:#001018;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:900;
+    font-size:13px;
+    box-shadow:0 0 20px rgba(0,245,159,.4);
+    cursor:pointer;
+  ">
+    ▶ RUN ACCOUNTING WORKFLOW
+  </button>
+
+  <div style="font-size:11px;color:#6b8ca3;margin-top:10px">
+    Example: Bank Rec · AP Aging · AR Ledger · 1099
+  </div>
+</section>
+
+<div class="operator-only" id="finopsStartPromise" style="
+  margin:8px 36px 0;
+  font-size:12px;
+  color:#8fb0c8;
+  text-align:center;
+">
+  Removes manual chasing across QuickBooks, spreadsheets, and email — and turns it into clear next actions.
+</div>
+
+
+
 <section class="role-panel operator-only">
   <h2>OPERATOR MODE · WHAT DO I DO?</h2>
   <div style="line-height:1.65">
@@ -793,6 +840,137 @@ function setFinopsMode(mode){
 (function(){
   const saved = localStorage.getItem("finops_role_mode") || "operator";
   setTimeout(()=>setFinopsMode(saved), 100);
+})();
+</script>
+
+
+<style id="finops-auto-highlight-style">
+@keyframes finopsPulseGuide {
+  0%,100% { box-shadow:0 0 0 rgba(0,245,159,0); transform:translateY(0); }
+  50% { box-shadow:0 0 26px rgba(0,245,159,.55); transform:translateY(-1px); }
+}
+.finops-guide-pulse{
+  animation:finopsPulseGuide 1.4s ease-in-out infinite !important;
+  border-color:#00f59f !important;
+}
+#finopsFlowCaption{
+  position:fixed;
+  left:50%;
+  top:102px;
+  transform:translateX(-50%);
+  z-index:1000000;
+  max-width:760px;
+  width:calc(100% - 48px);
+  background:#02070d;
+  border:1px solid #00f59f;
+  color:#d9f3ff;
+  padding:12px 16px;
+  border-radius:12px;
+  font:12px ui-monospace,Menlo,monospace;
+  text-align:center;
+  box-shadow:0 0 30px rgba(0,245,159,.25);
+  display:none;
+}
+</style>
+
+<div id="finopsFlowCaption"></div>
+
+<script id="finops-auto-highlight-flow">
+(function(){
+  const steps = [
+    {
+      text:"Step 1: Start here — run the accounting workflow.",
+      selector:"#finopsRunAnchorBtn"
+    },
+    {
+      text:"Step 2: This board shows how work moves: Intake → Review → Flag → Assign → Report → Close.",
+      selector:"#finopsOperatorWorkflowBoard"
+    },
+    {
+      text:"Step 3: Use the Staff Accountant checklist to understand what to process.",
+      selector:"#finopsOperatorMode"
+    },
+    {
+      text:"Step 4: Review the system proof across Financial Command, Financial Review, and Controller Action Plan.",
+      selector:"section, .panel"
+    },
+    {
+      text:"Step 5: Use the close rail to start the 30-day pilot or open the Controller Action Plan.",
+      selector:"#finopsCloseRail"
+    }
+  ];
+
+  let idx = 0;
+  let timer = null;
+
+  function clearPulse(){
+    document.querySelectorAll(".finops-guide-pulse").forEach(el=>el.classList.remove("finops-guide-pulse"));
+  }
+
+  function showCaption(text){
+    const cap = document.getElementById("finopsFlowCaption");
+    if(!cap) return;
+    cap.textContent = text;
+    cap.style.display = "block";
+  }
+
+  window.startFinopsFlowGuide = function(){
+    clearPulse();
+    idx = 0;
+    runStep();
+  };
+
+  function runStep(){
+    clearPulse();
+    const step = steps[idx];
+    if(!step){
+      showCaption("Flow guide complete: select work, run workflow, review flags, open Controller Action Plan.");
+      return;
+    }
+
+    const el = document.querySelector(step.selector);
+    showCaption(step.text);
+
+    if(el){
+      el.classList.add("finops-guide-pulse");
+      try{ el.scrollIntoView({behavior:"smooth", block:"center"}); }catch(e){}
+    }
+
+    idx++;
+    timer = setTimeout(runStep, 3500);
+  }
+
+  window.stopFinopsFlowGuide = function(){
+    clearTimeout(timer);
+    clearPulse();
+    const cap = document.getElementById("finopsFlowCaption");
+    if(cap) cap.style.display = "none";
+  };
+
+  // Add trigger button into Start Anchor
+  setTimeout(()=>{
+    const anchor = document.getElementById("finopsStartAnchor");
+    if(anchor && !document.getElementById("finopsFlowGuideBtn")){
+      const btn = document.createElement("button");
+      btn.id = "finopsFlowGuideBtn";
+      btn.textContent = "✨ GUIDE ME THROUGH THE FLOW";
+      btn.onclick = window.startFinopsFlowGuide;
+      btn.style.cssText = `
+        margin-left:10px;
+        background:transparent;
+        color:#00f59f;
+        border:1px solid #00f59f;
+        padding:12px 18px;
+        border-radius:10px;
+        font-weight:900;
+        font-size:13px;
+        cursor:pointer;
+      `;
+      const run = document.getElementById("finopsRunAnchorBtn");
+      if(run) run.insertAdjacentElement("afterend", btn);
+      else anchor.appendChild(btn);
+    }
+  }, 400);
 })();
 </script>
 
