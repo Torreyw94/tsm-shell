@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TSM FinOps Presentation</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#05090d;color:#d9f3ff;font-family:ui-monospace,Menlo,monospace}
+header{padding:22px;border-bottom:1px solid #123050;background:#061018}
+h1{margin:0;color:#00e0ff;letter-spacing:.14em}
+.sub{color:#8fb0c8;margin-top:6px}
+.wrap{padding:22px}
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:22px 0}
+.step{border:1px solid #00f59f;border-radius:12px;padding:12px;text-align:center;background:#041a12}
+.step b{color:#00f59f}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:#07111b;border:1px solid #123050;border-radius:16px;padding:18px}
+.card h2{color:#00e0ff;margin-top:0}
+.metric{display:inline-block;margin:6px 8px 6px 0;padding:10px;border:1px solid #123050;border-radius:10px;background:#061018}
+.metric b{color:#00f59f;font-size:22px}
+.output{white-space:pre-wrap;background:#02070d;border:1px solid #123050;border-radius:12px;padding:14px;margin-top:12px;min-height:120px}
+button{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 13px;font:900 11px monospace;margin:6px;cursor:pointer}
+button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
+.close{border:1px solid #00f59f;background:#031a14;margin-top:18px;border-radius:16px;padding:18px}
+.close b{color:#00f59f}
+.footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+main{padding-bottom:44px}
+</style>
+</head>
+<body>
+<header>
+<h1>TSM FINANCIAL OPERATIONS · LIVE EXECUTIVE DEMO</h1>
+<div class="sub">Financial Command → ASC 958 / Financial Intelligence → FinOps Main Strategist</div>
+</header>
+
+<main class="wrap">
+
+<div class="flow">
+  <div class="step"><b>1</b><br>Client Workload</div>
+  <div class="step"><b>2</b><br>Financial Intel</div>
+  <div class="step"><b>3</b><br>Tax / 1099</div>
+  <div class="step"><b>4</b><br>Compliance + Zero Trust</div>
+  <div class="step"><b>5</b><br>Strategist BNCA</div>
+  <div class="step"><b>6</b><br>Controller Acts</div>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h2>1 · FINANCIAL COMMAND</h2>
+    <p>Deploys the 5-node FinOps workflow.</p>
+    <div class="metric"><b>$18.4K</b><br>AR priority</div>
+    <div class="metric"><b>12</b><br>AP invoices</div>
+    <div class="metric"><b>6</b><br>security gaps</div>
+    <div class="output" id="cmdOut">Ready to run Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.</div>
+    <button class="primary" onclick="runCycle()">RUN FINOPS CYCLE</button>
+    <button onclick="location.href='/html/financial-command/index.html?v=finops-demo'">OPEN FINANCIAL COMMAND</button>
+  </section>
+
+  <section class="card">
+    <h2>2 · FINANCIAL INTELLIGENCE / ASC 958</h2>
+    <p>Shows fund accounting, grant restrictions, reports, and compliance exposure.</p>
+    <div class="metric"><b>$480K</b><br>HRSA grant</div>
+    <div class="metric"><b>OVERDUE</b><br>report status</div>
+    <div class="metric"><b>84%</b><br>Form 990</div>
+    <div class="output">ASC 958 module tracks restricted funds, grant utilization, HRSA escalation, and Form 990 readiness.</div>
+    <button onclick="location.href='/html/financial/index.html?v=asc958-demo'">OPEN FINANCIAL INTEL</button>
+  </section>
+
+  <section class="card">
+    <h2>3 · FINOPS MAIN STRATEGIST</h2>
+    <p>Executive output layer: lanes, action log, business outcome, and $1,250/month close.</p>
+    <div class="metric"><b>5 / 5</b><br>nodes reporting</div>
+    <div class="metric"><b>12–18 hrs</b><br>saved monthly</div>
+    <div class="metric"><b>$1,250/mo</b><br>system price</div>
+    <div class="output" id="mainOut">Waiting for FinOps cycle output...</div>
+    <button onclick="pushMain()">PUSH TO FINOPS MAIN</button>
+    <button onclick="location.href='/html/finops-main-strategist/index.html?v=finops-demo'">OPEN FINOPS MAIN</button>
+  </section>
+</div>
+
+<section class="close">
+  <b>30-SECOND INTY CLOSE</b>
+  <p>
+  “Right here — these are your QuickBooks transactions, AP invoices, reconciliation work, and month-end support.
+  The system flags issues before close, organizes the work immediately, and gives your controller an action-ready report.
+  Most teams pay $5K–$7K/month for this manually. TSM delivers it as a visible operating system for $1,250/month.
+  Would you rather start this alongside your current workflow, or replace part of it right away?”
+  </p>
+</section>
+
+</main>
+
+<div class="footer">
+<span>● FINOPS PRESENTATION · FINANCIAL COMMAND + ASC 958 + MAIN STRATEGIST</span>
+<span>READY</span>
+</div>
+
+<script>
+function set(id,txt){document.getElementById(id).textContent=txt}
+
+async function runCycle(){
+  set('cmdOut',
+`FINOPS CYCLE RUNNING
+
+✓ Financial Intel: AP queue + AR risk analyzed
+✓ Tax Intelligence: 1099 / W-9 readiness checked
+✓ Compliance Shield: supporting docs reviewed
+✓ Zero Trust: QuickBooks access risk checked
+✓ Strategist: BNCA generated`);
+
+  set('mainOut',
+`SYSTEM RESULT:
+→ 12 vendor invoices prioritized
+→ 3 reconciliation issues flagged before month-end close
+→ 7 vendors moved into 1099 readiness review
+→ Controller report prepared
+
+VALUE:
+12–18 hours/month immediately saved.
+$5K–$7K/month manual workload replaced by $1,250/month system.`);
+
+  try{
+    await fetch('/api/finops/report',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({
+        title:'FinOps Presentation Cycle',
+        summary:document.getElementById('mainOut').textContent,
+        metrics:{apInvoices:12,reconItems:3,vendors1099:7,timeSaved:'12–18 hrs/month'}
+      })
+    });
+  }catch(e){}
+}
+
+function pushMain(){
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'FinOps Presentation Executive Output',
+    summary:document.getElementById('mainOut').textContent || 'FinOps cycle pushed to Main Strategist.'
+  }));
+  location.href='/html/finops-main-strategist/index.html?v=from-finops-presentation';
+}
+</script>
+</body>
+</html>

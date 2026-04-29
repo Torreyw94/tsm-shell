@@ -162,6 +162,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 .modal-send { background: var(--gold); border: none; color: #07101c; font-weight: 700; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-family: var(--mono); font-size: 10px; }
 @media (max-width: 1360px){ .layout { grid-template-columns: 170px 1fr 240px; } .node-grid { grid-template-columns: repeat(3,1fr); } }
 </style>
+<script src="/html/shared/tsm-zero-trust.js"></script>
 </head>
 <body>
 <div class="ticker"><div class="ticker-inner">
@@ -343,7 +344,6 @@ const NODE_CONFIG = {
   operations: { label:'OPERATIONS', port:3022, color:'var(--operations)', cardClass:'nc-operations', pillClass:'pill-operations', subtitle:'Staffing · Scheduling · Intake · Throughput', findings:'Intake delays + scheduling pressure are the main throughput blockers.' },
   medical: { label:'MEDICAL', port:3012, color:'var(--medical)', cardClass:'nc-medical', pillClass:'pill-medical', subtitle:'CPT Billing · Clinical Compliance · Audit', findings:'Documentation gaps remain active in high-volume lanes.' },
   pharmacy:{ label:'PHARMACY', port:3012, color:'var(--pharmacy)', cardClass:'nc-pharmacy', pillClass:'pill-pharmacy', subtitle:'DEA Schedules · Drug Interactions · Rx', findings:'Controlled substance documentation exceptions need review.' },
-  insurance:{ label:'INSURANCE', port:3012, color:'var(--insurance)', cardClass:'nc-insurance', pillClass:'pill-insurance', subtitle:'Claims Adjudication · Prior Auth · Payor', findings:'Prior auth delay remains the top denial driver.' },
   financial:{ label:'FINANCIAL', port:3016, color:'var(--financial)', cardClass:'nc-financial', pillClass:'pill-financial', subtitle:'Revenue Cycle · Billing · P&L Analysis', findings:'AR aging and revenue drag remain concentrated in delayed claims.' },
   legal:{ label:'LEGAL', port:3014, color:'var(--legal)', cardClass:'nc-legal', pillClass:'pill-legal', subtitle:'HIPAA · Contracts · Regulatory Defense', findings:'Contract renewal and HIPAA review windows remain open.' },
   vendors:{ label:'VENDORS', port:3017, color:'var(--vendors)', cardClass:'nc-vendors', pillClass:'pill-vendors', subtitle:'Supply Chain · Contract Review · ROI', findings:'Vendor dependency risk may affect operations continuity.' },
@@ -358,7 +358,6 @@ const NODE_URLS = {
   operations:  '/html/hc-operations/index.html',
   medical:     '/html/hc-medical/index.html',
   pharmacy:    '/html/hc-pharmacy/index.html',
-  insurance:   '/html/hc-insurance/index.html',
   financial:   '/html/hc-financial/index.html',
   legal:       '/html/hc-legal/index.html',
   vendors:     '/html/hc-vendors/index.html',
@@ -723,7 +722,6 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     operations: "/html/hc-operations/index.html",
     medical: "/html/hc-medical/index.html",
     pharmacy: "/html/hc-pharmacy/index.html",
-    insurance: "/html/hc-insurance/index.html",
     financial: "/html/hc-financial/index.html",
     legal: "/html/hc-legal/index.html",
     vendors: "/html/hc-vendors/index.html",

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GHS Suite · Banner Demo</title>
+<style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+body{margin:0;background:#05090d;color:#d9f3ff;font-family:ui-monospace,Menlo,monospace}
+.wrap{max-width:980px;margin:0 auto;padding:42px 26px}
+.hero{border:1px solid #00e0ff;border-radius:20px;padding:26px;background:#061018}
+h1{color:#00e0ff;letter-spacing:.14em}
+p{color:#9bbbd0;line-height:1.55}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:22px}
+a{display:block;text-decoration:none;border:1px solid #123050;border-radius:16px;padding:18px;background:#07111b;color:#d9f3ff}
+a b{color:#00f59f}
+.main{border-color:#00f59f}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>GHS SUITE · BANNER DEMO</h1>
+    <p>Clean packaged flow: One-Pager → GHS Presentation → HC Main Strategist → Executive Portal.</p>
+  </div>
+
+  <div class="grid">
+    <a class="main" href="./onepager/index.html?v=ghs-suite"><b>1 · Banner One-Pager</b><br/>Open the executive framing page.</a>
+    <a href="./presentation/index.html?v=ghs-suite"><b>2 · GHS Presentation</b><br/>Run Enterprise BNCA and auto-push to strategist.</a>
+    <a href="./hc-main/index.html?v=ghs-suite"><b>3 · HC Main Strategist</b><br/>Show operational BNCA output.</a>
+    <a href="./executive-portal/index.html?v=ghs-suite"><b>4 · Executive Portal</b><br/>Show leadership-ready posture.</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM Compliance Command | AI-Powered Regulatory Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+:root {
+  --bg:#04080f;--bg2:#070d18;--bg3:#0a1220;--bg4:#0d1628;
+  --cyan:#00e5ff;--cyan2:#00b8d4;--cyan3:rgba(0,229,255,0.08);
+  --amber:#ffab00;--amberd:rgba(255,171,0,0.1);
+  --red:#ff4d6d;--redd:rgba(255,77,109,0.1);
+  --green:#00e676;--greend:rgba(0,230,118,0.08);
+  --purple:#b388ff;--purpled:rgba(179,136,255,0.1);
+  --border:rgba(0,229,255,0.08);--border2:rgba(0,229,255,0.15);--border3:rgba(0,229,255,0.25);
+  --txt:#c8d8e8;--txt2:#5a7a9a;--txt3:#2a4a6a;
+  --glow:0 0 20px rgba(0,229,255,0.12);--glow2:0 0 40px rgba(0,229,255,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);display:flex;flex-direction:column}
+
+/* ── SCAN LINE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,0.015) 2px,rgba(0,229,255,0.015) 4px);pointer-events:none;z-index:1000}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;gap:12px;padding:0 20px;height:48px;background:var(--bg2);border-bottom:1px solid var(--border2);flex-shrink:0;z-index:10}
+.logo{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:.2em}
+.logo-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--txt2);letter-spacing:.1em}
+.live-badge{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);padding:3px 8px;border:1px solid rgba(0,230,118,0.2);border-radius:2px;background:var(--greend)}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.topbar-pills{display:flex;gap:6px;margin-left:auto}
+.pill{font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 10px;border:1px solid var(--border2);border-radius:2px;color:var(--txt2);cursor:pointer;transition:.15s;letter-spacing:.08em}
+.pill:hover,.pill.active{border-color:var(--cyan);color:var(--cyan);background:var(--cyan3)}
+.risk-indicator{font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 10px;border-radius:2px;background:var(--redd);border:1px solid rgba(255,77,109,0.25);color:var(--red)}
+
+/* ── LAYOUT ── */
+.shell{display:grid;grid-template-columns:240px 1fr 320px;flex:1;overflow:hidden}
+
+/* ── LEFT RAIL ── */
+.rail{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.rail-section{padding:10px 0;border-bottom:1px solid var(--border)}
+.rail-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--txt3);letter-spacing:.15em;padding:0 14px 6px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;font-size:11px;color:var(--txt2);transition:.12s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--cyan3);color:var(--txt)}
+.nav-item.active{background:var(--cyan3);color:var(--cyan);border-left-color:var(--cyan)}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:var(--border2);flex-shrink:0}
+.nav-item.active .nav-dot{background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.nav-badge{font-family:'Share Tech Mono',monospace;font-size:8px;margin-left:auto;padding:1px 5px;border-radius:1px}
+.badge-red{background:var(--redd);color:var(--red);border:1px solid rgba(255,77,109,.2)}
+.badge-amber{background:var(--amberd);color:var(--amber);border:1px solid rgba(255,171,0,.2)}
+.badge-cyan{background:var(--cyan3);color:var(--cyan);border:1px solid rgba(0,229,255,.2)}
+
+/* ── MAIN PANEL ── */
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.main-header{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.main-title{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--cyan);letter-spacing:.15em;margin-bottom:3px}
+.main-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--txt2);letter-spacing:.08em}
+
+/* ── AI QUERY BAR ── */
+.query-zone{padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.query-bar{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border2);border-radius:3px;padding:8px 12px;transition:.2s}
+.query-bar:focus-within{border-color:var(--cyan);box-shadow:var(--glow)}
+.query-bar input{flex:1;background:transparent;border:none;outline:none;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--txt);caret-color:var(--cyan)}
+.query-bar input::placeholder{color:var(--txt3)}
+.q-btn{font-family:'Orbitron',monospace;font-size:8px;font-weight:700;padding:6px 14px;border:1px solid var(--cyan2);border-radius:2px;background:transparent;color:var(--cyan);cursor:pointer;letter-spacing:.1em;transition:.15s;white-space:nowrap}
+.q-btn:hover{background:var(--cyan);color:var(--bg)}
+.q-btn:disabled{opacity:.4;cursor:not-allowed}
+.node-select{font-family:'Share Tech Mono',monospace;font-size:9px;background:var(--bg3);border:1px solid var(--border2);color:var(--txt2);padding:5px 8px;border-radius:2px;outline:none;cursor:pointer}
+.node-select option{background:var(--bg3)}
+
+/* ── QUICK ACTIONS ── */
+.quick-row{display:flex;gap:6px;padding:10px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0;background:var(--bg2)}
+.qp{font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 10px;border:1px solid var(--border2);border-radius:2px;color:var(--txt2);cursor:pointer;transition:.12s;letter-spacing:.05em}
+.qp:hover{border-color:var(--cyan2);color:var(--cyan);background:var(--cyan3)}
+.qp.red{border-color:rgba(255,77,109,.2);color:var(--red)}
+.qp.red:hover{background:var(--redd);border-color:var(--red)}
+.qp.amber{border-color:rgba(255,171,0,.2);color:var(--amber)}
+.qp.amber:hover{background:var(--amberd);border-color:var(--amber)}
+
+/* ── OUTPUT ── */
+.output-zone{flex:1;overflow-y:auto;padding:16px 20px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.ai-thinking{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--cyan2);letter-spacing:.1em;padding:10px 0;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-response{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.8;color:var(--txt);white-space:pre-wrap;border-left:2px solid var(--cyan);padding-left:14px;margin-top:8px}
+.ai-response.empty{border-left-color:var(--border2);color:var(--txt3)}
+
+/* ── METRIC CARDS ── */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:10px 12px}
+.metric-card.red{border-color:rgba(255,77,109,.2);background:var(--redd)}
+.metric-card.amber{border-color:rgba(255,171,0,.2);background:var(--amberd)}
+.metric-card.green{border-color:rgba(0,230,118,.2);background:var(--greend)}
+.m-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--txt3);letter-spacing:.1em;margin-bottom:4px}
+.m-val{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.m-val.red{color:var(--red)}
+.m-val.amber{color:var(--amber)}
+.m-val.green{color:var(--green)}
+.m-sub{font-size:9px;color:var(--txt2)}
+
+/* ── MODULE CARDS ── */
+.module-card{background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:12px 14px;margin-bottom:8px}
+.module-card:hover{border-color:var(--border2)}
+.mod-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mod-title{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--cyan);letter-spacing:.12em}
+.mod-desc{font-size:10px;color:var(--txt2);margin-bottom:8px;line-height:1.6}
+.mod-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:6px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--txt);outline:none;transition:.15s}
+.mod-input:focus{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,229,255,0.1)}
+.mod-input::placeholder{color:var(--txt3)}
+.mod-actions{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.mod-btn{font-family:'Share Tech Mono',monospace;font-size:8px;padding:4px 10px;border:1px solid var(--border2);border-radius:2px;background:transparent;color:var(--txt2);cursor:pointer;letter-spacing:.05em;transition:.12s}
+.mod-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan3)}
+.mod-btn.primary{border-color:var(--cyan2);color:var(--cyan)}
+.mod-response{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--txt);line-height:1.7;margin-top:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:2px;white-space:pre-wrap;display:none;max-height:200px;overflow-y:auto}
+.mod-response.active{display:block}
+.mod-thinking{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--cyan2);padding:6px 0;display:none}
+.mod-thinking.active{display:block;animation:blink 1s infinite}
+
+/* ── RIGHT PANEL ── */
+.right{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.right-header{padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;font-size:8px;font-weight:700;color:var(--cyan);letter-spacing:.15em;flex-shrink:0}
+.right-scroll{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+
+/* ── SIGNAL FEED ── */
+.signal{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:.12s}
+.signal:hover{background:var(--cyan3)}
+.sig-header{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.sig-type{font-family:'Share Tech Mono',monospace;font-size:7px;padding:1px 5px;border-radius:1px;letter-spacing:.08em}
+.sig-type.critical{background:var(--redd);color:var(--red);border:1px solid rgba(255,77,109,.2)}
+.sig-type.warning{background:var(--amberd);color:var(--amber);border:1px solid rgba(255,171,0,.2)}
+.sig-type.info{background:var(--cyan3);color:var(--cyan);border:1px solid rgba(0,229,255,.2)}
+.sig-time{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--txt3);margin-left:auto}
+.sig-title{font-size:10px;color:var(--txt);font-weight:500;margin-bottom:2px}
+.sig-body{font-size:9px;color:var(--txt2);line-height:1.5}
+.sig-action{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--cyan);margin-top:4px;cursor:pointer}
+.sig-action:hover{text-decoration:underline}
+
+/* ── CHAT PANEL ── */
+.chat-zone{border-top:1px solid var(--border);padding:10px 14px;flex-shrink:0}
+.chat-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--txt3);letter-spacing:.1em;margin-bottom:6px}
+.chat-bar{display:flex;gap:6px}
+.chat-input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:2px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--txt);outline:none;transition:.15s}
+.chat-input:focus{border-color:var(--cyan)}
+.chat-input::placeholder{color:var(--txt3)}
+.chat-send{font-family:'Orbitron',monospace;font-size:7px;font-weight:700;padding:6px 10px;border:1px solid var(--cyan2);border-radius:2px;background:transparent;color:var(--cyan);cursor:pointer;letter-spacing:.08em;transition:.15s;white-space:nowrap}
+.chat-send:hover{background:var(--cyan);color:var(--bg)}
+.chat-msgs{max-height:160px;overflow-y:auto;margin-bottom:8px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.chat-msg{padding:6px 0;border-bottom:1px solid var(--border);font-size:10px;line-height:1.6}
+.chat-msg.user{color:var(--cyan2)}
+.chat-msg.ai{color:var(--txt)}
+.chat-msg .role{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--txt3);margin-bottom:2px;letter-spacing:.08em}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.tab{font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px 14px;cursor:pointer;color:var(--txt2);letter-spacing:.08em;border-bottom:2px solid transparent;transition:.12s}
+.tab:hover{color:var(--txt)}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+
+/* ── VIEW SECTIONS ── */
+.view{display:none;flex:1;overflow-y:auto;padding:16px 20px}
+.view.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="logo">TSM</span>
+  <span class="logo-sub">// COMPLIANCE COMMAND</span>
+  <div class="live-badge"><span class="live-dot"></span>LIVE · AI ACTIVE</div>
+  <div class="topbar-pills">
+    <span class="pill active" onclick="setView('overview')">OVERVIEW</span>
+    <span class="pill" onclick="setView('hipaa')">HIPAA</span>
+    <span class="pill" onclick="setView('cms')">CMS</span>
+    <span class="pill" onclick="setView('audit')">AUDIT</span>
+    <span class="pill" onclick="setView('docs')">DOCS</span>
+  </div>
+  <div class="risk-indicator">RISK · HIGH</div>
+</div>
+
+<div class="shell">
+
+  <!-- ── LEFT RAIL ── -->
+  <div class="rail">
+    <div class="rail-section">
+      <div class="rail-label">// COMPLIANCE NODES</div>
+      <div class="nav-item active" onclick="loadModule('hipaa')"><span class="nav-dot"></span>HIPAA Compliance<span class="nav-badge badge-red">3</span></div>
+      <div class="nav-item" onclick="loadModule('cms')"><span class="nav-dot"></span>CMS/OIG Audit<span class="nav-badge badge-amber">2</span></div>
+      <div class="nav-item" onclick="loadModule('coding')"><span class="nav-dot"></span>Coding Accuracy<span class="nav-badge badge-amber">HOT</span></div>
+      <div class="nav-item" onclick="loadModule('prior-auth')"><span class="nav-dot"></span>Prior Auth Compliance<span class="nav-badge badge-red">QUEUE</span></div>
+      <div class="nav-item" onclick="loadModule('vendor')"><span class="nav-dot"></span>Vendor Compliance</div>
+      <div class="nav-item" onclick="loadModule('staffing')"><span class="nav-dot"></span>Staffing Compliance<span class="nav-badge badge-cyan">OPS</span></div>
+    </div>
+    <div class="rail-section">
+      <div class="rail-label">// REGULATORY</div>
+      <div class="nav-item" onclick="loadModule('oig')"><span class="nav-dot"></span>OIG Exclusions</div>
+      <div class="nav-item" onclick="loadModule('stark')"><span class="nav-dot"></span>Stark Law</div>
+      <div class="nav-item" onclick="loadModule('anti-kickback')"><span class="nav-dot"></span>Anti-Kickback</div>
+      <div class="nav-item" onclick="loadModule('fraud')"><span class="nav-dot"></span>Fraud Waste Abuse</div>
+    </div>
+    <div class="rail-section">
+      <div class="rail-label">// REPORTS</div>
+      <div class="nav-item" onclick="runReport('compliance-summary')"><span class="nav-dot"></span>Compliance Summary</div>
+      <div class="nav-item" onclick="runReport('audit-ready')"><span class="nav-dot"></span>Audit-Ready Report</div>
+      <div class="nav-item" onclick="runReport('risk-matrix')"><span class="nav-dot"></span>Risk Matrix</div>
+      <div class="nav-item" onclick="runReport('corrective-action')"><span class="nav-dot"></span>Corrective Action Plan</div>
+    </div>
+    <div class="rail-section">
+      <div class="rail-label">// DRAFT DOCUMENTS</div>
+      <div class="nav-item" onclick="draftDoc('policy')"><span class="nav-dot"></span>Policy Document</div>
+      <div class="nav-item" onclick="draftDoc('appeal')"><span class="nav-dot"></span>Compliance Appeal</div>
+      <div class="nav-item" onclick="draftDoc('notice')"><span class="nav-dot"></span>Regulatory Notice</div>
+      <div class="nav-item" onclick="draftDoc('training')"><span class="nav-dot"></span>Training Memo</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN PANEL ── -->
+  <div class="main">
+    <div class="main-header">
+      <div class="main-title" id="panel-title">// HIPAA COMPLIANCE COMMAND</div>
+      <div class="main-sub" id="panel-sub">AI-POWERED REGULATORY INTELLIGENCE · NODE ACTIVE · GROQ LLAMA 3.3 70B</div>
+    </div>
+
+    <div class="query-zone">
+      <div class="query-bar">
+        <input id="masterQuery" placeholder="Deploy compliance query to all nodes…" onkeydown="if(event.key==='Enter')deployMaster()">
+        <select class="node-select" id="nodeSelect">
+          <option value="healthcare">ALL NODES</option>
+          <option value="healthcare">HIPAA</option>
+          <option value="healthcare">CMS/OIG</option>
+          <option value="healthcare">CODING</option>
+          <option value="healthcare">PRIOR AUTH</option>
+        </select>
+        <button class="q-btn" id="masterBtn" onclick="deployMaster()">⚡ DEPLOY</button>
+      </div>
+    </div>
+
+    <div class="quick-row">
+      <span class="qp red" onclick="quickQuery('What are the top 3 HIPAA violation risks we face right now?')">› HIPAA risk scan</span>
+      <span class="qp red" onclick="quickQuery('List all CMS audit triggers that apply to our claims in the past 30 days')">› CMS audit triggers</span>
+      <span class="qp amber" onclick="quickQuery('Analyze our prior auth denial rate and identify compliance gaps')">› Prior auth compliance</span>
+      <span class="qp amber" onclick="quickQuery('What coding compliance issues should we address before our next audit?')">› Coding compliance</span>
+      <span class="qp" onclick="quickQuery('Generate a corrective action plan for our current denial rate of 18.4%')">› Corrective action plan</span>
+      <span class="qp" onclick="quickQuery('What OIG exclusions checks should be running monthly for our vendor list?')">› OIG exclusion check</span>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('query-view',this)">AI QUERY</div>
+      <div class="tab" onclick="switchTab('modules-view',this)">MODULES</div>
+      <div class="tab" onclick="switchTab('metrics-view',this)">METRICS</div>
+    </div>
+
+    <!-- AI QUERY VIEW -->
+    <div class="view active" id="query-view">
+      <div class="ai-thinking" id="masterThinking" style="display:none">// TSM COMPLIANCE AI ANALYZING…</div>
+      <div class="ai-response empty" id="masterOutput">// Select a node from the left rail, use a quick action above, or type a compliance query and deploy.</div>
+    </div>
+
+    <!-- MODULES VIEW -->
+    <div class="view" id="modules-view">
+
+      <div class="module-card">
+        <div class="mod-header">
+          <div class="mod-title">HIPAA PRIVACY & SECURITY</div>
+          <span class="nav-badge badge-red">3 ISSUES</span>
+        </div>
+        <div class="mod-desc">PHI access controls, breach notification protocols, BAA compliance, security risk analysis.</div>
+        <div class="mod-actions">
+          <button class="mod-btn" onclick="modQuick('hipaa','Run a full HIPAA security risk analysis and identify top 3 gaps')">Risk Analysis</button>
+          <button class="mod-btn" onclick="modQuick('hipaa','Review our BAA requirements and flag any missing agreements')">BAA Review</button>
+          <button class="mod-btn" onclick="modQuick('hipaa','What breach notification obligations apply to our current situation?')">Breach Protocol</button>
+        </div>
+        <input class="mod-input" id="input-hipaa" placeholder="Custom HIPAA query…" onkeydown="if(event.key==='Enter')runMod('hipaa')">
+        <div class="mod-actions"><button class="mod-btn primary" onclick="runMod('hipaa')">ANALYZE</button></div>
+        <div class="mod-thinking" id="think-hipaa">// HIPAA NODE PROCESSING…</div>
+        <div class="mod-response" id="resp-hipaa"></div>
+      </div>
+
+      <div class="module-card">
+        <div class="mod-header">
+          <div class="mod-title">CMS / OIG AUDIT READINESS</div>
+          <span class="nav-badge badge-amber">2 FLAGS</span>
+        </div>
+        <div class="mod-desc">Medicare/Medicaid compliance, OIG work plan analysis, audit triggers, documentation standards.</div>
+        <div class="mod-actions">
+          <button class="mod-btn" onclick="modQuick('cms','What are the current OIG work plan priorities that affect our operations?')">OIG Work Plan</button>
+          <button class="mod-btn" onclick="modQuick('cms','Identify our top Medicare audit risk areas based on current billing patterns')">Audit Risk</button>
+          <button class="mod-btn" onclick="modQuick('cms','Generate documentation standards checklist for CMS audit readiness')">Doc Standards</button>
+        </div>
+        <input class="mod-input" id="input-cms" placeholder="Custom CMS/OIG query…" onkeydown="if(event.key==='Enter')runMod('cms')">
+        <div class="mod-actions"><button class="mod-btn primary" onclick="runMod('cms')">ANALYZE</button></div>
+        <div class="mod-thinking" id="think-cms">// CMS NODE PROCESSING…</div>
+        <div class="mod-response" id="resp-cms"></div>
+      </div>
+
+      <div class="module-card">
+        <div class="mod-header">
+          <div class="mod-title">CODING ACCURACY & COMPLIANCE</div>
+          <span class="nav-badge badge-amber">HOT</span>
+        </div>
+        <div class="mod-desc">ICD-10/CPT accuracy, upcoding risk, unbundling analysis, physician query compliance.</div>
+        <div class="mod-actions">
+          <button class="mod-btn" onclick="modQuick('coding','Identify our highest upcoding risk codes and suggest corrective actions')">Upcoding Risk</button>
+          <button class="mod-btn" onclick="modQuick('coding','What unbundling patterns should we audit in our current claim set?')">Unbundling Audit</button>
+          <button class="mod-btn" onclick="modQuick('coding','Generate a physician query compliance protocol for unclear diagnoses')">Query Protocol</button>
+        </div>
+        <input class="mod-input" id="input-coding" placeholder="Custom coding compliance query…" onkeydown="if(event.key==='Enter')runMod('coding')">
+        <div class="mod-actions"><button class="mod-btn primary" onclick="runMod('coding')">ANALYZE</button></div>
+        <div class="mod-thinking" id="think-coding">// CODING NODE PROCESSING…</div>
+        <div class="mod-response" id="resp-coding"></div>
+      </div>
+
+      <div class="module-card">
+        <div class="mod-header">
+          <div class="mod-title">FRAUD WASTE & ABUSE</div>
+        </div>
+        <div class="mod-desc">FWA detection, aberrant billing patterns, vendor screening, compliance program effectiveness.</div>
+        <div class="mod-actions">
+          <button class="mod-btn" onclick="modQuick('fraud','What FWA indicators should we be monitoring in our claims data?')">FWA Indicators</button>
+          <button class="mod-btn" onclick="modQuick('fraud','Generate a compliance program effectiveness assessment framework')">Program Assessment</button>
+        </div>
+        <input class="mod-input" id="input-fraud" placeholder="Custom FWA query…" onkeydown="if(event.key==='Enter')runMod('fraud')">
+        <div class="mod-actions"><button class="mod-btn primary" onclick="runMod('fraud')">ANALYZE</button></div>
+        <div class="mod-thinking" id="think-fraud">// FWA NODE PROCESSING…</div>
+        <div class="mod-response" id="resp-fraud"></div>
+      </div>
+
+    </div>
+
+    <!-- METRICS VIEW -->
+    <div class="view" id="metrics-view">
+      <div class="metrics-grid">
+        <div class="metric-card red"><div class="m-label">HIPAA RISK SCORE</div><div class="m-val red">74<span style="font-size:10px">/100</span></div><div class="m-sub">Above threshold · action required</div></div>
+        <div class="metric-card amber"><div class="m-label">AUDIT READINESS</div><div class="m-val amber">82<span style="font-size:10px">%</span></div><div class="m-sub">3 documentation gaps</div></div>
+        <div class="metric-card green"><div class="m-label">CODING ACCURACY</div><div class="m-val green">96.2<span style="font-size:10px">%</span></div><div class="m-sub">Above 95% target</div></div>
+        <div class="metric-card red"><div class="m-label">OPEN VIOLATIONS</div><div class="m-val red">7</div><div class="m-sub">3 critical · 4 moderate</div></div>
+        <div class="metric-card amber"><div class="m-label">POLICIES CURRENT</div><div class="m-val amber">18<span style="font-size:10px">/24</span></div><div class="m-sub">6 require annual update</div></div>
+        <div class="metric-card green"><div class="m-label">TRAINING COMPLETE</div><div class="m-val green">91<span style="font-size:10px">%</span></div><div class="m-sub">Staff compliance training</div></div>
+      </div>
+      <div class="module-card">
+        <div class="mod-header"><div class="mod-title">AI METRICS ANALYSIS</div></div>
+        <div class="mod-desc">Ask the AI to analyze your compliance metrics and recommend priority actions.</div>
+        <div class="mod-actions">
+          <button class="mod-btn" onclick="modQuick('metrics','Based on our metrics — HIPAA risk 74, audit readiness 82%, 7 open violations — what should we prioritize this week?')">Priority Analysis</button>
+          <button class="mod-btn" onclick="modQuick('metrics','What is the revenue impact of our current compliance gaps?')">Revenue Impact</button>
+          <button class="mod-btn" onclick="modQuick('metrics','Generate a 30-day compliance improvement roadmap based on our current state')">30-Day Roadmap</button>
+        </div>
+        <div class="mod-thinking" id="think-metrics">// METRICS AI PROCESSING…</div>
+        <div class="mod-response" id="resp-metrics"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right">
+    <div class="right-header">// COMPLIANCE SIGNALS · LIVE</div>
+    <div class="right-scroll" id="signals">
+      <div class="signal" onclick="signalQuery('HIPAA breach notification deadline approaching — 3 incidents require 60-day notice by end of month')">
+        <div class="sig-header"><span class="sig-type critical">CRITICAL</span><span class="sig-time">NOW</span></div>
+        <div class="sig-title">HIPAA Breach Notification Due</div>
+        <div class="sig-body">3 incidents approaching 60-day notification window. Action required.</div>
+        <div class="sig-action">› Ask AI for guidance</div>
+      </div>
+      <div class="signal" onclick="signalQuery('CMS audit trigger detected: our prior auth denial rate of 18.4% exceeds 9% target — what should we do?')">
+        <div class="sig-header"><span class="sig-type critical">CRITICAL</span><span class="sig-time">2h ago</span></div>
+        <div class="sig-title">CMS Audit Trigger Detected</div>
+        <div class="sig-body">Prior auth denial rate 18.4% vs 9% target. CMS attention risk elevated.</div>
+        <div class="sig-action">› Ask AI for guidance</div>
+      </div>
+      <div class="signal" onclick="signalQuery('6 compliance policies are past their annual review date — which ones pose the highest risk and should be updated first?')">
+        <div class="sig-header"><span class="sig-type warning">WARNING</span><span class="sig-time">4h ago</span></div>
+        <div class="sig-title">Policy Review Overdue</div>
+        <div class="sig-body">6 policies past annual review date. Compliance risk elevated.</div>
+        <div class="sig-action">› Ask AI for guidance</div>
+      </div>
+      <div class="signal" onclick="signalQuery('OIG monthly exclusion screening is due — what is the proper protocol and what systems should we check?')">
+        <div class="sig-header"><span class="sig-type warning">WARNING</span><span class="sig-time">1d ago</span></div>
+        <div class="sig-title">OIG Exclusion Screening Due</div>
+        <div class="sig-body">Monthly vendor/staff OIG screening cycle due. 47 records pending.</div>
+        <div class="sig-action">› Ask AI for guidance</div>
+      </div>
+      <div class="signal" onclick="signalQuery('Staff HIPAA training completion at 91% — what is the best approach to get the remaining 9% compliant quickly?')">
+        <div class="sig-header"><span class="sig-type info">INFO</span><span class="sig-time">2d ago</span></div>
+        <div class="sig-title">Training Compliance: 91%</div>
+        <div class="sig-body">9% of staff pending annual HIPAA training. Deadline in 14 days.</div>
+        <div class="sig-action">› Ask AI for guidance</div>
+      </div>
+      <div class="signal" onclick="signalQuery('Coding accuracy at 96.2% — what specific ICD-10 or CPT codes should we focus on to push past 97%?')">
+        <div class="sig-header"><span class="sig-type info">INFO</span><span class="sig-time">3d ago</span></div>
+        <div class="sig-title">Coding Accuracy: 96.2%</div>
+        <div class="sig-body">Above 95% target. Specific code categories need attention to reach 97%+.</div>
+        <div class="sig-action">› Ask AI for guidance</div>
+      </div>
+    </div>
+    <div class="chat-zone">
+      <div class="chat-label">// COMPLIANCE AI CHAT</div>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="chat-bar">
+        <input class="ask-bar" class="ask-bar" class="chat-input" id="chatInput" placeholder="Ask compliance AI…" onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">SEND</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── AI ENGINE ─────────────────────────────────────────────────────────────────
+const HC_API = '/api/hc/query';
+const SYSTEM = 'You are TSM Compliance Command — an expert healthcare regulatory compliance AI. You specialize in HIPAA privacy/security rules, CMS/Medicare/Medicaid compliance, OIG audit requirements, ICD-10/CPT coding accuracy, prior authorization compliance, Stark Law, Anti-Kickback Statute, Fraud Waste & Abuse detection, and healthcare compliance program management. Be precise, regulatory-aware, and actionable. Always cite the specific regulation or rule when relevant. Format responses clearly with sections when appropriate.';
+
+async function callAI(question, outEl, thinkEl, maxTokens) {
+  if (thinkEl) { thinkEl.style.display = 'block'; thinkEl.classList.add('active'); }
+  if (outEl) { outEl.classList.remove('empty'); outEl.textContent = ''; }
+  try {
+    const res = await fetch(HC_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: question, context: SYSTEM, maxTokens: maxTokens || 1024 })
+    });
+    const data = await res.json();
+    const text = data.answer || data.response || 'No response.';
+    if (thinkEl) { thinkEl.style.display = 'none'; thinkEl.classList.remove('active'); }
+    if (outEl) {
+      // Simulate streaming
+      outEl.textContent = '';
+      const words = text.split(' ');
+      for (let i = 0; i < words.length; i++) {
+        outEl.textContent += (i === 0 ? '' : ' ') + words[i];
+        outEl.scrollTop = outEl.scrollHeight;
+        if (i % 6 === 0) await new Promise(r => setTimeout(r, 20));
+      }
+    }
+    return text;
+  } catch(e) {
+    if (thinkEl) { thinkEl.style.display = 'none'; }
+    if (outEl) outEl.textContent = '[AI Error] ' + e.message;
+    return null;
+  }
+}
+
+// ── MASTER DEPLOY ─────────────────────────────────────────────────────────────
+async function deployMaster() {
+  const q = document.getElementById('masterQuery').value.trim();
+  if (!q) return;
+  const btn = document.getElementById('masterBtn');
+  btn.disabled = true; btn.textContent = '…';
+  switchTab('query-view', document.querySelector('.tab.active'));
+  document.querySelector('.tab').click();
+  await callAI(q,
+    document.getElementById('masterOutput'),
+    document.getElementById('masterThinking')
+  );
+  btn.disabled = false; btn.textContent = '⚡ DEPLOY';
+}
+
+function quickQuery(q) {
+  document.getElementById('masterQuery').value = q;
+  deployMaster();
+}
+
+function signalQuery(q) {
+  document.getElementById('masterQuery').value = q;
+  deployMaster();
+}
+
+// ── MODULE QUERIES ────────────────────────────────────────────────────────────
+const MODULE_CONTEXT = {
+  hipaa: 'Focus specifically on HIPAA Privacy Rule (45 CFR Part 164), Security Rule, Breach Notification Rule, and Business Associate requirements.',
+  cms: 'Focus on CMS Medicare/Medicaid compliance, OIG work plan priorities, documentation requirements, and audit readiness.',
+  coding: 'Focus on ICD-10-CM/PCS and CPT coding accuracy, upcoding risk, unbundling, medical necessity, and physician query compliance.',
+  fraud: 'Focus on Fraud Waste and Abuse detection, False Claims Act, Anti-Kickback Statute, Stark Law, and OIG compliance program guidelines.',
+  metrics: 'Analyze the compliance metrics provided and give specific, actionable recommendations prioritized by risk and revenue impact.',
+};
+
+async function runMod(mod) {
+  const input = document.getElementById('input-' + mod);
+  const q = input ? input.value.trim() : '';
+  if (!q) return;
+  const respEl = document.getElementById('resp-' + mod);
+  const thinkEl = document.getElementById('think-' + mod);
+  respEl.classList.add('active');
+  respEl.textContent = '';
+  const context = SYSTEM + '\n\n' + (MODULE_CONTEXT[mod] || '');
+  await callAI(q, respEl, thinkEl);
+}
+
+function modQuick(mod, q) {
+  const input = document.getElementById('input-' + mod);
+  if (input) input.value = q;
+  runMod(mod);
+}
+
+// ── RAIL NAVIGATION ───────────────────────────────────────────────────────────
+const MODULE_PROMPTS = {
+  hipaa: 'Give me a comprehensive HIPAA compliance status assessment. What are the top risks, required actions, and any recent regulatory updates I should know about?',
+  cms: 'Give me a CMS/OIG audit readiness assessment. What are our highest audit risk areas and what documentation do we need to strengthen?',
+  coding: 'Analyze our coding compliance posture. What are the highest-risk code categories for upcoding or improper billing?',
+  'prior-auth': 'Analyze our prior authorization compliance. Our denial rate is 18.4% vs 9% target. What compliance issues does this signal and what corrective actions are required?',
+  vendor: 'What vendor compliance requirements must we maintain? Include OIG exclusion screening, BAA requirements, and HIPAA Business Associate obligations.',
+  staffing: 'What staffing compliance requirements apply to healthcare organizations? Include HIPAA training, OIG exclusions for employees, and scope-of-practice compliance.',
+  oig: 'Explain OIG exclusion screening requirements — who must be screened, how often, what systems to check, and consequences of non-compliance.',
+  stark: 'Explain Stark Law (Physician Self-Referral Law) requirements and the key compliance risks for our organization.',
+  'anti-kickback': 'Explain the Anti-Kickback Statute requirements, safe harbors that apply to our operations, and current enforcement priorities.',
+  fraud: 'Provide a fraud waste and abuse compliance assessment. What detection methods and monitoring should we have in place?',
+};
+
+function loadModule(mod) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.closest('.nav-item').classList.add('active');
+  const q = MODULE_PROMPTS[mod] || 'Provide a compliance analysis for: ' + mod;
+  quickQuery(q);
+}
+
+// ── REPORTS ───────────────────────────────────────────────────────────────────
+const REPORT_PROMPTS = {
+  'compliance-summary': 'Generate a comprehensive compliance program summary report. Include: overall compliance status, top risks by category (HIPAA, CMS, Coding, FWA), open violations, corrective actions in progress, and executive summary.',
+  'audit-ready': 'Generate an audit readiness assessment report. Include: documentation completeness, policy currency, staff training status, identified gaps, and a pre-audit checklist with priority actions.',
+  'risk-matrix': 'Generate a compliance risk matrix. Categorize all major compliance risk areas by likelihood and impact. Provide specific mitigation strategies for HIGH risk items.',
+  'corrective-action': 'Generate a corrective action plan for our compliance gaps. Include: prioritized action items, responsible parties, timelines, success metrics, and monitoring approach. Focus on our prior auth denial rate of 18.4% and 7 open violations.',
+};
+
+function runReport(type) {
+  const q = REPORT_PROMPTS[type] || 'Generate a compliance report for: ' + type;
+  quickQuery(q);
+}
+
+// ── DOCUMENT DRAFTING ─────────────────────────────────────────────────────────
+const DOC_PROMPTS = {
+  policy: 'Draft a comprehensive HIPAA compliance policy document. Include: purpose, scope, policy statement, procedures, roles and responsibilities, training requirements, and violation reporting process.',
+  appeal: 'Draft a compliance-based appeal letter template for denied claims. Include: regulatory citations, medical necessity arguments, coding justification, and supporting documentation checklist.',
+  notice: 'Draft a regulatory compliance notice template for staff. Include: the regulatory requirement, what has changed, what staff must do, deadline, and compliance officer contact.',
+  training: 'Draft a HIPAA compliance training memo for clinical and administrative staff. Include: key requirements, common violations and consequences, best practices, and an acknowledgment section.',
+};
+
+function draftDoc(type) {
+  const q = DOC_PROMPTS[type] || 'Draft a compliance document for: ' + type;
+  quickQuery(q);
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+let chatHistory = [];
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msgs = document.getElementById('chatMsgs');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  // Add user message
+  chatHistory.push({ role: 'user', content: msg });
+  msgs.innerHTML += '<div class="chat-msg user"><div class="role">YOU</div>' + msg + '</div>';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // AI response
+  const aiMsg = document.createElement('div');
+  aiMsg.className = 'chat-msg ai';
+  aiMsg.innerHTML = '<div class="role">COMPLIANCE AI</div>';
+  const textNode = document.createTextNode('…');
+  aiMsg.appendChild(textNode);
+  msgs.appendChild(aiMsg);
+
+  const context = SYSTEM + '\n\nConversation history:\n' + chatHistory.slice(-6).map(m => m.role + ': ' + m.content).join('\n');
+  const answer = await callAI(msg, null, null);
+
+  if (answer) {
+    textNode.textContent = '';
+    const words = answer.split(' ');
+    for (let i = 0; i < words.length; i++) {
+      textNode.textContent += (i === 0 ? '' : ' ') + words[i];
+      msgs.scrollTop = msgs.scrollHeight;
+      if (i % 6 === 0) await new Promise(r => setTimeout(r, 20));
+    }
+    chatHistory.push({ role: 'assistant', content: answer });
+  }
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────────
+function setView(view) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function switchTab(viewId, tabEl) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  if (tabEl) tabEl.classList.add('active');
+}
+
+// Auto-load overview on start
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    callAI(
+      'Give me a quick compliance status briefing — top 3 risks, most urgent action, and current regulatory watch items for a healthcare organization.',
+      document.getElementById('masterOutput'),
+      document.getElementById('masterThinking'),
+      512
+    );
+  }, 500);
+});
+</script>
+</body>
+</html>

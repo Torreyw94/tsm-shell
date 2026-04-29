@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>P&C Enterprise Command · TSM</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.header{height:70px;padding:14px 22px;border-bottom:1px solid #123050;background:#061018;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{background:#00f59f;color:#001018;border-radius:6px;padding:10px;font-weight:900}
+h1{margin:0;color:#d9f3ff;font-size:18px;letter-spacing:.12em}
+.sub{font-size:11px;color:#7aa6c2;margin-top:4px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{border:1px solid #00e0ff;color:#00e0ff;border-radius:999px;padding:6px 10px;font-size:10px}
+.badge.warn{border-color:#ffb000;color:#ffb000}
+.ticker{height:34px;display:flex;align-items:center;gap:28px;overflow:hidden;border-bottom:1px solid #123050;background:#031016;padding:0 18px;font-size:11px;color:#8fb0c8}
+.ticker b{color:#00f59f}
+.tabs{display:flex;gap:8px;padding:14px 18px;border-bottom:1px solid #123050;background:#07111b;position:sticky;top:0;z-index:20}
+.tab{background:transparent;border:1px solid #123050;color:#8fb0c8;padding:9px 12px;border-radius:8px;font:900 11px monospace;cursor:pointer;letter-spacing:.08em}
+.tab.active{border-color:#00f59f;color:#00f59f;background:#04180f}
+.wrap{padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.card b,.section-title{color:#00e0ff;letter-spacing:.12em}
+.val{font-size:30px;font-weight:900;margin:8px 0 2px}
+.good{color:#00f59f}.warn{color:#ffb000}.risk{color:#ff3b57}.blue{color:#00e0ff}
+.section{display:none}
+.section.active{display:block}
+.panel{background:#061018;border:1px solid #123050;border-radius:16px;padding:16px;margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;color:#7aa6c2;font-weight:500;border-bottom:1px solid #123050;padding:11px}
+td{border-bottom:1px solid rgba(18,48,80,.5);padding:11px;color:#d9f3ff}
+.pill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:10px;border:1px solid #123050;color:#8fb0c8}
+.pill.good{border-color:#00f59f;color:#00f59f}.pill.warn{border-color:#ffb000;color:#ffb000}.pill.risk{border-color:#ff3b57;color:#ff3b57}.pill.blue{border-color:#00e0ff;color:#00e0ff}
+.btn{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 12px;font:900 11px monospace;cursor:pointer}
+.btn.dark{background:transparent;color:#00e0ff;border:1px solid #00e0ff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+textarea,input,select{background:#02070d;color:#d9f3ff;border:1px solid #123050;border-radius:8px;padding:10px;font-family:monospace}
+textarea{width:100%;min-height:120px}
+.alert{padding:12px;border:1px solid #123050;border-radius:10px;margin:8px 0;background:#07111b}
+.alert.risk{border-color:#ff3b57;background:rgba(255,59,87,.08)}
+.alert.warn{border-color:#ffb000;background:rgba(255,176,0,.07)}
+.alert.good{border-color:#00f59f;background:rgba(0,245,159,.06)}
+.footer{position:fixed;left:0;right:0;bottom:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+main{padding-bottom:40px}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <div class="logo">P&C</div>
+    <div>
+      <h1>P&C ENTERPRISE COMMAND</h1>
+      <div class="sub">PROPERTY · CASUALTY · LIABILITY · RISK INTELLIGENCE</div>
+    </div>
+  </div>
+  <div class="badges">
+    <div class="badge">SYSTEM READY</div>
+    <div class="badge">AZ LICENSED · NPN 18818059</div>
+    <div class="badge warn">3 ALERTS</div>
+  </div>
+</header>
+
+<div class="ticker">
+  <span><b>P&C INTEL</b> 14 client properties now HIGH risk</span>
+  <span><b>AUTO</b> AZ min liability $25K/$50K — umbrella gap flagged</span>
+  <span><b>COMMERCIAL</b> CGL ISO form updates 2025 — review all commercial accounts</span>
+  <span><b>HOMEOWNERS</b> AZ wildfire zone updates loaded</span>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showTab('dash',this)">DASHBOARD</button>
+  <button class="tab" onclick="showTab('gaps',this)">COVERAGE GAPS</button>
+  <button class="tab" onclick="showTab('renewals',this)">RENEWALS</button>
+  <button class="tab" onclick="showTab('risk',this)">RISK SCORING</button>
+  <button class="tab" onclick="showTab('quotes',this)">QUOTES</button>
+  <button class="tab" onclick="showTab('claims',this)">CLAIMS</button>
+  <button class="tab" onclick="showTab('files',this)">CLIENT FILES</button>
+  <button class="tab" onclick="showTab('ai',this)">AI BRIEFING</button>
+</nav>
+
+<main class="wrap">
+  <section id="dash" class="section active">
+    <div class="grid">
+      <div class="card"><b>HO POLICIES</b><div class="val blue">47</div><small>Active book</small></div>
+      <div class="card"><b>AUTO POLICIES</b><div class="val good">63</div><small>Personal + commercial</small></div>
+      <div class="card"><b>COMMERCIAL</b><div class="val good">28</div><small>CGL · BOP · WC</small></div>
+      <div class="card"><b>COVERAGE GAPS</b><div class="val risk">14</div><small>Need attention</small></div>
+      <div class="card"><b>RENEWALS 90D</b><div class="val warn">22</div><small>Pipeline</small></div>
+      <div class="card"><b>UMBRELLA GAP</b><div class="val risk">$4.2M</div><small>Unprotected exposure</small></div>
+    </div>
+    <div class="panel">
+      <div class="section-title">PRIORITY ALERTS</div>
+      <div class="alert risk">🔥 14 client properties flagged in NEW AZ wildfire high-risk zones — coverage review needed immediately</div>
+      <div class="alert risk">🚗 8 clients carrying AZ minimum auto liability — catastrophic gap for serious accidents</div>
+      <div class="alert warn">☂️ 31 clients with pools have no umbrella policy — avg claim $247K vs $0 coverage</div>
+      <div class="alert warn">🏢 5 commercial clients missing cyber liability — average SMB breach cost $4.35M</div>
+      <div class="alert good">✓ WC renewal locked for 12 construction accounts before Q2 rate increase</div>
+    </div>
+  </section>
+
+  <section id="gaps" class="section">
+    <div class="panel">
+      <div class="section-title">COVERAGE GAP WORKBENCH</div>
+      <table>
+        <thead><tr><th>Client Segment</th><th>Gap</th><th>Exposure</th><th>Recommended Action</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Homeowners · Wildfire Zone</td><td>Dwelling limit outdated</td><td>$1.8M</td><td>Revalue + ordinance/law review</td><td><span class="pill risk">Urgent</span></td></tr>
+          <tr><td>Personal Auto</td><td>State minimum liability</td><td>$950K</td><td>Raise BI/PD + add umbrella</td><td><span class="pill risk">Critical</span></td></tr>
+          <tr><td>Commercial CGL</td><td>Cyber exclusion</td><td>$4.35M</td><td>Quote standalone cyber</td><td><span class="pill warn">Review</span></td></tr>
+          <tr><td>Contractors</td><td>Additional insured missing</td><td>$620K</td><td>Endorsement + COI package</td><td><span class="pill warn">Pending</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="renewals" class="section">
+    <div class="panel">
+      <div class="section-title">90-DAY RENEWAL PIPELINE</div>
+      <table>
+        <thead><tr><th>Account</th><th>Line</th><th>Days</th><th>Retention Risk</th><th>Premium</th><th>Next Move</th></tr></thead>
+        <tbody>
+          <tr><td>Desert Vista HOA</td><td>Property</td><td>18</td><td><span class="pill risk">High</span></td><td>$48,200</td><td>Remarketing + wildfire memo</td></tr>
+          <tr><td>Mesa Fleet Services</td><td>Commercial Auto</td><td>31</td><td><span class="pill warn">Medium</span></td><td>$72,900</td><td>MVR cleanup + loss narrative</td></tr>
+          <tr><td>Scottsdale Dental Group</td><td>BOP/Cyber</td><td>46</td><td><span class="pill good">Low</span></td><td>$19,400</td><td>Cross-sell EPLI</td></tr>
+          <tr><td>Tempe Contractors</td><td>WC/CGL</td><td>72</td><td><span class="pill warn">Medium</span></td><td>$88,100</td><td>COI audit + AI endorsements</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="risk" class="section">
+    <div class="grid">
+      <div class="card"><b>WILDFIRE SCORE</b><div class="val risk">88</div><small>14 properties high</small></div>
+      <div class="card"><b>AUTO LIABILITY</b><div class="val warn">63</div><small>8 min-limit policies</small></div>
+      <div class="card"><b>COMMERCIAL CYBER</b><div class="val risk">91</div><small>5 missing coverage</small></div>
+      <div class="card"><b>UMBRELLA NEED</b><div class="val risk">79</div><small>31 households exposed</small></div>
+    </div>
+    <div class="panel">
+      <div class="section-title">RISK SCORING ENGINE</div>
+      <p>Scores combine location, claim history, coverage limits, property attributes, industry class, and renewal window. Highest-priority accounts are ranked by dollar exposure and urgency.</p>
+    </div>
+  </section>
+
+  <section id="quotes" class="section">
+    <div class="panel">
+      <div class="section-title">QUOTE TRACKER</div>
+      <table>
+        <thead><tr><th>Quote</th><th>Carrier Fit</th><th>Line</th><th>Status</th><th>Projected Premium</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Q-1048</td><td>Travelers</td><td>BOP + Cyber</td><td><span class="pill blue">Submitted</span></td><td>$12,800</td><td>Upload loss runs</td></tr>
+          <tr><td>Q-1052</td><td>Hartford</td><td>WC</td><td><span class="pill warn">Need Info</span></td><td>$38,600</td><td>Payroll split required</td></tr>
+          <tr><td>Q-1061</td><td>Progressive</td><td>Commercial Auto</td><td><span class="pill good">Quoted</span></td><td>$21,900</td><td>Bind review</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="claims" class="section">
+    <div class="panel">
+      <div class="section-title">CLAIMS + LOSS RATIO COMMAND</div>
+      <table>
+        <thead><tr><th>Account</th><th>Claim Type</th><th>Loss</th><th>Impact</th><th>BNCA</th></tr></thead>
+        <tbody>
+          <tr><td>Mesa Fleet</td><td>Auto Liability</td><td>$64,200</td><td><span class="pill risk">Renewal surcharge likely</span></td><td>Build loss narrative + driver controls</td></tr>
+          <tr><td>Desert Vista HOA</td><td>Wind/Hail</td><td>$38,900</td><td><span class="pill warn">Deductible review</span></td><td>Update roof docs before renewal</td></tr>
+          <tr><td>Tempe Contractors</td><td>WC</td><td>$22,400</td><td><span class="pill warn">Mod pressure</span></td><td>Safety memo + return-to-work plan</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="files" class="section">
+    <div class="panel">
+      <div class="section-title">CLIENT FILES + GENERATED DOCS</div>
+      <div class="grid">
+        <div class="card"><b>Coverage Review Memo</b><p>Generated for high-risk accounts.</p><button class="btn dark">Preview</button></div>
+        <div class="card"><b>Renewal Outreach Letter</b><p>Personalized renewal risk messaging.</p><button class="btn dark">Preview</button></div>
+        <div class="card"><b>Carrier Submission Packet</b><p>Loss runs, narrative, forms checklist.</p><button class="btn dark">Preview</button></div>
+        <div class="card"><b>Compliance / E&O Note</b><p>Documented recommendation trail.</p><button class="btn dark">Preview</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai" class="section">
+    <div class="panel">
+      <div class="section-title">AI INTELLIGENCE BRIEFING</div>
+      <textarea id="aiPrompt">Run a full P&C enterprise briefing: identify top 5 coverage gaps by dollar exposure, AZ-specific risks requiring immediate action, and best next course of action for each line of business.</textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" onclick="runBriefing()">RUN P&C BNCA</button>
+        <button class="btn dark" onclick="saveBriefing()">SAVE REPORT</button>
+      </div>
+      <div class="panel" id="aiOut" style="white-space:pre-wrap">Awaiting briefing...</div>
+    </div>
+  </section>
+</main>
+
+<div class="footer">
+  <span>● P&C-BRIDGE · PORT 3031 · AI ENGINE READY · AZ LICENSED</span>
+  <span>TSM P&C ENTERPRISE</span>
+</div>
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function runBriefing(){
+  const out=document.getElementById('aiOut');
+  out.textContent =
+`P&C ENTERPRISE BNCA
+
+TOP PRIORITIES
+1. AUTO LIABILITY — 8 clients at AZ minimum limits. Raise BI/PD + quote umbrella.
+2. WILDFIRE PROPERTY — 14 properties moved into high-risk zones. Revalue dwelling + review deductible and ordinance/law.
+3. COMMERCIAL CYBER — 5 commercial accounts missing cyber coverage. Quote standalone cyber immediately.
+4. UMBRELLA GAP — 31 households with pool/high-asset exposure lack umbrella.
+5. RENEWALS — 22 accounts inside 90-day window. Prioritize high-risk accounts first.
+
+BEST NEXT COURSE OF ACTION
+Run coverage review campaign this week. Start with auto minimum-limit households and wildfire-zone homeowners. Generate coverage review memos, quote umbrella bundles, and document client recommendations for E&O protection.`;
+}
+function saveBriefing(){
+  const txt=document.getElementById('aiOut').innerText || '';
+  window.InsIntelInbox?.saveIntel({
+    source:'P&C Enterprise Command',
+    audience:'P&C Commercial',
+    title:'P&C Enterprise BNCA Briefing',
+    bnca:txt,
+    compliance:'E&O trail required for declined coverage recommendations.',
+    coverage:'Auto liability, umbrella, wildfire, cyber, and renewal gaps identified.',
+    claims:'Loss ratio and claim trend pressure should be included in renewal narrative.',
+    risk:'High exposure accounts require outreach before renewal window closes.',
+    metrics:{status:'saved-from-pc-command'}
+  });
+}
+</script>
+<script src="/html/assets/tsm/ins-intel-inbox.js?v=fulltabs1"></script>
+
+
+<!-- =========================
+🔥 P&C COMMAND UPGRADE LAYER
+========================= -->
+
+<style>
+.pc-action-panel{
+  margin:20px;
+  padding:18px;
+  border:1px solid #00f59f;
+  border-radius:12px;
+  background:#041a12;
+}
+.pc-action-panel h3{margin:0 0 10px;color:#00f59f}
+.pc-btn{
+  margin:6px;
+  padding:8px 12px;
+  border:1px solid #00f59f;
+  background:transparent;
+  color:#00f59f;
+  cursor:pointer;
+  border-radius:6px;
+}
+.pc-btn:hover{background:#00f59f;color:#001018}
+</style>
+
+<div class="pc-action-panel">
+  <h3>⚡ Revenue + Risk Action Engine</h3>
+
+  <div id="pc-impact">
+    Calculating financial impact...
+  </div>
+
+  <br>
+
+  <button class="pc-btn" onclick="runPCBNCA()">Run BNCA</button>
+  <button class="pc-btn" onclick="generateQuote()">Generate Quote</button>
+  <button class="pc-btn" onclick="createOutreach()">Create Client Outreach</button>
+  <button class="pc-btn" onclick="pushToStrategist()">Push to Strategist</button>
+</div>
+
+<script>
+function runPCBNCA(){
+  const msg = `
+⚡ BEST NEXT COURSE OF ACTION:
+
+1. PRIORITIZE 14 wildfire properties ($1.8M exposure)
+2. CLOSE 8 auto liability gaps → add umbrella
+3. QUOTE cyber for 5 SMB clients ($4.35M exposure)
+
+→ Estimated Recoverable Premium: $280K–$420K
+  `;
+  alert(msg);
+}
+
+function generateQuote(){
+  alert("Quote generated for highest exposure clients");
+}
+
+function createOutreach(){
+  alert("Client outreach email drafted for producers");
+}
+
+async function pushToStrategist(){
+  await fetch('/api/main-strategist/hc-report',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      source:'pc-command',
+      summary:'P&C Risk + Revenue BNCA generated',
+      revenue_opportunity:'$300K+',
+      ts:new Date().toISOString()
+    })
+  });
+
+  alert("P&C pushed to Main Strategist");
+
+  window.location.href = '/html/ins-main-strategist/index.html?v=pc-push';
+}
+
+// 💰 Impact Simulation
+(function(){
+  const el = document.getElementById("pc-impact");
+  if(!el) return;
+
+  const exposure = 4200000;
+  const recoverable = Math.round(exposure * 0.08);
+
+  el.innerHTML = `
+💰 Exposure Identified: $${exposure.toLocaleString()}<br>
+📈 Recoverable Premium: $${recoverable.toLocaleString()}<br>
+⚠ High-Risk Clients: 14<br>
+🎯 Immediate Action: Quote + Outreach
+  `;
+})();
+</script>
+
+
+</body>
+</html>

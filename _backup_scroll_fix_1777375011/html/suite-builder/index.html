@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TSM · Presentation Suite Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04080f;--bg2:#070d18;--bg3:#0b1422;--panel:#0d1828;
+  --glass:rgba(13,24,40,0.6);--glass2:rgba(255,255,255,0.03);--glass3:rgba(255,255,255,0.06);
+  --border:rgba(100,200,255,0.08);--border2:rgba(201,168,76,0.35);--border3:rgba(255,255,255,0.06);
+  --gold:#c9a84c;--gold2:#e8c87a;--gold3:rgba(201,168,76,0.08);--gold4:rgba(201,168,76,0.15);
+  --green:#10b981;--teal:#14b8a6;--red:#ef4444;
+  --text:#b8cfe2;--dim:#3a5070;--dim2:#5a7090;--bright:#eef4ff;
+  --mono:'DM Mono',monospace;--display:'Bebas Neue',sans-serif;
+  --r:6px;--rl:10px;--rxl:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(201,168,76,.07) 0%,transparent 55%),radial-gradient(ellipse 60% 50% at 90% 100%,rgba(20,120,200,.08) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(20,184,166,.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(100,180,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(100,180,255,.015) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+.topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:rgba(4,8,15,.85);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border);}
+.logo{font-family:var(--display);font-size:22px;color:var(--gold);letter-spacing:3px;}
+.topbar-title{font-size:11px;color:var(--text);letter-spacing:2px;}
+.topbar-sub{font-size:9px;color:var(--dim2);letter-spacing:2px;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.ai-badge{padding:4px 11px;border:0.5px solid var(--gold);border-radius:20px;font-size:9px;color:var(--gold);letter-spacing:1px;background:var(--gold3);backdrop-filter:blur(10px);}
+.status-pill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--dim2);padding:4px 11px;border:0.5px solid var(--border3);border-radius:20px;background:var(--glass2);backdrop-filter:blur(10px);}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+
+.tab-nav{position:relative;z-index:10;display:flex;border-bottom:0.5px solid var(--border);background:rgba(7,13,24,.8);backdrop-filter:blur(20px);}
+.tab-btn{padding:12px 22px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tnum{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--border);font-size:9px;margin-right:6px;}
+.tab-btn.active .tnum{background:var(--gold);color:var(--bg);}
+
+.main{display:flex;min-height:calc(100vh - 90px);position:relative;z-index:1;}
+.sidebar{width:210px;flex-shrink:0;border-right:0.5px solid var(--border);padding:16px 10px;background:rgba(7,13,24,.7);backdrop-filter:blur(20px);}
+.content{flex:1;overflow-y:auto;padding:20px 24px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.slabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);margin-bottom:10px;padding-left:4px;}
+
+.fitem{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;border-radius:var(--r);cursor:pointer;font-size:10px;color:var(--dim2);transition:all .15s;border:0.5px solid transparent;}
+.fitem:hover{background:var(--glass3);color:var(--text);}
+.fitem.active{background:var(--gold4);color:var(--gold);border-color:var(--border2);backdrop-filter:blur(10px);}
+.fcount{font-size:9px;opacity:.5;}
+
+.shdr{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--dim2);border-bottom:0.5px solid var(--border);padding-bottom:6px;margin:18px 0 8px;display:flex;align-items:center;gap:8px;}
+.shdr:first-child{margin-top:0;}
+.shdr-count{font-size:8px;padding:1px 6px;background:var(--glass2);border:0.5px solid var(--border);border-radius:10px;color:var(--dim2);}
+
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:6px;margin-bottom:4px;}
+
+.acard{border:0.5px solid var(--border3);border-radius:var(--rl);padding:9px 12px;cursor:pointer;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:all .15s;user-select:none;position:relative;overflow:hidden;}
+.acard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none;}
+.acard:hover{border-color:rgba(100,200,255,.2);background:rgba(255,255,255,.05);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.acard.sel{border-color:var(--gold);background:rgba(201,168,76,.08);box-shadow:0 0 0 1px rgba(201,168,76,.15),0 4px 20px rgba(201,168,76,.1);}
+.acard.sel .aname{color:var(--gold2);}
+.acard.sel::before{background:linear-gradient(135deg,rgba(201,168,76,.08) 0%,transparent 60%);}
+.acard.dead{opacity:.38;cursor:default;}
+.acard.dead:hover{transform:none;box-shadow:none;border-color:var(--border3);}
+.aname{font-size:11px;font-weight:500;color:var(--bright);display:flex;align-items:center;gap:6px;}
+.aurl{font-size:9px;color:var(--dim2);margin-top:2px;opacity:.7;}
+
+/* status dot */
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.dot.live{background:var(--green);box-shadow:0 0 5px var(--green);}
+.dot.dead{background:var(--dim);}
+.dot.checking{background:var(--gold);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.tray{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--glass);backdrop-filter:blur(20px);border:0.5px solid var(--border3);border-radius:var(--rxl);margin-top:16px;flex-wrap:wrap;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.tc{font-size:11px;color:var(--dim2);flex:1;}
+.tc span{color:var(--gold);}
+
+.btn{padding:6px 14px;border:0.5px solid var(--border3);border-radius:var(--r);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:var(--glass2);backdrop-filter:blur(10px);color:var(--text);transition:all .15s;}
+.btn:hover{border-color:var(--border2);color:var(--gold);}
+.btn-g{border-color:var(--gold);color:var(--gold);background:var(--gold3);}
+.btn-g:hover{background:var(--gold4);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.fg label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);display:block;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:8px 11px;background:var(--glass);backdrop-filter:blur(10px);border:0.5px solid var(--border3);border-radius:var(--r);font-family:var(--mono);font-size:11px;color:var(--text);outline:none;transition:border-color .15s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
+.fg select option{background:var(--bg3);}
+.fg textarea{resize:vertical;min-height:55px;line-height:1.5;}
+
+.ai-bar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--glass);backdrop-filter:blur(20px);border:0.5px solid var(--border2);border-radius:var(--rxl);margin-bottom:16px;box-shadow:0 4px 24px rgba(201,168,76,.05);}
+.ai-bar-label{font-size:10px;color:var(--gold);letter-spacing:1px;flex:1;}
+.ai-bar-sub{font-size:9px;color:var(--dim2);margin-top:2px;}
+.model-tag{font-size:9px;padding:3px 9px;border:0.5px solid var(--border3);border-radius:20px;color:var(--dim2);background:var(--glass2);}
+.gen-btn{padding:8px 18px;border:0.5px solid var(--gold);border-radius:var(--r);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:linear-gradient(135deg,rgba(201,168,76,.9),rgba(232,200,122,.8));color:var(--bg);font-weight:500;transition:all .15s;}
+.gen-btn:hover{background:linear-gradient(135deg,var(--gold2),var(--gold));}
+.gen-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.progress{height:2px;background:var(--border);border-radius:1px;margin-bottom:16px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:1px;transition:width .3s;width:0%;}
+
+.pbcard{border:0.5px solid var(--border3);border-radius:var(--rxl);margin-bottom:12px;overflow:hidden;background:var(--glass);backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,.2);}
+.pbhdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,.02);border-bottom:0.5px solid var(--border);}
+.pbhl{display:flex;align-items:center;gap:9px;}
+.pbn{font-size:12px;font-weight:500;color:var(--bright);}
+.pbu{font-size:9px;color:var(--dim2);}
+.pbhr{display:flex;gap:7px;align-items:center;}
+.oabtn{padding:4px 10px;border:0.5px solid var(--border2);border-radius:var(--r);font-family:var(--mono);font-size:9px;color:var(--gold);cursor:pointer;background:var(--gold3);text-decoration:none;backdrop-filter:blur(10px);transition:all .13s;}
+.oabtn:hover{background:var(--gold4);}
+.gsbtn{padding:4px 10px;border:0.5px solid rgba(20,184,166,.4);border-radius:var(--r);font-family:var(--mono);font-size:9px;color:var(--teal);cursor:pointer;background:rgba(20,184,166,.06);transition:all .13s;}
+.gsbtn:hover{background:rgba(20,184,166,.12);}
+.gsbtn:disabled{opacity:.3;cursor:not-allowed;}
+.pbbody{padding:14px 16px;}
+.pbs{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim2);margin-bottom:6px;margin-top:12px;}
+.pbs:first-child{margin-top:0;}
+.aiout{min-height:48px;font-size:11px;line-height:1.7;color:var(--text);padding:10px 12px;background:rgba(0,0,0,.25);border-radius:var(--r);border-left:2px solid var(--gold);white-space:pre-wrap;word-wrap:break-word;backdrop-filter:blur(10px);}
+.aiout.loading{color:var(--dim2);}
+.aiout.loading::after{content:'▋';animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.tp{font-size:11px;color:var(--text);padding:5px 0 5px 12px;border-left:0.5px solid var(--border2);margin-bottom:4px;line-height:1.5;}
+.tp::before{content:'→ ';color:var(--gold);}
+.pbtn{display:block;width:100%;text-align:left;padding:9px 12px;background:rgba(0,0,0,.2);backdrop-filter:blur(10px);border:0.5px solid var(--border);border-radius:var(--r);font-family:var(--mono);font-size:10px;color:var(--text);cursor:pointer;margin-bottom:5px;transition:all .13s;}
+.pbtn:hover{border-color:var(--gold);color:var(--gold2);}
+.pbtn.copied{border-color:var(--green);color:var(--green);}
+.ptag{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:2px;}
+.pprev{display:block;opacity:.6;font-size:10px;}
+
+.dstep{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.dsnum{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg);font-family:var(--display);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;box-shadow:0 4px 12px rgba(201,168,76,.3);}
+.dsc{flex:1;}
+.dst{font-size:12px;font-weight:500;color:var(--bright);margin-bottom:6px;}
+.surlbox{font-size:10px;padding:10px 12px;background:rgba(0,0,0,.3);backdrop-filter:blur(10px);border:0.5px solid var(--border);border-radius:var(--r);color:var(--dim2);word-break:break-all;margin-bottom:8px;line-height:1.6;}
+.surlbox.live-url{color:var(--gold);border-color:var(--border2);}
+.drow{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:5px;background:var(--glass);backdrop-filter:blur(10px);transition:all .13s;}
+.drow:hover{border-color:var(--border2);}
+.drowl{display:flex;align-items:center;gap:8px;}
+.bbtn{display:block;width:100%;padding:12px;text-align:center;border:0.5px solid var(--gold);border-radius:var(--r);font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--gold);cursor:pointer;background:var(--gold3);backdrop-filter:blur(10px);margin-bottom:8px;transition:all .15s;}
+.bbtn:hover{background:var(--gold4);}
+.bbtn:disabled{opacity:.35;cursor:not-allowed;}
+.coachl{border-color:rgba(20,184,166,.5);color:var(--teal);background:rgba(20,184,166,.06);}
+.coachl:hover{background:rgba(20,184,166,.12);}
+
+.deploy-result{padding:12px 14px;border-radius:var(--r);margin-top:10px;font-size:11px;line-height:1.6;display:none;}
+.deploy-result.ok{background:rgba(16,185,129,.08);border:0.5px solid rgba(16,185,129,.3);color:var(--green);}
+.deploy-result.err{background:rgba(239,68,68,.08);border:0.5px solid rgba(239,68,68,.3);color:var(--red);}
+
+.pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border:0.5px solid var(--border2);border-radius:20px;font-size:9px;color:var(--gold);background:var(--gold3);backdrop-filter:blur(10px);}
+.px{cursor:pointer;opacity:.4;}
+.px:hover{opacity:1;}
+
+.glass-section{background:var(--glass);backdrop-filter:blur(20px);border:0.5px solid var(--border3);border-radius:var(--rxl);padding:20px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative;overflow:hidden;}
+.glass-section::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%);pointer-events:none;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:13px;">
+    <div class="logo">TSM</div>
+    <div><div class="topbar-title">PRESENTATION SUITE BUILDER</div><div class="topbar-sub">AI-Powered · Select · Narrate · Deploy</div></div>
+  </div>
+  <div class="topbar-right">
+    <div class="ai-badge">llama-3.3-70b-versatile</div>
+    <div class="status-pill"><div class="sdot"></div><span id="status-text">Ready</span></div>
+  </div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('select',this)"><span class="tnum">1</span>Select Apps</button>
+  <button class="tab-btn" onclick="switchTab('narrate',this)"><span class="tnum">2</span>AI Narratives</button>
+  <button class="tab-btn" onclick="switchTab('deploy',this)"><span class="tnum">3</span>Deploy Suite</button>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="slabel">Sector</div>
+    <div id="sidebar-filters"></div>
+    <div style="margin-top:20px;border-top:0.5px solid var(--border);padding-top:13px;">
+      <div class="slabel">Selected <span style="color:var(--gold)" id="pill-count">0</span></div>
+      <div id="pills-sidebar" class="pills"></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div id="panel-select" class="panel active">
+      <div id="app-grid"></div>
+      <div class="tray">
+        <span class="tc"><span id="sel-count">0</span> apps selected</span>
+        <button class="btn" onclick="selectSector()">Select sector</button>
+        <button class="btn" onclick="clearAll()">Clear</button>
+        <button class="btn btn-g" onclick="goNarrate()">Next: AI Narratives →</button>
+      </div>
+    </div>
+
+    <div id="panel-narrate" class="panel">
+      <div class="glass-section">
+        <div class="crow">
+          <div class="fg"><label>Suite name</label><input id="suite-name" placeholder="e.g. Desert Financial Partnership Demo"/></div>
+          <div class="fg"><label>Audience role</label>
+            <select id="audience">
+              <option>C-Suite / Board</option><option>CFO / Finance Lead</option><option>COO / Operations</option>
+              <option>Healthcare Executive</option><option>Insurance Agent / Agency Owner</option>
+              <option>Real Estate Broker</option><option>Credit Union Executive</option>
+              <option>School District Administrator</option><option>General stakeholder</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Additional context (deal size, pain points, company name)</label>
+          <textarea id="extra-context" placeholder="e.g. 85,000 members, $2.1B assets, main concern is compliance costs, meeting with CFO and COO..."></textarea>
+        </div>
+      </div>
+      <div class="ai-bar">
+        <div><div class="ai-bar-label">AI Narrative Generator</div><div class="ai-bar-sub">llama-3.3-70b-versatile streams narratives, talking points &amp; demo prompts tailored to your audience</div></div>
+        <div class="model-tag">streaming</div>
+        <button class="gen-btn" id="gen-all-btn" onclick="generateAllPlaybooks()">Generate All Playbooks</button>
+      </div>
+      <div class="progress"><div class="pfill" id="pfill"></div></div>
+      <div id="narrative-list"></div>
+      <div class="tray">
+        <button class="btn" onclick="switchTab('select',document.querySelectorAll('.tab-btn')[0])">← Back</button>
+        <button class="btn btn-g" onclick="goDeploy()">Next: Deploy →</button>
+      </div>
+    </div>
+
+    <div id="panel-deploy" class="panel">
+      <div class="glass-section">
+        <div class="dstep">
+          <div class="dsnum">1</div>
+          <div class="dsc">
+            <div class="dst">Shareable suite link</div>
+            <div class="surlbox" id="suite-url-box">—</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-g" onclick="copySuiteUrl()">Copy link</button>
+              <button class="btn" onclick="openFirst()">Open first app →</button>
+            </div>
+          </div>
+        </div>
+        <div class="dstep">
+          <div class="dsnum">2</div>
+          <div class="dsc">
+            <div class="dst">Demo sequence</div>
+            <div id="deploy-list"></div>
+          </div>
+        </div>
+        <div class="dstep">
+          <div class="dsnum">3</div>
+          <div class="dsc">
+            <div class="dst">AI coaching script</div>
+            <button class="bbtn coachl" id="coach-btn" onclick="generateCoachScript()">Generate my full presentation coaching script ↗</button>
+            <div id="coach-output" class="aiout" style="display:none;margin-top:10px;"></div>
+          </div>
+        </div>
+        <div class="dstep">
+          <div class="dsnum">4</div>
+          <div class="dsc">
+            <div class="dst">Deploy live suite page</div>
+            <button class="bbtn" id="deploy-btn" onclick="deployToServer()">Build live suite page at tsm-shell.fly.dev/html/suite/ ↗</button>
+            <div id="deploy-result" class="deploy-result"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const GROQ_PROXY  = '/api/groq';   // server-side proxy — no key in browser
+const PING_API    = '/api/ping';
+const DEPLOY_API  = '/api/suite';
+const MODEL       = 'llama-3.3-70b-versatile';
+
+let generatedPlaybooks = {};
+let appStatus = {};  // url → 'live' | 'dead' | 'checking'
+
+// ── APP DATA ──────────────────────────────────────────────────────────────────
+const APP_CTX = {
+  "healthcare.tsmatter.com":"Healthcare Command — tripartite AI intelligence system, 10 live nodes. Live: 247 pending claims, $2.1M revenue at risk, 84% compliance score.",
+  "insurance-command.tsmatter.com":"Insurance Command — 10-node insurance intelligence mesh. 247 claims pending, $2.1M revenue exposure.",
+  "desert-financial.tsmatter.com":"Desert Financial Credit Union — $792K/yr platform value. Member advisor, loan optimizer, compliance monitor, P&L intelligence.",
+  "financial-command.tsmatter.com":"Financial Command — enterprise financial intelligence. Revenue cycle, billing, compliance. Replaces analyst tools costing $400/hr.",
+  "banner-health.tsmatter.com":"Banner Health Enterprise — white-labeled AI for Arizona's largest non-profit hospital system (30+ hospitals, 6 states).",
+  "honorhealth.tsmatter.com":"HonorHealth Enterprise — white-labeled AI for Arizona's 2nd largest hospital system. HRSA grant compliance ($50M exposure).",
+  "hotelops.tsmatter.com":"HotelOps Pro — 68 sensors, 4 HVAC alerts, Groq AI inference, 84% occupancy, $1,847 weekly margin.",
+  "schools-command.tsmatter.com":"Schools Command — 2,847 students, $3.4M grant funds, 96% compliance, IDEA NV-01 $50K risk.",
+  "pc-command.tsmatter.com":"P&C Enterprise Command — AZ liability gap analysis, SR-22 tracking. AZ minimum leaves $225K+ exposure gap.",
+  "docpro.tsmatter.com":"DocPro — AI Document Intelligence. 46+ document types, attorney-level precision in seconds.",
+  "rrd-command.tsmatter.com":"RRD Command — federal grant closeout. 184 items in queue, HIGH risk alert.",
+  "music-command.tsmatter.com":"Music Command — 3 AI agents: ZAY, DJ, RIYA. Full Command Mode deploys all 3 simultaneously.",
+  "construction-command.tsmatter.com":"Construction Command — project management, compliance, safety, financial controls.",
+  "legal.tsmatter.com":"Legal Intelligence — contract analysis, compliance monitoring, matter management.",
+};
+
+const SECTORS = [
+  {label:"Healthcare", apps:[
+    {name:"HonorHealth Command",  url:"/html/honorhealth/"},
+    {name:"HC Command",           url:"/html/hc-command/"},
+    {name:"Healthcare",           url:"/html/healthcare/"},
+    {name:"HC Billing",           url:"/html/hc-billing/"},
+    {name:"HC Compliance",        url:"/html/hc-compliance/"},
+    {name:"HC Financial",         url:"/html/hc-financial/"},
+    {name:"HC Grants",            url:"/html/hc-grants/"},
+    {name:"HC Insurance",         url:"/html/hc-insurance/"},
+    {name:"HC Legal",             url:"/html/hc-legal/"},
+    {name:"HC Medical",           url:"/html/hc-medical/"},
+    {name:"HC Pharmacy",          url:"/html/hc-pharmacy/"},
+    {name:"HC Strategist",        url:"/html/hc-strategist/"},
+    {name:"HC Tax Prep",          url:"/html/hc-taxprep/"},
+    {name:"HC Vendors",           url:"/html/hc-vendors/"},
+    {name:"HonorHealth Dee",      url:"https://tsm-honorhealth-dee.fly.dev/"},
+    {name:"Honor Portal",         url:"/html/honor-portal/"},
+    {name:"HonorHealth DEE",       url:"/html/honorhealth-dee/"},
+    {name:"HC Presentation",       url:"/html/hc-presentation/"},
+    {name:"Main Strategist",       url:"/html/main-strategist/"},
+    {name:"DME",                  url:"/html/dme/"},
+    {name:"Healthcare Command",   url:"https://healthcare.tsmatter.com"},
+    {name:"Banner Health",        url:"https://banner-health.tsmatter.com"},
+    {name:"Abrazo Health",        url:"https://abrazo.tsmatter.com"},
+    {name:"Valleywise Health",    url:"https://valleywise.tsmatter.com"},
+    {name:"HealthOps BPO",        url:"https://bpo-healthcare.tsmatter.com"},
+  ]},
+  {label:"Insurance", apps:[
+    {name:"PC Command",           url:"/html/pc-command/"},
+    {name:"AZ Insurance",         url:"/html/az-ins/"},
+    {name:"Insurance Command",    url:"https://insurance-command.tsmatter.com"},
+    {name:"AZ Insurance Portal",  url:"https://az-ins.tsmatter.com"},
+    {name:"P&C Enterprise Cmd",   url:"https://pc-command.tsmatter.com"},
+  ]},
+  {label:"Financial", apps:[
+    {name:"Financial Command",    url:"/html/financial-command/"},
+    {name:"Desert Financial",     url:"/html/desert-financial/"},
+    {name:"Strategist",           url:"/html/strategist/"},
+    {name:"Financial Command",    url:"https://financial-command.tsmatter.com"},
+    {name:"Desert Financial",     url:"https://desert-financial.tsmatter.com"},
+    {name:"Compliance",           url:"https://compliance.tsmatter.com"},
+    {name:"Tax Intelligence",     url:"https://tax.tsmatter.com"},
+    {name:"Zero Trust",           url:"https://zero-trust.tsmatter.com"},
+  ]},
+  {label:"Real Estate", apps:[
+    {name:"Mortgage Command",     url:"https://mortgage-command.tsmatter.com"},
+    {name:"Real Estate Command",  url:"https://real-estate-command.tsmatter.com"},
+    {name:"Mortgage",             url:"https://mortgage.tsmatter.com"},
+    {name:"BrokerOps BPO",        url:"https://bpo-realty.tsmatter.com"},
+    {name:"REO Pro",              url:"/html/reo-pro/"},
+  ]},
+  {label:"Construction", apps:[
+    {name:"Construction Command", url:"/html/construction-command/"},
+    {name:"Ameris Portal",        url:"/html/ameris-portal/"},
+    {name:"Ameris Construction",   url:"/html/ameris-construction/"},
+    {name:"Construction Command", url:"https://construction-command.tsmatter.com"},
+    {name:"Construction",         url:"https://construction.tsmatter.com"},
+    {name:"ConstructionOps BPO",  url:"https://bpo-construction.tsmatter.com"},
+  ]},
+  {label:"Education", apps:[
+    {name:"Schools Command",      url:"https://schools-command.tsmatter.com"},
+    {name:"Schools",              url:"https://schools.tsmatter.com"},
+  ]},
+  {label:"Hospitality", apps:[
+    {name:"HotelOps Pro",         url:"https://hotelops.tsmatter.com"},
+    {name:"Concierge Command",    url:"https://concierge-command.tsmatter.com"},
+    {name:"HotelOps BPO",         url:"https://bpo-hotelops.tsmatter.com"},
+  ]},
+  {label:"Legal", apps:[
+    {name:"Legal Intelligence",   url:"https://legal.tsmatter.com"},
+    {name:"LegalOps BPO",         url:"https://bpo-legal.tsmatter.com"},
+    {name:"Legal Analyst Pro",    url:"/html/legal-analyst-pro/"},
+  ]},
+  {label:"BPO", apps:[
+    {name:"BPO Legal",            url:"/html/bpo-legal/"},
+    {name:"BPO Realty",           url:"/html/bpo-realty/"},
+    {name:"BPO Tax",              url:"/html/bpo-tax/"},
+  ]},
+  {label:"Enterprise", apps:[
+    {name:"ESD Portal",           url:"/html/esd-portal/"},
+    {name:"Music Command",        url:"/html/music-command/"},
+    {name:"TSM Strategy",         url:"/html/tsm-strategy/"},
+    {name:"Case Tech",            url:"/html/case-tech/"},
+    {name:"Agents",               url:"/html/agents-ins/"},
+    {name:"DocPro",               url:"https://docpro.tsmatter.com"},
+    {name:"RRD Command",          url:"/html/rrd-command/"},
+    {name:"Appointments",         url:"https://appointments.tsmatter.com"},
+    {name:"AuditOps",             url:"https://auditops.tsmatter.com"},
+    {name:"Music Command",        url:"https://music-command.tsmatter.com"},
+    {name:"Zero Trust",           url:"https://zero-trust.tsmatter.com"},
+  ]},
+  {label:"Document Intelligence", apps:[
+    {name:"DocPro",               url:"https://docpro.tsmatter.com"},
+    {name:"RRD Command",          url:"/html/rrd-command/"},
+    {name:"Financial Command",    url:"https://financial-command.tsmatter.com"},
+    {name:"AuditOps",             url:"https://auditops.tsmatter.com"},
+    {name:"Compliance",           url:"https://compliance.tsmatter.com"},
+    {name:"Legal Intelligence",   url:"https://legal.tsmatter.com"},
+  ]},
+  {label:"Demo Decks", apps:[
+    {name:"Desert Financial Pitch", url:"https://clients.tsmatter.com/demo/desert-financial-pitch.html"},
+    {name:"Command Promo",          url:"https://clients.tsmatter.com/demo/command-promo.html"},
+    {name:"Why TSM",                url:"https://clients.tsmatter.com/demo/why-tsm.html"},
+    {name:"Bundle Demo",            url:"https://clients.tsmatter.com/demo/bundle.html"},
+    {name:"Financial Analyst",      url:"https://clients.tsmatter.com/demo/financial-analyst.html"},
+    {name:"BNCA GTM HC",            url:"/html/demo/bnca-gtm-hc.html"},
+    {name:"Demo Click Guide",       url:"/html/demo/demo-click-guide.html"},
+    {name:"Desert Pitch",           url:"/html/demo/desert-pitch.html"},
+    {name:"Honor Portal DM",        url:"/html/demo/honor-portal-dm.html"},
+    {name:"Strategist HC",          url:"/html/demo/strategist-hc.html"},
+    {name:"Suite Builder Demo",     url:"/html/demo/suite-builder.html"},
+    {name:"Tax",                    url:"/html/demo/tax.html"},
+    {name:"TSM Pricing",            url:"/html/demo/tsm-pricing.html"},
+  ]},
+];
+
+// Deduplicate within each sector by URL
+SECTORS.forEach(s => {
+  const seen = new Set();
+  s.apps = s.apps.filter(a => { if (seen.has(a.url)) return false; seen.add(a.url); return true; });
+});
+
+let selected    = new Set();
+let activeFilter = 'All';
+
+function allApps() { return SECTORS.flatMap(s => s.apps); }
+function findApp(url) { return allApps().find(a => a.url === url) || { name: url, url }; }
+function setStatus(t) { document.getElementById('status-text').textContent = t; }
+function openUrl(url) { return url.startsWith('http') ? url : 'https://tsm-shell.fly.dev' + url; }
+
+// ── LIVE STATUS PING ──────────────────────────────────────────────────────────
+async function pingUrl(url) {
+  const fullUrl = openUrl(url);
+  try {
+    const res = await fetch(`${PING_API}?url=${encodeURIComponent(fullUrl)}`);
+    const { live } = await res.json();
+    return live;
+  } catch { return false; }
+}
+
+function setDotStatus(url, status) {
+  appStatus[url] = status;
+  document.querySelectorAll(`.acard[data-url="${CSS.escape(url)}"] .dot`).forEach(d => {
+    d.className = 'dot ' + status;
+  });
+  // grey out dead cards
+  document.querySelectorAll(`.acard[data-url="${CSS.escape(url)}"]`).forEach(c => {
+    if (status === 'dead') c.classList.add('dead');
+    else c.classList.remove('dead');
+  });
+}
+
+async function pingAll() {
+  const urls = [...new Set(allApps().map(a => a.url))];
+  // Ping in batches of 6
+  for (let i = 0; i < urls.length; i += 6) {
+    const batch = urls.slice(i, i + 6);
+    await Promise.all(batch.map(async url => {
+      setDotStatus(url, 'checking');
+      const live = await pingUrl(url);
+      setDotStatus(url, live ? 'live' : 'dead');
+    }));
+  }
+  const liveCount = Object.values(appStatus).filter(v => v === 'live').length;
+  setStatus(`${liveCount} live · ${selected.size} selected`);
+}
+
+// ── GROQ STREAMING (via server proxy) ────────────────────────────────────────
+async function callGroq(messages, onToken) {
+  try {
+    const res = await fetch(GROQ_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, model: MODEL, max_tokens: 1200, stream: true }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Server error ' + res.status);
+    }
+
+    const reader  = res.body.getReader();
+    const decoder = new TextDecoder();
+    let full = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const lines = decoder.decode(value).split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+          try {
+            const d = JSON.parse(line.slice(6));
+            const t = d.choices?.[0]?.delta?.content || '';
+            if (t) { full += t; if (onToken) onToken(full); }
+          } catch {}
+        }
+      }
+    }
+    return full;
+  } catch (e) {
+    console.error('[callGroq]', e.message);
+    return null;
+  }
+}
+
+// ── PLAYBOOK GENERATION ───────────────────────────────────────────────────────
+async function generatePlaybook(url, audience, context, narrativeEl, tpEl, promptsEl) {
+  const app = findApp(url);
+  const ctx = APP_CTX[url] || APP_CTX[url.replace(/^https?:\/\//, '')] || app.name + ' — TSM Matter AI platform';
+  const extra = context ? '\nDeal context: ' + context : '';
+
+  narrativeEl.className = 'aiout loading';
+  narrativeEl.textContent = 'Generating...';
+  tpEl.innerHTML = '';
+  promptsEl.innerHTML = '';
+
+  const result = await callGroq([
+    { role: 'system', content: "You are TSM Matter's chief sales strategist. Create sharp, specific, conversion-focused demo playbooks. Never be generic." },
+    { role: 'user',   content: `Demo playbook for:\nAPP: ${app.name}\nURL: ${url}\nCONTEXT: ${ctx}${extra}\nAUDIENCE: ${audience}\n\nReturn EXACTLY:\n\nNARRATIVE:\n[2-3 sentences. Lead with pain, show the fix. Be specific.]\n\nTALKING POINTS:\n• [Specific point with number/data]\n• [What to point to on screen]\n• [The moment that creates urgency]\n\nPROMPT 1 | [LABEL]:\n[Exact AI prompt to paste into app chat]\n\nPROMPT 2 | [LABEL]:\n[Second high-impact prompt]\n\nPROMPT 3 | [LABEL]:\n[Closing prompt showing ROI or next steps]` }
+  ], partial => {
+    const nm = partial.match(/NARRATIVE:\n([\s\S]*?)(?=TALKING POINTS:|$)/);
+    if (nm) { narrativeEl.className = 'aiout'; narrativeEl.textContent = nm[1].trim(); }
+
+    const tm = partial.match(/TALKING POINTS:\n([\s\S]*?)(?=PROMPT 1|$)/);
+    if (tm) {
+      tpEl.innerHTML = '';
+      tm[1].trim().split('\n').filter(l => l.trim()).forEach(pt => {
+        const d = document.createElement('div'); d.className = 'tp';
+        d.textContent = pt.replace(/^[•\-\*]\s*/, ''); tpEl.appendChild(d);
+      });
+    }
+
+    const fullPrompts = partial.match(/PROMPT \d[\s\S]*?(?=PROMPT \d|$)/g) || [];
+    promptsEl.innerHTML = '';
+    fullPrompts.forEach(block => {
+      const lm  = block.match(/PROMPT \d+\s*\|\s*([^\n]+)/);
+      const txm = block.match(/PROMPT \d+[^\n]*\n([\s\S]*?)$/);
+      if (lm && txm) {
+        const label = lm[1].trim(), text = txm[1].trim();
+        if (text.length > 10) {
+          const btn = document.createElement('button'); btn.className = 'pbtn';
+          btn.setAttribute('data-text', text);
+          btn.innerHTML = `<span class="ptag">${label}</span><span class="pprev">${text.substring(0, 85)}...</span>`;
+          btn.onclick = function() { copyPrompt(this); };
+          promptsEl.appendChild(btn);
+        }
+      }
+    });
+  });
+
+  if (result) generatedPlaybooks[url] = result;
+  else { narrativeEl.className = 'aiout'; narrativeEl.textContent = 'Generation failed — check server logs.'; }
+}
+
+async function generateAllPlaybooks() {
+  if (!selected.size) return;
+  const btn = document.getElementById('gen-all-btn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  const audience = document.getElementById('audience').value;
+  const context  = document.getElementById('extra-context').value;
+  const urls     = Array.from(selected);
+  const fill     = document.getElementById('pfill');
+  setStatus('Generating ' + urls.length + ' playbooks...');
+  for (let i = 0; i < urls.length; i++) {
+    fill.style.width = Math.round((i / urls.length) * 100) + '%';
+    const card = document.querySelector(`.pbcard[data-url="${CSS.escape(urls[i])}"]`);
+    if (card) {
+      await generatePlaybook(urls[i], audience, context,
+        card.querySelector('.narrative-out'),
+        card.querySelector('.tp-area'),
+        card.querySelector('.prompts-area'));
+    }
+  }
+  fill.style.width = '100%';
+  btn.disabled = false; btn.textContent = 'Regenerate All';
+  setStatus('All playbooks generated');
+  setTimeout(() => fill.style.width = '0%', 2000);
+}
+
+async function genSingle(url, btn) {
+  btn.disabled = true; btn.textContent = 'Generating...';
+  const audience = document.getElementById('audience').value;
+  const context  = document.getElementById('extra-context').value;
+  const card = document.querySelector(`.pbcard[data-url="${CSS.escape(url)}"]`);
+  await generatePlaybook(url, audience, context,
+    card.querySelector('.narrative-out'),
+    card.querySelector('.tp-area'),
+    card.querySelector('.prompts-area'));
+  btn.disabled = false; btn.textContent = 'Regenerate';
+}
+
+function copyPrompt(btn) {
+  const text = btn.getAttribute('data-text'); if (!text) return;
+  navigator.clipboard.writeText(text).catch(() => {});
+  btn.classList.add('copied');
+  const tag = btn.querySelector('.ptag'), orig = tag?.textContent;
+  if (tag) tag.textContent = 'COPIED ✓';
+  setTimeout(() => { btn.classList.remove('copied'); if (tag) tag.textContent = orig; }, 2000);
+}
+
+// ── COACH SCRIPT ──────────────────────────────────────────────────────────────
+async function generateCoachScript() {
+  const name     = document.getElementById('suite-name')?.value || 'this TSM demo';
+  const audience = document.getElementById('audience')?.value   || 'General stakeholder';
+  const apps     = Array.from(selected).map(url => findApp(url).name);
+  const outEl    = document.getElementById('coach-output');
+  const btn      = document.getElementById('coach-btn');
+  btn.disabled   = true;
+  outEl.style.display = 'block';
+  outEl.className = 'aiout loading';
+  outEl.textContent = 'Generating coaching script...';
+
+  await callGroq([
+    { role: 'system', content: "You are TSM Matter's master sales coach. Write tight, tactical, conversion-focused demo scripts with no filler." },
+    { role: 'user',   content: `Full coaching script for "${name}" to a ${audience}.\nApps: ${apps.join(' → ')}\n\n1. 60-second opening hook\n2. Transition between each app\n3. Most powerful thing to show in each app\n4. Top 3 objections + exact rebuttals\n5. Closing statement that drives a next-steps commitment` }
+  ], partial => { outEl.className = 'aiout'; outEl.textContent = partial; });
+
+  btn.disabled = false;
+}
+
+// ── DEPLOY ────────────────────────────────────────────────────────────────────
+async function deployToServer() {
+  const title    = document.getElementById('suite-name')?.value || 'TSM Demo Suite';
+  const audience = document.getElementById('audience')?.value   || 'General';
+  const apps     = Array.from(selected).map(url => findApp(url));
+  const btn      = document.getElementById('deploy-btn');
+  const resultEl = document.getElementById('deploy-result');
+
+  if (!apps.length) { alert('Select at least one app first.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Building suite page...';
+  resultEl.style.display = 'none';
+
+  try {
+    const res = await fetch(DEPLOY_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, audience, apps, narratives: generatedPlaybooks }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      resultEl.className = 'deploy-result ok';
+      resultEl.innerHTML = `✅ Suite live at: <a href="${data.url}" target="_blank" style="color:var(--green)">${data.url}</a>`;
+      document.getElementById('suite-url-box').textContent = data.url;
+      document.getElementById('suite-url-box').classList.add('live-url');
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch (e) {
+    resultEl.className = 'deploy-result err';
+    resultEl.innerHTML = '❌ Deploy failed: ' + e.message;
+  }
+  resultEl.style.display = 'block';
+  btn.disabled = false; btn.textContent = 'Rebuild suite page ↗';
+}
+
+// ── NARRATE PANEL ─────────────────────────────────────────────────────────────
+function renderNarratives() {
+  const nl = document.getElementById('narrative-list'); nl.innerHTML = '';
+  if (!selected.size) {
+    nl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--dim2);font-size:11px;">No apps selected. Go back and select apps first.</div>';
+    return;
+  }
+  selected.forEach(url => {
+    const app      = findApp(url);
+    const displayUrl = url.startsWith('http') ? url.replace('https://', '') : url;
+    const href       = openUrl(url);
+    const card = document.createElement('div');
+    card.className = 'pbcard';
+    card.setAttribute('data-url', url);
+    card.innerHTML = `
+      <div class="pbhdr">
+        <div class="pbhl"><span class="dot ${appStatus[url] || 'checking'}"></span><div><div class="pbn">${app.name}</div><div class="pbu">${displayUrl}</div></div></div>
+        <div class="pbhr">
+          <a class="oabtn" href="${href}" target="_blank">Open ↗</a>
+          <button class="gsbtn" onclick="genSingle('${url.replace(/'/g,"\\'")}',this)">Generate ↗</button>
+        </div>
+      </div>
+      <div class="pbbody">
+        <div class="pbs">Opening narrative</div>
+        <div class="narrative-out aiout" style="color:var(--dim2);">Click Generate or Generate All above...</div>
+        <div class="pbs">Talking points</div>
+        <div class="tp-area"></div>
+        <div class="pbs">Demo prompts — click to copy · paste into app AI chat</div>
+        <div class="prompts-area"></div>
+      </div>`;
+    nl.appendChild(card);
+
+    // Restore cached playbook if available
+    if (generatedPlaybooks[url]) restorePlaybook(card, generatedPlaybooks[url]);
+  });
+}
+
+function restorePlaybook(card, text) {
+  const ne = card.querySelector('.narrative-out');
+  const te = card.querySelector('.tp-area');
+  const pe = card.querySelector('.prompts-area');
+  const nm = text.match(/NARRATIVE:\n([\s\S]*?)(?=TALKING POINTS:|$)/);
+  if (nm) { ne.className = 'aiout'; ne.textContent = nm[1].trim(); }
+  const tm = text.match(/TALKING POINTS:\n([\s\S]*?)(?=PROMPT 1|$)/);
+  if (tm) {
+    te.innerHTML = '';
+    tm[1].trim().split('\n').filter(l => l.trim()).forEach(pt => {
+      const d = document.createElement('div'); d.className = 'tp';
+      d.textContent = pt.replace(/^[•\-\*]\s*/, ''); te.appendChild(d);
+    });
+  }
+  const fullPrompts = text.match(/PROMPT \d[\s\S]*?(?=PROMPT \d|$)/g) || [];
+  fullPrompts.forEach(block => {
+    const lm  = block.match(/PROMPT \d+\s*\|\s*([^\n]+)/);
+    const txm = block.match(/PROMPT \d+[^\n]*\n([\s\S]*?)$/);
+    if (lm && txm) {
+      const label = lm[1].trim(), t = txm[1].trim();
+      if (t.length > 10) {
+        const btn = document.createElement('button'); btn.className = 'pbtn';
+        btn.setAttribute('data-text', t);
+        btn.innerHTML = `<span class="ptag">${label}</span><span class="pprev">${t.substring(0, 85)}...</span>`;
+        btn.onclick = function() { copyPrompt(this); };
+        pe.appendChild(btn);
+      }
+    }
+  });
+}
+
+// ── DEPLOY PANEL ──────────────────────────────────────────────────────────────
+function buildDeployPanel() {
+  const name     = document.getElementById('suite-name')?.value || 'TSM Demo Suite';
+  const audience = document.getElementById('audience')?.value   || 'General';
+  const urls     = Array.from(selected);
+  const dl       = document.getElementById('deploy-list'); dl.innerHTML = '';
+
+  // Show preview URL
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+  document.getElementById('suite-url-box').textContent = `https://tsm-shell.fly.dev/html/suite/${slug}/`;
+
+  urls.forEach((url, i) => {
+    const app = findApp(url);
+    const href = openUrl(url);
+    const displayUrl = url.startsWith('http') ? url.replace('https://', '') : url;
+    const row = document.createElement('div'); row.className = 'drow';
+    row.innerHTML = `<div class="drowl"><span style="font-size:9px;color:var(--dim2);min-width:18px;">${i+1}.</span><span class="dot ${appStatus[url] || 'dead'}"></span><span style="font-size:11px;color:var(--text);">${app.name}</span><span style="font-size:9px;color:var(--dim2);margin-left:7px;">${displayUrl}</span></div><a class="oabtn" href="${href}" target="_blank">Open ↗</a>`;
+    dl.appendChild(row);
+  });
+}
+
+// ── SIDEBAR + GRID ────────────────────────────────────────────────────────────
+function renderSidebar() {
+  const f = document.getElementById('sidebar-filters'); f.innerHTML = '';
+  ['All', ...SECTORS.map(s => s.label)].forEach(lbl => {
+    const count = lbl === 'All' ? allApps().length : (SECTORS.find(s => s.label === lbl)?.apps.length || 0);
+    const d = document.createElement('div');
+    d.className = 'fitem' + (lbl === activeFilter ? ' active' : '');
+    d.innerHTML = `<span>${lbl}</span><span class="fcount">${count}</span>`;
+    d.onclick = () => { activeFilter = lbl; renderSidebar(); renderGrid(); };
+    f.appendChild(d);
+  });
+}
+
+function renderGrid() {
+  const g = document.getElementById('app-grid'); g.innerHTML = '';
+  SECTORS.forEach(s => {
+    if (activeFilter !== 'All' && activeFilter !== s.label) return;
+    const hdr = document.createElement('div'); hdr.className = 'shdr';
+    hdr.innerHTML = `${s.label}<span class="shdr-count">${s.apps.length}</span>`;
+    g.appendChild(hdr);
+    const grid = document.createElement('div'); grid.className = 'agrid';
+    s.apps.forEach(a => {
+      const status = appStatus[a.url] || 'checking';
+      const c = document.createElement('div');
+      c.className = 'acard' + (selected.has(a.url) ? ' sel' : '');
+      c.setAttribute('data-url', a.url);
+      const displayUrl = a.url.startsWith('http') ? a.url.replace('https://', '') : a.url;
+      c.innerHTML = `<div class="aname"><span class="dot ${status}"></span>${a.name}</div><div class="aurl">${displayUrl}</div>`;
+      c.onclick = () => {
+        if (selected.has(a.url)) { selected.delete(a.url); c.classList.remove('sel'); }
+        else { selected.add(a.url); c.classList.add('sel'); }
+        updateCount(); renderPills();
+      };
+      grid.appendChild(c);
+    });
+    g.appendChild(grid);
+  });
+}
+
+function updateCount() {
+  document.getElementById('sel-count').textContent = selected.size;
+  document.getElementById('pill-count').textContent = selected.size;
+  const liveCount = Object.values(appStatus).filter(v => v === 'live').length;
+  setStatus(selected.size + ' selected · ' + liveCount + ' live');
+}
+function renderPills() {
+  const p = document.getElementById('pills-sidebar'); p.innerHTML = '';
+  selected.forEach(url => {
+    const app = findApp(url);
+    const pill = document.createElement('div'); pill.className = 'pill';
+    pill.innerHTML = `${app.name}<span class="px" onclick="removePill('${url.replace(/'/g,"\\'")}')">✕</span>`;
+    p.appendChild(pill);
+  });
+}
+function removePill(url) {
+  selected.delete(url);
+  document.querySelectorAll(`.acard[data-url="${CSS.escape(url)}"]`).forEach(c => c.classList.remove('sel'));
+  updateCount(); renderPills();
+}
+function clearAll()      { selected.clear(); renderGrid(); updateCount(); renderPills(); }
+function selectSector()  {
+  if (activeFilter === 'All') return;
+  const s = SECTORS.find(x => x.label === activeFilter);
+  if (s) { s.apps.forEach(a => selected.add(a.url)); renderGrid(); updateCount(); renderPills(); }
+}
+function copySuiteUrl()  { navigator.clipboard.writeText(document.getElementById('suite-url-box').textContent).catch(() => {}); }
+function openFirst()     { const first = Array.from(selected)[0]; if (first) window.open(openUrl(first), '_blank'); }
+function goNarrate()     { if (!selected.size) { alert('Select at least one app first.'); return; } renderNarratives(); switchTab('narrate', document.querySelectorAll('.tab-btn')[1]); }
+function goDeploy()      { buildDeployPanel(); switchTab('deploy', document.querySelectorAll('.tab-btn')[2]); }
+
+function switchTab(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'narrate') renderNarratives();
+  if (id === 'deploy')  buildDeployPanel();
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+renderSidebar();
+renderGrid();
+updateCount();
+// Start pinging after a short delay so UI is painted first
+setTimeout(pingAll, 800);
+</script>
+</body>
+</html>

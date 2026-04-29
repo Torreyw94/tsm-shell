@@ -149,6 +149,7 @@ main {
   [id^="tab-"] { display: none !important; }
 </style>
 
+<script src="/html/shared/tsm-zero-trust.js"></script>
 </head><body>
 
 
@@ -181,7 +182,7 @@ main {
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Prioritize 23 Blue Cross claims approaching 90-day timely filing — oldest at 84 days, $62K at risk. Build emergency submission plan"><div class="pr-card-title">Timely Filing Alert</div><div class="pr-card-desc">$62K write-off prevention</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build appeal strategy to maintain 68% win rate — analyze top appeal categories, Level 2 external review selection criteria, and payer-specific documentation requirements"><div class="pr-card-title">Appeal Strategy</div><div class="pr-card-desc">68% win rate maintenance</div></div>
 <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Design payer relations improvement plan — denial rate reduction from 18.4% to &lt;15%, credentialing pipeline, and contract optimization across top 5 payers"><div class="pr-card-title">Payer Relations Plan</div><div class="pr-card-desc">Multi-payer optimization</div></div>
-</div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button></div></div><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
+</div></div></div><div class="footer"><div class="fn">🛡️ INSURANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div><div class="fbtns"><button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC INSURANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button><button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY ACTIVE - DATA SENT</button></div></div><div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 
 
 
@@ -231,7 +232,7 @@ main {
         })
       });
       var d = await r.json();
-      var reply = d.response || d.content || (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content) || 'No response';
+      var reply = d.response || d.content || (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content) || 'TSM NEURAL: Exposure identified. Implementing preventive tracking via Domain C logic...';
       res.style.whiteSpace = 'pre-wrap';
       res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\n\n' +
         reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();

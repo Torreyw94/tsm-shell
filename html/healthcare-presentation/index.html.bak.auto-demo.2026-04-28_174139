@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TSM Healthcare Operations Layer</title>
+<link rel="stylesheet" href="/html/assets/tsm/ops-presentation-layer.css?v=1"/>
+</head>
+<body>
+<script>
+window.TSM_OPS = {
+  slug:"healthcare",
+  shortName:"Healthcare",
+  title:"TSM HEALTHCARE OPERATIONS LAYER",
+  accent:"#00e0ff",
+  offer:"Revenue cycle, prior auth, denials, compliance, and office operations — as a system.",
+  subtitle:"Built for healthcare operations: prior authorization pressure, claim denials, documentation gaps, billing risk, payer friction, compliance monitoring, and executive-ready BNCA reporting.",
+  defaultOutcome:"Healthcare workflow pressure is converted into owner-lane action before revenue or compliance risk escalates.",
+  timeSaved:"15–25 hrs",
+  manualCost:"$6K–$10K/mo",
+  systemPrice:"$1,750/mo",
+  close:"Healthcare teams lose time across auth, denials, documentation, and office throughput. TSM turns those pressures into clear next actions before revenue is lost.",
+  allBnca:"Prioritize prior authorization blockers, denial appeals, documentation gaps, compliance risk, and office throughput pressure. Relay executive summary to HC Main Strategist.",
+
+  kpis:[
+    {label:"Revenue At Risk",value:"$229K",caption:"claims/auth pressure"},
+    {label:"Recoverable",value:"$78K",caption:"next 72 hours"},
+    {label:"Auth Delay",value:"56h",caption:"payer friction"},
+    {label:"Nodes Reporting",value:"13",caption:"HC node coverage"}
+  ],
+
+  nodes:[
+    {name:"HC Billing",role:"claims + AR pressure",status:"READY"},
+    {name:"HC Compliance",role:"HIPAA + documentation",status:"READY"},
+    {name:"HC Medical",role:"clinical documentation",status:"READY"},
+    {name:"HC Insurance",role:"payer + auth friction",status:"WATCH"},
+    {name:"HC Legal",role:"risk + policy review",status:"READY"},
+    {name:"HC Grants",role:"funding + deadlines",status:"READY"},
+    {name:"HC Pharmacy",role:"formulary + medication risk",status:"READY"},
+    {name:"HC Vendors",role:"contracts + procurement",status:"READY"},
+    {name:"HC Financial",role:"margin + cash visibility",status:"READY"},
+    {name:"HC Tax Prep",role:"tax deadlines + filings",status:"READY"},
+    {name:"HC Operations",role:"staffing + throughput",status:"WATCH"},
+    {name:"HC DME / Prior Auth",role:"device + approval workflows",status:"WATCH"},
+    {name:"HC Strategist",role:"executive BNCA synthesis",status:"READY"}
+  ],
+
+  lanes:[
+    {name:"Prior Authorization Lane",metric:"56h",detail:"average auth delay",items:["payer follow-up","missing clinical support","owner-lane routing"]},
+    {name:"Denials Lane",metric:"12.4%",detail:"denial pressure",items:["appeal packet","root cause","billing review"]},
+    {name:"Documentation Lane",metric:"23",detail:"records needing completion",items:["signatures","clinical notes","medical necessity"]},
+    {name:"Compliance Lane",metric:"4",detail:"open documentation flags",items:["HIPAA training","consent forms","audit trail"]},
+    {name:"Executive Reporting Lane",metric:"READY",detail:"BNCA report available",items:["risk summary","next action","owner lanes"]}
+  ],
+
+  actions:[
+    {
+      button:"Run Prior Auth Review",
+      title:"Prior Authorization Review",
+      lines:["56-hour auth delay detected","missing medical necessity support flagged","payer follow-up owner lane assigned"],
+      bnca:"Prioritize highest-value auth blockers, attach clinical support, and route payer follow-up before denial risk increases.",
+      outcome:"Prior auth pressure becomes a tracked owner-lane action.",
+      timeSaved:"8–12 hrs"
+    },
+    {
+      button:"Run Denials Sweep",
+      title:"Claim Denials Sweep",
+      lines:["14 claim denials queued","appeal-ready claims identified","root-cause notes prepared"],
+      bnca:"Package appeal support, rank denials by recovery value, and assign billing follow-up.",
+      outcome:"Denial backlog becomes recovery queue.",
+      timeSaved:"10–16 hrs"
+    },
+    {
+      button:"Run Compliance Shield",
+      title:"Healthcare Compliance Sweep",
+      lines:["4 documentation gaps identified","HIPAA training gap flagged","audit trail prepared"],
+      bnca:"Resolve consent, training, and documentation gaps before external audit exposure.",
+      outcome:"Compliance risk becomes visible remediation plan.",
+      timeSaved:"8–12 hrs"
+    }
+  ],
+
+  docs:[
+    {
+      icon:"📝",
+      title:"Prior Authorization Packet",
+      subtitle:"payer auth + clinical support",
+      risk:"approval delay / denial risk",
+      impact:"56-hour auth delay with missing support identified",
+      bnca:"Attach medical necessity support, assign payer follow-up, and escalate high-value auths first.",
+      outcome:"Prior auth friction converted into payer-ready action.",
+      coach:"Point to auth delay and say: “This is where revenue gets stuck before it becomes a denial.”",
+      sample:"Prior Authorization Packet ready. Run selected workflow.",
+      timeSaved:"8–12 hrs"
+    },
+    {
+      icon:"📉",
+      title:"Claim Denial Report",
+      subtitle:"denials + appeal readiness",
+      risk:"lost reimbursement",
+      impact:"14 denials queued for appeal review",
+      bnca:"Prioritize appeal-ready claims by recovery value and assign billing owner lanes.",
+      outcome:"Denial backlog converted into recoverable revenue workflow.",
+      coach:"Point to denials and say: “This is no longer a denial list — it is a recovery queue.”",
+      sample:"Claim Denial Report ready. Run selected workflow.",
+      timeSaved:"10–16 hrs"
+    },
+    {
+      icon:"📋",
+      title:"Clinical Documentation Review",
+      subtitle:"notes + signatures + medical necessity",
+      risk:"billing and compliance exposure",
+      impact:"23 incomplete records flagged before billing submission",
+      bnca:"Route incomplete records to responsible owners and protect billing revenue before submission.",
+      outcome:"Documentation risk becomes owner-lane completion plan.",
+      coach:"Point to incomplete records and say: “This catches revenue risk before billing submits.”",
+      sample:"Clinical Documentation Review ready. Run selected workflow.",
+      timeSaved:"6–10 hrs"
+    },
+    {
+      icon:"⚖️",
+      title:"Compliance Audit Packet",
+      subtitle:"HIPAA + consent + audit trail",
+      risk:"audit exposure",
+      impact:"4 compliance gaps surfaced before external review",
+      bnca:"Resolve consent, training, pharmacy log, and access review gaps before audit.",
+      outcome:"Compliance cleanup becomes continuous monitoring.",
+      coach:"Say: “This is the work that usually happens in panic mode before an audit.”",
+      sample:"Compliance Audit Packet ready. Run selected workflow.",
+      timeSaved:"8–12 hrs"
+    }
+  ]
+};
+</script>
+
+<header>
+<h1 id="title"></h1>
+<div class="sub" id="sub"></div>
+<div class="price" id="price"></div>
+<button class="primary" onclick="OPS.runDoc()">RUN SELECTED WORKFLOW</button>
+<button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
+<button onclick="OPS.pushMain()">OPEN HC MAIN STRATEGIST</button>
+<button onclick="OPS.exportReport()">EXPORT PDF-READY</button>
+</header>
+
+<main class="wrap">
+<section class="grid" id="kpis"></section>
+
+<section class="panel">
+<h2>LIVE HEALTHCARE WORKFLOW EXECUTION</h2>
+<div id="actions"></div>
+<div class="output" id="liveOut">Ready. Execute a healthcare workflow button.</div>
+</section>
+
+<section class="panel">
+<h2>HEALTHCARE DOCUMENT / WORKFLOW INTELLIGENCE RUNNER</h2>
+<div class="grid" id="docs"></div>
+<div style="margin-top:12px">
+<button class="primary" onclick="OPS.runDoc()">RUN SELECTED WORKFLOW</button>
+<button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
+<button onclick="OPS.pushMain()">PUSH TO HEALTHCARE MAIN STRATEGIST</button>
+</div>
+<div class="output" id="docOut">Select a healthcare workflow.</div>
+</section>
+
+<section class="panel">
+<h2>ALL HC NODE POSTURES</h2>
+<div class="grid" id="nodes"></div>
+</section>
+
+<section class="panel">
+<h2>HEALTHCARE OPERATIONS LANES</h2>
+<div class="grid" id="lanes"></div>
+</section>
+
+<section class="panel">
+<h2>ACTION LOG</h2>
+<div class="output log" id="log">[READY] Awaiting healthcare actions...</div>
+</section>
+
+<section class="outcome">
+<b>SYSTEM RESULT · BUSINESS OUTCOME</b>
+<div style="margin-top:10px" id="outcomeLine"></div>
+<div class="money">Healthcare work normally chased manually across EHRs, payer portals, email, spreadsheets, and office queues — organized instantly by TSM.</div>
+</section>
+
+<section class="roi">
+<b>WHY THIS BEATS MANUAL COORDINATION</b>
+<div class="grid" style="margin-top:12px">
+<div class="card"><b>Estimated Time Saved</b><div class="val" id="timeSaved"></div><span>auth chasing · denial follow-up · documentation review</span></div>
+<div class="card"><b>Manual Workload Replaced</b><div class="val">$6K–$10K/mo</div><span>typical healthcare coordination cost</span></div>
+<div class="card"><b>TSM Healthcare Layer</b><div class="val">$1,750/mo</div><span>visible system · action log · executive reporting</span></div>
+</div>
+<div class="money">Instead of hiring more coordination capacity and hoping the process improves, you can see the system organize the work immediately.</div>
+</section>
+
+<section class="close">
+<b>DEMO COACH · CLICK → SAY → PAUSE</b>
+<div class="output" id="coach"></div>
+</section>
+
+<section class="close">
+<b>30-SECOND CLOSE</b>
+<p>“This is the work your team is already doing. The difference is it is being found, organized, and pushed forward automatically. Healthcare teams lose time across prior auth, denials, documentation, compliance, and office throughput. TSM gives you a visible operating layer for $1,750/month. Do we start with prior auth and denials, or go full visibility from day one?”</p>
+</section>
+</main>
+
+<div class="footer">
+<span>● TSM HEALTHCARE OPERATIONS LAYER · PRESENTATION</span>
+<span>READY</span>
+</div>
+
+<script src="/html/assets/tsm/ops-presentation-layer.js?v=1"></script>
+</body>
+</html>
