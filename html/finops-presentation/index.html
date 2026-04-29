@@ -974,5 +974,99 @@ function setFinopsMode(mode){
 })();
 </script>
 
+
+<script id="finops-desktop-voice-unlock">
+(function(){
+  if(window.__finopsVoiceUnlockInstalled) return;
+  window.__finopsVoiceUnlockInstalled = true;
+
+  window.tsmVoiceUnlocked = false;
+
+  window.unlockVoice = function(){
+    if(window.tsmVoiceUnlocked) return;
+    window.tsmVoiceUnlocked = true;
+
+    try{
+      const u = new SpeechSynthesisUtterance(" ");
+      u.volume = 0;
+      speechSynthesis.speak(u);
+    }catch(e){}
+  };
+
+  window.speakTSM = function(text){
+    try{
+      if(!window.tsmVoiceUnlocked) return;
+
+      const voices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : [];
+      const preferred =
+        voices.find(v => /Google|Samantha|Microsoft|Natural/i.test(v.name)) ||
+        voices.find(v => /en/i.test(v.lang)) ||
+        voices[0];
+
+      const u = new SpeechSynthesisUtterance(String(text || ""));
+      if(preferred) u.voice = preferred;
+      u.rate = 0.96;
+      u.pitch = 1;
+      u.volume = 1;
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }catch(e){}
+  };
+
+  document.addEventListener("click", function(){
+    window.unlockVoice();
+  }, {once:true});
+
+  // Patch flow guide so desktop narration speaks after button click
+  const patchGuide = setInterval(function(){
+    if(typeof window.startFinopsFlowGuide === "function" && !window.__finopsFlowGuideVoicePatched){
+      window.__finopsFlowGuideVoicePatched = true;
+
+      const original = window.startFinopsFlowGuide;
+      window.startFinopsFlowGuide = function(){
+        window.unlockVoice();
+        window.speakTSM("Starting guided FinOps workflow. This shows how accounting work moves from intake to controller action.");
+        original();
+      };
+
+      clearInterval(patchGuide);
+    }
+  }, 300);
+
+  // Patch run workflow button
+  const patchButtons = setInterval(function(){
+    const runBtn = document.getElementById("finopsRunAnchorBtn");
+    if(runBtn && !runBtn.__voicePatched){
+      runBtn.__voicePatched = true;
+      const old = runBtn.getAttribute("onclick") || "";
+      runBtn.setAttribute(
+        "onclick",
+        "unlockVoice(); speakTSM('Starting workflow. This replaces manual accounting coordination with clear next actions.'); " + old
+      );
+      clearInterval(patchButtons);
+    }
+  }, 300);
+
+  // Patch visible guide/caption updates with speech when possible
+  const observeCaption = setInterval(function(){
+    const cap = document.getElementById("finopsFlowCaption");
+    if(cap && !cap.__voiceObserved){
+      cap.__voiceObserved = true;
+      let last = "";
+      new MutationObserver(function(){
+        const txt = (cap.textContent || "").trim();
+        if(txt && txt !== last && window.tsmVoiceUnlocked){
+          last = txt;
+          window.speakTSM(txt);
+        }
+      }).observe(cap, {childList:true, subtree:true, characterData:true});
+      clearInterval(observeCaption);
+    }
+  }, 300);
+
+})();
+</script>
+
 </body>
 </html>
