@@ -879,5 +879,152 @@ function bookHealthcareWalkthrough(){
 })();
 </script>
 
+
+<style id="tsm-howto-assistant-style">
+#tsmHowToButton{
+  position:fixed;right:18px;bottom:92px;z-index:1000000;
+  background:#00e0ff;color:#001018;border:none;border-radius:999px;
+  padding:13px 16px;font:900 12px ui-monospace,Menlo,monospace;
+  box-shadow:0 0 28px rgba(0,224,255,.35);cursor:pointer
+}
+#tsmHowToPanel{
+  position:fixed;right:18px;bottom:148px;z-index:1000000;
+  width:390px;max-width:calc(100vw - 36px);max-height:72vh;overflow:auto;
+  background:#02070d;color:#d9f3ff;border:1px solid #00e0ff;border-radius:16px;
+  padding:16px;font:12px ui-monospace,Menlo,monospace;
+  box-shadow:0 0 42px rgba(0,224,255,.28);display:none
+}
+#tsmHowToPanel h3{margin:0 0 8px;color:#00e0ff;letter-spacing:.12em}
+#tsmHowToPanel .mini{color:#8fb0c8;line-height:1.5;margin-bottom:12px}
+#tsmHowToPanel button{
+  display:block;width:100%;text-align:left;margin:8px 0;padding:10px;
+  background:#061018;color:#d9f3ff;border:1px solid #123050;border-radius:10px;cursor:pointer
+}
+#tsmHowToPanel button:hover{border-color:#00e0ff}
+#tsmHowToAnswer{margin-top:12px;white-space:pre-wrap;line-height:1.55;background:#061018;border:1px solid #123050;border-radius:10px;padding:12px}
+</style>
+
+<button id="tsmHowToButton" onclick="toggleHowToAssistant()">How To</button>
+
+<div id="tsmHowToPanel">
+  <h3>HOW TO GUIDE</h3>
+  <div class="mini">Healthcare Operations Layer assistant. Use this during demos or handoffs to guide end users through available features.</div>
+
+  <button onclick="howToAnswer('demo')">🎬 Run the guided demo</button>
+  <button onclick="howToAnswer('workflow')">▶ Run a healthcare workflow</button>
+  <button onclick="howToAnswer('fourlayer')">▣ Understand the 4-layer command flow</button>
+  <button onclick="howToAnswer('close')">🔒 Use the executive close panel</button>
+  <button onclick="howToAnswer('strategist')">🧠 Send output to HC Main Strategist</button>
+  <button onclick="howToAnswer('portal')">📊 Open Executive Portal</button>
+  <button onclick="howToAnswer('pilot')">✅ Start a 30-day pilot path</button>
+  <button onclick="howToAnswer('features')">✦ Show all customized features</button>
+
+  <div id="tsmHowToAnswer">Select a guide topic above.</div>
+</div>
+
+<script id="tsm-howto-assistant-engine">
+function toggleHowToAssistant(){
+  const p=document.getElementById('tsmHowToPanel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
+
+function howToAnswer(topic){
+  const answers = {
+    demo:
+`AUTO DEMO MODE
+1. Click “🎬 AUTO DEMO MODE”.
+2. Say: “I’ll let the system walk you through it.”
+3. Let the narrator explain the workflow.
+4. Wait for the Executive Summary Close panel.
+5. Choose Pilot or Technical Walkthrough.
+
+Best use: first-time prospect demo.`,
+
+    workflow:
+`RUN A HEALTHCARE WORKFLOW
+1. Pick a workflow area: prior auth, denials, compliance, or documentation.
+2. Click “RUN SELECTED WORKFLOW” or a live workflow button.
+3. Review the output.
+4. Point to revenue risk, compliance risk, or time saved.
+5. Push result to HC Main Strategist.
+
+Best line: “This is not a report — it is an action plan.”`,
+
+    fourlayer:
+`4-LAYER COMMAND FLOW
+1. Healthcare Command Center = frontline pressure.
+2. HC Strategist = BNCA synthesis.
+3. Main Strategist = executive action relay.
+4. Executive Portal = leadership visibility.
+
+Best line:
+“This is not four separate apps. This is one healthcare command flow.”`,
+
+    close:
+`EXECUTIVE SUMMARY CLOSE
+1. Click “🔒 EXECUTIVE SUMMARY CLOSE”.
+2. Let the value panel appear.
+3. Show Revenue at Risk, Recoverable, Time Saved.
+4. Use the bottom action rail.
+5. Ask: “Do we start with a 30-day pilot or walk your team through it live?”
+
+Do not over-explain. Pause after the question.`,
+
+    strategist:
+`HC MAIN STRATEGIST
+1. Click “OPEN HC MAIN STRATEGIST”.
+2. Confirm Nodes Reporting, Risk Posture, and Report Status.
+3. Read the BNCA summary.
+4. Explain: “Leadership sees what is open, risky, and next.”
+
+This is the executive action layer.`,
+
+    portal:
+`EXECUTIVE PORTAL
+1. Open the Executive Portal.
+2. Use Healthcare view for operational posture.
+3. Use Combined Executive View for leadership summary.
+4. Show node reporting, risk posture, and BNCA summary.
+
+Best line:
+“Executives do not need raw documents — they need clear decisions.”`,
+
+    pilot:
+`30-DAY PILOT PATH
+Recommended start:
+• Prior authorization
+• Denials
+• Compliance documentation
+• Executive BNCA reporting
+
+Goal:
+Prove measurable value in 30 days before expanding to all HC nodes.
+
+Price anchor:
+$1,750/month operating layer.`,
+
+    features:
+`CUSTOMIZED FEATURES AVAILABLE
+• Auto Demo Narrator
+• Executive Summary Close
+• Fixed action rail
+• Healthcare workflow runner
+• Prior auth review
+• Denials sweep
+• Compliance shield
+• Document/workflow intelligence runner
+• 13 HC node visibility
+• 4-layer command flow
+• HC Main Strategist relay
+• Executive Portal visibility
+• Pilot path capture
+• PDF-ready export
+• Demo coach talk track`
+  };
+
+  document.getElementById('tsmHowToAnswer').textContent = answers[topic] || 'Guide topic unavailable.';
+}
+</script>
+
 </body>
 </html>
