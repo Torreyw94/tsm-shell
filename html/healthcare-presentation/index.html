@@ -735,5 +735,83 @@ TALK TRACK:
 })();
 </script>
 
+
+<script id="tsm-fixed-closing-action-rail">
+(function(){
+  if(window.__tsmFixedClosingRail) return;
+  window.__tsmFixedClosingRail = true;
+
+  function addRail(){
+    if(!document.getElementById("closingLock") || document.getElementById("closingLock").style.display === "none") return;
+
+    let rail = document.getElementById("closingLockActionRail");
+    if(!rail){
+      rail = document.createElement("div");
+      rail.id = "closingLockActionRail";
+      document.body.appendChild(rail);
+    }
+
+    rail.style.cssText = `
+      position:fixed;
+      left:50%;
+      bottom:44px;
+      transform:translateX(-50%);
+      z-index:1000001;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:calc(100% - 40px);
+      max-width:860px;
+      padding:12px;
+      background:#02070d;
+      border:1px solid #00e0ff;
+      border-radius:14px;
+      box-shadow:0 0 36px rgba(0,224,255,.28);
+    `;
+
+    rail.innerHTML = `
+      <button onclick="startHealthcarePilot()" style="background:#00e0ff;color:#001018;border:none;padding:13px 16px;border-radius:9px;font-weight:900;cursor:pointer">
+        START 30-DAY PILOT
+      </button>
+      <button onclick="bookHealthcareWalkthrough()" style="background:transparent;border:1px solid #00e0ff;color:#00e0ff;padding:13px 16px;border-radius:9px;font-weight:900;cursor:pointer">
+        BOOK TECHNICAL WALKTHROUGH
+      </button>
+      <button onclick="location.href='/html/hc-main-strategist/index.html?v=closing-lock'" style="background:transparent;border:1px solid #00f59f;color:#00f59f;padding:13px 16px;border-radius:9px;font-weight:900;cursor:pointer">
+        OPEN HC MAIN STRATEGIST
+      </button>
+    `;
+
+    const modal = document.querySelector("#closingLock > div");
+    if(modal){
+      modal.style.maxHeight = "calc(100vh - 185px)";
+      modal.style.marginBottom = "150px";
+      modal.style.overflowY = "auto";
+    }
+  }
+
+  const oldShow = window.showClosingLock;
+  window.showClosingLock = function(){
+    if(typeof oldShow === "function") oldShow();
+    setTimeout(addRail, 50);
+    setTimeout(addRail, 300);
+  };
+
+  const oldHide = window.hideClosingLock;
+  window.hideClosingLock = function(){
+    if(typeof oldHide === "function") oldHide();
+    const rail = document.getElementById("closingLockActionRail");
+    if(rail) rail.remove();
+  };
+
+  document.addEventListener("click", function(e){
+    if(e.target && String(e.target.textContent || "").toLowerCase().includes("close")){
+      const rail = document.getElementById("closingLockActionRail");
+      if(rail) rail.remove();
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
