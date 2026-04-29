@@ -31,17 +31,51 @@ main{padding-bottom:44px}
 <body>
 <header>
 <h1>TSM FINANCIAL OPERATIONS · LIVE EXECUTIVE DEMO</h1>
-<div class="sub">Financial Command → ASC 958 / Financial Intelligence → FinOps Main Strategist</div>
+<div class="sub">Daily Accounting Dashboard → ASC 958 / Financial Review Engine → Controller Action Plan</div>
 </header>
 
 <main class="wrap">
+
+<section class="panel" id="finopsOperatorMode" style="margin:18px 36px;border:1px solid #00e0ff;background:#061018;border-radius:16px;padding:18px">
+  <h2 style="color:#00e0ff;margin-top:0">START HERE · STAFF ACCOUNTANT WORKFLOW</h2>
+  <div style="color:#d9f3ff;line-height:1.65">
+    This system works like a daily accounting checklist:
+    <br><br>
+    <b>1.</b> Select the work you need to process: AP, AR, bank reconciliation, 1099, GL, variance, or audit findings.<br>
+    <b>2.</b> Click <b>RUN SELECTED ACCOUNTING WORKFLOW</b> to identify gaps, risks, and missing support.<br>
+    <b>3.</b> Open the <b>Controller Action Plan</b> to see what needs to happen next.<br>
+    <b>4.</b> Use the dashboard to keep AP, AR, reconciliation, tax readiness, compliance, and close prep moving.
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px">
+    <div class="card"><b>Today’s Work</b><div class="val">AP / AR</div><span>Invoices, collections, cash timing</span></div>
+    <div class="card"><b>Month-End</b><div class="val">REC</div><span>Bank rec, GL detail, close package</span></div>
+    <div class="card"><b>Tax Readiness</b><div class="val">1099</div><span>W-9, vendor thresholds, deadline windows</span></div>
+    <div class="card"><b>Audit Support</b><div class="val">DOCS</div><span>Approvals, support, compliance trail</span></div>
+  </div>
+
+  <div class="output" style="margin-top:16px;white-space:pre-wrap">
+HOW TO READ THIS PAGE:
+
+Daily Accounting Dashboard = What needs attention now.
+Financial Review Engine = What problems were found in the work.
+Tax / 1099 = What needs to be ready before filing deadlines.
+Compliance Shield = What documentation or approval gaps could create audit risk.
+Zero Trust = Who has access to financial systems and whether access should be reviewed.
+Controller Action Plan = What to fix, prioritize, or report next.
+
+Plain English:
+Upload or select accounting work → run the workflow → get next actions → send to controller.
+  </div>
+</section>
+
 
 <div class="flow">
   <div class="step"><b>1</b><br>Client Workload</div>
   <div class="step"><b>2</b><br>Financial Intel</div>
   <div class="step"><b>3</b><br>Tax / 1099</div>
   <div class="step"><b>4</b><br>Compliance + Zero Trust</div>
-  <div class="step"><b>5</b><br>Strategist BNCA</div>
+  <div class="step"><b>5</b><br>Next Action Plan</div>
   <div class="step"><b>6</b><br>Controller Acts</div>
 </div>
 
@@ -53,8 +87,8 @@ main{padding-bottom:44px}
     <div class="metric"><b>12</b><br>AP invoices</div>
     <div class="metric"><b>6</b><br>security gaps</div>
     <div class="output" id="cmdOut">Ready to run Financial Intel, Tax Intelligence, Compliance Shield, Zero Trust, and Strategist.</div>
-    <button class="primary" onclick="runCycle()">RUN FINOPS CYCLE</button>
-    <button onclick="location.href='/html/financial-command/index.html?v=finops-demo'">OPEN FINANCIAL COMMAND</button>
+    <button class="primary" onclick="runCycle()">RUN FULL ACCOUNTING REVIEW</button>
+    <button onclick="location.href='/html/financial-command/index.html?v=finops-demo'">OPEN DAILY ACCOUNTING DASHBOARD</button>
   </section>
 
   <section class="card">
@@ -75,7 +109,7 @@ main{padding-bottom:44px}
     <div class="metric"><b>$1,750/mo</b><br>operating system</div>
     <div class="output" id="mainOut">Waiting for FinOps cycle output...</div>
     <button onclick="pushMain()">PUSH TO FINOPS MAIN</button>
-    <button onclick="location.href='/html/finops-main-strategist/index.html?v=finops-demo'">OPEN FINOPS MAIN</button>
+    <button onclick="location.href='/html/finops-main-strategist/index.html?v=finops-demo'">OPEN CONTROLLER ACTION PLAN</button>
   </section>
 </div>
 
@@ -311,7 +345,7 @@ function showConfirm(title, text){
       BOOK WALKTHROUGH
     </button>
     <button onclick="openMain()" style="background:transparent;color:#00f59f;border:1px solid #00f59f;padding:11px 14px;border-radius:8px;font-weight:900;cursor:pointer">
-      OPEN FINOPS STRATEGIST
+      OPEN CONTROLLER ACTION PLAN
     </button>
   `;
 
@@ -428,7 +462,7 @@ function showConfirm(title, text){
       <b>1 · FINANCIAL COMMAND</b>
       <div class="val">$18.4K</div>
       <p>Shows the live operating floor: AR risk, AP invoices, tax window, compliance score, zero-trust posture, and strategist action.</p>
-      <button onclick="window.open('/html/financial-command/index.html?v=finops-final','_blank')">OPEN FINANCIAL COMMAND</button>
+      <button onclick="window.open('/html/financial-command/index.html?v=finops-final','_blank')">OPEN DAILY ACCOUNTING DASHBOARD</button>
     </div>
 
     <div class="card">
@@ -442,7 +476,7 @@ function showConfirm(title, text){
       <b>3 · FINOPS MAIN STRATEGIST</b>
       <div class="val">BNCA</div>
       <p>Turns accounting work into executive action: lanes, action log, outcome summary, and controller-ready recommendations.</p>
-      <button onclick="window.open('/html/finops-main-strategist/index.html?v=finops-final','_blank')">OPEN FINOPS STRATEGIST</button>
+      <button onclick="window.open('/html/finops-main-strategist/index.html?v=finops-final','_blank')">OPEN CONTROLLER ACTION PLAN</button>
     </div>
 
     <div class="card">
@@ -476,16 +510,16 @@ Say: “This is the accounting workload your team already handles: AP, AR, recon
 2. Click Bank Reconciliation or AR Ledger.
 Say: “I’m starting with one workflow because that’s where month-end pressure shows up first.”
 
-3. Click RUN DOCUMENT.
+3. Click RUN SELECTED ACCOUNTING WORKFLOW.
 Say: “This is the work normally chased manually across QuickBooks, bank feeds, spreadsheets, and email.”
 
-4. Open Financial Command.
+4. Open Daily Accounting Dashboard.
 Say: “This is the live operating floor — every node has a role.”
 
-5. Open FinOps Main Strategist.
+5. Open Controller Action Plan.
 Say: “Now it’s no longer activity. It’s a next action for the controller.”
 
-6. Click EXECUTIVE CLOSE.
+6. Click SHOW ROI / PILOT OPTIONS.
 Say: “Most teams pay $5K–$7K/month to coordinate this manually. TSM gives you a visible operating system for $1,750/month.”
 
 7. Point to the rail.
@@ -494,6 +528,97 @@ Say: “At this point, it’s just how you want to start — most teams begin wi
 Then stop talking.
   </div>
 </section>
+
+
+<style id="finops-operator-helper-style">
+#finopsOperatorHelpBtn{
+  position:fixed;right:18px;bottom:104px;z-index:1000000;
+  background:#00e0ff;color:#001018;border:none;border-radius:999px;
+  padding:12px 15px;font:900 12px ui-monospace,Menlo,monospace;
+  box-shadow:0 0 28px rgba(0,224,255,.35);cursor:pointer
+}
+#finopsOperatorHelp{
+  position:fixed;right:18px;bottom:160px;z-index:1000000;
+  width:390px;max-width:calc(100vw - 36px);max-height:70vh;overflow:auto;
+  background:#02070d;color:#d9f3ff;border:1px solid #00e0ff;border-radius:16px;
+  padding:16px;font:12px ui-monospace,Menlo,monospace;
+  box-shadow:0 0 42px rgba(0,224,255,.28);display:none
+}
+#finopsOperatorHelp h3{margin:0 0 8px;color:#00e0ff;letter-spacing:.12em}
+#finopsOperatorHelp button{
+  display:block;width:100%;text-align:left;margin:8px 0;padding:10px;
+  background:#061018;color:#d9f3ff;border:1px solid #123050;border-radius:10px;cursor:pointer
+}
+#finopsOperatorHelp button:hover{border-color:#00e0ff}
+#finopsOperatorAnswer{margin-top:12px;white-space:pre-wrap;line-height:1.55;background:#061018;border:1px solid #123050;border-radius:10px;padding:12px}
+</style>
+
+<button id="finopsOperatorHelpBtn" onclick="toggleFinopsOperatorHelp()">How To</button>
+<div id="finopsOperatorHelp">
+  <h3>STAFF ACCOUNTANT GUIDE</h3>
+  <div style="color:#8fb0c8;line-height:1.5;margin-bottom:12px">
+    Use this to understand what is available and what to click.
+  </div>
+  <button onclick="finopsHelp('start')">Start my day</button>
+  <button onclick="finopsHelp('ap')">Process AP / vendor invoices</button>
+  <button onclick="finopsHelp('ar')">Review AR / collections</button>
+  <button onclick="finopsHelp('rec')">Run bank reconciliation</button>
+  <button onclick="finopsHelp('tax')">Check 1099 / W-9 readiness</button>
+  <button onclick="finopsHelp('compliance')">Check audit support / approvals</button>
+  <button onclick="finopsHelp('controller')">Send next actions to controller</button>
+  <button onclick="finopsHelp('pilot')">Understand the 30-day pilot</button>
+  <div id="finopsOperatorAnswer">Select a topic above.</div>
+</div>
+
+<script id="finops-operator-helper-engine">
+function toggleFinopsOperatorHelp(){
+  const p=document.getElementById('finopsOperatorHelp');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
+function finopsHelp(topic){
+  const a = {
+    start:`START MY DAY
+1. Review AR at risk, AP invoices, tax opportunity, and close readiness.
+2. Pick the highest-pressure workflow.
+3. Click RUN SELECTED ACCOUNTING WORKFLOW.
+4. Open Controller Action Plan for what to do next.`,
+
+    ap:`AP / VENDOR INVOICES
+Use this for invoice accuracy, approvals, payment timing, and missing support.
+Best action: run AP Aging or vendor invoice workflow, then push findings to Controller Action Plan.`,
+
+    ar:`AR / COLLECTIONS
+Use this for overdue accounts, cash timing, payment delay risk, and collection priority.
+Best action: run AR Ledger / Collections and review the AR risk output.`,
+
+    rec:`BANK RECONCILIATION
+Use this for bank vs GL balance differences, documentation gaps, and month-end close readiness.
+Best action: run Bank Reconciliation first in demos and month-end workflows.`,
+
+    tax:`1099 / W-9 READINESS
+Use this for vendor thresholds, missing W-9s, filing deadlines, and 1099 review.
+Best action: open Tax / 1099 or run the 1099 Tracker workflow.`,
+
+    compliance:`AUDIT SUPPORT / APPROVALS
+Use this for missing approvals, supporting docs, duplicate vendors, policy risk, and audit trail.
+Best action: open Compliance Shield after a workflow has flagged documentation issues.`,
+
+    controller:`CONTROLLER ACTION PLAN
+This is where findings become next actions.
+Use it to see what is open, what matters, what should be fixed, and what can be reported.`,
+
+    pilot:`30-DAY PILOT
+Recommended start:
+• AP vendor invoice review
+• Bank reconciliation
+• 1099 readiness
+• Controller action report
+
+Goal: prove measurable value before expanding across all financial workflows.`
+  };
+  document.getElementById('finopsOperatorAnswer').textContent = a[topic] || 'Guide unavailable.';
+}
+</script>
 
 </body>
 </html>
