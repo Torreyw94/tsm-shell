@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Ameris Construction · Command Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --steel:   #0b0f14;
+  --iron:    #13191f;
+  --plate:   #191f28;
+  --rail:    #202830;
+  --rim:     #2a3341;
+  --amber:   #f0a500;
+  --amber2:  #ffbe33;
+  --chalk:   #e6e9ef;
+  --mist:    #7e8fa3;
+  --safe:    #3ecf8e;
+  --danger:  #e05252;
+  --accent:  #4a9fe0;
+  --purple:  #9b7ce0;
+  --sidebar: 220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  display:flex;flex-direction:column;height:100vh;overflow:hidden;
+  background:var(--steel);color:var(--chalk);
+  font-family:'Barlow',sans-serif;font-size:14px;
+}
+
+/* grid bg */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(240,165,0,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(240,165,0,.022) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+
+/* ── TOP BAR ── */
+.topbar{
+  position:relative;z-index:50;
+  display:flex;align-items:center;gap:0;
+  height:54px;min-height:54px;
+  background:var(--iron);
+  border-bottom:2px solid var(--amber);
+  flex-shrink:0;
+}
+.topbar-brand{
+  width:var(--sidebar);min-width:var(--sidebar);
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;border-right:1px solid rgba(255,255,255,.06);
+  height:100%;flex-shrink:0;
+}
+.brand-hex{
+  width:32px;height:32px;flex-shrink:0;
+  background:var(--amber);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--steel);
+}
+.brand-name{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;line-height:1.1;
+}
+.brand-name span{color:var(--amber);display:block;font-size:10px;letter-spacing:3px;}
+
+.topbar-center{
+  flex:1;display:flex;align-items:center;gap:18px;padding:0 20px;
+}
+.topbar-status{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--safe);
+}
+.topbar-status::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--safe);
+  animation:pulse 2s infinite;
+}
+.topbar-alert{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.3);
+  border-radius:4px;padding:3px 10px;
+  font-size:11px;font-weight:700;color:var(--danger);letter-spacing:1px;
+}
+.topbar-right{
+  display:flex;align-items:center;gap:10px;padding:0 18px;
+}
+.topbar-date{font-size:11px;color:var(--mist);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
+.ai-toggle-btn{
+  background:var(--amber);color:var(--steel);border:none;border-radius:4px;
+  padding:5px 13px;font-size:11px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;
+  transition:background .15s;
+}
+.ai-toggle-btn:hover{background:var(--amber2);}
+
+/* ── MAIN SHELL ── */
+.shell{
+  display:flex;flex:1;overflow:hidden;position:relative;z-index:5;
+}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);
+  background:var(--iron);
+  border-right:1px solid rgba(255,255,255,.05);
+  display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{display:none;}
+
+.nav-section-label{
+  padding:16px 16px 6px;
+  font-size:9px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--mist);
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 16px;cursor:pointer;
+  border-left:3px solid transparent;
+  transition:all .15s;position:relative;
+}
+.nav-item:hover{background:rgba(255,255,255,.03);}
+.nav-item.active{
+  background:rgba(240,165,0,.07);
+  border-left-color:var(--amber);
+}
+.nav-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+.nav-label{
+  font-size:13px;font-weight:600;color:var(--chalk);
+  font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;
+}
+.nav-item:not(.active) .nav-label{color:var(--mist);}
+.nav-badge{
+  margin-left:auto;background:var(--danger);color:#fff;
+  font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;
+}
+.nav-badge.warn{background:var(--amber);color:var(--steel);}
+.nav-badge.ok{background:var(--safe);color:var(--steel);}
+
+.sidebar-footer{
+  margin-top:auto;padding:14px 16px;
+  border-top:1px solid rgba(255,255,255,.05);
+  font-size:11px;color:var(--mist);line-height:1.6;
+}
+.sidebar-footer strong{color:var(--amber);display:block;font-size:12px;margin-bottom:2px;}
+
+/* ── CONTENT ── */
+.content{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:0;scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.08) transparent;
+}
+
+/* ── VIEWS ── */
+.view{display:none;animation:fadeIn .25s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── PAGE HERO ── */
+.page-hero{
+  background:linear-gradient(135deg,var(--plate) 0%,var(--iron) 70%,#090d11 100%);
+  border-bottom:1px solid rgba(240,165,0,.12);
+  padding:2rem 2rem 1.6rem;position:relative;overflow:hidden;
+}
+.page-hero::after{
+  content:attr(data-bg);
+  position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:120px;letter-spacing:6px;
+  color:rgba(240,165,0,.035);pointer-events:none;white-space:nowrap;
+}
+.page-eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:8px;
+}
+.page-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(34px,4.5vw,56px);line-height:1;letter-spacing:2px;margin-bottom:8px;
+}
+.page-title em{color:var(--amber);font-style:normal;}
+.page-sub{font-size:13px;color:var(--mist);max-width:500px;line-height:1.6;}
+
+/* ── KPI ROW ── */
+.kpi-strip{
+  display:flex;gap:0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  flex-wrap:wrap;
+}
+.kpi-cell{
+  flex:1;min-width:120px;
+  padding:1rem 1.4rem;
+  border-right:1px solid rgba(255,255,255,.05);
+  transition:background .15s;
+}
+.kpi-cell:last-child{border-right:none;}
+.kpi-cell:hover{background:rgba(240,165,0,.03);}
+.kpi-val{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:30px;line-height:1;margin-bottom:3px;
+}
+.kpi-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mist);}
+.kpi-sub{font-size:10px;color:var(--mist);margin-top:2px;}
+.c-amber{color:var(--amber);}
+.c-safe{color:var(--safe);}
+.c-danger{color:var(--danger);}
+.c-accent{color:var(--accent);}
+.c-purple{color:var(--purple);}
+.c-chalk{color:var(--chalk);}
+
+/* ── GRID LAYOUTS ── */
+.pad{padding:1.5rem 2rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;}
+.g2l{display:grid;grid-template-columns:1.6fr 1fr;gap:1.2rem;}
+.g2r{display:grid;grid-template-columns:1fr 1.6fr;gap:1.2rem;}
+.col{display:flex;flex-direction:column;gap:1.2rem;}
+
+/* ── PANELS ── */
+.panel{
+  background:var(--iron);
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:6px;overflow:hidden;
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.panel-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  display:flex;align-items:center;gap:7px;
+}
+.panel-title::before{
+  content:'';width:3px;height:12px;background:var(--amber);border-radius:2px;
+}
+.panel-action{
+  font-size:10px;color:var(--amber);background:none;border:none;
+  cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  transition:opacity .15s;
+}
+.panel-action:hover{opacity:.65;}
+.panel-body{padding:1rem 1.1rem;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--plate);border:1px solid rgba(255,255,255,.05);
+  border-radius:5px;padding:1rem;position:relative;overflow:hidden;
+  transition:border-color .15s,transform .12s;cursor:pointer;
+}
+.card:hover{border-color:rgba(240,165,0,.28);transform:translateY(-2px);}
+.card-accent{position:absolute;left:0;top:0;bottom:0;width:3px;}
+.card-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;color:var(--mist);}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--chalk);margin-bottom:5px;line-height:1.25;}
+.card-desc{font-size:11px;color:var(--mist);line-height:1.5;margin-bottom:10px;}
+.card-bar-wrap{background:rgba(255,255,255,.05);border-radius:2px;height:3px;margin-bottom:6px;}
+.card-bar{height:3px;border-radius:2px;transition:width 1s ease;}
+.card-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--mist);}
+
+/* ── TABLES ── */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{
+  text-align:left;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--mist);padding:8px 14px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.tbl td{
+  padding:10px 14px;font-size:12px;color:var(--chalk);
+  border-bottom:1px solid rgba(255,255,255,.03);
+  vertical-align:middle;
+}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(240,165,0,.025);}
+
+/* STATUS BADGES */
+.badge{
+  display:inline-flex;align-items:center;
+  font-size:9px;font-weight:800;padding:2px 8px;
+  border-radius:3px;letter-spacing:1px;text-transform:uppercase;
+}
+.b-ok    {background:rgba(62,207,142,.12);color:var(--safe);}
+.b-warn  {background:rgba(240,165,0,.12); color:var(--amber);}
+.b-danger{background:rgba(224,82,82,.12); color:var(--danger);}
+.b-info  {background:rgba(74,159,224,.12);color:var(--accent);}
+.b-muted {background:rgba(255,255,255,.06);color:var(--mist);}
+
+/* ── PROGRESS BARS ── */
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.prog-row:last-child{margin-bottom:0;}
+.prog-label{font-size:12px;color:var(--chalk);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prog-bar-outer{width:120px;background:rgba(255,255,255,.06);border-radius:2px;height:5px;}
+.prog-bar-inner{height:5px;border-radius:2px;}
+.prog-pct{font-size:11px;color:var(--mist);width:36px;text-align:right;flex-shrink:0;}
+
+/* ── ALERT ITEMS ── */
+.alert-list{display:flex;flex-direction:column;gap:7px;padding:10px 14px;}
+.alert-item{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--plate);border-radius:4px;padding:9px 11px;
+  border-left:3px solid;
+}
+.alert-item.crit{border-color:var(--danger);}
+.alert-item.warn{border-color:var(--amber);}
+.alert-item.info{border-color:var(--accent);}
+.alert-icon{font-size:13px;flex-shrink:0;margin-top:1px;}
+.alert-text{font-size:12px;line-height:1.5;}
+.alert-time{font-size:10px;color:var(--mist);margin-top:2px;}
+
+/* ── LIEN WAIVER TRACKER ── */
+.lien-grid{display:flex;flex-direction:column;gap:0;}
+.lien-row{
+  display:grid;grid-template-columns:1fr 90px 90px 80px 80px;
+  align-items:center;padding:9px 14px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  transition:background .12s;cursor:pointer;
+}
+.lien-row:last-child{border-bottom:none;}
+.lien-row:hover{background:rgba(240,165,0,.025);}
+.lien-row.head{
+  background:transparent;cursor:default;
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--mist);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.lien-row.head:hover{background:transparent;}
+.lien-sub-name{font-size:12px;font-weight:600;color:var(--chalk);}
+.lien-sub-trade{font-size:10px;color:var(--mist);}
+
+/* ── TIMELINE ── */
+.tl-list{padding:12px 16px;display:flex;flex-direction:column;gap:0;}
+.tl-item{display:grid;grid-template-columns:64px 18px 1fr;gap:0 12px;margin-bottom:14px;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-date{font-size:10px;color:var(--mist);text-align:right;padding-top:2px;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;}
+.tl-spine{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.tl-line{width:1px;flex:1;background:rgba(255,255,255,.07);min-height:24px;}
+.tl-item:last-child .tl-line{display:none;}
+.tl-content{}
+.tl-title{font-size:12px;font-weight:600;color:var(--chalk);margin-bottom:2px;}
+.tl-body{font-size:11px;color:var(--mist);line-height:1.5;}
+
+/* ── AI ASSISTANT PANEL ── */
+.ai-panel{
+  position:fixed;top:54px;right:0;bottom:0;z-index:200;
+  width:360px;
+  background:var(--iron);
+  border-left:1px solid rgba(240,165,0,.2);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:-8px 0 40px rgba(0,0,0,.4);
+}
+.ai-panel.open{transform:none;}
+
+.ai-panel-head{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(240,165,0,.08),transparent);
+}
+.ai-panel-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--amber),#c07800);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;
+}
+.ai-panel-name{font-size:13px;font-weight:700;}
+.ai-panel-sub{font-size:10px;color:var(--mist);}
+.ai-panel-close{
+  margin-left:auto;background:none;border:none;
+  color:var(--mist);cursor:pointer;font-size:18px;transition:color .15s;
+}
+.ai-panel-close:hover{color:var(--chalk);}
+
+.ai-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent;
+}
+.ai-msg{display:flex;gap:8px;align-items:flex-start;animation:msgIn .2s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.ai-msg.user{flex-direction:row-reverse;}
+.ai-bubble{
+  max-width:84%;padding:8px 11px;border-radius:7px;
+  font-size:12.5px;line-height:1.55;
+}
+.ai-msg.bot .ai-bubble{background:var(--plate);color:var(--chalk);border-radius:2px 7px 7px 7px;}
+.ai-msg.user .ai-bubble{background:var(--amber);color:var(--steel);font-weight:500;border-radius:7px 2px 7px 7px;}
+.ai-msg-dot{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.ai-msg.bot  .ai-msg-dot{background:linear-gradient(135deg,var(--amber),#c07800);}
+.ai-msg.user .ai-msg-dot{background:var(--rail);}
+
+.typing-indicator{display:flex;gap:4px;align-items:center;padding:8px 11px;}
+.typing-indicator span{
+  width:5px;height:5px;border-radius:50%;background:var(--mist);
+  animation:blink 1.2s infinite;
+}
+.typing-indicator span:nth-child(2){animation-delay:.2s;}
+.typing-indicator span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+.ai-chips{
+  padding:8px 12px;display:flex;flex-wrap:wrap;gap:5px;
+  border-top:1px solid rgba(255,255,255,.04);flex-shrink:0;
+}
+.ai-chip{
+  padding:4px 10px;border-radius:12px;font-size:10px;
+  border:1px solid rgba(240,165,0,.22);color:var(--amber);
+  background:rgba(240,165,0,.05);cursor:pointer;transition:background .12s;
+  white-space:nowrap;
+}
+.ai-chip:hover{background:rgba(240,165,0,.15);}
+
+.ai-input-row{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:7px;align-items:center;flex-shrink:0;
+}
+.ai-input{
+  flex:1;background:var(--plate);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:5px;padding:8px 11px;
+  color:var(--chalk);font-size:13px;
+  font-family:'Barlow',sans-serif;outline:none;
+  transition:border-color .15s;
+}
+.ai-input:focus{border-color:rgba(240,165,0,.4);}
+.ai-send{
+  width:34px;height:34px;border-radius:5px;
+  background:var(--amber);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;transition:background .15s;
+}
+.ai-send:hover{background:var(--amber2);}
+.ai-send:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ── DOC GRID ── */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;padding:1rem 1.2rem;}
+.doc-card{
+  background:var(--plate);border:1px solid rgba(255,255,255,.05);
+  border-radius:5px;padding:14px;cursor:pointer;
+  transition:border-color .15s,transform .12s;
+}
+.doc-card:hover{border-color:rgba(240,165,0,.28);transform:translateY(-2px);}
+.doc-icon-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.doc-icon{
+  width:36px;height:36px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  flex-shrink:0;
+}
+.doc-type{font-size:9px;font-weight:800;letter-spacing:2px;color:var(--mist);}
+.doc-name{font-size:13px;font-weight:600;color:var(--chalk);margin-bottom:3px;line-height:1.3;}
+.doc-date{font-size:10px;color:var(--mist);}
+
+/* ── SECTION DIVIDER ── */
+.sec-divider{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:0 0 1rem;
+}
+.sec-label{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--chalk);
+  display:flex;align-items:center;gap:7px;
+}
+.sec-label::before{content:'';width:3px;height:12px;background:var(--amber);border-radius:2px;}
+
+/* ── RISK GAUGE ── */
+.risk-gauge-wrap{text-align:center;padding:16px 0 12px;}
+.risk-num{font-family:'Bebas Neue',sans-serif;font-size:58px;color:var(--amber);line-height:1;}
+.risk-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mist);margin-bottom:12px;}
+.risk-segs{display:flex;gap:3px;margin:0 16px 16px;}
+.risk-seg{flex:1;height:6px;border-radius:2px;background:rgba(255,255,255,.06);}
+.risk-seg.on-low{background:var(--safe);}
+.risk-seg.on-mid{background:var(--amber);}
+.risk-seg.on-high{background:var(--danger);}
+
+/* ── UTIL ── */
+.mt1{margin-top:.6rem;} .mt2{margin-top:1rem;} .mb1{margin-bottom:.6rem;}
+.text-mist{color:var(--mist);} .text-sm{font-size:11px;} .fw6{font-weight:600;}
+.flex-between{display:flex;align-items:center;justify-content:space-between;}
+.gap1{gap:.6rem;}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* scrollbar */
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-hex">AC</div>
+    <div class="brand-name">AMERIS<span>Construction</span></div>
+  </div>
+  <div class="topbar-center">
+    <div class="topbar-status">All Systems Operational</div>
+    <div class="topbar-alert">⚠ 38 Open Lien Waivers</div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-date" id="topdate"></div>
+    <button class="ai-toggle-btn" id="aiToggle">🏗 AI</button>
+  </div>
+</div>
+
+<!-- MAIN SHELL -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="nav-section-label">Operations</div>
+    <div class="nav-item active" data-view="command">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Command</span>
+    </div>
+    <div class="nav-item" data-view="strategy">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">Strategy</span>
+    </div>
+    <div class="nav-item" data-view="projects">
+      <span class="nav-icon">🏗</span>
+      <span class="nav-label">Projects</span>
+      <span class="nav-badge warn">14</span>
+    </div>
+
+    <div class="nav-section-label">Risk & Compliance</div>
+    <div class="nav-item" data-view="compliance">
+      <span class="nav-icon">🛡</span>
+      <span class="nav-label">Compliance</span>
+      <span class="nav-badge">!</span>
+    </div>
+    <div class="nav-item" data-view="legal">
+      <span class="nav-icon">⚖</span>
+      <span class="nav-label">Legal & Liens</span>
+      <span class="nav-badge">38</span>
+    </div>
+
+    <div class="nav-section-label">Finance</div>
+    <div class="nav-item" data-view="financial">
+      <span class="nav-icon">💰</span>
+      <span class="nav-label">Financial</span>
+    </div>
+    <div class="nav-item" data-view="auditops">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">AuditOps & Tax</span>
+    </div>
+
+    <div class="nav-section-label">Resources</div>
+    <div class="nav-item" data-view="documents">
+      <span class="nav-icon">📁</span>
+      <span class="nav-label">Documents</span>
+    </div>
+
+    <div class="sidebar-footer">
+      <strong>TSM-AI-3200</strong>
+      Groq · llama-3.3-70b<br>
+      Phoenix Metro · AZ
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ══════════════════ COMMAND ══════════════════ -->
+    <div class="view active" id="view-command">
+      <div class="page-hero" data-bg="COMMAND">
+        <div class="page-eyebrow">Ameris Construction · Command Center</div>
+        <h1 class="page-title">Operations <em>Command</em></h1>
+        <p class="page-sub">Live overview of all active projects, alerts, crew, and critical metrics across the Phoenix metro portfolio.</p>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-amber">$24M</div><div class="kpi-lbl">Annual Revenue</div><div class="kpi-sub">FY 2026</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-chalk">14</div><div class="kpi-lbl">Active Projects</div><div class="kpi-sub">Phoenix metro</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-chalk">84</div><div class="kpi-lbl">Subcontractors</div><div class="kpi-sub">Active vendors</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-danger">38</div><div class="kpi-lbl">Open Lien Waivers</div><div class="kpi-sub">Payment risk</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">$8M</div><div class="kpi-lbl">Bonding Capacity</div><div class="kpi-sub">Expansion active</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">83%</div><div class="kpi-lbl">On-Schedule Rate</div><div class="kpi-sub">All projects</div></div>
+      </div>
+
+      <div class="pad">
+        <div class="g2l">
+          <div class="col">
+            <!-- Active Alerts -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title c-chalk">Critical Alerts</div>
+                <button class="panel-action">Manage</button>
+              </div>
+              <div class="alert-list">
+                <div class="alert-item crit">
+                  <div class="alert-icon">🔴</div>
+                  <div>
+                    <div class="alert-text fw6">38 Lien Waivers Outstanding — Payment Hold Risk</div>
+                    <div class="alert-time">Multiple projects · Immediate action required · ARS §33-1008</div>
+                  </div>
+                </div>
+                <div class="alert-item crit">
+                  <div class="alert-icon">🔴</div>
+                  <div>
+                    <div class="alert-text fw6">Subcontractor Insurance Tracked Manually</div>
+                    <div class="alert-time">84 subs · No automated verification · Liability exposure</div>
+                  </div>
+                </div>
+                <div class="alert-item warn">
+                  <div class="alert-icon">⚠</div>
+                  <div>
+                    <div class="alert-text fw6">Bonding Capacity at Ceiling — Expansion Pending</div>
+                    <div class="alert-time">$8M cap · 3 new bids require surety approval</div>
+                  </div>
+                </div>
+                <div class="alert-item warn">
+                  <div class="alert-icon">⚠</div>
+                  <div>
+                    <div class="alert-text fw6">MEP Inspection Scheduling Delayed — Block C</div>
+                    <div class="alert-time">4 days overdue · Coordinate with AHJ</div>
+                  </div>
+                </div>
+                <div class="alert-item info">
+                  <div class="alert-icon">ℹ</div>
+                  <div>
+                    <div class="alert-text">Q2 Investor Progress Report Due Jun 1</div>
+                    <div class="alert-time">33 days · Template available in Documents</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Progress -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Project Progress</div>
+                <button class="panel-action" onclick="switchView('projects')">All 14 →</button>
+              </div>
+              <div class="panel-body">
+                <div class="prog-row"><span class="prog-label">Scottsdale Commercial Hub</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:78%;background:var(--safe)"></div></div><span class="prog-pct">78%</span></div>
+                <div class="prog-row"><span class="prog-label">Tempe Industrial Park</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:62%;background:var(--amber)"></div></div><span class="prog-pct">62%</span></div>
+                <div class="prog-row"><span class="prog-label">Mesa Residential Block C</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:47%;background:var(--amber)"></div></div><span class="prog-pct">47%</span></div>
+                <div class="prog-row"><span class="prog-label">Chandler Office Campus</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:31%;background:var(--accent)"></div></div><span class="prog-pct">31%</span></div>
+                <div class="prog-row"><span class="prog-label">Gilbert Mixed-Use Tower</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:12%;background:var(--danger)"></div></div><span class="prog-pct">12%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <!-- Risk Index -->
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Risk Index</div></div>
+              <div class="risk-gauge-wrap">
+                <div class="risk-num">67</div>
+                <div class="risk-label">Elevated Risk</div>
+              </div>
+              <div class="risk-segs" id="riskSegs"></div>
+              <table class="tbl" style="margin:0 0 10px">
+                <tr><td>Lien Waiver Exposure</td><td style="text-align:right"><span class="badge b-danger">HIGH</span></td></tr>
+                <tr><td>Insurance Compliance</td><td style="text-align:right"><span class="badge b-danger">HIGH</span></td></tr>
+                <tr><td>Bonding Capacity</td><td style="text-align:right"><span class="badge b-warn">MED</span></td></tr>
+                <tr><td>Schedule Variance</td><td style="text-align:right"><span class="badge b-warn">MED</span></td></tr>
+                <tr><td>Budget Overrun</td><td style="text-align:right"><span class="badge b-ok">LOW</span></td></tr>
+                <tr><td>Safety Incidents</td><td style="text-align:right"><span class="badge b-ok">LOW</span></td></tr>
+              </table>
+            </div>
+
+            <!-- Quick Nav -->
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Quick Actions</div></div>
+              <div class="panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('legal')">⚖ Lien Waivers</button>
+                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('compliance')">🛡 Compliance</button>
+                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('financial')">💰 Financial</button>
+                <button class="panel-action" style="background:var(--plate);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:10px;font-size:11px;color:var(--chalk);text-align:center;cursor:pointer;" onclick="switchView('documents')">📁 Documents</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ STRATEGY ══════════════════ -->
+    <div class="view" id="view-strategy">
+      <div class="page-hero" data-bg="STRATEGY">
+        <div class="page-eyebrow">Ameris Construction · Main Strategist</div>
+        <h1 class="page-title">Project <em>Strategy</em></h1>
+        <p class="page-sub">Phase planning, schedule control, and resource strategy across all 14 active Phoenix metro projects.</p>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-safe">78%</div><div class="kpi-lbl">Phase 1 Complete</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">47%</div><div class="kpi-lbl">Phase 2 Progress</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-accent">22%</div><div class="kpi-lbl">Phase 3 Started</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-danger">3</div><div class="kpi-lbl">Behind Schedule</div></div>
+      </div>
+      <div class="pad">
+        <div class="g2">
+          <div class="col">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Active Phase Cards</div><button class="panel-action">+ New Phase</button></div>
+              <div style="padding:1rem;display:flex;flex-direction:column;gap:.8rem;">
+                <div class="card"><div class="card-accent" style="background:var(--safe)"></div><div class="card-tag c-safe">Phase 1 · Foundation</div><div class="card-title">Site Prep & Groundwork</div><div class="card-bar-wrap"><div class="card-bar" style="width:78%;background:var(--safe)"></div></div><div class="card-meta"><span>78%</span><span>Due Jun 15</span></div></div>
+                <div class="card"><div class="card-accent" style="background:var(--amber)"></div><div class="card-tag c-amber">Phase 2 · Structure</div><div class="card-title">Steel Frame Erection</div><div class="card-bar-wrap"><div class="card-bar" style="width:44%;background:var(--amber)"></div></div><div class="card-meta"><span>44%</span><span>Due Aug 30</span></div></div>
+                <div class="card"><div class="card-accent" style="background:var(--accent)"></div><div class="card-tag c-accent">Phase 3 · Envelope</div><div class="card-title">Roofing & Exterior Cladding</div><div class="card-bar-wrap"><div class="card-bar" style="width:12%;background:var(--accent)"></div></div><div class="card-meta"><span>12%</span><span>Due Nov 10</span></div></div>
+                <div class="card"><div class="card-accent" style="background:var(--danger)"></div><div class="card-tag c-danger">Phase 4 · Systems</div><div class="card-title">MEP Rough-In & Inspections</div><div class="card-bar-wrap"><div class="card-bar" style="width:5%;background:var(--danger)"></div></div><div class="card-meta"><span>5%</span><span>Due Jan 20</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Project Timeline</div></div>
+              <div class="tl-list">
+                <div class="tl-item"><div class="tl-date">Apr 29</div><div class="tl-spine"><div class="tl-dot" style="background:var(--safe)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Block C Permit Approved</div><div class="tl-body">City planning approved foundation permit. Work begins Monday.</div></div></div>
+                <div class="tl-item"><div class="tl-date">May 5</div><div class="tl-spine"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">North Foundation Concrete Pour</div><div class="tl-body">Inspector on site 7AM. Crew and equipment staged at Gate 2.</div></div></div>
+                <div class="tl-item"><div class="tl-date">May 12</div><div class="tl-spine"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Steel Delivery — 250 Tons</div><div class="tl-body">Structural steel arrives. Gate 2 staging confirmed.</div></div></div>
+                <div class="tl-item"><div class="tl-date">May 20</div><div class="tl-spine"><div class="tl-dot" style="background:var(--mist)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Roofing Subcontractor Bid Deadline</div><div class="tl-body">Final bids due. Evaluation team review May 22.</div></div></div>
+                <div class="tl-item"><div class="tl-date">Jun 1</div><div class="tl-spine"><div class="tl-dot" style="background:var(--mist)"></div></div><div class="tl-content"><div class="tl-title">Q2 Investor Report Due</div><div class="tl-body">Financial reconciliation and progress report for investors.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PROJECTS ══════════════════ -->
+    <div class="view" id="view-projects">
+      <div class="page-hero" data-bg="PROJECTS">
+        <div class="page-eyebrow">Ameris Construction · Project Portfolio</div>
+        <h1 class="page-title"><em>14</em> Active Projects</h1>
+        <p class="page-sub">All active construction projects across the Phoenix metro area.</p>
+      </div>
+      <div class="pad">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">All Projects</div><button class="panel-action">+ New Project</button></div>
+          <table class="tbl">
+            <thead><tr><th>Project</th><th>Location</th><th>Budget</th><th>Progress</th><th>Status</th><th>PM</th></tr></thead>
+            <tbody>
+              <tr><td><div class="fw6">Scottsdale Commercial Hub</div><div class="text-sm text-mist">8-story office complex</div></td><td class="text-mist">Scottsdale, AZ</td><td>$4.2M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:78%;background:var(--safe)"></div></div> 78%</td><td><span class="badge b-ok">On Track</span></td><td class="text-mist">R. Kowalski</td></tr>
+              <tr><td><div class="fw6">Tempe Industrial Park</div><div class="text-sm text-mist">Warehouse complex</div></td><td class="text-mist">Tempe, AZ</td><td>$3.8M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:62%;background:var(--amber)"></div></div> 62%</td><td><span class="badge b-warn">Minor Delay</span></td><td class="text-mist">M. Thorne</td></tr>
+              <tr><td><div class="fw6">Mesa Residential Block C</div><div class="text-sm text-mist">240-unit multifamily</div></td><td class="text-mist">Mesa, AZ</td><td>$6.1M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:47%;background:var(--amber)"></div></div> 47%</td><td><span class="badge b-warn">Watch</span></td><td class="text-mist">J. Patterson</td></tr>
+              <tr><td><div class="fw6">Chandler Office Campus</div><div class="text-sm text-mist">Corporate HQ build-out</div></td><td class="text-mist">Chandler, AZ</td><td>$2.9M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:31%;background:var(--accent)"></div></div> 31%</td><td><span class="badge b-info">In Progress</span></td><td class="text-mist">D. Lara</td></tr>
+              <tr><td><div class="fw6">Gilbert Mixed-Use Tower</div><div class="text-sm text-mist">Retail + residential</div></td><td class="text-mist">Gilbert, AZ</td><td>$5.4M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:12%;background:var(--danger)"></div></div> 12%</td><td><span class="badge b-danger">At Risk</span></td><td class="text-mist">R. Kowalski</td></tr>
+              <tr><td><div class="fw6">Peoria Retail Strip</div><div class="text-sm text-mist">7-unit retail center</div></td><td class="text-mist">Peoria, AZ</td><td>$1.2M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:89%;background:var(--safe)"></div></div> 89%</td><td><span class="badge b-ok">Near Complete</span></td><td class="text-mist">M. Thorne</td></tr>
+              <tr><td><div class="fw6">Glendale Sports Facility</div><div class="text-sm text-mist">Athletic complex</div></td><td class="text-mist">Glendale, AZ</td><td>$7.8M</td><td><div class="prog-bar-outer" style="width:80px"><div class="prog-bar-inner" style="width:23%;background:var(--accent)"></div></div> 23%</td><td><span class="badge b-info">In Progress</span></td><td class="text-mist">D. Lara</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ COMPLIANCE ══════════════════ -->
+    <div class="view" id="view-compliance">
+      <div class="page-hero" data-bg="COMPLIANCE">
+        <div class="page-eyebrow">Ameris Construction · Subcontractor Compliance</div>
+        <h1 class="page-title">Compliance <em>Dashboard</em></h1>
+        <p class="page-sub">Insurance verification, license tracking, and OSHA compliance across all 84 active subcontractors.</p>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-chalk">84</div><div class="kpi-lbl">Active Subs</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-danger">12</div><div class="kpi-lbl">Insurance Expiring</div><div class="kpi-sub">Next 30 days</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-danger">7</div><div class="kpi-lbl">Unverified Certs</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">Manual</div><div class="kpi-lbl">Tracking Method</div><div class="kpi-sub">Risk: HIGH</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">71</div><div class="kpi-lbl">Fully Compliant</div></div>
+      </div>
+      <div class="pad">
+        <div class="g2l">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Subcontractor Compliance Status</div><button class="panel-action">Export</button></div>
+            <table class="tbl">
+              <thead><tr><th>Subcontractor</th><th>Trade</th><th>Insurance</th><th>License</th><th>OSHA</th></tr></thead>
+              <tbody>
+                <tr><td><div class="fw6">Apex Electrical</div></td><td class="text-mist">Electrical</td><td><span class="badge b-ok">Valid</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
+                <tr><td><div class="fw6">Desert Steel Co.</div></td><td class="text-mist">Structural</td><td><span class="badge b-danger">Expired</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-warn">Review</span></td></tr>
+                <tr><td><div class="fw6">SunState Plumbing</div></td><td class="text-mist">Plumbing</td><td><span class="badge b-warn">Exp. May 15</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
+                <tr><td><div class="fw6">AZ Concrete Works</div></td><td class="text-mist">Concrete</td><td><span class="badge b-ok">Valid</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
+                <tr><td><div class="fw6">Mesa HVAC Pros</div></td><td class="text-mist">Mechanical</td><td><span class="badge b-danger">Expired</span></td><td><span class="badge b-danger">Expired</span></td><td><span class="badge b-danger">Overdue</span></td></tr>
+                <tr><td><div class="fw6">Pinnacle Framing</div></td><td class="text-mist">Framing</td><td><span class="badge b-ok">Valid</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-ok">Current</span></td></tr>
+                <tr><td><div class="fw6">Phoenix Fire Systems</div></td><td class="text-mist">Fire Suppression</td><td><span class="badge b-warn">Exp. Jun 1</span></td><td><span class="badge b-ok">Active</span></td><td><span class="badge b-warn">Review</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Compliance Alerts</div></div>
+              <div class="alert-list">
+                <div class="alert-item crit"><div class="alert-icon">🔴</div><div><div class="alert-text fw6">Mesa HVAC Pros — All Certs Expired</div><div class="alert-time">Work must be suspended until renewed</div></div></div>
+                <div class="alert-item crit"><div class="alert-icon">🔴</div><div><div class="alert-text fw6">Desert Steel Co. — Insurance Lapsed</div><div class="alert-time">Active on 3 project sites — liability exposure</div></div></div>
+                <div class="alert-item warn"><div class="alert-icon">⚠</div><div><div class="alert-text fw6">12 Subs with Insurance Expiring in 30 Days</div><div class="alert-time">Send renewal notices immediately</div></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Compliance Health</div></div>
+              <div class="panel-body">
+                <div class="prog-row"><span class="prog-label">Insurance Valid</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:78%;background:var(--safe)"></div></div><span class="prog-pct">78%</span></div>
+                <div class="prog-row"><span class="prog-label">Licenses Current</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:91%;background:var(--safe)"></div></div><span class="prog-pct">91%</span></div>
+                <div class="prog-row"><span class="prog-label">OSHA Compliant</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:84%;background:var(--amber)"></div></div><span class="prog-pct">84%</span></div>
+                <div class="prog-row"><span class="prog-label">W-9 On File</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:96%;background:var(--safe)"></div></div><span class="prog-pct">96%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ LEGAL & LIENS ══════════════════ -->
+    <div class="view" id="view-legal">
+      <div class="page-hero" data-bg="LEGAL">
+        <div class="page-eyebrow">Ameris Construction · Legal & Lien Management</div>
+        <h1 class="page-title">Liens & <em>Legal</em></h1>
+        <p class="page-sub">AIA contract management, lien waiver tracking, and Arizona lien law compliance. 38 open waivers require immediate attention.</p>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-danger">38</div><div class="kpi-lbl">Open Lien Waivers</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">$1.4M</div><div class="kpi-lbl">Payment Hold Value</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">142</div><div class="kpi-lbl">Waivers Cleared YTD</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-chalk">22</div><div class="kpi-lbl">Active Contracts</div><div class="kpi-sub">AIA Standard</div></div>
+      </div>
+      <div class="pad">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Open Lien Waivers</div><button class="panel-action">Export · ARS §33-1008</button></div>
+          <div class="lien-grid">
+            <div class="lien-row head"><span>Subcontractor</span><span>Project</span><span>Amount</span><span>Days Out</span><span>Status</span></div>
+            <div class="lien-row"><div><div class="lien-sub-name">Desert Steel Co.</div><div class="lien-sub-trade">Structural Steel</div></div><span class="text-mist text-sm">Mesa Block C</span><span class="fw6">$84,200</span><span class="c-danger fw6">47 days</span><span><span class="badge b-danger">Critical</span></span></div>
+            <div class="lien-row"><div><div class="lien-sub-name">SunState Plumbing</div><div class="lien-sub-trade">Plumbing Rough-In</div></div><span class="text-mist text-sm">Scottsdale Hub</span><span class="fw6">$32,500</span><span class="c-danger fw6">38 days</span><span><span class="badge b-danger">Critical</span></span></div>
+            <div class="lien-row"><div><div class="lien-sub-name">Apex Electrical</div><div class="lien-sub-trade">Electrical Rough-In</div></div><span class="text-mist text-sm">Chandler Campus</span><span class="fw6">$61,800</span><span class="c-amber fw6">22 days</span><span><span class="badge b-warn">Warning</span></span></div>
+            <div class="lien-row"><div><div class="lien-sub-name">AZ Concrete Works</div><div class="lien-sub-trade">Foundation Pour</div></div><span class="text-mist text-sm">Tempe Industrial</span><span class="fw6">$47,300</span><span class="c-amber fw6">18 days</span><span><span class="badge b-warn">Warning</span></span></div>
+            <div class="lien-row"><div><div class="lien-sub-name">Pinnacle Framing</div><div class="lien-sub-trade">Wood Framing</div></div><span class="text-mist text-sm">Gilbert Tower</span><span class="fw6">$28,900</span><span class="c-mist fw6">9 days</span><span><span class="badge b-info">Pending</span></span></div>
+            <div class="lien-row"><div><div class="lien-sub-name">Mesa HVAC Pros</div><div class="lien-sub-trade">Mechanical</div></div><span class="text-mist text-sm">Glendale Sports</span><span class="fw6">$19,400</span><span class="c-mist fw6">5 days</span><span><span class="badge b-muted">New</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ FINANCIAL ══════════════════ -->
+    <div class="view" id="view-financial">
+      <div class="page-hero" data-bg="FINANCIAL">
+        <div class="page-eyebrow">Ameris Construction · Financial Overview</div>
+        <h1 class="page-title">Financial <em>Command</em></h1>
+        <p class="page-sub">Revenue, budget variance, bonding, and cost control across the full $24M portfolio.</p>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-amber">$24M</div><div class="kpi-lbl">Annual Revenue</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">$19.2M</div><div class="kpi-lbl">Billed YTD</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-chalk">$4.8M</div><div class="kpi-lbl">Receivables</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">$8M</div><div class="kpi-lbl">Bonding Capacity</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">+2.1%</div><div class="kpi-lbl">Margin vs Budget</div></div>
+      </div>
+      <div class="pad">
+        <div class="g2">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Budget vs Actual by Project</div></div>
+            <table class="tbl">
+              <thead><tr><th>Project</th><th>Budget</th><th>Actual</th><th>Variance</th></tr></thead>
+              <tbody>
+                <tr><td>Scottsdale Hub</td><td>$4.20M</td><td>$3.28M</td><td class="c-safe">+$920K</td></tr>
+                <tr><td>Tempe Industrial</td><td>$3.80M</td><td>$2.41M</td><td class="c-safe">+$1.39M</td></tr>
+                <tr><td>Mesa Block C</td><td>$6.10M</td><td>$2.92M</td><td class="c-safe">+$3.18M</td></tr>
+                <tr><td>Chandler Campus</td><td>$2.90M</td><td>$0.98M</td><td class="c-safe">+$1.92M</td></tr>
+                <tr><td>Gilbert Tower</td><td>$5.40M</td><td>$0.72M</td><td class="c-amber">+$4.68M</td></tr>
+                <tr><td>Glendale Sports</td><td>$7.80M</td><td>$1.84M</td><td class="c-safe">+$5.96M</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Cash Flow Summary</div></div>
+              <div class="panel-body">
+                <div class="prog-row"><span class="prog-label">Invoiced this month</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:72%;background:var(--amber)"></div></div><span class="prog-pct">$1.6M</span></div>
+                <div class="prog-row"><span class="prog-label">Collected this month</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:58%;background:var(--safe)"></div></div><span class="prog-pct">$1.3M</span></div>
+                <div class="prog-row"><span class="prog-label">Subcontractor payables</span><div class="prog-bar-outer"><div class="prog-bar-inner" style="width:45%;background:var(--danger)"></div></div><span class="prog-pct">$980K</span></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Bonding Status</div></div>
+              <div class="panel-body">
+                <div class="flex-between mb1"><span class="text-sm">Capacity</span><span class="fw6 c-amber">$8,000,000</span></div>
+                <div class="flex-between mb1"><span class="text-sm">In Use</span><span class="fw6 c-chalk">$6,200,000</span></div>
+                <div class="flex-between mb1"><span class="text-sm">Available</span><span class="fw6 c-safe">$1,800,000</span></div>
+                <div class="card-bar-wrap mt1"><div class="card-bar" style="width:78%;background:var(--amber)"></div></div>
+                <div class="text-sm text-mist mt1">78% utilized · Expansion application with surety in progress</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ AUDITOPS & TAX ══════════════════ -->
+    <div class="view" id="view-auditops">
+      <div class="page-hero" data-bg="AUDITOPS">
+        <div class="page-eyebrow">Ameris Construction · AuditOps & Tax</div>
+        <h1 class="page-title">Audit <em>Operations</em></h1>
+        <p class="page-sub">IRS construction accounting, tax optimization, percentage-of-completion method, and audit readiness for $24M operations.</p>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-safe">POC</div><div class="kpi-lbl">Accounting Method</div><div class="kpi-sub">% of Completion</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">§179D</div><div class="kpi-lbl">Energy Deduction</div><div class="kpi-sub">Eligible projects</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-chalk">R&D</div><div class="kpi-lbl">Tax Credit</div><div class="kpi-sub">AZ craft credit</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">Ready</div><div class="kpi-lbl">Audit Status</div></div>
+      </div>
+      <div class="pad">
+        <div class="g2">
+          <div class="col">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Tax Optimization Items</div></div>
+              <table class="tbl">
+                <thead><tr><th>Item</th><th>Est. Value</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>§179D Energy-Efficient Building Deduction</td><td class="c-safe">$84,000</td><td><span class="badge b-warn">Review</span></td></tr>
+                  <tr><td>IRC §460 Percentage-of-Completion Method</td><td class="c-safe">Active</td><td><span class="badge b-ok">Applied</span></td></tr>
+                  <tr><td>AZ Qualified Defense Contractor Credit</td><td class="c-safe">$24,000</td><td><span class="badge b-info">Pending</span></td></tr>
+                  <tr><td>Equipment Bonus Depreciation (§168k)</td><td class="c-safe">$112,000</td><td><span class="badge b-ok">Applied</span></td></tr>
+                  <tr><td>Home Office / Contractor Expense Allocation</td><td class="c-mist">TBD</td><td><span class="badge b-muted">Analyze</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Audit Readiness Checklist</div></div>
+              <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+                <div class="flex-between"><span class="text-sm">Job cost reports (all projects)</span><span class="badge b-ok">✓ Ready</span></div>
+                <div class="flex-between"><span class="text-sm">Subcontractor 1099 filings</span><span class="badge b-ok">✓ Ready</span></div>
+                <div class="flex-between"><span class="text-sm">Certified payroll records</span><span class="badge b-warn">⚠ Partial</span></div>
+                <div class="flex-between"><span class="text-sm">Retainage documentation</span><span class="badge b-ok">✓ Ready</span></div>
+                <div class="flex-between"><span class="text-sm">Change order log (all projects)</span><span class="badge b-ok">✓ Ready</span></div>
+                <div class="flex-between"><span class="text-sm">AIA G702/G703 billing forms</span><span class="badge b-ok">✓ Ready</span></div>
+                <div class="flex-between"><span class="text-sm">Arizona TPT license compliance</span><span class="badge b-warn">⚠ Renewing</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ DOCUMENTS ══════════════════ -->
+    <div class="view" id="view-documents">
+      <div class="page-hero" data-bg="DOCUMENTS">
+        <div class="page-eyebrow">Ameris Construction · Document Hub</div>
+        <h1 class="page-title">Project <em>Documents</em></h1>
+        <p class="page-sub">Plans, permits, contracts, AIA forms, safety plans, and compliance files — centralized across all 14 projects.</p>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-cell"><div class="kpi-val c-chalk">148</div><div class="kpi-lbl">Total Documents</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-amber">12</div><div class="kpi-lbl">Awaiting Review</div></div>
+        <div class="kpi-cell"><div class="kpi-val c-safe">3</div><div class="kpi-lbl">Approved Today</div></div>
+      </div>
+      <div class="pad">
+        <div class="sec-divider"><div class="sec-label">Recent Documents</div></div>
+        <div class="doc-grid">
+          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(74,159,224,.12);color:var(--accent)">📐</div><div class="doc-type">PDF · 14.2MB</div></div><div class="doc-name">Foundation Plans — Block C Full Set</div><div class="doc-date">Rev 4 · Apr 27 · <span class="badge b-ok">Final</span></div></div>
+          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(62,207,142,.12);color:var(--safe)">📋</div><div class="doc-type">DOCX · 2.8MB</div></div><div class="doc-name">GC Agreement — Phase 2 Steel Frame</div><div class="doc-date">Apr 15 · <span class="badge b-ok">Signed</span></div></div>
+          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(240,165,0,.12);color:var(--amber)">📊</div><div class="doc-type">XLSX · 1.1MB</div></div><div class="doc-name">Q1 2026 Budget Reconciliation</div><div class="doc-date">Apr 1 · <span class="badge b-ok">Final</span></div></div>
+          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(240,165,0,.12);color:var(--amber)">🏛</div><div class="doc-type">PDF · 0.4MB</div></div><div class="doc-name">Building Permit — Block C Foundation</div><div class="doc-date">Apr 29 · <span class="badge b-info">Approved</span></div></div>
+          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(224,82,82,.12);color:var(--danger)">⛑</div><div class="doc-type">PDF · 2.1MB</div></div><div class="doc-name">OSHA Safety Plan — 2026</div><div class="doc-date">Jan 10 · <span class="badge b-ok">Final</span></div></div>
+          <div class="doc-card"><div class="doc-icon-row"><div class="doc-icon" style="background:rgba(155,124,224,.12);color:var(--purple)">💰</div><div class="doc-type">PDF · 0.6MB</div></div><div class="doc-name">Change Order #7 — Foundation Scope</div><div class="doc-date">Apr 20 · <span class="badge b-warn">Review</span></div></div>
+        </div>
+      </div>
+    </div>
+
+  </main><!-- /content -->
+
+</div><!-- /shell -->
+
+<!-- AI PANEL -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-head">
+    <div class="ai-panel-avatar">🏗</div>
+    <div>
+      <div class="ai-panel-name">TSM-AI-3200</div>
+      <div class="ai-panel-sub">Ameris Construction · Groq llama-3.3-70b</div>
+    </div>
+    <button class="ai-panel-close" id="aiClose">✕</button>
+  </div>
+
+  <div class="ai-msgs" id="aiMsgs">
+    <div class="ai-msg bot">
+      <div class="ai-msg-dot">🏗</div>
+      <div class="ai-bubble">I'm your Ameris Construction intelligence engine. I know your 14 active projects, 84 subcontractors, 38 open lien waivers, and your $24M portfolio. What do you need?</div>
+    </div>
+  </div>
+
+  <div class="ai-chips" id="aiChips">
+    <span class="ai-chip" onclick="chipSend(this)">How do I resolve the 38 lien waivers?</span>
+    <span class="ai-chip" onclick="chipSend(this)">Desert Steel insurance risk</span>
+    <span class="ai-chip" onclick="chipSend(this)">Bonding expansion strategy</span>
+    <span class="ai-chip" onclick="chipSend(this)">Arizona lien law deadline</span>
+    <span class="ai-chip" onclick="chipSend(this)">§179D deduction eligibility</span>
+    <span class="ai-chip" onclick="chipSend(this)">Gilbert Tower at-risk recovery plan</span>
+  </div>
+
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Ask anything about Ameris…" autocomplete="off"/>
+    <button class="ai-send" id="aiSend">➤</button>
+  </div>
+</div>
+
+<script>
+// ── DATE ──
+document.getElementById('topdate').textContent =
+  new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+
+// ── RISK SEGS ──
+(function(){
+  const wrap = document.getElementById('riskSegs');
+  for(let i=0;i<10;i++){
+    const s=document.createElement('div');s.className='risk-seg';
+    if(i<3)s.classList.add('on-low');
+    else if(i<7)s.classList.add('on-mid');
+    else s.classList.add('on-high');
+    // only light up first 6 (score 67/100 ≈ 6.7 segs)
+    if(i>=7)s.style.opacity='.25';
+    wrap.appendChild(s);
+  }
+})();
+
+// ── NAV ──
+function switchView(id){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const nav=document.querySelector(`[data-view="${id}"]`);
+  const view=document.getElementById(`view-${id}`);
+  if(nav)nav.classList.add('active');
+  if(view)view.classList.add('active');
+  document.querySelector('.content').scrollTop=0;
+}
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click',()=>switchView(n.dataset.view));
+});
+
+// ── AI PANEL ──
+const panel=document.getElementById('aiPanel');
+document.getElementById('aiToggle').addEventListener('click',()=>panel.classList.toggle('open'));
+document.getElementById('aiClose').addEventListener('click',()=>panel.classList.remove('open'));
+
+const aiMsgs=document.getElementById('aiMsgs');
+const aiInput=document.getElementById('aiInput');
+const aiSend=document.getElementById('aiSend');
+
+let history=[];let busy=false;
+
+function chipSend(el){
+  aiInput.value=el.textContent;
+  sendMsg();
+  document.getElementById('aiChips').style.display='none';
+}
+
+function appendMsg(role,text){
+  const d=document.createElement('div');
+  d.className=`ai-msg ${role==='user'?'user':'bot'}`;
+  d.innerHTML=`<div class="ai-msg-dot">${role==='user'?'👤':'🏗'}</div>
+    <div class="ai-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code style="background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;font-size:11px">$1</code>')}</div>`;
+  aiMsgs.appendChild(d);
+  aiMsgs.scrollTop=aiMsgs.scrollHeight;
+}
+
+function showTyping(){
+  const d=document.createElement('div');d.className='ai-msg bot';d.id='typing';
+  d.innerHTML=`<div class="ai-msg-dot">🏗</div><div class="ai-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
+  aiMsgs.appendChild(d);aiMsgs.scrollTop=aiMsgs.scrollHeight;
+}
+
+async function sendMsg(){
+  const text=aiInput.value.trim();
+  if(!text||busy)return;
+  busy=true;aiInput.value='';aiSend.disabled=true;
+  appendMsg('user',text);
+  history.push({role:'user',content:text});
+  showTyping();
+
+  try{
+    const res=await fetch('/api/v1/bridge',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history})
+    });
+    const data=await res.json();
+    const reply=data.response||data.answer||data.content||'No response received.';
+    document.getElementById('typing')?.remove();
+    appendMsg('bot',reply);
+    history.push({role:'assistant',content:reply});
+  }catch(err){
+    document.getElementById('typing')?.remove();
+    appendMsg('bot','⚠ Could not reach /api/v1/bridge. Check your Fly server is running.');
+  }
+  busy=false;aiSend.disabled=false;aiInput.focus();
+}
+
+aiSend.addEventListener('click',sendMsg);
+aiInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+
+// ── ANIMATE BARS ON VIEW SWITCH ──
+function animateBars(){
+  document.querySelectorAll('.card-bar,.prog-bar-inner').forEach(b=>{
+    const w=b.style.width;b.style.width='0';
+    setTimeout(()=>b.style.width=w,100);
+  });
+}
+animateBars();
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click',()=>setTimeout(animateBars,50));
+});
+</script>
+</body>
+</html>
