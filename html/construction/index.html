@@ -191,8 +191,131 @@ body{font-family:var(--body);background:var(--bg);color:var(--white);display:fle
 .ht-footer{text-align:center;padding:16px 0 6px;font-family:var(--mono);font-size:7px;color:var(--dim);letter-spacing:2px;}
 </style>
 <script>function switchTab(t){document.querySelectorAll(".trm-tab").forEach(e=>e.classList.remove("active"));document.querySelectorAll(".trm-panel").forEach(e=>e.classList.remove("active"));document.getElementById(t).classList.add("active");}</script>
+
+<style id="tsm-construction-operator-flow-css">
+#tsmOperatorStart{
+  margin:20px 36px;
+  padding:24px;
+  border:2px solid #00f59f;
+  border-radius:16px;
+  background:#031a14;
+  text-align:center;
+  box-shadow:0 0 30px rgba(0,245,159,.14);
+}
+#tsmOperatorStart .start-title{
+  font-size:20px;
+  font-weight:900;
+  color:#00f59f;
+  letter-spacing:.08em;
+}
+#tsmOperatorStart .start-copy{
+  font-size:13px;
+  color:#9fd3ff;
+  margin:10px 0 16px;
+}
+#tsmOperatorStart button{
+  background:#00f59f;
+  color:#001018;
+  padding:14px 24px;
+  border:none;
+  border-radius:12px;
+  font-weight:900;
+  font-size:14px;
+  box-shadow:0 0 30px rgba(0,245,159,.5);
+  cursor:pointer;
+}
+#tsmOperatorStart .start-example{
+  margin-top:10px;
+  font-size:11px;
+  color:#6b8ca3;
+}
+#liveGuide{
+  margin:12px 36px;
+  padding:10px;
+  border:1px solid #00e0ff;
+  border-radius:10px;
+  background:#02141c;
+  font-size:12px;
+  color:#00e0ff;
+  text-align:center;
+  font-family:ui-monospace,Menlo,monospace;
+}
+.tsm-focus-pulse{
+  outline:2px solid #00f59f !important;
+  box-shadow:0 0 32px rgba(0,245,159,.45) !important;
+  transition:all .25s ease !important;
+}
+#tsmHowToPanel{
+  position:fixed;
+  right:18px;
+  top:118px;
+  width:330px;
+  max-width:calc(100vw - 36px);
+  background:#02070d;
+  border:1px solid #00e0ff;
+  border-radius:14px;
+  padding:14px;
+  z-index:99999;
+  box-shadow:0 0 36px rgba(0,224,255,.2);
+  font-family:ui-monospace,Menlo,monospace;
+}
+#tsmHowToPanel h3{
+  margin:0 0 8px;
+  color:#00f59f;
+  font-size:13px;
+  letter-spacing:.08em;
+}
+#tsmHowToPanel p{
+  margin:0 0 10px;
+  color:#8fb0c8;
+  font-size:11px;
+  line-height:1.45;
+}
+#tsmHowToPanel button{
+  display:block;
+  width:100%;
+  margin:7px 0;
+  padding:10px;
+  border:1px solid #123050;
+  border-radius:9px;
+  background:#061018;
+  color:#d9f3ff;
+  text-align:left;
+  cursor:pointer;
+  font-size:11px;
+}
+#tsmHowToPanel button:hover{
+  border-color:#00e0ff;
+  color:#00e0ff;
+}
+#tsmHowToToggle{
+  position:fixed;
+  right:22px;
+  bottom:104px;
+  z-index:100000;
+  background:#00e0ff;
+  color:#001018;
+  border:none;
+  border-radius:999px;
+  padding:12px 15px;
+  font-weight:900;
+  cursor:pointer;
+}
+</style>
+
 </head>
 <body>
+
+<section id="tsmOperatorStart">
+  <div class="start-title">RUN YOUR FIRST JOB WORKFLOW</div>
+  <div class="start-copy">Watch how cost, docs, risk, and compliance turn into clear next actions.</div>
+  <button onclick="startOperatorFlow()">▶ RUN WORKFLOW</button>
+  <div class="start-example">Example: Cost overrun · Missing sub docs · Change order delay</div>
+</section>
+
+<div id="liveGuide">Step 1: Click RUN WORKFLOW to begin.</div>
+
+
 
 <div id="topnav">
   <div id="logo-mark">CC</div>
@@ -940,5 +1063,91 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
 })();
 </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd842cea9cc16',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9eddd842cea9cc16',t:'MTc3NjQ1NDIzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<button id="tsmHowToToggle" onclick="toggleHowTo()">How To</button>
+<div id="tsmHowToPanel" style="display:none">
+  <h3>WHAT YOU CAN DO HERE</h3>
+  <p>Use this as a job-site operations desk. Click an action and the page will guide the next step.</p>
+  <button onclick="startOperatorFlow()">▶ Run a full job workflow</button>
+  <button onclick="openDocs()">📄 Analyze job documents</button>
+  <button onclick="openStrategist()">🧠 Get next actions for your job</button>
+  <button onclick="openCommand()">📊 View all jobs in one command center</button>
+</div>
+
+
+<script id="tsm-construction-operator-flow-engine">
+(function(){
+  if(window.__tsmConstructionOperatorFlow) return;
+  window.__tsmConstructionOperatorFlow = true;
+
+  window.updateGuide = function(text){
+    const el = document.getElementById("liveGuide");
+    if(el) el.innerText = text;
+  };
+
+  window.focusPulse = function(selector){
+    document.querySelectorAll(".tsm-focus-pulse").forEach(x=>x.classList.remove("tsm-focus-pulse"));
+    const el = document.querySelector(selector);
+    if(el){
+      el.classList.add("tsm-focus-pulse");
+      try{ el.scrollIntoView({behavior:"smooth", block:"center"}); }catch(e){}
+      setTimeout(()=>el.classList.remove("tsm-focus-pulse"),2600);
+    }
+  };
+
+  window.startOperatorFlow = function(){
+    updateGuide("Step 2: Loading construction workflow — job cost, docs, subs, and risk.");
+    focusPulse("#tsmOperatorStart");
+
+    setTimeout(()=>{
+      updateGuide("Step 3: Reviewing for cost risk, missing documents, compliance gaps, and schedule blockers.");
+      focusPulse(".construction-command, #command, .main, iframe, .demo-section, .flow-section");
+    },1200);
+
+    setTimeout(()=>{
+      updateGuide("Step 4: Issues flagged. Next actions are being prepared for PM, controller, safety lead, or owner.");
+      focusPulse("#liveGuide");
+    },2500);
+
+    setTimeout(()=>{
+      updateGuide("Step 5: Ready. Open Construction Strategist to see prioritized actions.");
+      focusPulse('a[href*="construction-strategist"], button[onclick*="Strategist"], button[onclick*="openStrategist"]');
+    },3800);
+
+    if(typeof runDemo === "function"){
+      try{ runDemo("bnca"); }catch(e){}
+    }
+  };
+
+  window.simulateOperatorFlow = window.startOperatorFlow;
+
+  window.runPlaybook = function(){
+    startOperatorFlow();
+  };
+
+  window.deployQuery = function(){
+    updateGuide("Running construction intelligence query...");
+    startOperatorFlow();
+  };
+
+  window.openDocs = function(){
+    window.location.href="/html/construction-suite/document-showcase.html";
+  };
+
+  window.openStrategist = function(){
+    window.location.href="/html/construction-suite/construction-strategist.html";
+  };
+
+  window.openCommand = function(){
+    window.location.href="/html/construction-suite/construction-command.html";
+  };
+
+  window.toggleHowTo = function(){
+    const p = document.getElementById("tsmHowToPanel");
+    if(p) p.style.display = p.style.display === "none" ? "block" : "none";
+  };
+})();
+</script>
+
+</body>
 </html>
