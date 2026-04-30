@@ -9,7 +9,7 @@ const HTML_ROOT = path.join(__dirname, "html");
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
 const suites = [
-  { route: "/construction", dir: "construction-suite", index: "index.html" },
+  { route: "/construction", dir: "construction-suite", index: "construction-hub.html" },
   { route: "/finops",       dir: "finops-suite",       index: "finops-presentation/index.html" },
   { route: "/healthcare",   dir: "healthcare",          index: "index.html" },
   { route: "/insurance",    dir: "tsm-insurance",       index: "ins-presentation.html" },
