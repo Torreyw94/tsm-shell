@@ -30,6 +30,8 @@ suites.forEach(({ route, dir, index }) => {
   console.log(`✅  ${route} → ${dir}/${index}`);
 });
 
+app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
+
 app.get("/", (_req, res) => {
   res.send(`<!DOCTYPE html>
 <html lang="en">
