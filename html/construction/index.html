@@ -1,4 +1,37 @@
 
+<section id="euOps" style="margin:0 0 2.5rem;border:1px solid var(--cyan2,#00d4b8);background:#06130f;padding:1.5rem">
+  <h2 style="color:var(--white,#dce9f0);font-family:var(--bar,sans-serif);font-size:1.8rem;margin-bottom:.5rem">
+    START HERE · <span style="color:var(--cyan,#00d4b8)">CONSTRUCTION OPERATOR WORKFLOW</span>
+  </h2>
+
+  <p style="color:var(--text,#7aa0b4);line-height:1.6;max-width:920px">
+    Use this hub like an operations desk: select the job issue, open the right work lane, run the review, then push the result to Construction Strategist for the next action.
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border2,#192530);margin-top:1rem">
+    <div style="background:var(--panel,#090e13);padding:1rem"><b style="color:var(--cyan,#00d4b8)">1 · SELECT ISSUE</b><br><span>Cost, schedule, OSHA, lien, payables, subs, or change order.</span></div>
+    <div style="background:var(--panel,#090e13);padding:1rem"><b style="color:var(--cyan,#00d4b8)">2 · OPEN LANE</b><br><span>Command, Docs, Financial, Legal, Compliance, Tax, or Strategist.</span></div>
+    <div style="background:var(--panel,#090e13);padding:1rem"><b style="color:var(--cyan,#00d4b8)">3 · RUN REVIEW</b><br><span>Run workflow or upload job-site document.</span></div>
+    <div style="background:var(--panel,#090e13);padding:1rem"><b style="color:var(--cyan,#00d4b8)">4 · GET BNCA</b><br><span>Strategist ranks the next best action.</span></div>
+    <div style="background:var(--panel,#090e13);padding:1rem"><b style="color:var(--cyan,#00d4b8)">5 · ASSIGN OWNER</b><br><span>PM, controller, safety lead, estimator, or superintendent acts.</span></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border,#111d26);margin-top:1rem">
+    <a href="/html/construction-suite/construction-command.html" style="background:var(--panel,#090e13);padding:1rem;color:inherit;text-decoration:none">
+      <b style="color:var(--white,#dce9f0)">Construction Command</b><br><span>Daily start: one view across all lanes.</span><br><small style="color:var(--cyan,#00d4b8)">OPEN COMMAND ↗</small>
+    </a>
+    <a href="/html/construction-suite/document-showcase.html" style="background:var(--panel,#090e13);padding:1rem;color:inherit;text-decoration:none">
+      <b style="color:var(--white,#dce9f0)">Document Showcase</b><br><span>Run job cost, pay app, safety, lien, or change order docs.</span><br><small style="color:var(--cyan,#00d4b8)">OPEN DOCS ↗</small>
+    </a>
+    <a href="/html/construction-suite/construction-strategist.html" style="background:var(--panel,#090e13);padding:1rem;color:inherit;text-decoration:none">
+      <b style="color:var(--white,#dce9f0)">Construction Strategist</b><br><span>Turns output into ranked next actions.</span><br><small style="color:var(--cyan,#00d4b8)">OPEN STRATEGIST ↗</small>
+    </a>
+    <a href="/html/construction-suite/construction-pro.html" style="background:var(--panel,#090e13);padding:1rem;color:inherit;text-decoration:none">
+      <b style="color:var(--white,#dce9f0)">AuditOps Pro</b><br><span>Deep dive: OSHA, finance, liens, subs, delays, compliance.</span><br><small style="color:var(--cyan,#00d4b8)">OPEN AUDITOPS ↗</small>
+    </a>
+  </div>
+</section>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -192,7 +225,7 @@ body{font-family:var(--body);background:var(--bg);color:var(--white);display:fle
 
 <div id="body">
   <div id="sidebar">
-    <div class="sb-lbl">PLAYBOOKS</div>
+    <div class="sb-lbl">COMMON JOB-SITE WORKFLOWS</div>
     <div class="playbook" onclick="runPlaybook('critical_path',this)"><div>Critical Path</div><div class="playbook-sub">$42K/day delay recovery</div></div>
     <div class="playbook" onclick="runPlaybook('co_audit',this)"><div>CO Audit</div><div class="playbook-sub">$890K at risk</div></div>
     <div class="playbook" onclick="runPlaybook('safety_sweep',this)"><div>Safety Sweep</div><div class="playbook-sub">OSHA + incident risk</div></div>
@@ -347,7 +380,7 @@ body{font-family:var(--body);background:var(--bg);color:var(--white);display:fle
     <div class="ht-grid">
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div class="ht-card">
-          <div class="ht-card-hdr ht-accent">◈ LEFT SIDEBAR — PLAYBOOKS</div>
+          <div class="ht-card-hdr ht-accent">◈ LEFT SIDEBAR — COMMON JOB-SITE WORKFLOWS</div>
           <div class="ht-card-body">
             Click any playbook to deploy a pre-built expert analysis across all nodes instantly.<br><br>
             <span class="ht-accent">● CRITICAL PATH</span> — Tower Block A 4-day delay at $42K/day. Crash options, acceleration costs, delay documentation for claims.<br><br>
@@ -493,7 +526,7 @@ const NODE_PREVIEWS = {
 <div>• 3. Accelerate Tower Block A — <span style="color:#ef4444">$42K/day</span></div>`,
 };
 
-const PLAYBOOKS = {
+const COMMON JOB-SITE WORKFLOWS = {
   critical_path: 'URGENT: Tower Block A electrical rough-in is 4 days behind on critical path with $42K/day downstream impact. Analyze crash options, acceleration costs vs savings, delay documentation requirements for potential claims, and provide recovery timeline with specific action steps.',
   co_audit: 'Audit $890K in open change orders across active projects. Analyze each for merit and entitlement, calculate negotiation leverage, identify documentation gaps, flag expiry risk on 3 COs, and provide closing strategy to maximize recovery.',
   safety_sweep: 'Run a full safety sweep for a 127-worker GC operation with $127K OSHA exposure: OSHA top violations by fine exposure, EMR 1.18 reduction opportunities, workers comp optimization, PPE program ROI, and 30-day improvement plan.',
@@ -571,7 +604,7 @@ function deployQuery() {
 function runPlaybook(key, el) {
   document.querySelectorAll('.playbook').forEach(p => p.classList.remove('running'));
   el.classList.add('running');
-  const prompt = PLAYBOOKS[key];
+  const prompt = COMMON JOB-SITE WORKFLOWS[key];
   if(!prompt) return;
   document.getElementById('queryInput').value = prompt.slice(0, 80) + '...';
   responses = {};
