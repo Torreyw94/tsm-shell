@@ -19,12 +19,16 @@ const suites = [
 suites.forEach(({ route, dir, index }) => {
   const suiteDir = path.join(HTML_ROOT, dir);
   if (!fs.existsSync(suiteDir)) console.warn(`⚠️  Not found: ${suiteDir}`);
-  app.get(route, (_req, res) => res.redirect(route + "/"));
-  app.get(route + "/", (_req, res) => {
+
+  // Serve index for both /route and /route/
+  const serveIndex = (_req, res) => {
     res.sendFile(path.join(suiteDir, index), (err) => {
       if (err) res.status(404).send(`Index not found: ${index}`);
     });
-  });
+  };
+
+  app.get(route, serveIndex);
+  app.get(route + "/", serveIndex);
   app.use(route + "/", express.static(suiteDir, { extensions: ["html"] }));
   console.log(`✅  ${route} → ${dir}`);
 });
@@ -55,11 +59,11 @@ app.get("/", (_req, res) => {
   <h1>TSM Shell</h1>
   <p>Select a suite to continue</p>
   <div class="grid">
-    <a class="card" href="/construction/"><h2>🏗️ Construction</h2><p>Command, legal, financial &amp; compliance</p></a>
-    <a class="card" href="/finops/"><h2>💰 FinOps Suite</h2><p>Financial operations, tax &amp; compliance</p></a>
-    <a class="card" href="/healthcare/"><h2>🏥 Healthcare</h2><p>15-node mesh: billing, insurance, pharmacy</p></a>
-    <a class="card" href="/insurance/"><h2>🛡️ TSM Insurance</h2><p>Agent portal, AZ, DME, pricing &amp; legal</p></a>
-    <a class="card" href="/music/"><h2>🎵 Music Command</h2><p>App, demo conductor, marketing &amp; presentation</p></a>
+    <a class="card" href="/construction"><h2>🏗️ Construction</h2><p>Command, legal, financial &amp; compliance</p></a>
+    <a class="card" href="/finops"><h2>💰 FinOps Suite</h2><p>Financial operations, tax &amp; compliance</p></a>
+    <a class="card" href="/healthcare"><h2>🏥 Healthcare</h2><p>15-node mesh: billing, insurance, pharmacy</p></a>
+    <a class="card" href="/insurance"><h2>🛡️ TSM Insurance</h2><p>Agent portal, AZ, DME, pricing &amp; legal</p></a>
+    <a class="card" href="/music"><h2>🎵 Music Command</h2><p>App, demo conductor, marketing &amp; presentation</p></a>
   </div>
 </body>
 </html>`);
