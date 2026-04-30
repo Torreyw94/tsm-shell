@@ -397,6 +397,9 @@ Example: Claim #HC-2024-8821 denied. CPT 99213. Reason: Medical necessity not es
 </div>
 
 <script>
+// ── FIX STATUS BAR OVERLAP ──
+document.head.appendChild(Object.assign(document.createElement('style'),{textContent:'body{padding-bottom:70px!important}'}));
+
 // ── STATE ──
 let GROQ_KEY = sessionStorage.getItem('groq_key') || '';
 let GROQ_MODEL = sessionStorage.getItem('groq_model') || 'llama-3.3-70b-versatile';
