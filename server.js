@@ -630,11 +630,6 @@ ${text.slice(0,2500)}`,
 // ===============================
 // FINOPS STATIC ROUTE LOCK
 // ===============================
-app.use('/html/finops-presentation', express.static(path.join(__dirname, 'html/finops-presentation')));
-app.use('/html/finops-main-strategist', express.static(path.join(__dirname, 'html/finops-main-strategist')));
-app.use('/html/financial-command', express.static(path.join(__dirname, 'html/financial-command')));
-app.use('/html/tax-prep', express.static(path.join(__dirname, 'html/tax-prep')));
-app.use('/html/compliance', express.static(path.join(__dirname, 'html/compliance')));
 
 app.use(express.static(__dirname, {
   extensions: ['html']
@@ -1545,68 +1540,9 @@ function summarizeOfficeDriver(officeName, state = {}, officeEval = {}) {
 
 // ── STATIC ────────────────────────────────────────────────────────────────────
 app.use('/html/suite', express.static(path.join(__dirname, 'html', 'suite')));
-app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
-app.use('/html/hc-strategist', express.static(path.join(__dirname, 'html', 'hc-strategist')));
-app.use('/html/slug-presentation', express.static(path.join(__dirname, 'html', 'slug-presentation')));
-app.use('/html/slug-strategist', express.static(path.join(__dirname, 'html', 'slug-strategist')));
-app.use('/html/slug', express.static(path.join(__dirname, 'html', 'slug')));
-app.use('/html/slug-portal', express.static(path.join(__dirname, 'html', 'slug-portal')));
-app.use('/html/dignity-presentation', express.static(path.join(__dirname, 'html', 'dignity-presentation')));
-app.use('/html/dignity-strategist', express.static(path.join(__dirname, 'html', 'dignity-strategist')));
-app.use('/html/dignity', express.static(path.join(__dirname, 'html', 'dignity')));
-app.use('/html/dignity-portal', express.static(path.join(__dirname, 'html', 'dignity-portal')));
-app.use('/html/banner-presentation', express.static(path.join(__dirname, 'html', 'banner-presentation')));
-app.use('/html/banner-strategist', express.static(path.join(__dirname, 'html', 'banner-strategist')));
-app.use('/html/banner', express.static(path.join(__dirname, 'html', 'banner')));
-app.use('/html/banner-portal', express.static(path.join(__dirname, 'html', 'banner-portal')));
-app.use('/html/agents-ins', express.static(path.join(__dirname, 'html', 'agents-ins')));
-app.use('/html/ameris-construction', express.static(path.join(__dirname, 'html', 'ameris-construction')));
-app.use('/html/ameris-portal', express.static(path.join(__dirname, 'html', 'ameris-portal')));
-app.use('/html/az-ins', express.static(path.join(__dirname, 'html', 'az-ins')));
-app.use('/html/bpo-legal', express.static(path.join(__dirname, 'html', 'bpo-legal')));
-app.use('/html/bpo-realty', express.static(path.join(__dirname, 'html', 'bpo-realty')));
-app.use('/html/bpo-tax', express.static(path.join(__dirname, 'html', 'bpo-tax')));
-app.use('/html/case-tech', express.static(path.join(__dirname, 'html', 'case-tech')));
-app.use('/html/construction-command', express.static(path.join(__dirname, 'html', 'construction-command')));
-app.use('/html/demo', express.static(path.join(__dirname, 'html', 'demo')));
-app.use('/html/desert-financial', express.static(path.join(__dirname, 'html', 'desert-financial')));
-app.use('/html/dme', express.static(path.join(__dirname, 'html', 'dme')));
-app.use('/html/esd-portal', express.static(path.join(__dirname, 'html', 'esd-portal')));
-app.use('/html/financial-command', express.static(path.join(__dirname, 'html', 'financial-command')));
-app.use('/html/general-portal', express.static(path.join(__dirname, 'html', 'general-portal')));
-app.use('/html/ghs', express.static(path.join(__dirname, 'html', 'ghs')));
-app.use('/html/ghs-presentation', express.static(path.join(__dirname, 'html', 'ghs-presentation')));
-app.use('/html/ghs-strategist', express.static(path.join(__dirname, 'html', 'ghs-strategist')));
-app.use('/html/hc-billing', express.static(path.join(__dirname, 'html', 'hc-billing')));
-app.use('/html/hc-command', express.static(path.join(__dirname, 'html', 'hc-command')));
-app.use('/html/hc-compliance', express.static(path.join(__dirname, 'html', 'hc-compliance')));
-app.use('/html/hc-financial', express.static(path.join(__dirname, 'html', 'hc-financial')));
-app.use('/html/hc-grants', express.static(path.join(__dirname, 'html', 'hc-grants')));
-app.use('/html/hc-insurance', express.static(path.join(__dirname, 'html', 'hc-insurance')));
-app.use('/html/hc-legal', express.static(path.join(__dirname, 'html', 'hc-legal')));
-app.use('/html/hc-medical', express.static(path.join(__dirname, 'html', 'hc-medical')));
-app.use('/html/hc-pharmacy', express.static(path.join(__dirname, 'html', 'hc-pharmacy')));
-app.use('/html/hc-presentation', express.static(path.join(__dirname, 'html', 'hc-presentation')));
-app.use('/html/hc-taxprep', express.static(path.join(__dirname, 'html', 'hc-taxprep')));
-app.use('/html/hc-vendors', express.static(path.join(__dirname, 'html', 'hc-vendors')));
-app.use('/html/honor-portal', express.static(path.join(__dirname, 'html', 'honor-portal')));
-app.use('/html/honorhealth', express.static(path.join(__dirname, 'html', 'honorhealth')));
-app.use('/html/honorhealth-dee', express.static(path.join(__dirname, 'html', 'honorhealth-dee')));
 app.use('/html/hub', express.static(path.join(__dirname, 'html', 'hub')));
-app.use('/html/legal-analyst-pro', express.static(path.join(__dirname, 'html', 'legal-analyst-pro')));
-app.use('/html/mayo', express.static(path.join(__dirname, 'html', 'mayo')));
-app.use('/html/mayo-portal', express.static(path.join(__dirname, 'html', 'mayo-portal')));
-app.use('/html/mayo-presentation', express.static(path.join(__dirname, 'html', 'mayo-presentation')));
-app.use('/html/mayo-strategist', express.static(path.join(__dirname, 'html', 'mayo-strategist')));
-app.use('/html/music-command', express.static(path.join(__dirname, 'html', 'music-command')));
-app.use('/html/pc-command', express.static(path.join(__dirname, 'html', 'pc-command')));
-app.use('/html/reo-pro', express.static(path.join(__dirname, 'html', 'reo-pro')));
-app.use('/html/rrd-command', express.static(path.join(__dirname, 'html', 'rrd-command')));
 app.use('/html/shared', express.static(path.join(__dirname, 'html', 'shared')));
-app.use('/html/strategist', express.static(path.join(__dirname, 'html', 'strategist')));
 app.use('/html/suite-builder', express.static(path.join(__dirname, 'html', 'suite-builder')));
-app.use('/html/tsm-strategy', express.static(path.join(__dirname, 'html', 'tsm-strategy')));
-app.use('/html/main-strategist', express.static(path.join(__dirname, 'html', 'main-strategist')));
 app.use('/', express.static(path.join(__dirname, 'html')));
 
 // catch-all LAST
@@ -2867,28 +2803,6 @@ app.get('/api/music/platform', function(_req, res) {
   return res.json({ ok:true, platform:global.MUSIC_PLATFORM });
 });
 
-app.post('/api/music/revision/generate', async function(req, res) {
-  var body = req.body || {};
-  var draft = body.draft || '';
-  var request = body.request || 'Give me 3 revision options';
-  try {
-    var results = await Promise.all([
-      groqChat(SP.music, 'Flow-first revision. Cadence and bounce.\nRequest: ' + request + '\nDraft: ' + draft + '\nOption A:', 400),
-      groqChat(SP.music, 'Emotion-first revision. Imagery and vulnerability.\nRequest: ' + request + '\nDraft: ' + draft + '\nOption B:', 400),
-      groqChat(SP.music, 'Hook-first revision. Structure and repeatability.\nRequest: ' + request + '\nDraft: ' + draft + '\nOption C:', 400)
-    ]);
-    var options = [
-      { id:'A', title:'Option A - Flow First', strategy:'Cadence and bounce', output:results[0] },
-      { id:'B', title:'Option B - Emotion First', strategy:'Imagery and vulnerability', output:results[1] },
-      { id:'C', title:'Option C - Hook First', strategy:'Structure and repeatability', output:results[2] }
-    ];
-    var session = { id:Date.now(), request:request, input:draft, options:options, recommended:'A', createdAt:new Date().toISOString() };
-    if (!global.MUSIC_REVISIONS) global.MUSIC_REVISIONS = { sessions:[], selected:null };
-    global.MUSIC_REVISIONS.sessions.unshift(session);
-    global.MUSIC_REVISIONS.sessions = global.MUSIC_REVISIONS.sessions.slice(0,20);
-    return res.json({ ok:true, session:session });
-  } catch(e) { return res.status(500).json({ ok:false, error:e.message }); }
-});
 
 // Generic AI query - works for all apps
 app.post('/api/ai/query', async function(req, res) {
@@ -3490,26 +3404,13 @@ app.post('/api/construction/report', async (req,res) => {
 // END CONSTRUCTION DOC SHOWCASE ROUTES
 
 // FINOPS MULTI-WORKFLOW CHAIN ROUTES
-app.post('/api/finops/multi-report', async (req,res) => {
-  const workflows = req.body?.workflows || ['AP Aging','AR Ledger','1099 Tracker'];
-  res.json({
-    ok:true,
-    chain:workflows,
-    priority_rank:[
-      {rank:1,lane:'AP',issue:'12 vendor invoices need validation/support',impact:'$18.4K payment timing exposure',owner:'Staff Accountant',status:'ACTION REQUIRED'},
-      {rank:2,lane:'AR',issue:'Collections follow-up required on aging balances',impact:'Cash timing pressure',owner:'AR Specialist / Controller',status:'WATCH'},
-      {rank:3,lane:'Tax',issue:'7 vendors need W-9 / 1099 threshold review',impact:'$34K tax-readiness window',owner:'Tax Prep',status:'DUE BEFORE FILING'}
-    ],
-    combined_bnca:'Prioritize AP invoice validation first, run AR collections follow-up second, and complete 1099/W-9 readiness review before the filing window. Route final summary to Controller Action Plan.',
-    controller_note:'AP support gaps are the highest immediate blocker. AR and tax readiness should be reviewed in the same close cycle.',
-    business_outcome:'AP + AR + Tax workflows combined into one controller-ranked action plan.',
-    confidence:89,
-    ts:new Date().toISOString()
-  });
-});
-app.get('/api/finops/multi-report',(req,res)=>res.json({ok:true,status:'TSM FinOps multi-workflow chain online'}));
 // END FINOPS MULTI-WORKFLOW CHAIN ROUTES
 
+
+app.get('/api/finops/actions', (req,res)=>{
+  const data = readFinopsStore();
+  res.json({ok:true, actions:data.actions || [], reports:data.reports || []});
+});
 
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
@@ -3524,28 +3425,8 @@ global.MUSIC_SUITE_STATE = global.MUSIC_SUITE_STATE || {
   aiStatus: "online"
 };
 
-app.get('/api/music/state', (_req, res) => {
-  return res.json({ ok: true, state: global.MUSIC_SUITE_STATE });
-});
 
-app.post('/api/music/agent-pass', (req, res) => {
-  const body = req.body || {};
-  return res.json({
-    ok: true,
-    agent: body.agent || "full",
-    output: "Agent pass complete. Draft sharpened for cadence, emotion, and structure.",
-    createdAt: new Date().toISOString()
-  });
-});
 
-app.post('/api/music/strategy', (req, res) => {
-  return res.json({
-    ok: true,
-    title: "Music Strategy Brief",
-    answer: "Prioritize viral capture, release timing, sync outreach, and artist DNA consistency.",
-    createdAt: new Date().toISOString()
-  });
-});
 // ===== END MUSIC SUITE API INLINE =====
 
 
@@ -3573,49 +3454,11 @@ function pushMusicActivity(type, title, detail){
   return item;
 }
 
-app.post('/api/music/dna/save', (req, res) => {
-  const body = req.body || {};
-  const dna = global.MUSIC_PLATFORM.artistDNA;
-  dna.artist = body.artist || dna.artist;
-  dna.notes = body.notes || dna.notes || "";
-  dna.styleTerms = Array.isArray(body.styleTerms) ? body.styleTerms : dna.styleTerms;
-  dna.weights = Object.assign({}, dna.weights, body.weights || {});
-  dna.updatedAt = musicStamp();
-  pushMusicActivity("dna", "Artist DNA updated", dna.artist + " DNA memory refreshed");
-  return res.json({ ok:true, dna });
-});
 
-app.post('/api/music/song/learn', (req, res) => {
-  const body = req.body || {};
-  const song = {
-    id: Date.now(),
-    title: body.title || "Untitled Song",
-    lyrics: body.lyrics || body.draft || "",
-    tags: body.tags || [],
-    learnedAt: musicStamp()
-  };
 
-  global.MUSIC_PLATFORM.artistDNA.learnedSongs.unshift(song);
-  global.MUSIC_PLATFORM.artistDNA.learnedSongs =
-    global.MUSIC_PLATFORM.artistDNA.learnedSongs.slice(0, 12);
 
-  const lyric = song.lyrics.toLowerCase();
-  if (lyric.includes("fight") || lyric.includes("pain")) global.MUSIC_PLATFORM.artistDNA.weights.emotion = 0.94;
-  if (lyric.includes("night") || lyric.includes("light")) global.MUSIC_PLATFORM.artistDNA.weights.imagery = 0.88;
-  if (lyric.split("\n").length >= 4) global.MUSIC_PLATFORM.artistDNA.weights.structure = 0.84;
-
-  pushMusicActivity("learn", "Song learned into DNA", song.title);
-  return res.json({ ok:true, song, dna:global.MUSIC_PLATFORM.artistDNA });
-});
-
-app.get('/api/music/activity', (_req, res) => {
-  return res.json({ ok:true, activity:global.MUSIC_PLATFORM.activity, platform:global.MUSIC_PLATFORM });
-});
-
-app.get('/api/music/platform', (_req, res) => {
-  return res.json({ ok:true, platform:global.MUSIC_PLATFORM });
-});
 // ===== END MUSIC PLATFORM EXECUTION LOOP =====
+
 
 
 
@@ -3663,10 +3506,6 @@ function writeFinopsStore(data){
   fs.writeFileSync(finopsFile, JSON.stringify(data, null, 2));
 }
 
-app.get('/api/finops/actions', (req,res)=>{
-  const data = readFinopsStore();
-  res.json({ok:true, actions:data.actions || [], reports:data.reports || []});
-});
 
 app.post('/api/finops/action', (req,res)=>{
   const data = readFinopsStore();
