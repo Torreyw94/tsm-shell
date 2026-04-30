@@ -1,6 +1,7 @@
+
 /**
  * server.js — TSM Shell multi-suite server
- * Serves: construction-suite, finops-suite, healthcare, tsm-insurance
+ * Serves: construction-suite, finops-suite, healthcare, tsm-insurance, music-command
  * Compatible with: GitHub Codespaces, Fly.io
  *
  * Usage:
@@ -47,6 +48,11 @@ const suites = [
     route: "/insurance",
     dir: "tsm-insurance",
     index: "agents-ins.html",
+  },
+  {
+    route: "/music",
+    dir: "music-command",
+    index: "index.html",
   },
 ];
 
@@ -119,6 +125,10 @@ app.get("/", (_req, res) => {
       <h2>🛡️ TSM Insurance</h2>
       <p>Agent portal, AZ insurance, DME, pricing &amp; legal</p>
     </a>
+    <a class="card" href="/music/">
+      <h2>🎵 Music Command</h2>
+      <p>Music app, demo conductor, marketing &amp; presentation tools</p>
+    </a>
   </div>
 </body>
 </html>`);
@@ -135,5 +145,6 @@ app.listen(PORT, () => {
   console.log(`   /construction  → construction-suite`);
   console.log(`   /finops        → finops-suite`);
   console.log(`   /healthcare    → healthcare`);
-  console.log(`   /insurance     → tsm-insurance\n`);
+  console.log(`   /insurance     → tsm-insurance`);
+  console.log(`   /music         → music-command\n`);
 });
