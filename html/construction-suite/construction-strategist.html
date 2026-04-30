@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Main Strategist — Construction Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --steel:    #0d1117;
+    --iron:     #161b22;
+    --plate:    #1c232e;
+    --rail:     #252d3a;
+    --amber:    #f0a500;
+    --amber-lt: #ffbe33;
+    --chalk:    #e8eaf0;
+    --mist:     #8b96a8;
+    --danger:   #e05555;
+    --safe:     #3ecf8e;
+    --accent:   #4fa3e0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--steel);
+    color: var(--chalk);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(240,165,0,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,165,0,.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── TOP STRIP ── */
+  .top-strip {
+    background: var(--amber);
+    height: 4px;
+    width: 100%;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    background: var(--iron);
+    border-bottom: 1px solid rgba(240,165,0,.2);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo-group {
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--amber);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; color: var(--steel);
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px;
+    color: var(--chalk);
+  }
+  .logo-text span { color: var(--amber); }
+
+  .header-right {
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(62,207,142,.1);
+    border: 1px solid rgba(62,207,142,.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px; font-weight: 600; color: var(--safe);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .status-pill::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--safe);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .header-date {
+    font-size: 12px; color: var(--mist);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  /* ── HERO BAND ── */
+  .hero {
+    position: relative; z-index: 5;
+    background: linear-gradient(135deg, var(--plate) 0%, var(--iron) 60%, #0a1520 100%);
+    border-bottom: 1px solid rgba(240,165,0,.15);
+    padding: 3rem 2rem 2.5rem;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'STRATEGIST';
+    position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 140px; letter-spacing: 8px;
+    color: rgba(240,165,0,.04);
+    pointer-events: none; white-space: nowrap;
+  }
+
+  .hero-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--amber); letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1;
+    color: var(--chalk);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .hero-title em { color: var(--amber); font-style: normal; }
+
+  .hero-sub {
+    color: var(--mist); font-size: 14px; font-weight: 300;
+    max-width: 520px; line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .kpi-row {
+    display: flex; gap: 2rem; flex-wrap: wrap;
+  }
+
+  .kpi {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .kpi-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; color: var(--amber); line-height: 1;
+  }
+  .kpi-lbl {
+    font-size: 11px; color: var(--mist);
+    font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .kpi-sep {
+    width: 1px; background: rgba(255,255,255,.08);
+    align-self: stretch; margin: 4px 0;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    position: relative; z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── PANELS ── */
+  .panel {
+    background: var(--iron);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+
+  .panel-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--chalk);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-title::before {
+    content: ''; width: 3px; height: 14px;
+    background: var(--amber); border-radius: 2px;
+  }
+
+  .panel-action {
+    font-size: 11px; color: var(--amber);
+    cursor: pointer; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    background: none; border: none;
+    transition: opacity .2s;
+  }
+  .panel-action:hover { opacity: .7; }
+
+  /* ── STRATEGY CARDS ── */
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    padding: 1.2rem;
+  }
+
+  .strat-card {
+    background: var(--plate);
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 5px;
+    padding: 1.1rem;
+    position: relative; overflow: hidden;
+    transition: border-color .2s, transform .15s;
+    cursor: pointer;
+  }
+  .strat-card:hover {
+    border-color: rgba(240,165,0,.3);
+    transform: translateY(-2px);
+  }
+
+  .strat-card::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+  }
+  .strat-card.amber::before { background: var(--amber); }
+  .strat-card.safe::before  { background: var(--safe); }
+  .strat-card.accent::before { background: var(--accent); }
+  .strat-card.danger::before { background: var(--danger); }
+
+  .strat-phase {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 6px;
+    opacity: .6;
+  }
+  .strat-card.amber .strat-phase { color: var(--amber); }
+  .strat-card.safe  .strat-phase { color: var(--safe); }
+  .strat-card.accent .strat-phase { color: var(--accent); }
+  .strat-card.danger .strat-phase { color: var(--danger); }
+
+  .strat-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--chalk); margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .strat-desc {
+    font-size: 12px; color: var(--mist);
+    line-height: 1.55; margin-bottom: 12px;
+  }
+
+  .strat-bar-wrap {
+    background: rgba(255,255,255,.05);
+    border-radius: 2px; height: 4px; margin-bottom: 8px;
+  }
+  .strat-bar {
+    height: 4px; border-radius: 2px;
+    transition: width 1s ease;
+  }
+  .strat-card.amber .strat-bar { background: var(--amber); }
+  .strat-card.safe  .strat-bar { background: var(--safe); }
+  .strat-card.accent .strat-bar { background: var(--accent); }
+  .strat-card.danger .strat-bar { background: var(--danger); }
+
+  .strat-meta {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--mist);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { padding: 1.2rem 1.4rem; }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 70px 18px 1fr;
+    gap: 0 14px;
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+  .tl-item:last-child { margin-bottom: 0; }
+
+  .tl-time {
+    font-size: 11px; color: var(--mist);
+    text-align: right; padding-top: 2px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600; letter-spacing: .5px;
+  }
+
+  .tl-spine {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0;
+  }
+  .tl-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 3px;
+  }
+  .tl-line {
+    width: 1px; flex: 1;
+    background: rgba(255,255,255,.08);
+    min-height: 30px;
+  }
+  .tl-item:last-child .tl-line { display: none; }
+
+  .tl-content {}
+  .tl-title {
+    font-size: 13px; font-weight: 600; color: var(--chalk);
+    margin-bottom: 3px;
+  }
+  .tl-body {
+    font-size: 12px; color: var(--mist); line-height: 1.5;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 1.2rem; }
+
+  /* ── RISK METER ── */
+  .risk-display { padding: 1.2rem; }
+
+  .risk-gauge {
+    display: flex; gap: 4px; margin-bottom: 1rem;
+  }
+  .risk-seg {
+    flex: 1; height: 8px; border-radius: 2px;
+    background: rgba(255,255,255,.06);
+    transition: background .4s;
+  }
+  .risk-seg.active-low    { background: var(--safe); }
+  .risk-seg.active-mid    { background: var(--amber); }
+  .risk-seg.active-high   { background: var(--danger); }
+
+  .risk-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; color: var(--amber);
+    line-height: 1; text-align: center;
+    margin-bottom: 2px;
+  }
+  .risk-lbl {
+    text-align: center; font-size: 11px;
+    color: var(--mist); letter-spacing: 1.5px;
+    text-transform: uppercase; font-weight: 600;
+  }
+
+  .risk-items { margin-top: 1rem; display: flex; flex-direction: column; gap: 10px; }
+
+  .risk-item {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px;
+  }
+  .risk-item-name { color: var(--chalk); }
+  .risk-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .badge-low  { background: rgba(62,207,142,.15); color: var(--safe); }
+  .badge-med  { background: rgba(240,165,0,.15);  color: var(--amber); }
+  .badge-high { background: rgba(224,85,85,.15);  color: var(--danger); }
+
+  /* ── TEAM ── */
+  .team-list { padding: 0.8rem 1.2rem; display: flex; flex-direction: column; gap: 0; }
+
+  .team-member {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+  }
+  .team-member:last-child { border-bottom: none; }
+
+  .member-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+    flex-shrink: 0; color: var(--steel);
+  }
+
+  .member-info { flex: 1; min-width: 0; }
+  .member-name {
+    font-size: 13px; font-weight: 600; color: var(--chalk);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .member-role { font-size: 11px; color: var(--mist); }
+
+  .member-status {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  /* ── ALERTS ── */
+  .alert-list { padding: .8rem 1.2rem; display: flex; flex-direction: column; gap: 8px; }
+
+  .alert-item {
+    background: var(--plate);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex; gap: 10px; align-items: flex-start;
+    border-left: 3px solid;
+  }
+  .alert-item.warn { border-color: var(--amber); }
+  .alert-item.info { border-color: var(--accent); }
+  .alert-item.crit { border-color: var(--danger); }
+
+  .alert-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .alert-text { font-size: 12px; color: var(--chalk); line-height: 1.5; }
+  .alert-time { font-size: 10px; color: var(--mist); margin-top: 3px; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 5;
+    border-top: 1px solid rgba(255,255,255,.05);
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--mist);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  footer a { color: var(--amber); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0; transform: translateY(16px);
+    animation: fadeUp .5s forwards;
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: none; }
+  }
+
+  .strat-card:nth-child(1) { animation-delay: .05s; }
+  .strat-card:nth-child(2) { animation-delay: .10s; }
+  .strat-card:nth-child(3) { animation-delay: .15s; }
+  .strat-card:nth-child(4) { animation-delay: .20s; }
+
+  @media(max-width:900px) {
+    main { grid-template-columns: 1fr; }
+    .hero::after { display: none; }
+  }
+
+  /* ── AI ASSISTANT ── */
+  .ai-fab {
+    position: fixed; bottom: 28px; right: 28px; z-index: 999;
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--amber); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 4px 24px rgba(240,165,0,.4);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .ai-fab:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(240,165,0,.55); }
+  .ai-fab .fab-badge {
+    position: absolute; top: -3px; right: -3px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--safe); font-size: 9px; color: var(--steel);
+    font-weight: 800; display: flex; align-items: center; justify-content: center;
+    animation: pulse 2s infinite;
+  }
+
+  .ai-drawer {
+    position: fixed; bottom: 92px; right: 28px; z-index: 998;
+    width: 380px; max-height: 560px;
+    background: var(--iron);
+    border: 1px solid rgba(240,165,0,.25);
+    border-radius: 10px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0,0,0,.6);
+    transform: scale(.92) translateY(20px);
+    opacity: 0; pointer-events: none;
+    transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .ai-drawer.open {
+    transform: none; opacity: 1; pointer-events: all;
+  }
+
+  .ai-drawer-head {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .ai-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber), #e07800);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .ai-drawer-title { font-size: 13px; font-weight: 700; color: var(--chalk); }
+  .ai-drawer-sub   { font-size: 11px; color: var(--mist); }
+  .ai-close {
+    margin-left: auto; background: none; border: none;
+    color: var(--mist); cursor: pointer; font-size: 18px; line-height: 1;
+    transition: color .15s;
+  }
+  .ai-close:hover { color: var(--chalk); }
+
+  .ai-messages {
+    flex: 1; overflow-y: auto; padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent;
+  }
+
+  .msg {
+    display: flex; gap: 8px; align-items: flex-start;
+    animation: msgIn .2s ease;
+  }
+  @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .msg-bubble {
+    max-width: 82%; padding: 9px 12px; border-radius: 8px;
+    font-size: 12.5px; line-height: 1.55;
+  }
+  .msg.ai   .msg-bubble { background: var(--plate); color: var(--chalk); border-radius: 2px 8px 8px 8px; }
+  .msg.user .msg-bubble { background: var(--amber); color: var(--steel); font-weight: 500; border-radius: 8px 2px 8px 8px; }
+
+  .msg-dot {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+  }
+  .msg.ai   .msg-dot { background: linear-gradient(135deg,var(--amber),#e07800); }
+  .msg.user .msg-dot { background: var(--rail); }
+
+  .ai-typing { display: flex; gap: 4px; align-items: center; padding: 10px 12px; }
+  .ai-typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--mist); animation: blink 1.2s infinite;
+  }
+  .ai-typing span:nth-child(2) { animation-delay: .2s; }
+  .ai-typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+  .ai-suggestions {
+    padding: 6px 14px 10px; display: flex; flex-wrap: wrap; gap: 5px;
+    border-top: 1px solid rgba(255,255,255,.04); flex-shrink: 0;
+  }
+  .ai-chip {
+    padding: 4px 10px; border-radius: 12px; font-size: 11px;
+    border: 1px solid rgba(240,165,0,.25); color: var(--amber);
+    background: rgba(240,165,0,.06); cursor: pointer;
+    transition: background .15s;
+  }
+  .ai-chip:hover { background: rgba(240,165,0,.15); }
+
+  .ai-input-row {
+    padding: 10px 14px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+  }
+  .ai-input {
+    flex: 1; background: var(--plate);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 6px; padding: 8px 12px;
+    color: var(--chalk); font-size: 13px;
+    font-family: 'Barlow', sans-serif; outline: none;
+    transition: border-color .2s;
+  }
+  .ai-input:focus { border-color: rgba(240,165,0,.4); }
+  .ai-send {
+    width: 34px; height: 34px; border-radius: 6px;
+    background: var(--amber); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: background .2s; flex-shrink: 0;
+  }
+  .ai-send:hover { background: var(--amber-lt); }
+  .ai-send:disabled { opacity: .4; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<div class="top-strip"></div>
+
+<header>
+  <div class="logo-group">
+    <div class="logo-icon">CS</div>
+    <div class="logo-text">CONSTRUCTION <span>SUITE</span></div>
+  </div>
+  <div class="header-right">
+    <div class="status-pill">Systems Active</div>
+    <div class="header-date" id="hdate"></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">Construction Suite · Main Strategist</div>
+  <h1 class="hero-title">Project <em>Command</em><br>& Strategy</h1>
+  <p class="hero-sub">Centralized oversight for construction operations — budget, schedule, risk, and team coordination unified in one command layer.</p>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-val">$4.2M</div>
+      <div class="kpi-lbl">Total Budget</div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <div class="kpi-val">83%</div>
+      <div class="kpi-lbl">On-Schedule</div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <div class="kpi-val">12</div>
+      <div class="kpi-lbl">Active Sites</div>
+    </div>
+    <div class="kpi-sep"></div>
+    <div class="kpi">
+      <div class="kpi-val">47</div>
+      <div class="kpi-lbl">Field Crew</div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <!-- LEFT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+    <!-- Strategy Cards -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Active Strategies</div>
+        <button class="panel-action">+ New</button>
+      </div>
+      <div class="strategy-grid">
+        <div class="strat-card amber fade-up">
+          <div class="strat-phase">Phase 1 · Foundation</div>
+          <div class="strat-name">Site Preparation & Groundwork</div>
+          <div class="strat-desc">Clearing, grading, and soil testing complete. Concrete pour scheduled pending permit confirmation.</div>
+          <div class="strat-bar-wrap"><div class="strat-bar" style="width:72%"></div></div>
+          <div class="strat-meta"><span>72% complete</span><span>Due Jun 15</span></div>
+        </div>
+        <div class="strat-card safe fade-up">
+          <div class="strat-phase">Phase 2 · Structure</div>
+          <div class="strat-name">Steel Frame Erection</div>
+          <div class="strat-desc">Structural steel delivery confirmed. Crane crew mobilization scheduled for week of June 20.</div>
+          <div class="strat-bar-wrap"><div class="strat-bar" style="width:38%"></div></div>
+          <div class="strat-meta"><span>38% complete</span><span>Due Aug 30</span></div>
+        </div>
+        <div class="strat-card accent fade-up">
+          <div class="strat-phase">Phase 3 · Envelope</div>
+          <div class="strat-name">Roofing & Exterior Cladding</div>
+          <div class="strat-desc">Material procurement in progress. Subcontractor bids under review. Weather window analysis pending.</div>
+          <div class="strat-bar-wrap"><div class="strat-bar" style="width:12%"></div></div>
+          <div class="strat-meta"><span>12% complete</span><span>Due Nov 10</span></div>
+        </div>
+        <div class="strat-card danger fade-up">
+          <div class="strat-phase">Phase 4 · Systems</div>
+          <div class="strat-name">MEP Rough-In & Inspections</div>
+          <div class="strat-desc">Mechanical, electrical, and plumbing coordination required. Inspection scheduling delayed — action needed.</div>
+          <div class="strat-bar-wrap"><div class="strat-bar" style="width:5%"></div></div>
+          <div class="strat-meta"><span>5% complete</span><span>Due Jan 20</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Project Timeline</div>
+        <button class="panel-action">Full View</button>
+      </div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-time">Apr 29</div>
+          <div class="tl-spine">
+            <div class="tl-dot" style="background:var(--safe)"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Permit Approved — Block C</div>
+            <div class="tl-body">City planning approved Block C foundation permit. Work can commence Monday morning.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">May 5</div>
+          <div class="tl-spine">
+            <div class="tl-dot" style="background:var(--amber)"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Concrete Pour — North Foundation</div>
+            <div class="tl-body">Weather hold lifted. Crew and equipment staged. Inspector on site at 7AM.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">May 12</div>
+          <div class="tl-spine">
+            <div class="tl-dot" style="background:var(--accent)"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Steel Delivery — Main Structure</div>
+            <div class="tl-body">250 tons structural steel arriving from supplier. Staging area confirmed at Gate 2.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">May 20</div>
+          <div class="tl-spine">
+            <div class="tl-dot" style="background:var(--mist)"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Subcontractor Bid Deadline</div>
+            <div class="tl-body">Final bids due for roofing and exterior cladding. Evaluation team review scheduled May 22.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">Jun 1</div>
+          <div class="tl-spine">
+            <div class="tl-dot" style="background:var(--mist)"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">Q2 Progress Report Due</div>
+            <div class="tl-body">Comprehensive progress report for investor and client review. Financial reconciliation required.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left col -->
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Risk Panel -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Risk Index</div>
+      </div>
+      <div class="risk-display">
+        <div class="risk-gauge">
+          <div class="risk-seg active-low"></div>
+          <div class="risk-seg active-low"></div>
+          <div class="risk-seg active-low"></div>
+          <div class="risk-seg active-mid"></div>
+          <div class="risk-seg active-mid"></div>
+          <div class="risk-seg"></div>
+          <div class="risk-seg"></div>
+          <div class="risk-seg"></div>
+        </div>
+        <div class="risk-val">42</div>
+        <div class="risk-lbl">Moderate Risk</div>
+        <div class="risk-items">
+          <div class="risk-item">
+            <span class="risk-item-name">Schedule Variance</span>
+            <span class="risk-badge badge-low">Low</span>
+          </div>
+          <div class="risk-item">
+            <span class="risk-item-name">Budget Overrun</span>
+            <span class="risk-badge badge-med">Medium</span>
+          </div>
+          <div class="risk-item">
+            <span class="risk-item-name">Permit Delays</span>
+            <span class="risk-badge badge-med">Medium</span>
+          </div>
+          <div class="risk-item">
+            <span class="risk-item-name">Safety Incidents</span>
+            <span class="risk-badge badge-low">Low</span>
+          </div>
+          <div class="risk-item">
+            <span class="risk-item-name">Supply Chain</span>
+            <span class="risk-badge badge-high">High</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Field Leadership</div>
+        <button class="panel-action">All</button>
+      </div>
+      <div class="team-list">
+        <div class="team-member">
+          <div class="member-avatar" style="background:var(--amber)">RK</div>
+          <div class="member-info">
+            <div class="member-name">R. Kowalski</div>
+            <div class="member-role">Project Superintendent</div>
+          </div>
+          <div class="member-status" style="background:var(--safe)"></div>
+        </div>
+        <div class="team-member">
+          <div class="member-avatar" style="background:var(--accent)">MT</div>
+          <div class="member-info">
+            <div class="member-name">M. Thorne</div>
+            <div class="member-role">Structural Engineer</div>
+          </div>
+          <div class="member-status" style="background:var(--safe)"></div>
+        </div>
+        <div class="team-member">
+          <div class="member-avatar" style="background:#7c5cbf">DL</div>
+          <div class="member-info">
+            <div class="member-name">D. Lara</div>
+            <div class="member-role">Safety Officer</div>
+          </div>
+          <div class="member-status" style="background:var(--amber)"></div>
+        </div>
+        <div class="team-member">
+          <div class="member-avatar" style="background:var(--safe)">JP</div>
+          <div class="member-info">
+            <div class="member-name">J. Patterson</div>
+            <div class="member-role">MEP Coordinator</div>
+          </div>
+          <div class="member-status" style="background:var(--mist)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Active Alerts</div>
+        <button class="panel-action">Clear</button>
+      </div>
+      <div class="alert-list">
+        <div class="alert-item crit">
+          <div class="alert-icon">⚠</div>
+          <div>
+            <div class="alert-text">MEP inspection scheduling overdue by 3 days</div>
+            <div class="alert-time">2h ago</div>
+          </div>
+        </div>
+        <div class="alert-item warn">
+          <div class="alert-icon">◈</div>
+          <div>
+            <div class="alert-text">Steel delivery window narrow — confirm Gate 2 staging</div>
+            <div class="alert-time">5h ago</div>
+          </div>
+        </div>
+        <div class="alert-item info">
+          <div class="alert-icon">ℹ</div>
+          <div>
+            <div class="alert-text">Q2 investor report template available in Document Hub</div>
+            <div class="alert-time">1d ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</main>
+
+<footer>
+  <span>Construction Suite · Main Strategist v2.6</span>
+  <span>All data is project-specific and confidential</span>
+</footer>
+
+<!-- AI ASSISTANT -->
+<button class="ai-fab" id="aiFab" title="Construction AI Assistant">
+  🏗
+  <span class="fab-badge">AI</span>
+</button>
+
+<div class="ai-drawer" id="aiDrawer">
+  <div class="ai-drawer-head">
+    <div class="ai-avatar">🏗</div>
+    <div>
+      <div class="ai-drawer-title">Construction Assistant</div>
+      <div class="ai-drawer-sub">Powered by Groq · Llama 3</div>
+    </div>
+    <button class="ai-close" id="aiClose">✕</button>
+  </div>
+
+  <div class="ai-messages" id="aiMessages">
+    <div class="msg ai">
+      <div class="msg-dot">🏗</div>
+      <div class="msg-bubble">Hey — I'm your construction strategist AI. Ask me about schedules, risk, budget, crew planning, or anything on this project.</div>
+    </div>
+  </div>
+
+  <div class="ai-suggestions" id="aiSuggestions">
+    <span class="ai-chip" onclick="sendChip(this)">What's my biggest risk right now?</span>
+    <span class="ai-chip" onclick="sendChip(this)">How do I reduce budget variance?</span>
+    <span class="ai-chip" onclick="sendChip(this)">MEP inspection checklist</span>
+    <span class="ai-chip" onclick="sendChip(this)">Steel erection safety tips</span>
+  </div>
+
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Ask anything construction…" autocomplete="off"/>
+    <button class="ai-send" id="aiSend">➤</button>
+  </div>
+</div>
+
+<script>
+  // Live date
+  const d = new Date();
+  document.getElementById('hdate').textContent =
+    d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+
+  // Animate bars on load
+  document.querySelectorAll('.strat-bar').forEach(b => {
+    const w = b.style.width;
+    b.style.width = '0';
+    setTimeout(() => b.style.width = w, 300);
+  });
+
+  // ── AI ASSISTANT ──
+  const fab      = document.getElementById('aiFab');
+  const drawer   = document.getElementById('aiDrawer');
+  const closeBtn = document.getElementById('aiClose');
+  const input    = document.getElementById('aiInput');
+  const sendBtn  = document.getElementById('aiSend');
+  const msgs     = document.getElementById('aiMessages');
+
+  const SYSTEM = `You are a senior construction project strategist and site advisor embedded in a Construction Suite dashboard.
+You specialize in: project scheduling, budget management, risk assessment, subcontractor coordination, permitting, MEP systems, safety compliance (OSHA), and construction best practices.
+Keep answers concise, practical, and actionable. Use bullet points for lists. When relevant, reference phases: Foundation, Structure, Envelope, Systems.`;
+
+  let history = [];
+  let busy = false;
+
+  fab.addEventListener('click', () => drawer.classList.toggle('open'));
+  closeBtn.addEventListener('click', () => drawer.classList.remove('open'));
+
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+  sendBtn.addEventListener('click', send);
+
+  function sendChip(el) {
+    input.value = el.textContent;
+    send();
+    document.getElementById('aiSuggestions').style.display = 'none';
+  }
+
+  function appendMsg(role, text) {
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerHTML = `
+      <div class="msg-dot">${role === 'ai' ? '🏗' : '👤'}</div>
+      <div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'msg ai'; div.id = 'typing';
+    div.innerHTML = `<div class="msg-dot">🏗</div><div class="msg-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  async function send() {
+    const text = input.value.trim();
+    if (!text || busy) return;
+    busy = true; input.value = '';
+    sendBtn.disabled = true;
+
+    appendMsg('user', text);
+    history.push({ role: 'user', content: text });
+    showTyping();
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history, system: SYSTEM })
+      });
+
+      const data = await res.json();
+      const reply = data.reply || data.content || data.message || 'No response received.';
+
+      document.getElementById('typing')?.remove();
+      appendMsg('ai', reply);
+      history.push({ role: 'assistant', content: reply });
+    } catch (err) {
+      document.getElementById('typing')?.remove();
+      appendMsg('ai', '⚠ Could not reach the AI backend. Check that /api/chat is running on your Fly server.');
+    }
+
+    busy = false;
+    sendBtn.disabled = false;
+    input.focus();
+  }
+</script>
+</body>
+</html>
