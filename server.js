@@ -9,28 +9,25 @@ const HTML_ROOT = path.join(__dirname, "html");
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
 const suites = [
-  { route: "/construction", dir: "construction-suite", index: "construction-hub.html" },
-  { route: "/finops",       dir: "finops-suite",       index: "financial-ui.html" },
-  { route: "/healthcare",   dir: "healthcare",          index: "index.html" },
-  { route: "/insurance",    dir: "tsm-insurance",       index: "agents-ins.html" },
-  { route: "/music",        dir: "music-command",       index: "index.html" },
+  { route: "/construction", dir: "construction-suite",  index: "construction-hub.html" },
+  { route: "/finops",       dir: "finops-suite",        index: "finops-presentation/index.html" },
+  { route: "/healthcare",   dir: "healthcare",           index: "index.html" },
+  { route: "/insurance",    dir: "tsm-insurance",        index: "ins-presentation.html" },
+  { route: "/music",        dir: "music-command",        index: "index.html" },
 ];
 
 suites.forEach(({ route, dir, index }) => {
   const suiteDir = path.join(HTML_ROOT, dir);
   if (!fs.existsSync(suiteDir)) console.warn(`⚠️  Not found: ${suiteDir}`);
-
-  // Serve index for both /route and /route/
   const serveIndex = (_req, res) => {
     res.sendFile(path.join(suiteDir, index), (err) => {
       if (err) res.status(404).send(`Index not found: ${index}`);
     });
   };
-
   app.get(route, serveIndex);
   app.get(route + "/", serveIndex);
   app.use(route + "/", express.static(suiteDir, { extensions: ["html"] }));
-  console.log(`✅  ${route} → ${dir}`);
+  console.log(`✅  ${route} → ${dir}/${index}`);
 });
 
 app.get("/", (_req, res) => {
@@ -73,6 +70,6 @@ app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}<
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
-  suites.forEach(s => console.log(`   ${s.route} → ${s.dir}`));
+  suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));
   console.log();
 });
