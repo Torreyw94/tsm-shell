@@ -30,7 +30,7 @@ suites.forEach(({ route, dir, index }) => {
   console.log(`✅  ${route} → ${dir}/${index}`);
 });
 
-app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
+app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare'), { index: 'index.html', extensions: ['html'] }));
 
 // Specific route for PoC demo
 app.get('/html/healthcare/poc-html', (req, res) => {
