@@ -1,4 +1,3 @@
-
 /**
  * server.js — TSM Shell multi-suite server
  * Serves: construction-suite, finops-suite, healthcare, tsm-insurance, music-command
