@@ -68,14 +68,14 @@ main{padding-bottom:40px}
 <header>
   <div>
     <div class="brand">TSM EXECUTIVE PORTAL</div>
-    <div class="sub">Unified leadership view · Healthcare operations + Insurance revenue/risk</div>
+    <div class="sub">Unified leadership view · Healthcare operations · BNCA relay · CFO decision view</div>
   </div>
   <div class="badge" id="liveBadge">SYNCING</div>
 </header>
 
 <nav class="tabs">
   <button class="tab active" onclick="showSector('healthcare',this)">HEALTHCARE</button>
-  <button class="tab" onclick="showSector('insurance',this)">INSURANCE</button>
+  <button class="tab" onclick="showSector('healthcare',this)">HEALTHCARE</button>
   <button class="tab" onclick="showSector('combined',this)">COMBINED EXECUTIVE VIEW</button>
 </nav>
 
@@ -102,7 +102,7 @@ main{padding-bottom:40px}
     </div>
   </section>
 
-  <section id="insurance" class="section">
+  <section id="healthcare" class="section">
     <div class="grid">
       <div class="card"><b>Exposure Identified</b><div class="val gold" id="insExposure">$4.2M</div></div>
       <div class="card"><b>Recoverable Premium</b><div class="val gold" id="insRecoverable">$280K–$420K</div></div>
@@ -111,8 +111,8 @@ main{padding-bottom:40px}
     </div>
 
     <div class="panel">
-      <b style="color:#E8C870">INSURANCE REVENUE + RISK BNCA</b>
-      <div class="summary" id="insSummary">Loading insurance report...</div>
+      <b style="color:#E8C870">HEALTHCARE REVENUE + RISK BNCA</b>
+      <div class="summary" id="insSummary">Loading healthcare report...</div>
       <button class="btn gold" onclick="location.href='/html/ins-main-strategist/index.html?v=exec-portal'">OPEN INS MAIN STRATEGIST</button>
       <button class="btn gold dark" onclick="location.href='/html/pc-command/index.html?v=exec-portal'">OPEN P&C COMMAND</button>
       <button class="btn gold dark" onclick="location.href='/html/ins-presentation/index.html?v=exec-portal'">OPEN INS PRESENTATION</button>
@@ -122,7 +122,7 @@ main{padding-bottom:40px}
   <section id="combined" class="section">
     <div class="grid">
       <div class="card"><b>Healthcare Status</b><div class="val green" id="comboHC">—</div></div>
-      <div class="card"><b>Insurance Status</b><div class="val gold" id="comboINS">—</div></div>
+      <div class="card"><b>Healthcare Status</b><div class="val gold" id="comboINS">—</div></div>
       <div class="card"><b>Enterprise Risk</b><div class="val warn" id="comboRisk">WATCH</div></div>
       <div class="card"><b>Executive Action</b><div class="val blue">PILOT</div></div>
     </div>
@@ -131,13 +131,13 @@ main{padding-bottom:40px}
       <b style="color:#00e0ff">COMBINED EXECUTIVE READOUT</b>
       <div class="summary" id="comboSummary">Loading combined executive summary...</div>
       <button class="btn" onclick="showSector('healthcare',document.querySelectorAll('.tab')[0])">VIEW HEALTHCARE</button>
-      <button class="btn gold" onclick="showSector('insurance',document.querySelectorAll('.tab')[1])">VIEW INSURANCE</button>
+      <button class="btn gold" onclick="showSector('healthcare',document.querySelectorAll('.tab')[1])">VIEW HEALTHCARE</button>
     </div>
   </section>
 </main>
 
 <div class="footer">
-  <span>● TSM EXECUTIVE PORTAL · HEALTHCARE + INSURANCE · LIVE COMMAND VIEW</span>
+  <span>● TSM EXECUTIVE PORTAL · HEALTHCARE + HEALTHCARE · LIVE COMMAND VIEW</span>
   <span>READY</span>
 </div>
 
@@ -186,7 +186,7 @@ function loadINS(){
   let data={};
   try{data=JSON.parse(sessionStorage.getItem('tsm_pc_strategist_output') || localStorage.getItem('tsm_ins_persist') || '{}')}catch(e){}
 
-  const summary = data.summary || `INSURANCE REVENUE + RISK BNCA
+  const summary = data.summary || `HEALTHCARE REVENUE + RISK BNCA
 
 1. Prioritize 14 wildfire-zone property accounts.
 2. Close 8 auto liability gaps with umbrella outreach.
@@ -218,14 +218,14 @@ async function refreshAll(){
 HEALTHCARE:
 ${hc.ready ? clean(hc.summary).slice(0,900) : 'Waiting for healthcare pipeline run.'}
 
-INSURANCE:
+HEALTHCARE:
 ${ins.summary}
 
 EXECUTIVE POSITIONING:
-Healthcare shows operational decisioning. Insurance shows financial decisioning. Both are powered by the same TSM command architecture: signal → analysis → BNCA → strategist → executive action.
+Healthcare shows operational decisioning. Healthcare shows financial decisioning. Both are powered by the same TSM command architecture: signal → analysis → BNCA → strategist → executive action.
 
 RECOMMENDED NEXT MOVE:
-Validate the system with a focused 90-day pilot. Start with Prior Auth / Denials for healthcare and Coverage Gap / Renewal Risk for insurance.`;
+Validate the system with a focused 90-day pilot. Start with Prior Auth / Denials for healthcare and Coverage Gap / Renewal Risk for healthcare.`;
 }
 
 refreshAll();

@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
+app.use(express.json({ limit: '10mb' }));
 const PORT = process.env.PORT || 8080;
 const HTML_ROOT = path.join(__dirname, "html");
 
@@ -78,8 +79,6 @@ app.get("/", (_req, res) => {
 </html>`);
 });
 
-app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}</pre>`));
-
 
 // ======================================================
 // TSM HEALTHCARE REAL AI CHAIN · HC COMMAND → HC STRATEGIST → MAIN STRATEGIST → EXEC PORTAL
@@ -119,6 +118,86 @@ async function tsmAIJSON(prompt, fallback){
 const TSM_MEMORY = global.__TSM_MEMORY__ = global.__TSM_MEMORY__ || {
   healthcare:{nodes:{}, hcStrategist:null, mainStrategist:null, executive:null}
 };
+
+async function runAIQuery(body, defaultSystem){
+  const system = body.system || defaultSystem || 'You are TSM Neural Core. Answer precisely.';
+  const message = body.message || body.question || body.query || body.prompt || '';
+  const prompt = `${system}\n\n${message}`.trim();
+  const result = await tsmAIJSON(prompt, {
+    ok:false,
+    response:'AI unavailable',
+    ai_status:'fallback_no_mock_data_key_or_route_needed'
+  });
+  return result;
+}
+
+app.post('/api/ai/query', async (req, res) => {
+  try {
+    const result = await runAIQuery(req.body || {}, 'You are an enterprise AI assistant.');
+    res.json({ ok:true, ...result, ts:new Date().toISOString() });
+  } catch(e) {
+    res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+app.post('/api/hc/query', async (req, res) => {
+  try {
+    const result = await runAIQuery(req.body || {}, 'You are a healthcare AI expert in auth denials, payer appeals, and compliance.');
+    res.json({ ok:true, ...result, ts:new Date().toISOString() });
+  } catch(e) {
+    res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+app.post('/api/hc/ask', async (req, res) => {
+  try {
+    const result = await runAIQuery(req.body || {}, 'You are a healthcare AI expert in auth denials, payer appeals, and compliance.');
+    res.json({ ok:true, ...result, ts:new Date().toISOString() });
+  } catch(e) {
+    res.status(500).json({ ok:false, error:e.message });
+  }
+});
+
+app.post('/api/main-strategist/hc-report', async (req,res)=>{
+  const payload=req.body || {};
+  const prompt=`You are Main Strategist.
+
+Convert HC Strategist output into executive decision package for CFO / decision makers.
+
+Healthcare memory:
+${JSON.stringify(TSM_MEMORY.healthcare).slice(0,9000)}
+
+Payload:
+${JSON.stringify(payload).slice(0,4000)}
+
+Return JSON:
+{
+ "suite":"main-strategist",
+ "executive_issue":"...",
+ "financial_or_operational_impact":"...",
+ "recommendation":"...",
+ "decision_options":["..."],
+ "hitl_relay":"What human should say to CFO/decision maker",
+ "send_to_executive_portal":true,
+ "confidence":0-100
+}`;
+  const result=await tsmAIJSON(prompt,{
+    suite:'main-strategist',executive_issue:'Healthcare readiness needs executive review.',financial_or_operational_impact:'Billing/auth/compliance pressure may affect throughput and revenue.',recommendation:'Start with office manager workflow pilot.',decision_options:['30-day pilot','technical walkthrough'],hitl_relay:'Review BNCA and confirm owner lanes.',send_to_executive_portal:true,confidence:84
+  });
+  TSM_MEMORY.healthcare.mainStrategist=result;
+  res.json({ok:true,result,ts:new Date().toISOString()});
+});
+
+app.post('/api/honor/dee/dashboard', async (req,res)=>{
+  try {
+    const body=req.body || {};
+    const prompt=`You are HonorHealth dee dashboard AI. Use the provided payload to summarize workflow, denial patterns, and appeal strategy.`;
+    const result = await tsmAIJSON(prompt,{ok:false,response:'AI unavailable',ai_status:'fallback_no_mock_data_key_or_route_needed'});
+    res.json({ok:true, ...result, ts:new Date().toISOString()});
+  } catch(e) {
+    res.status(500).json({ok:false,error:e.message});
+  }
+});
 
 app.get('/api/hc/nodes',(req,res)=>{
   res.json({ok:true,status:'HC node route online',nodes:['operations','billing','medical','pharmacy','financial','legal','vendors','compliance','tax-prep','grants','insurance']});
@@ -278,8 +357,46 @@ Return JSON:
   res.json({ok:true,result,ts:new Date().toISOString()});
 });
 
+app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
 app.get('/executive-portal',(req,res)=>res.redirect('/html/executive-portal/index.html'));
 app.get('/healthcare/executive-portal',(req,res)=>res.redirect('/html/executive-portal/index.html'));
+app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}</pre>`));
+
+
+// HEALTHCARE CLIENT PRESENTATION + ROUTE ALIASES
+app.get('/healthcare-client-presentation',(req,res)=>res.redirect('/html/healthcare-client-presentation/index.html'));
+
+function sendFirstExisting(res, files){
+  const path = require('path');
+  const fs = require('fs');
+  for(const f of files){
+    const full = path.join(__dirname,f);
+    if(fs.existsSync(full)) return res.sendFile(full);
+  }
+  return res.status(404).send('<pre>Healthcare file not found</pre>');
+}
+
+app.get('/healthcare/',(req,res)=>sendFirstExisting(res,[
+  'html/healthcare/index.html',
+  'html/healthcare-command/index.html',
+  'html/hc-command/index.html'
+]));
+
+app.get('/healthcare/hc-strategist/',(req,res)=>sendFirstExisting(res,[
+  'html/healthcare/hc-strategist/index.html',
+  'html/hc-strategist/index.html'
+]));
+
+app.get('/healthcare/hc-main-strategist/',(req,res)=>sendFirstExisting(res,[
+  'html/healthcare/hc-main-strategist/index.html',
+  'html/hc-main-strategist/index.html',
+  'html/healthcare-main-strategist/index.html'
+]));
+
+app.get('/healthcare/hc-presentation/',(req,res)=>sendFirstExisting(res,[
+  'html/healthcare/hc-presentation/index.html',
+  'html/healthcare-presentation/index.html'
+]));
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
