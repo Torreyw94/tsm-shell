@@ -32,6 +32,14 @@ suites.forEach(({ route, dir, index }) => {
 
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')));
 
+// Specific route for PoC demo
+app.get('/html/healthcare/poc-html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'html', 'healthcare', 'poc-html', 'index.html'));
+});
+app.get('/html/healthcare/poc-html/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'html', 'healthcare', 'poc-html', 'index.html'));
+});
+
 app.get("/", (_req, res) => {
   res.send(`<!DOCTYPE html>
 <html lang="en">
