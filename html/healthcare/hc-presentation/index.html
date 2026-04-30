@@ -1,734 +1,1030 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>TSM · HonorHealth Command Coordination</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
-<style>
-/* TSM_SCROLL_FIX */
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TSM Healthcare Operations Layer</title>
+<link rel="stylesheet" href="/html/assets/tsm/ops-presentation-layer.css?v=1"/>
+
+<style id="tsm-healthcare-scroll-lock-fix">
+/* HEALTHCARE PRESENTATION SCROLL + CLOSING MODAL FIX */
 html, body {
-  height: 100%;
-  overflow-y: auto;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
-main {
-  padding-bottom: 80px !important;
-  min-height: calc(100vh - 60px);
+
+body {
+  padding-bottom: 110px !important;
 }
+
+main, .wrap, .panel, .grid, .card {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 32px;
-  z-index: 10;
-}
-.ask-bar {
-  position: fixed;
-  bottom: 40px;
-  right: 12px;
-  z-index: 20;
-}
-.panel {
-  max-height: 60vh;
-  overflow-y: auto;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 30px !important;
+  z-index: 30 !important;
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0a0c0b;
-  --surface:#111410;
-  --surface2:#181c16;
-  --border:#1f2a1d;
-  --green:#1D9E75;
-  --green-dim:#0F6E56;
-  --green-bright:#5DCAA5;
-  --green-pale:#9FE1CB;
-  --amber:#EF9F27;
-  --amber-dim:#BA7517;
-  --red:#E24B4A;
-  --text:#e8ede6;
-  --text-dim:#7a8f78;
-  --text-muted:#3d4f3b;
+/* Caption must never block bottom content */
+#demoCaption {
+  bottom: 44px !important;
+  max-height: 90px !important;
+  overflow-y: auto !important;
 }
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace}
 
-/* ── SLIDE ENGINE ── */
-.deck{width:100vw;height:100vh;position:relative}
-.slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:56px 72px;opacity:0;pointer-events:none;transition:opacity .4s ease}
-.slide.active{opacity:1;pointer-events:all}
+/* Closing overlay: align top and make modal scrollable */
+#closingLock {
+  align-items: flex-start !important;
+  justify-content: center !important;
+  overflow-y: auto !important;
+  padding: 24px 16px 90px 16px !important;
+}
 
-/* ── NAV ── */
-.nav{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
-.pip{width:6px;height:6px;border-radius:50%;background:var(--text-muted);transition:all .3s;cursor:pointer}
-.pip.on{background:var(--green);width:18px;border-radius:3px}
-.nav-arrows{position:fixed;bottom:28px;right:48px;display:flex;gap:8px;z-index:100}
-.arr{background:transparent;border:.5px solid var(--border);color:var(--text-dim);padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;border-radius:4px;transition:all .2s}
-.arr:hover{border-color:var(--green);color:var(--green)}
-.slide-num{position:fixed;top:28px;right:48px;font-size:11px;color:var(--text-muted);letter-spacing:.08em}
+/* The inner closing card */
+#closingLock > div {
+  margin: 0 auto 90px auto !important;
+  max-height: calc(100vh - 120px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
 
-/* ── SHARED ── */
-.tag{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:3px;border:.5px solid var(--border);color:var(--text-dim)}
-.tag.live{border-color:var(--green);color:var(--green-pale);background:rgba(29,158,117,.08)}
-.tag.high{border-color:var(--amber);color:var(--amber);background:rgba(239,159,39,.07)}
-.divider{height:.5px;background:var(--border);margin:28px 0}
+/* Buttons at the bottom of modal should remain reachable */
+#closingLock button {
+  margin-bottom: 6px !important;
+}
 
-/* ══ SLIDE 1 · TITLE ══ */
-#s1{justify-content:center}
-.s1-eyebrow{display:flex;gap:12px;align-items:center;margin-bottom:32px}
-.s1-title{font-family:'Syne',sans-serif;font-size:72px;font-weight:800;line-height:.95;letter-spacing:-.02em;color:var(--text);margin-bottom:16px}
-.s1-title span{color:var(--green)}
-.s1-sub{font-size:14px;color:var(--text-dim);line-height:1.8;max-width:520px;margin-bottom:48px}
-.s1-stats{display:flex;gap:48px}
-.s1-stat .n{font-size:36px;font-weight:700;color:var(--green-bright)}
-.s1-stat .l{font-size:11px;color:var(--text-dim);letter-spacing:.06em;margin-top:4px}
-.s1-ticker{position:absolute;bottom:56px;left:72px;right:72px;display:flex;align-items:center;gap:16px;border-top:.5px solid var(--border);padding-top:20px}
-.ticker-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.ticker-text{font-size:12px;color:var(--text-dim)}
-.ticker-val{color:var(--green-pale);font-weight:500}
-
-/* ══ SLIDE 2 · PROBLEM ══ */
-#s2{justify-content:center}
-.s2-head{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;line-height:1.1;margin-bottom:8px}
-.s2-head em{color:var(--amber);font-style:normal}
-.s2-deck{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
-.prob-card{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:20px 24px;position:relative;overflow:hidden}
-.prob-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
-.prob-card.p1::before{background:var(--red)}
-.prob-card.p2::before{background:var(--amber)}
-.prob-card.p3::before{background:var(--green-dim)}
-.prob-card.p4::before{background:var(--green)}
-.prob-card .pc-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
-.prob-card .pc-val{font-size:28px;font-weight:700;margin-bottom:4px}
-.prob-card.p1 .pc-val{color:var(--red)}
-.prob-card.p2 .pc-val{color:var(--amber)}
-.prob-card.p3 .pc-val,.prob-card.p4 .pc-val{color:var(--green-bright)}
-.prob-card .pc-desc{font-size:12px;color:var(--text-dim);line-height:1.6}
-
-/* ══ SLIDE 3 · ARCHITECTURE ══ */
-#s3{justify-content:center}
-.s3-head{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;margin-bottom:32px}
-.arch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.arch-node{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:20px 16px;text-align:center;position:relative}
-.arch-node.hub{border-color:var(--green);background:rgba(29,158,117,.06)}
-.arch-num{font-size:11px;color:var(--text-muted);margin-bottom:12px;letter-spacing:.08em}
-.arch-icon{font-size:22px;margin-bottom:12px;display:block}
-.arch-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.3}
-.arch-route{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;line-height:1.5}
-.arch-arrow{position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--green);font-size:12px;z-index:1}
-.arch-flow{margin-top:24px;background:var(--surface);border:.5px solid var(--border);border-radius:6px;padding:14px 20px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-dim)}
-.arch-flow strong{color:var(--green-pale)}
-
-/* ══ SLIDE 4 · LIVE SIM ══ */
-#s4{padding:24px 56px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.s4-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0}
-.s4-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800}
-.sim-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0}
-.sim-panel{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.sim-panel.active-panel{border-color:var(--green)}
-.sim-panel.firing-panel{border-color:var(--amber)}
-.panel-header{display:flex;align-items:center;gap:8px}
-.pdot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);flex-shrink:0;transition:background .3s}
-.pdot.live{background:var(--green)}
-.pdot.firing{background:var(--amber);animation:blink .6s infinite}
-.panel-name{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
-.panel-route{font-size:10px;color:var(--text-muted)}
-.panel-out{font-size:11px;color:var(--text-dim);line-height:1.7;flex:1}
-.panel-out .pv{color:var(--text);font-weight:500}
-.panel-out .pg{color:var(--green-pale);border-left:2px solid var(--green);padding-left:8px;margin-top:6px;font-size:10px;line-height:1.6}
-.panel-out .pm{display:inline-block;background:var(--surface2);border:.5px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;margin:2px 2px 0 0}
-.panel-out .pm span{color:var(--green-bright);font-weight:500;display:block;font-size:13px}
-.panel-out .pm small{color:var(--text-muted);font-size:9px}
-
-.flow-row{display:flex;align-items:center;gap:0;margin-bottom:16px}
-.fstep{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
-.fnode{width:28px;height:28px;border-radius:50%;border:.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);transition:all .3s}
-.fnode.done{background:var(--green-dim);border-color:var(--green);color:var(--green-pale)}
-.fnode.go{background:rgba(239,159,39,.15);border-color:var(--amber);color:var(--amber);animation:blink .6s infinite}
-.flabel{font-size:8.5px;color:var(--text-muted);text-align:center;max-width:60px;line-height:1.3}
-.flabel.done{color:var(--green)}
-.fconn{flex:1;height:.5px;background:var(--border);margin-top:-15px;transition:background .4s}
-.fconn.done{background:var(--green)}
-
-.sim-log{background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:6px 12px;height:52px;overflow-y:auto;font-size:10px;line-height:1.6;flex-shrink:0}
-.ll{display:flex;gap:10px}
-.lt{color:var(--text-muted);flex-shrink:0}
-.lok{color:var(--green)}
-.lwarn{color:var(--amber)}
-
-.sim-btns{display:flex;gap:10px;align-items:center;margin-top:8px;flex-shrink:0}
-.btn-primary{padding:9px 24px;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:500;cursor:pointer;border-radius:4px;border:.5px solid var(--green);background:rgba(29,158,117,.12);color:var(--green-pale);transition:all .2s;letter-spacing:.04em}
-.btn-primary:hover{background:rgba(29,158,117,.22)}
-.btn-primary:disabled{opacity:.35;cursor:not-allowed}
-.btn-sec{padding:9px 16px;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;border-radius:4px;border:.5px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
-.btn-sec:hover{border-color:var(--text-dim);color:var(--text)}
-.sim-status{font-size:11px;color:var(--text-muted);margin-left:auto}
-
-/* ══ SLIDE 5 · OUTCOME ══ */
-#s5{justify-content:center}
-.s5-head{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1.05;margin-bottom:8px}
-.s5-head span{color:var(--green)}
-.s5-sub{font-size:13px;color:var(--text-dim);margin-bottom:40px}
-.outcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
-.oc{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:20px 20px 16px}
-.oc-n{font-size:36px;font-weight:700;color:var(--green-bright);margin-bottom:4px}
-.oc-l{font-size:11px;color:var(--text-dim);letter-spacing:.05em;line-height:1.5}
-.outcome-bar{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:20px 24px}
-.ob-row{display:flex;align-items:center;gap:16px;padding:8px 0;border-bottom:.5px solid var(--border)}
-.ob-row:last-child{border-bottom:none}
-.ob-label{font-size:11px;color:var(--text-dim);width:180px;flex-shrink:0}
-.ob-track{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
-.ob-fill{height:100%;border-radius:2px;background:var(--green);transition:width 1.2s ease}
-.ob-val{font-size:12px;font-weight:500;color:var(--green-pale);width:60px;text-align:right}
-.s5-footer{margin-top:32px;display:flex;gap:32px;align-items:center}
-.s5-footer .tsm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text)}
-.s5-footer .tsm span{color:var(--green)}
-.s5-footer p{font-size:12px;color:var(--text-muted);line-height:1.6}
-
-/* ══ SLIDE 6 · TALK TRACK ══ */
-#s6{justify-content:flex-start;padding:40px 56px;overflow-y:auto}
-.tt-progress{display:flex;gap:5px;margin-bottom:20px;flex-wrap:wrap}
-.tt-pip{height:3px;flex:1;min-width:16px;border-radius:2px;background:var(--text-muted);transition:background .3s}
-.tt-pip.done{background:var(--green-dim)}
-.tt-pip.active{background:var(--green)}
-.tt-card{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:24px;min-height:260px;margin-bottom:16px}
-.tt-step-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-.tt-step-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:14px;line-height:1.1}
-.tt-action{display:inline-block;font-size:11px;color:var(--amber);background:rgba(239,159,39,.07);border:.5px solid var(--amber-dim);border-radius:4px;padding:5px 12px;margin-bottom:14px;letter-spacing:.04em}
-.tt-say{border-left:2px solid var(--green);padding:10px 16px;background:var(--surface2);border-radius:0 6px 6px 0;margin-bottom:8px}
-.tt-say p{font-size:13px;line-height:1.8;color:var(--text-dim)}
-.tt-say p .money{color:var(--green-bright);font-weight:500}
-.tt-tip{font-size:11px;color:var(--amber);background:rgba(239,159,39,.07);border-radius:4px;padding:7px 12px;margin-top:8px;border:.5px solid rgba(239,159,39,.2)}
-.tt-obj{border:.5px solid var(--border);border-radius:6px;margin-top:8px;overflow:hidden}
-.tt-obj-q{padding:10px 14px;font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;justify-content:space-between;letter-spacing:.02em}
-.tt-obj-q:hover{background:var(--surface2)}
-.tt-obj-a{display:none;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.7;border-top:.5px solid var(--border);background:var(--bg)}
-.tt-obj-a.open{display:block}
-.tt-nav{display:flex;gap:10px;align-items:center}
-.tt-btn-p{padding:8px 22px;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:500;cursor:pointer;border-radius:4px;border:.5px solid var(--green);background:rgba(29,158,117,.12);color:var(--green-pale);transition:all .2s;letter-spacing:.04em}
-.tt-btn-p:hover{background:rgba(29,158,117,.22)}
-.tt-btn-g{padding:8px 16px;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;border-radius:4px;border:.5px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
-.tt-btn-g:hover{border-color:var(--text-dim);color:var(--text)}
-.tt-counter{margin-left:auto;font-size:11px;color:var(--text-muted)}
+/* Fix browser zoom / short viewport demo windows */
+@media (max-height: 760px) {
+  #closingLock > div {
+    max-height: calc(100vh - 80px) !important;
+  }
+  #demoCaption {
+    bottom: 38px !important;
+    font-size: 12px !important;
+  }
+}
 </style>
+
+
+
+
+
+
+
+
+<style id="tsm-closing-buttons-visible-fix">
+#closingLock {
+  align-items:flex-start !important;
+  overflow-y:auto !important;
+  padding:18px 16px 180px 16px !important;
+}
+#closingLock > div {
+  max-height:none !important;
+  margin:0 auto 180px auto !important;
+  padding-bottom:42px !important;
+}
+#closingLock > div > div:last-child,
+#closingLock > div div[style*="display:flex"][style*="flex-wrap"] {
+  position:sticky !important;
+  bottom:0 !important;
+  background:#02070d !important;
+  padding-top:12px !important;
+  padding-bottom:12px !important;
+  z-index:3 !important;
+}
+</style>
+
 </head>
 <body>
-
-<div class="deck">
-
-<!-- ══ SLIDE 1 ══ -->
-<div class="slide active" id="s1">
-  <div class="s1-eyebrow">
-    <span class="tag live">LIVE SYSTEM</span>
-    <span class="tag">HonorHealth · Revenue Cycle</span>
-    <span class="tag high">RISK: HIGH</span>
-  </div>
-  <div class="s1-title">TSM<br/><span>Command</span><br/>Coordination</div>
-  <div class="s1-sub">Four AI-connected systems working in real time — Healthcare Command, HC Strategist, Main Strategist, and the DEE BNCA Console — coordinated into a single revenue cycle action loop.</div>
-  <div class="s1-stats">
-    <div class="s1-stat"><div class="n">$229K</div><div class="l">Revenue at risk · Scottsdale–Shea</div></div>
-    <div class="s1-stat"><div class="n">$78K</div><div class="l">Recoverable within 72h</div></div>
-    <div class="s1-stat"><div class="n">4</div><div class="l">Systems coordinating live</div></div>
-  </div>
-  <div class="s1-ticker">
-    <div class="ticker-dot"></div>
-    <div class="ticker-text">Live signal · Scottsdale–Shea · Denial rate <span class="ticker-val">12.4%</span> · Auth delay <span class="ticker-val">56h</span> · Queue depth <span class="ticker-val">31</span> · Highest yield lane: <span class="ticker-val">Insurance</span></div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 2 ══ -->
-<div class="slide" id="s2">
-  <div class="s2-head">The revenue cycle has<br/><em>four failure points.</em><br/>We close all of them.</div>
-  <div class="divider"></div>
-  <div class="s2-deck">
-    <div class="prob-card p1">
-      <div class="pc-label">Denial rate · Scottsdale–Shea</div>
-      <div class="pc-val">12.4%</div>
-      <div class="pc-desc">Billing lag at 6 days. 231 denied claims sitting unworked. No system-level ownership of the resubmission function.</div>
-    </div>
-    <div class="prob-card p2">
-      <div class="pc-label">Auth backlog · Insurance lane</div>
-      <div class="pc-val">56h delay</div>
-      <div class="pc-desc">27 pending auth requests. Payer escalation is manual. Documentation blockers routed informally with no timestamp trail.</div>
-    </div>
-    <div class="prob-card p3">
-      <div class="pc-label">TSM response · delegation</div>
-      <div class="pc-val">In-portal</div>
-      <div class="pc-desc">Dee delegates directly from the BNCA console. Tasks hit the HC Strategist queue with owner lane, timestamp, and status — visible system-wide.</div>
-    </div>
-    <div class="prob-card p4">
-      <div class="pc-label">Groq AI · live insight</div>
-      <div class="pc-val">llama-3.3-70b</div>
-      <div class="pc-desc">Every task pull returns a real-time AI recommendation. Not static logic — live inference on the current queue state.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 3 ══ -->
-<div class="slide" id="s3">
-  <div class="s3-head">Four systems.<br/>One coordination loop.</div>
-  <div class="arch-grid">
-    <div class="arch-node">
-      <div class="arch-num">01</div>
-      <div class="arch-icon">⬡</div>
-      <div class="arch-name">Healthcare Command</div>
-      <div class="arch-route">11 nodes live<br/>BNCA mesh online<br/>office node monitoring</div>
-      <div class="arch-arrow">→</div>
-    </div>
-    <div class="arch-node">
-      <div class="arch-num">02</div>
-      <div class="arch-icon">▣</div>
-      <div class="arch-name">HC Strategist</div>
-      <div class="arch-route">/api/hc/nodes<br/>/api/hc/reports<br/>node state · task queue</div>
-      <div class="arch-arrow">→</div>
-    </div>
-    <div class="arch-node">
-      <div class="arch-num">03</div>
-      <div class="arch-icon">◎</div>
-      <div class="arch-name">Main Strategist</div>
-      <div class="arch-route">/api/hc/ask<br/>Groq · llama-3.3-70b<br/>deep analysis engine</div>
-      <div class="arch-arrow">→</div>
-    </div>
-    <div class="arch-node hub">
-      <div class="arch-num">04</div>
-      <div class="arch-icon">◈</div>
-      <div class="arch-name">Honor Portal · DEE BNCA Console</div>
-      <div class="arch-route">/api/honor/dee/dashboard<br/>/api/hc/delegate<br/>/api/hc/tasks</div>
-    </div>
-  </div>
-  <div class="arch-flow">
-    <span style="color:var(--text-muted)">Signal →</span>
-    <strong>Healthcare Command detects risk</strong>
-    <span style="color:var(--text-muted)">→ HC Strategist syncs nodes →</span>
-    <strong>Main Strategist fires analysis</strong>
-    <span style="color:var(--text-muted)">→ DEE loads BNCA →</span>
-    <strong>Task delegated</strong>
-    <span style="color:var(--text-muted)">→</span>
-    <strong>Groq insight delivered</strong>
-  </div>
-</div>
-
-<!-- ══ SLIDE 4 · LIVE SIM ══ -->
-<div class="slide" id="s4" style="gap:16px">
-  <div class="s4-head">
-    <div class="s4-title">Live coordination — watch it run</div>
-    <div style="display:flex;gap:8px">
-      <span class="tag live">LIVE · tsm-shell.fly.dev</span>
-      <span class="tag">Scottsdale–Shea</span>
-    </div>
-  </div>
-
-  <!-- flow track -->
-  <div class="flow-row" style="margin-bottom:8px">
-    <div class="fstep"><div class="fnode" id="fn0">1</div><div class="flabel" id="fl0">Healthcare Command detects signal</div></div>
-    <div class="fconn" id="fc0"></div>
-    <div class="fstep"><div class="fnode" id="fn1">2</div><div class="flabel" id="fl1">HC Strategist syncs</div></div>
-    <div class="fconn" id="fc1"></div>
-    <div class="fstep"><div class="fnode" id="fn2">3</div><div class="flabel" id="fl2">Main Strategist fires</div></div>
-    <div class="fconn" id="fc2"></div>
-    <div class="fstep"><div class="fnode" id="fn3">4</div><div class="flabel" id="fl3">DEE loads BNCA</div></div>
-    <div class="fconn" id="fc3"></div>
-    <div class="fstep"><div class="fnode" id="fn4">5</div><div class="flabel" id="fl4">Task delegated</div></div>
-    <div class="fconn" id="fc4"></div>
-    <div class="fstep"><div class="fnode" id="fn5">6</div><div class="flabel" id="fl5">Groq delivers insight</div></div>
-  </div>
-
-  <!-- 4 panels -->
-  <div class="sim-wrap">
-    <div class="sim-panel" id="p-hcc" style="order:1">
-      <div class="panel-header"><div class="pdot" id="pd-hcc"></div><span class="panel-name">Healthcare Command</span></div>
-      <div class="panel-route">11 nodes · BNCA mesh · signal detection</div>
-      <div class="panel-out" id="po-hcc"><span style="color:var(--text-muted)">Waiting...</span></div>
-    </div>
-    <div class="sim-panel" id="p-dee" style="order:4">
-      <div class="panel-header"><div class="pdot" id="pd-dee"></div><span class="panel-name">Honor Portal · DEE</span></div>
-      <div class="panel-route">POST /api/honor/dee/dashboard</div>
-      <div class="panel-out" id="po-dee"><span style="color:var(--text-muted)">Waiting...</span></div>
-    </div>
-    <div class="sim-panel" id="p-ms" style="order:3">
-      <div class="panel-header"><div class="pdot" id="pd-ms"></div><span class="panel-name">Main Strategist</span></div>
-      <div class="panel-route">POST /api/hc/ask · Groq</div>
-      <div class="panel-out" id="po-ms"><span style="color:var(--text-muted)">Waiting...</span></div>
-    </div>
-    <div class="sim-panel" id="p-hcs" style="order:2">
-      <div class="panel-header"><div class="pdot" id="pd-hcs"></div><span class="panel-name">HC Strategist</span></div>
-      <div class="panel-route">GET /api/hc/nodes · /api/hc/tasks</div>
-      <div class="panel-out" id="po-hcs"><span style="color:var(--text-muted)">Waiting...</span></div>
-    </div>
-  </div>
-
-  <div class="sim-log" id="simlog" style="display:none"><div class="ll"><span class="lt">--:--:--</span><span>Ready. Press Run Coordination to begin.</span></div></div>
-
-  <div class="sim-btns">
-    <button class="btn-primary" id="runbtn" onclick="runSim()">▶ Run coordination</button>
-    <button class="btn-sec" onclick="resetSim()">Reset</button>
-    <span class="sim-status" id="simstatus">idle</span>
-  </div>
-</div>
-
-<!-- ══ SLIDE 5 ══ -->
-<div class="slide" id="s5">
-  <div class="s5-head">Revenue recovered.<br/>Risk <span>eliminated.</span></div>
-  <div class="s5-sub">What one coordination cycle delivers for Scottsdale–Shea</div>
-  <div class="outcome-grid">
-    <div class="oc"><div class="oc-n">$78K</div><div class="oc-l">Recoverable within 72h when Insurance auth backlog is cleared first</div></div>
-    <div class="oc"><div class="oc-n">6 min</div><div class="oc-l">From signal detection to delegated task with AI narrative — no manual handoff</div></div>
-    <div class="oc"><div class="oc-n">100%</div><div class="oc-l">Task attribution — every delegation timestamped, owner-assigned, system-visible</div></div>
-  </div>
-  <div class="outcome-bar">
-    <div class="ob-row">
-      <div class="ob-label">Insurance auth cleared</div>
-      <div class="ob-track"><div class="ob-fill" style="width:91%"></div></div>
-      <div class="ob-val">91%</div>
-    </div>
-    <div class="ob-row">
-      <div class="ob-label">Denial rate reduction</div>
-      <div class="ob-track"><div class="ob-fill" style="width:78%"></div></div>
-      <div class="ob-val">78%</div>
-    </div>
-    <div class="ob-row">
-      <div class="ob-label">Queue depth resolved</div>
-      <div class="ob-track"><div class="ob-fill" style="width:84%"></div></div>
-      <div class="ob-val">84%</div>
-    </div>
-    <div class="ob-row">
-      <div class="ob-label">Cash acceleration 14d</div>
-      <div class="ob-track"><div class="ob-fill" style="width:100%"></div></div>
-      <div class="ob-val">$109K</div>
-    </div>
-  </div>
-  <div class="s5-footer">
-    <div class="tsm">TSM<span>·</span>shell</div>
-    <p>Revenue cycle command built for HonorHealth.<br/>Four systems. One loop. Zero manual handoffs.</p>
-    <div style="margin-left:auto;text-align:right">
-      <div style="font-size:11px;color:var(--text-muted)">Live at</div>
-      <div style="font-size:13px;color:var(--green-pale)">tsm-shell.fly.dev</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══ SLIDE 6 · TALK TRACK ══ -->
-<div class="slide" id="s6">
-  <div class="tt-progress" id="tt-pips"></div>
-  <div class="tt-card" id="tt-card"></div>
-  <div class="tt-nav">
-    <button class="tt-btn-g" id="tt-back" onclick="ttGo(-1)">← back</button>
-    <button class="tt-btn-p" id="tt-next" onclick="ttGo(1)">next →</button>
-    <span class="tt-counter" id="tt-counter"></span>
-  </div>
-</div>
-</div><!-- /deck -->
-
-<!-- nav -->
-<div class="nav" id="nav"></div>
-<div class="nav-arrows">
-  <button class="arr" onclick="go(-1)">← prev</button>
-  <button class="arr" onclick="go(1)">next →</button>
-</div>
-<div class="slide-num" id="slidenum">1 / 5</div>
-
 <script>
-const BASE='https://tsm-shell.fly.dev';
-const slides=document.querySelectorAll('.slide');
-const navEl=document.getElementById('nav');
-let cur=0,running=false;
+window.TSM_OPS = {
+  slug:"healthcare",
+  shortName:"Healthcare",
+  title:"TSM HEALTHCARE OPERATIONS LAYER",
+  accent:"#00e0ff",
+  offer:"Revenue cycle, prior auth, denials, compliance, and office operations — as a system.",
+  subtitle:"Built for healthcare operations: prior authorization pressure, claim denials, documentation gaps, billing risk, payer friction, compliance monitoring, and executive-ready BNCA reporting.",
+  defaultOutcome:"Healthcare workflow pressure is converted into owner-lane action before revenue or compliance risk escalates.",
+  timeSaved:"15–25 hrs",
+  manualCost:"$6K–$10K/mo",
+  systemPrice:"$1,750/mo",
+  close:"Healthcare teams lose time across auth, denials, documentation, and office throughput. TSM turns those pressures into clear next actions before revenue is lost.",
+  allBnca:"Prioritize prior authorization blockers, denial appeals, documentation gaps, compliance risk, and office throughput pressure. Relay executive summary to HC Main Strategist.",
 
-slides.forEach((_,i)=>{
-  const p=document.createElement('div');
-  p.className='pip'+(i===0?' on':'');
-  p.onclick=()=>goTo(i);
-  navEl.appendChild(p);
-});
+  kpis:[
+    {label:"Revenue At Risk",value:"$229K",caption:"claims/auth pressure"},
+    {label:"Recoverable",value:"$78K",caption:"next 72 hours"},
+    {label:"Auth Delay",value:"56h",caption:"payer friction"},
+    {label:"Nodes Reporting",value:"13",caption:"HC node coverage"}
+  ],
 
-function goTo(n){
-  slides[cur].classList.remove('active');
-  document.querySelectorAll('.pip')[cur].classList.remove('on');
-  cur=Math.max(0,Math.min(n,slides.length-1));
-  slides[cur].classList.add('active');
-  document.querySelectorAll('.pip')[cur].classList.add('on');
-  document.getElementById('slidenum').textContent=(cur+1)+' / '+slides.length;
-}
-function go(d){goTo(cur+d);}
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
-});
+  nodes:[
+    {name:"HC Billing",role:"claims + AR pressure",status:"READY"},
+    {name:"HC Compliance",role:"HIPAA + documentation",status:"READY"},
+    {name:"HC Medical",role:"clinical documentation",status:"READY"},
+    {name:"HC Insurance",role:"payer + auth friction",status:"WATCH"},
+    {name:"HC Legal",role:"risk + policy review",status:"READY"},
+    {name:"HC Grants",role:"funding + deadlines",status:"READY"},
+    {name:"HC Pharmacy",role:"formulary + medication risk",status:"READY"},
+    {name:"HC Vendors",role:"contracts + procurement",status:"READY"},
+    {name:"HC Financial",role:"margin + cash visibility",status:"READY"},
+    {name:"HC Tax Prep",role:"tax deadlines + filings",status:"READY"},
+    {name:"HC Operations",role:"staffing + throughput",status:"WATCH"},
+    {name:"HC DME / Prior Auth",role:"device + approval workflows",status:"WATCH"},
+    {name:"HC Strategist",role:"executive BNCA synthesis",status:"READY"}
+  ],
 
-// ── SIM ────────────────────────────────────────────────────────────────────
-function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false})}
-function slog(msg,cls=''){
-  const el=document.getElementById('simlog');
-  const d=document.createElement('div');
-  d.className='ll';
-  d.innerHTML=`<span class="lt">${ts()}</span><span class="${cls}">${msg}</span>`;
-  el.appendChild(d);el.scrollTop=el.scrollHeight;
-}
-function fstep(i,s){
-  const n=document.getElementById('fn'+i),l=document.getElementById('fl'+i),c=document.getElementById('fc'+i);
-  n.className='fnode'+(s==='done'?' done':s==='go'?' go':'');
-  if(l) l.className='flabel'+(s==='done'?' done':'');
-  if(c&&s==='done') c.className='fconn done';
-}
-function spanel(id,s){
-  document.getElementById('p-'+id).className='sim-panel'+(s==='active'?' active-panel':s==='firing'?' firing-panel':'');
-  document.getElementById('pd-'+id).className='pdot'+(s==='live'?' live':s==='firing'?' firing':'');
-}
-function sout(id,h){document.getElementById('po-'+id).innerHTML=h;}
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+  lanes:[
+    {name:"Prior Authorization Lane",metric:"56h",detail:"average auth delay",items:["payer follow-up","missing clinical support","owner-lane routing"]},
+    {name:"Denials Lane",metric:"12.4%",detail:"denial pressure",items:["appeal packet","root cause","billing review"]},
+    {name:"Documentation Lane",metric:"23",detail:"records needing completion",items:["signatures","clinical notes","medical necessity"]},
+    {name:"Compliance Lane",metric:"4",detail:"open documentation flags",items:["HIPAA training","consent forms","audit trail"]},
+    {name:"Executive Reporting Lane",metric:"READY",detail:"BNCA report available",items:["risk summary","next action","owner lanes"]}
+  ],
 
-async function runSim(){
-  if(running)return;
-  running=true;
-  document.getElementById('runbtn').disabled=true;
-  document.getElementById('simstatus').textContent='running...';
-  document.getElementById('simlog').innerHTML='';
-
-  // Step 1 – Command Center
-  fstep(0,'go');spanel('hcc','firing');
-  slog('HC Command Center: scanning office nodes...');
-  await delay(900);
-  fstep(0,'done');spanel('hcc','active');fstep(0,'done');
-  sout('hcc',`<div class="pv">Scottsdale–Shea · RISK: HIGH</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-      <div class="pm"><span>12.4%</span><small>denial rate</small></div>
-      <div class="pm"><span>56h</span><small>auth delay</small></div>
-      <div class="pm"><span>31</span><small>queue depth</small></div>
-    </div>
-    <div style="margin-top:8px;font-size:10px;color:var(--green)">→ Escalating to DEE console</div>`);
-  slog('Signal confirmed: denial 12.4% · auth 56h · queue 31','lok');
-  document.getElementById('fc0').className='fconn done';
-
-  // Step 2 – HC Strategist nodes
-  await delay(500);fstep(1,'go');spanel('hcs','firing');
-  slog('HC Strategist: GET /api/hc/nodes...');
-  try{
-    const r=await fetch(BASE+'/api/hc/nodes');
-    const d=await r.json();
-    const rar=d?.officeRankings?.[0]?.revenueAtRisk||d?.revenueAtRisk||229850;
-    const rec=d?.officeRankings?.[0]?.recoverable72h||d?.recoverable72h||78149;
-    fstep(1,'done');spanel('dee','active');
-    sout('dee',`<div class="pv">DEE BNCA Console · active</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-        <div class="pm"><span>$${Number(rar).toLocaleString()}</span><small>at risk</small></div>
-        <div class="pm"><span>$${Number(rec).toLocaleString()}</span><small>rec. 72h</small></div>
-      </div>
-      <div style="margin-top:8px;font-size:10px;color:var(--green)">→ Highest yield lane: Insurance</div>`);
-    slog('DEE loaded · $'+Number(rar).toLocaleString()+' at risk','lok');
-  }catch{
-    fstep(1,'done');spanel('hcs','active');
-    sout('hcs',`<div class="pv">Nodes synced</div>
-      <div style="margin-top:8px;font-size:10px;color:var(--text-muted)">Billing · Insurance · Operations</div>
-      <div style="margin-top:4px;font-size:10px;color:var(--amber)">→ Sending to Main Strategist...</div>`);
-    slog('HC Strategist nodes loaded','lok');
-  }
-  document.getElementById('fc1').className='fconn done';
-
-  // Step 3 – Main Strategist
-  await delay(500);fstep(2,'go');spanel('ms','firing');
-  slog('Main Strategist: POST /api/hc/ask · Groq firing...');
-  try{
-    const r=await fetch(BASE+'/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'Scottsdale-Shea: denial 12.4%, auth delay 56h, queue 31, $229,850 at risk. Highest-priority action?',system:'HonorHealth',location:'Scottsdale - Shea'})});
-    const d=await r.json();
-    const txt=d?.answer||d?.response||d?.result||'Clear Insurance auth backlog immediately — highest-value revenue concentration.';
-    fstep(2,'done');spanel('ms','active');
-    sout('ms',`<div class="pv">Analysis complete</div><div class="pg">${txt.slice(0,200)}${txt.length>200?'...':''}</div>`);
-    slog('Strategist analysis received','lok');
-  }catch{
-    fstep(2,'done');spanel('ms','active');
-    sout('ms',`<div class="pv">Analysis complete</div><div class="pg">Clear the Insurance auth backlog first — 27 pending auths at 56h delay represents the highest recoverable revenue within 72h.</div>`);
-    slog('Strategist response received','lok');
-  }
-  document.getElementById('fc2').className='fconn done';
-
-  // Step 4 – DEE dashboard
-  await delay(500);fstep(3,'go');spanel('dee','firing');
-  slog('Honor Portal: POST /api/honor/dee/dashboard...');
-  try{
-    const r=await fetch(BASE+'/api/honor/dee/dashboard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'HonorHealth',location:'Scottsdale - Shea'})});
-    const d=await r.json();
-    const rar=d?.officeRankings?.[0]?.revenueAtRisk||d?.revenueAtRisk||229850;
-    const rec=d?.officeRankings?.[0]?.recoverable72h||d?.recoverable72h||78149;
-    fstep(3,'done');spanel('dee','active');
-    sout('dee',`<div class="pv">DEE BNCA Console · active</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-        <div class="pm"><span>$${Number(rar).toLocaleString()}</span><small>at risk</small></div>
-        <div class="pm"><span>$${Number(rec).toLocaleString()}</span><small>rec. 72h</small></div>
-      </div>
-      <div style="margin-top:8px;font-size:10px;color:var(--green)">→ Highest yield lane: Insurance</div>`);
-    slog('DEE loaded · $'+Number(rar).toLocaleString()+' at risk','lok');
-  }catch{
-    fstep(3,'done');spanel('dee','active');
-    sout('dee',`<div class="pv">DEE BNCA Console · active</div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <div class="pm"><span>$229,850</span><small>at risk</small></div>
-        <div class="pm"><span>$78,149</span><small>rec. 72h</small></div>
-      </div>`);
-    slog('DEE loaded (fallback)','lwarn');
-  }
-  document.getElementById('fc3').className='fconn done';
-    // Step 5 – Delegate task
-  await delay(600);fstep(4,'go');spanel('dee','firing');
-  slog('DEE: POST /api/hc/delegate → Insurance lane...');
-  let tid='';
-  try{
-    const r=await fetch(BASE+'/api/hc/delegate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({office:'Scottsdale - Shea',action:'Clear Insurance auth backlog — escalate all claims >24h',ownerLane:'Insurance',mode:'bnca'})});
-    const d=await r.json();
-    tid=String(d?.task?.id||Date.now()).slice(-6);
-    fstep(4,'done');spanel('dee','active');
-    slog('Task delegated · ID '+tid+' · Insurance lane','lok');
-  }catch{
-    fstep(4,'done');spanel('dee','active');
-    tid=String(Date.now()).slice(-6);
-    slog('Task recorded (fallback)','lwarn');
-  }
-  document.getElementById('fc4').className='fconn done';
-
-  // Step 6 – Groq task insight
-  await delay(600);fstep(5,'go');spanel('hcs','firing');
-  slog('Fetching Groq AI insight · GET /api/hc/tasks...');
-  try{
-    const r=await fetch(BASE+'/api/hc/tasks?office=Scottsdale%20-%20Shea');
-    const d=await r.json();
-    const ins=d?.ai?.insight||null;
-    const tc=(d?.tasks||[]).length;
-    fstep(5,'done');spanel('hcs','active');
-    if(ins){
-      sout('hcs',`<div class="pv">Groq AI · ${tc} task(s) in queue</div><div class="pg">${ins.slice(0,220)}${ins.length>220?'...':''}</div>`);
-      slog('Groq insight delivered ✓','lok');
-    }else{
-      sout('hcs',`<div class="pv">${tc} task(s) in queue · ID ${tid}</div>
-        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">Groq key active on server</div>`);
-      slog('Task queue synced','lok');
+  actions:[
+    {
+      button:"Run Prior Auth Review",
+      title:"Prior Authorization Review",
+      lines:["56-hour auth delay detected","missing medical necessity support flagged","payer follow-up owner lane assigned"],
+      bnca:"Prioritize highest-value auth blockers, attach clinical support, and route payer follow-up before denial risk increases.",
+      outcome:"Prior auth pressure becomes a tracked owner-lane action.",
+      timeSaved:"8–12 hrs"
+    },
+    {
+      button:"Run Denials Sweep",
+      title:"Claim Denials Sweep",
+      lines:["14 claim denials queued","appeal-ready claims identified","root-cause notes prepared"],
+      bnca:"Package appeal support, rank denials by recovery value, and assign billing follow-up.",
+      outcome:"Denial backlog becomes recovery queue.",
+      timeSaved:"10–16 hrs"
+    },
+    {
+      button:"Run Compliance Shield",
+      title:"Healthcare Compliance Sweep",
+      lines:["4 documentation gaps identified","HIPAA training gap flagged","audit trail prepared"],
+      bnca:"Resolve consent, training, and documentation gaps before external audit exposure.",
+      outcome:"Compliance risk becomes visible remediation plan.",
+      timeSaved:"8–12 hrs"
     }
-  }catch{
-    fstep(5,'done');spanel('hcs','active');
-    slog('Tasks synced','lok');
-  }
+  ],
 
-  document.getElementById('simstatus').textContent='cycle complete ✓';
-  slog('── Coordination cycle complete ──','lok');
-  running=false;
-  document.getElementById('runbtn').disabled=false;
-  document.getElementById('runbtn').textContent='▶ Run again';
-}
-
-function resetSim(){
-  if(running)return;
-  for(let i=0;i<6;i++){
-    const n=document.getElementById('fn'+i);
-    if(n){n.className='fnode';n.textContent=i+1;}
-    const l=document.getElementById('fl'+i);
-    if(l)l.className='flabel';
-    const c=document.getElementById('fc'+i);
-    if(c)c.className='fconn';
-  }
-  ['hcc','dee','ms','hcs'].forEach(id=>{
-    spanel(id,'');
-    sout(id,'<span style="color:var(--text-muted)">Waiting...</span>');
-  });
-  document.getElementById('simlog').innerHTML='<div class="ll"><span class="lt">--:--:--</span><span>Ready. Press Run coordination to begin.</span></div>';
-  document.getElementById('simstatus').textContent='idle';
-  document.getElementById('runbtn').textContent='▶ Run coordination';
-  document.getElementById('runbtn').disabled=false;
-}
-
-const TT_STEPS = [
-  { label:"Open", title:"Opening line",
-    action:"Laptop open — say this before you click anything",
-    say:["What you're looking at is not a dashboard — it's a live operational intelligence system.",
-         "It tells your office what to do next — and how much money is at risk if you don't."],
-    tip:"Say this before you click anything. Let it land." },
-  { label:"Step 1", title:"Set context",
-    action:"Don't click anything yet — just talk",
-    say:["Every healthcare system is dealing with the same three pressures: claim delays, prior auth friction, and operational bottlenecks at the front desk.",
-         "The problem is — those don't live in one system. They compound across teams."],
-    tip:"Watch Dee's face here. If she nods or leans in, you're in." },
-  { label:"Step 2", title:"Show the system",
-    action:"Navigate to /html/healthcare/",
-    say:["This is your live operational surface — every node represents a functional lane: operations, billing, insurance, compliance.",
-         "Each one is reporting pressure in real time."],
-    tip:"Give her 5 seconds to look. Don't fill the silence." },
-  { label:"Step 3", title:"Transition to Strategist",
-    action:"Navigate to /html/hc-strategist/",
-    say:["But this is where it becomes actionable."],
-    tip:"One line. Then click the button. Don't explain what you're about to do." },
-  { label:"Step 4-5", title:"Run BNCA · read the output",
-    action:"Click RUN ENTERPRISE BNCA — then stop talking. Count to 3.",
-    say:["Right now, the system is identifying <span class="money">$229,850</span> at risk.",
-         "It's showing <span class="money">$78,149</span> recoverable in the next 72 hours.",
-         "And <span class="money">$109,409</span> in 14-day cash acceleration.",
-         "Highest-yield lane is Insurance — at 91% confidence."],
-    tip:"One line at a time. Pause between each. Let the numbers breathe." },
-  { label:"Step 6", title:"Explain root cause",
-    action:"Don't click — just explain",
-    say:["But this isn't just insurance.",
-         "It's showing denial pressure, auth backlog, and intake bottlenecks all converging. That's why revenue is stuck — it's cross-functional."],
-    tip:"This is the moment she realises you understand her job, not just the software." },
-  { label:"Step 7", title:"Exec Correspondence — the closer",
-    action:"EXEC CORRESPONDENCE tab → CFO + Email → type: United Healthcare auth backlog status → GENERATE → COPY",
-    say:["This is where it gets useful for you specifically, Dee.",
-         "That's a CFO-ready email. With your numbers. You can send that in the next 10 minutes."],
-    tip:"Hit COPY after it generates. Don't say anything else. Let her read it." },
-  { label:"Close", title:"Close",
-    action:null,
-    say:["What you just saw is Scottsdale-Shea — your facility, your numbers.",
-         "The <span class="money">$78,149</span> in 72-hour recovery? That's United Healthcare auth backlog your team can start clearing this afternoon."],
-    tip:null },
-  { label:"Objections", title:"Handle pushback",
-    action:null, say:[],
-    objections:[
-      { q:'"We already have dashboards."',
-        a:'"This sits on top — it translates your data into action and financial impact. Your dashboards show what happened. This tells you what to do next."' },
-      { q:'"Is this real data?"',
-        a:'"These are real HonorHealth Scottsdale-Shea operational benchmarks — denial rate, auth backlog, queue depth. What is simulated is the live feed. In your environment this pulls directly from Epic and your payer portals in real time."' },
-      { q:'"How does the integration work?"',
-        a:'"We work with whatever data feed your team can provide. Most commonly that is an Epic export — a standard data pull your IT team can run. No custom integration required to get started."' },
-      { q:'"How long to go live?"',
-        a:'"Typically 2 to 4 weeks from data handoff to live. It depends on how quickly your IT team can pull the first export — on our end we are ready to move fast."' },
-      { q:'"Who else uses this?"',
-        a:'"Office managers, revenue cycle leaders, and operations — the people who actually fix the problems."' }
-    ],
-    tip:null }
-];
-
-let ttCur = 0;
-
-function ttRender() {
-  const step = TT_STEPS[ttCur];
-  document.getElementById('tt-pips').innerHTML = TT_STEPS.map((_,i) =>
-    '<div class="tt-pip' + (i < ttCur ? ' done' : i === ttCur ? ' active' : '') + '"></div>'
-  ).join('');
-  let h = '<div class="tt-step-label">' + step.label + '</div>';
-  h += '<div class="tt-step-title">' + step.title + '</div>';
-  if (step.action) h += '<div class="tt-action">&#9658; ' + step.action + '</div>';
-  step.say.forEach(line => { h += '<div class="tt-say"><p>' + line + '</p></div>'; });
-  if (step.objections) {
-    step.objections.forEach((o, i) => {
-      h += '<div class="tt-obj"><div class="tt-obj-q" onclick="ttObj(' + i + ')"><span>' + o.q + '</span><span id="ttchev' + i + '">&#9662;</span></div>';
-      h += '<div class="tt-obj-a" id="ttoa' + i + '">Say: ' + o.a + '</div></div>';
-    });
-  }
-  if (step.tip) h += '<div class="tt-tip">&#8627; ' + step.tip + '</div>';
-  document.getElementById('tt-card').innerHTML = h;
-  document.getElementById('tt-counter').textContent = (ttCur + 1) + ' / ' + TT_STEPS.length;
-  document.getElementById('tt-back').style.visibility = ttCur === 0 ? 'hidden' : 'visible';
-  document.getElementById('tt-next').textContent = ttCur === TT_STEPS.length - 1 ? 'restart' : 'next →';
-}
-
-function ttGo(d) {
-  if (d === 1 && ttCur === TT_STEPS.length - 1) { ttCur = 0; }
-  else ttCur = Math.max(0, Math.min(TT_STEPS.length - 1, ttCur + d));
-  ttRender();
-}
-
-function ttObj(i) {
-  document.getElementById('ttoa' + i).classList.toggle('open');
-}
-
-ttRender();
-
+  docs:[
+    {
+      icon:"📝",
+      title:"Prior Authorization Packet",
+      subtitle:"payer auth + clinical support",
+      risk:"approval delay / denial risk",
+      impact:"56-hour auth delay with missing support identified",
+      bnca:"Attach medical necessity support, assign payer follow-up, and escalate high-value auths first.",
+      outcome:"Prior auth friction converted into payer-ready action.",
+      coach:"Point to auth delay and say: “This is where revenue gets stuck before it becomes a denial.”",
+      sample:"Prior Authorization Packet ready. Run selected workflow.",
+      timeSaved:"8–12 hrs"
+    },
+    {
+      icon:"📉",
+      title:"Claim Denial Report",
+      subtitle:"denials + appeal readiness",
+      risk:"lost reimbursement",
+      impact:"14 denials queued for appeal review",
+      bnca:"Prioritize appeal-ready claims by recovery value and assign billing owner lanes.",
+      outcome:"Denial backlog converted into recoverable revenue workflow.",
+      coach:"Point to denials and say: “This is no longer a denial list — it is a recovery queue.”",
+      sample:"Claim Denial Report ready. Run selected workflow.",
+      timeSaved:"10–16 hrs"
+    },
+    {
+      icon:"📋",
+      title:"Clinical Documentation Review",
+      subtitle:"notes + signatures + medical necessity",
+      risk:"billing and compliance exposure",
+      impact:"23 incomplete records flagged before billing submission",
+      bnca:"Route incomplete records to responsible owners and protect billing revenue before submission.",
+      outcome:"Documentation risk becomes owner-lane completion plan.",
+      coach:"Point to incomplete records and say: “This catches revenue risk before billing submits.”",
+      sample:"Clinical Documentation Review ready. Run selected workflow.",
+      timeSaved:"6–10 hrs"
+    },
+    {
+      icon:"⚖️",
+      title:"Compliance Audit Packet",
+      subtitle:"HIPAA + consent + audit trail",
+      risk:"audit exposure",
+      impact:"4 compliance gaps surfaced before external review",
+      bnca:"Resolve consent, training, pharmacy log, and access review gaps before audit.",
+      outcome:"Compliance cleanup becomes continuous monitoring.",
+      coach:"Say: “This is the work that usually happens in panic mode before an audit.”",
+      sample:"Compliance Audit Packet ready. Run selected workflow.",
+      timeSaved:"8–12 hrs"
+    }
+  ]
+};
 </script>
+
+<header>
+<h1 id="title"></h1>
+<div class="sub" id="sub"></div>
+<div class="price" id="price"></div>
+<button class="primary" onclick="startAutoDemo()">🎬 AUTO DEMO MODE</button>
+<button onclick="showClosingLock()">🔒 EXECUTIVE SUMMARY CLOSE</button>
+<button class="primary" onclick="OPS.runDoc()">RUN SELECTED WORKFLOW</button>
+<button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
+<button onclick="OPS.pushMain()">OPEN HC MAIN STRATEGIST</button>
+<button onclick="OPS.exportReport()">EXPORT PDF-READY</button>
+<button onclick="document.getElementById('healthcareSuiteHighlights').scrollIntoView({behavior:'smooth',block:'center'})">VIEW 4-LAYER COMMAND FLOW</button>
+</header>
+
+<main class="wrap">
+<section class="grid" id="kpis"></section>
+
+
+<section class="panel" id="healthcareSuiteHighlights">
+  <h2>HEALTHCARE SUITE · FOUR-LAYER COMMAND FLOW</h2>
+  <div style="color:#8fb0c8;margin-bottom:14px">
+    This is how the Healthcare suite moves from frontline workflow pressure to executive decision visibility.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <b>1 · HEALTHCARE COMMAND CENTER</b>
+      <div class="val">OPERATIONS</div>
+      <p>Frontline view for claims pressure, prior authorization delays, documentation gaps, staffing throughput, and compliance drift.</p>
+      <button onclick="window.open('/html/healthcare/index.html?v=from-healthcare-presentation','_blank')">OPEN HEALTHCARE COMMAND</button>
+    </div>
+
+    <div class="card">
+      <b>2 · HC STRATEGIST</b>
+      <div class="val">BNCA</div>
+      <p>Turns healthcare node output into the Best Next Course of Action for billing, compliance, office managers, and operational leads.</p>
+      <button onclick="window.open('/html/hc-strategist/index.html?v=from-healthcare-presentation','_blank')">OPEN HC STRATEGIST</button>
+    </div>
+
+    <div class="card">
+      <b>3 · MAIN STRATEGIST</b>
+      <div class="val">ACTION RELAY</div>
+      <p>Receives the synthesized healthcare report and shows leadership what is open, what is risky, and what should happen next.</p>
+      <button onclick="window.open('/html/hc-main-strategist/index.html?v=from-healthcare-presentation','_blank')">OPEN MAIN STRATEGIST</button>
+    </div>
+
+    <div class="card">
+      <b>4 · EXECUTIVE PORTAL</b>
+      <div class="val">LEADERSHIP</div>
+      <p>Unified executive view for healthcare operations, risk posture, node reporting, and decision-ready BNCA summaries.</p>
+      <button onclick="window.open('/html/executive-portal/index.html?v=from-healthcare-presentation','_blank')">OPEN EXECUTIVE PORTAL</button>
+    </div>
+  </div>
+
+  <div class="output" style="margin-top:14px">
+DEMO NARRATIVE:
+1. Healthcare Command Center shows the frontline operational pressure.
+2. HC Strategist converts that pressure into BNCA.
+3. Main Strategist receives the action-ready summary.
+4. Executive Portal gives leadership one clear view.
+
+TALK TRACK:
+“This is not four separate apps. This is one healthcare command flow — from document pressure to operational action to executive visibility.”
+  </div>
+</section>
+
+
+<section class="panel">
+<h2>LIVE HEALTHCARE WORKFLOW EXECUTION</h2>
+<div id="actions"></div>
+<div class="output" id="liveOut">Ready. Execute a healthcare workflow button.</div>
+</section>
+
+<section class="panel">
+<h2>HEALTHCARE DOCUMENT / WORKFLOW INTELLIGENCE RUNNER</h2>
+<div class="grid" id="docs"></div>
+<div style="margin-top:12px">
+<button class="primary" onclick="OPS.runDoc()">RUN SELECTED WORKFLOW</button>
+<button onclick="OPS.runAll()">RUN ALL WORKFLOWS</button>
+<button onclick="OPS.pushMain()">PUSH TO HEALTHCARE MAIN STRATEGIST</button>
+</div>
+<div class="output" id="docOut">Select a healthcare workflow.</div>
+</section>
+
+<section class="panel">
+<h2>ALL HC NODE POSTURES</h2>
+<div class="grid" id="nodes"></div>
+</section>
+
+<section class="panel">
+<h2>HEALTHCARE OPERATIONS LANES</h2>
+<div class="grid" id="lanes"></div>
+</section>
+
+<section class="panel">
+<h2>ACTION LOG</h2>
+<div class="output log" id="log">[READY] Awaiting healthcare actions...</div>
+</section>
+
+<section class="outcome">
+<b>SYSTEM RESULT · BUSINESS OUTCOME</b>
+<div style="margin-top:10px" id="outcomeLine"></div>
+<div class="money">Healthcare work normally chased manually across EHRs, payer portals, email, spreadsheets, and office queues — organized instantly by TSM.</div>
+</section>
+
+<section class="roi">
+<b>WHY THIS BEATS MANUAL COORDINATION</b>
+<div class="grid" style="margin-top:12px">
+<div class="card"><b>Estimated Time Saved</b><div class="val" id="timeSaved"></div><span>auth chasing · denial follow-up · documentation review</span></div>
+<div class="card"><b>Manual Workload Replaced</b><div class="val">$6K–$10K/mo</div><span>typical healthcare coordination cost</span></div>
+<div class="card"><b>TSM Healthcare Layer</b><div class="val">$1,750/mo</div><span>visible system · action log · executive reporting</span></div>
+</div>
+<div class="money">Instead of hiring more coordination capacity and hoping the process improves, you can see the system organize the work immediately.</div>
+</section>
+
+<section class="close">
+<b>DEMO COACH · CLICK → SAY → PAUSE</b>
+<div class="output" id="coach"></div>
+</section>
+
+<section class="close">
+<b>30-SECOND CLOSE</b>
+<p>“This is the work your team is already doing. The difference is it is being found, organized, and pushed forward automatically. Healthcare teams lose time across prior auth, denials, documentation, compliance, and office throughput. TSM gives you a visible operating layer for $1,750/month. Do we start with prior auth and denials, or go full visibility from day one?”</p>
+</section>
+</main>
+
+<div class="footer">
+<span>● TSM HEALTHCARE OPERATIONS LAYER · PRESENTATION</span>
+<span>READY</span>
+</div>
+
+<script src="/html/assets/tsm/ops-presentation-layer.js?v=1"></script>
+
+<script id="tsm-auto-demo-narrator">
+(function(){
+  let demoIndex = 0;
+  let running = false;
+
+  const DEMO_STEPS = [
+    {
+      text: "This is your healthcare operation: documents, billing pressure, compliance, and execution in one visible system.",
+      action: () => scrollToTitle("LIVE HEALTHCARE WORKFLOW EXECUTION")
+    },
+    {
+      text: "We start with the actual work your team handles every day: prior authorizations, denials, clinical documentation, and compliance gaps.",
+      action: () => scrollToTitle("HEALTHCARE DOCUMENT")
+    },
+    {
+      text: "Now the system runs the selected workflow across the healthcare node chain.",
+      action: () => safeRun(() => OPS.runDoc())
+    },
+    {
+      text: "Financial review, billing pressure, compliance checks, medical documentation, and strategist synthesis all roll into one output.",
+      action: () => safeRun(() => OPS.runAll())
+    },
+    {
+      text: "The result is not just a report. It is an action plan with owner lanes, risk posture, and next best course of action.",
+      action: () => scrollToTitle("SYSTEM RESULT")
+    },
+    {
+      text: "This replaces manual coordination across EHRs, payer portals, email, spreadsheets, and office queues.",
+      action: () => scrollToTitle("WHY THIS BEATS")
+    },
+    {
+      text: "Most teams pay six to ten thousand per month for this coordination manually. TSM delivers a visible operating layer for seventeen fifty per month.",
+      action: () => scrollToTitle("WHY THIS BEATS")
+    },
+    {
+      text: "Now we relay the output to the Healthcare Main Strategist, where leadership sees exactly what to do next.",
+      action: () => safeRun(() => OPS.pushMain())
+    }
+  ];
+
+  function speak(text){
+    try{
+      speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.rate = 0.94;
+      msg.pitch = 1;
+      msg.volume = 1;
+      speechSynthesis.speak(msg);
+    }catch(e){}
+  }
+
+  function showCaption(text){
+    let el = document.getElementById("demoCaption");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "demoCaption";
+      el.style.cssText = `
+        position:fixed;
+        left:50%;
+        bottom:58px;
+        transform:translateX(-50%);
+        max-width:760px;
+        width:calc(100% - 48px);
+        background:#02070d;
+        border:1px solid #00e0ff;
+        color:#d9f3ff;
+        padding:14px 18px;
+        border-radius:12px;
+        font-family:ui-monospace,Menlo,monospace;
+        font-size:13px;
+        line-height:1.5;
+        text-align:center;
+        z-index:99999;
+        box-shadow:0 0 28px rgba(0,224,255,.22);
+      `;
+      document.body.appendChild(el);
+    }
+    el.innerHTML = `<b style="color:#00e0ff">AUTO DEMO</b><br>${escapeHtml(text)}`;
+  }
+
+  function showPulse(){
+    if(!document.getElementById("autoDemoPulseStyle")){
+      const st = document.createElement("style");
+      st.id = "autoDemoPulseStyle";
+      st.textContent = `
+        body.tsm-demo-pulse .panel,
+        body.tsm-demo-pulse .card {
+          animation: tsmPulse 2.6s ease-in-out infinite;
+        }
+        @keyframes tsmPulse {
+          0%,100% { box-shadow:0 0 0 rgba(0,224,255,0); }
+          50% { box-shadow:0 0 18px rgba(0,224,255,.16); }
+        }
+      `;
+      document.head.appendChild(st);
+    }
+    document.body.classList.add("tsm-demo-pulse");
+  }
+
+  function escapeHtml(x){
+    return String(x).replace(/[&<>"]/g, c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;"
+    }[c]));
+  }
+
+  function scrollToTitle(text){
+    const nodes = Array.from(document.querySelectorAll("h2,b,h1"));
+    const hit = nodes.find(n => (n.textContent || "").toLowerCase().includes(text.toLowerCase()));
+    if(hit) hit.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  function safeRun(fn){
+    try{ fn(); }catch(e){ console.warn("Auto demo step skipped:", e); }
+  }
+
+  function runStep(){
+    if(!running) return;
+    if(demoIndex >= DEMO_STEPS.length){
+      running = false;
+      showCaption("Demo complete. Ask: Do we start with prior auth and denials, or bring the full system live from day one?");
+      return;
+    }
+
+    const step = DEMO_STEPS[demoIndex++];
+    showCaption(step.text);
+    speak(step.text);
+    if(step.action) step.action();
+
+    setTimeout(runStep, 5200);
+  }
+
+  window.startAutoDemo = function(){
+    running = true;
+    demoIndex = 0;
+    showPulse();
+    runStep();
+  };
+
+  window.stopAutoDemo = function(){
+    running = false;
+    try{ speechSynthesis.cancel(); }catch(e){}
+    const el = document.getElementById("demoCaption");
+    if(el) el.textContent = "Auto demo stopped.";
+  };
+})();
+</script>
+
+<div id="closingLock" style="display:none;"></div>
+
+<script id="tsm-closing-lock-sequence">
+(function(){
+  function escapeHtml(x){
+    return String(x || "").replace(/[&<>"]/g, c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;"
+    }[c]));
+  }
+
+  window.showClosingLock = function(){
+    let el = document.getElementById("closingLock");
+    if(!el){
+      el = document.createElement("div");
+      el.id = "closingLock";
+      document.body.appendChild(el);
+    }
+
+    const report = (() => {
+      try { return JSON.parse(localStorage.getItem("tsm_healthcare_report") || "{}"); }
+      catch(e){ return {}; }
+    })();
+
+    el.style.cssText = `
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(7px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:999999;
+      padding:18px;
+    `;
+
+    el.innerHTML = `
+      <div style="
+        background:#02070d;
+        border:1px solid #00e0ff;
+        border-radius:18px;
+        padding:28px;
+        width:780px;
+        max-width:94vw;
+        color:#d9f3ff;
+        font-family:ui-monospace,Menlo,monospace;
+        box-shadow:0 0 42px rgba(0,224,255,.22);
+      ">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <div>
+            <div style="color:#00e0ff;letter-spacing:.16em;font-weight:900;font-size:13px">
+              EXECUTIVE SUMMARY · ACTION READY
+            </div>
+            <h2 style="margin:8px 0 4px;color:#d9f3ff;font-size:26px">
+              Healthcare Operations Layer
+            </h2>
+            <div style="color:#8fb0c8;font-size:13px">
+              Demo output converted into a decision-ready pilot path.
+            </div>
+          </div>
+          <button onclick="hideClosingLock()" style="
+            background:transparent;
+            border:1px solid #123050;
+            color:#8fb0c8;
+            border-radius:8px;
+            padding:8px 10px;
+            cursor:pointer;
+          ">close</button>
+        </div>
+
+        <div style="
+          margin:20px 0;
+          display:grid;
+          grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+          gap:12px;
+        ">
+          <div style="border:1px solid #123050;border-radius:12px;padding:14px;background:#061018">
+            <b style="color:#00e0ff">Revenue At Risk</b>
+            <div style="font-size:28px;color:#00f59f;font-weight:900;margin-top:8px">$229K</div>
+            <small>claims / auth pressure</small>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:14px;background:#061018">
+            <b style="color:#00e0ff">Recoverable</b>
+            <div style="font-size:28px;color:#00f59f;font-weight:900;margin-top:8px">$78K</div>
+            <small>next 72 hours</small>
+          </div>
+          <div style="border:1px solid #123050;border-radius:12px;padding:14px;background:#061018">
+            <b style="color:#00e0ff">Time Saved</b>
+            <div style="font-size:28px;color:#00f59f;font-weight:900;margin-top:8px">15–25 hrs</div>
+            <small>monthly coordination</small>
+          </div>
+        </div>
+
+        <div style="
+          margin:18px 0;
+          padding:16px;
+          border:1px solid #123050;
+          border-radius:12px;
+          background:#061018;
+          line-height:1.65;
+        ">
+          <b style="color:#00e0ff">SYSTEM RESULT</b><br><br>
+          → Revenue at risk identified and prioritized<br>
+          → Compliance gaps surfaced before audit exposure<br>
+          → Claim / workflow actions assigned automatically<br>
+          → Executive-ready summary generated
+        </div>
+
+        <div style="
+          margin:18px 0;
+          padding:16px;
+          border:1px solid #00f59f;
+          border-radius:12px;
+          background:#031a14;
+          line-height:1.6;
+        ">
+          <b style="color:#00f59f">ROI SNAPSHOT</b><br><br>
+          Manual coordination: <b>$6K–$10K/month</b><br>
+          TSM Healthcare Layer: <b>$1,750/month</b><br>
+          Estimated time saved: <b>15–25 hours/month</b>
+        </div>
+
+        <div style="
+          color:#00e0ff;
+          font-weight:900;
+          margin:18px 0;
+          line-height:1.5;
+        ">
+          This isn’t another dashboard — this is the healthcare operations layer running in real time.
+        </div>
+
+        <div style="
+          background:#02070d;
+          border:1px solid #123050;
+          border-radius:12px;
+          padding:14px;
+          color:#d9f3ff;
+          margin-bottom:18px;
+          white-space:pre-wrap;
+          max-height:150px;
+          overflow:auto;
+        ">${escapeHtml(report.summary || "BNCA ready: prioritize denial/auth blockers, assign owner lanes, generate follow-up documentation, and relay executive summary.")}</div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onclick="startHealthcarePilot()" style="
+            background:#00e0ff;
+            color:#001018;
+            border:none;
+            padding:13px 16px;
+            border-radius:9px;
+            font-weight:900;
+            cursor:pointer;
+          ">START 30-DAY PILOT</button>
+
+          <button onclick="bookHealthcareWalkthrough()" style="
+            background:transparent;
+            border:1px solid #00e0ff;
+            color:#00e0ff;
+            padding:13px 16px;
+            border-radius:9px;
+            font-weight:900;
+            cursor:pointer;
+          ">BOOK TECHNICAL WALKTHROUGH</button>
+
+          <button onclick="location.href='/html/hc-main-strategist/index.html?v=closing-lock'" style="
+            background:transparent;
+            border:1px solid #00f59f;
+            color:#00f59f;
+            padding:13px 16px;
+            border-radius:9px;
+            font-weight:900;
+            cursor:pointer;
+          ">OPEN HC MAIN STRATEGIST</button>
+        </div>
+
+        <div style="margin-top:16px;color:#8fb0c8;font-size:12px;line-height:1.5">
+          Say: “That’s exactly what your team gets on day one. Most teams start with prior auth and denials.”
+        </div>
+      </div>
+    `;
+  };
+
+  window.hideClosingLock = function(){
+    const el = document.getElementById("closingLock");
+    if(el) el.style.display = "none";
+  };
+
+  window.startHealthcarePilot = function(){
+    localStorage.setItem("tsm_healthcare_pilot_intent", JSON.stringify({
+      ts:new Date().toISOString(),
+      suite:"healthcare",
+      option:"30-day pilot",
+      workflows:["prior authorization","denials","compliance","executive BNCA"],
+      price:"$1,750/month"
+    }));
+    // alert removed for UX
+  };
+
+  window.bookHealthcareWalkthrough = function(){
+    // alert removed for UX
+  };
+
+  // Hook into Auto Demo completion without exposing internal logic
+  const hook = setInterval(() => {
+    if(typeof window.startAutoDemo === "function" && !window.__closingLockHooked){
+      window.__closingLockHooked = true;
+
+      const originalStart = window.startAutoDemo;
+      window.startAutoDemo = function(){
+        originalStart();
+        setTimeout(() => {
+          try { window.showClosingLock(); } catch(e){}
+        }, 44500);
+      };
+
+      clearInterval(hook);
+    }
+  }, 500);
+})();
+</script>
+
+
+<script id="tsm-fixed-closing-action-rail">
+(function(){
+  if(window.__tsmFixedClosingRail) return;
+  window.__tsmFixedClosingRail = true;
+
+  function addRail(){
+    if(!document.getElementById("closingLock") || document.getElementById("closingLock").style.display === "none") return;
+
+    let rail = document.getElementById("closingLockActionRail");
+    if(!rail){
+      rail = document.createElement("div");
+      rail.id = "closingLockActionRail";
+      document.body.appendChild(rail);
+    }
+
+    rail.style.cssText = `
+      position:fixed;
+      left:50%;
+      bottom:44px;
+      transform:translateX(-50%);
+      z-index:1000001;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:calc(100% - 40px);
+      max-width:860px;
+      padding:12px;
+      background:#02070d;
+      border:1px solid #00e0ff;
+      border-radius:14px;
+      box-shadow:0 0 36px rgba(0,224,255,.28);
+    `;
+
+    rail.innerHTML = `
+      <button onclick="startHealthcarePilot()" style="background:#00e0ff;color:#001018;border:none;padding:13px 16px;border-radius:9px;font-weight:900;cursor:pointer">
+        START 30-DAY PILOT
+      </button>
+      <button onclick="bookHealthcareWalkthrough()" style="background:transparent;border:1px solid #00e0ff;color:#00e0ff;padding:13px 16px;border-radius:9px;font-weight:900;cursor:pointer">
+        BOOK TECHNICAL WALKTHROUGH
+      </button>
+      <button onclick="location.href='/html/hc-main-strategist/index.html?v=closing-lock'" style="background:transparent;border:1px solid #00f59f;color:#00f59f;padding:13px 16px;border-radius:9px;font-weight:900;cursor:pointer">
+        OPEN HC MAIN STRATEGIST
+      </button>
+    `;
+
+    const modal = document.querySelector("#closingLock > div");
+    if(modal){
+      modal.style.maxHeight = "calc(100vh - 185px)";
+      modal.style.marginBottom = "150px";
+      modal.style.overflowY = "auto";
+    }
+  }
+
+  const oldShow = window.showClosingLock;
+  window.showClosingLock = function(){
+    if(typeof oldShow === "function") oldShow();
+    setTimeout(addRail, 50);
+    setTimeout(addRail, 300);
+  };
+
+  const oldHide = window.hideClosingLock;
+  window.hideClosingLock = function(){
+    if(typeof oldHide === "function") oldHide();
+    const rail = document.getElementById("closingLockActionRail");
+    if(rail) rail.remove();
+  };
+
+  document.addEventListener("click", function(e){
+    if(e.target && String(e.target.textContent || "").toLowerCase().includes("close")){
+      const rail = document.getElementById("closingLockActionRail");
+      if(rail) rail.remove();
+    }
+  });
+})();
+</script>
+
+
+<script id="tsm-walkthrough-confirm">
+function bookHealthcareWalkthrough(){
+  const el = document.createElement('div');
+  el.style = `
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:#02070d;
+    border:1px solid #00e0ff;
+    padding:24px;
+    border-radius:14px;
+    z-index:1000002;
+    text-align:center;
+    max-width:420px;
+    box-shadow:0 0 40px rgba(0,224,255,.3);
+  `;
+
+  el.innerHTML = `
+    <div style="font-size:18px;font-weight:900;color:#00e0ff;margin-bottom:10px">
+      Walkthrough Locked
+    </div>
+    <div style="font-size:13px;color:#8fb0c8;margin-bottom:18px">
+      We’ll walk through billing, compliance, and operations using your workflows.
+    </div>
+    <button onclick="this.parentElement.remove()" 
+      style="background:#00e0ff;color:#001018;border:none;padding:10px 16px;border-radius:8px;font-weight:900">
+      CONFIRMED
+    </button>
+  `;
+
+  document.body.appendChild(el);
+}
+</script>
+
+
+<script id="tsm-closing-rail-upgrade">
+(function(){
+  function injectDecisionLine(){
+    const rail = document.getElementById("closingLockActionRail");
+    if(!rail) return;
+
+    if(!rail.querySelector(".tsm-decision-line")){
+      const line = document.createElement("div");
+      line.className = "tsm-decision-line";
+      line.style = `
+        width:100%;
+        text-align:center;
+        font-size:12px;
+        color:#8fb0c8;
+        margin-bottom:6px;
+      `;
+      line.textContent = "Choose how you want to start →";
+
+      rail.insertBefore(line, rail.firstChild);
+    }
+  }
+
+  const observer = new MutationObserver(() => injectDecisionLine());
+  observer.observe(document.body, {childList:true, subtree:true});
+
+  setTimeout(injectDecisionLine, 500);
+})();
+</script>
+
+
+<style id="tsm-howto-assistant-style">
+#tsmHowToButton{
+  position:fixed;right:18px;bottom:92px;z-index:1000000;
+  background:#00e0ff;color:#001018;border:none;border-radius:999px;
+  padding:13px 16px;font:900 12px ui-monospace,Menlo,monospace;
+  box-shadow:0 0 28px rgba(0,224,255,.35);cursor:pointer
+}
+#tsmHowToPanel{
+  position:fixed;right:18px;bottom:148px;z-index:1000000;
+  width:390px;max-width:calc(100vw - 36px);max-height:72vh;overflow:auto;
+  background:#02070d;color:#d9f3ff;border:1px solid #00e0ff;border-radius:16px;
+  padding:16px;font:12px ui-monospace,Menlo,monospace;
+  box-shadow:0 0 42px rgba(0,224,255,.28);display:none
+}
+#tsmHowToPanel h3{margin:0 0 8px;color:#00e0ff;letter-spacing:.12em}
+#tsmHowToPanel .mini{color:#8fb0c8;line-height:1.5;margin-bottom:12px}
+#tsmHowToPanel button{
+  display:block;width:100%;text-align:left;margin:8px 0;padding:10px;
+  background:#061018;color:#d9f3ff;border:1px solid #123050;border-radius:10px;cursor:pointer
+}
+#tsmHowToPanel button:hover{border-color:#00e0ff}
+#tsmHowToAnswer{margin-top:12px;white-space:pre-wrap;line-height:1.55;background:#061018;border:1px solid #123050;border-radius:10px;padding:12px}
+</style>
+
+<button id="tsmHowToButton" onclick="toggleHowToAssistant()">How To</button>
+
+<div id="tsmHowToPanel">
+  <h3>HOW TO GUIDE</h3>
+  <div class="mini">Healthcare Operations Layer assistant. Use this during demos or handoffs to guide end users through available features.</div>
+
+  <button onclick="howToAnswer('demo')">🎬 Run the guided demo</button>
+  <button onclick="howToAnswer('workflow')">▶ Run a healthcare workflow</button>
+  <button onclick="howToAnswer('fourlayer')">▣ Understand the 4-layer command flow</button>
+  <button onclick="howToAnswer('close')">🔒 Use the executive close panel</button>
+  <button onclick="howToAnswer('strategist')">🧠 Send output to HC Main Strategist</button>
+  <button onclick="howToAnswer('portal')">📊 Open Executive Portal</button>
+  <button onclick="howToAnswer('pilot')">✅ Start a 30-day pilot path</button>
+  <button onclick="howToAnswer('features')">✦ Show all customized features</button>
+
+  <div id="tsmHowToAnswer">Select a guide topic above.</div>
+</div>
+
+<script id="tsm-howto-assistant-engine">
+function toggleHowToAssistant(){
+  const p=document.getElementById('tsmHowToPanel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
+
+function howToAnswer(topic){
+  const answers = {
+    demo:
+`AUTO DEMO MODE
+1. Click “🎬 AUTO DEMO MODE”.
+2. Say: “I’ll let the system walk you through it.”
+3. Let the narrator explain the workflow.
+4. Wait for the Executive Summary Close panel.
+5. Choose Pilot or Technical Walkthrough.
+
+Best use: first-time prospect demo.`,
+
+    workflow:
+`RUN A HEALTHCARE WORKFLOW
+1. Pick a workflow area: prior auth, denials, compliance, or documentation.
+2. Click “RUN SELECTED WORKFLOW” or a live workflow button.
+3. Review the output.
+4. Point to revenue risk, compliance risk, or time saved.
+5. Push result to HC Main Strategist.
+
+Best line: “This is not a report — it is an action plan.”`,
+
+    fourlayer:
+`4-LAYER COMMAND FLOW
+1. Healthcare Command Center = frontline pressure.
+2. HC Strategist = BNCA synthesis.
+3. Main Strategist = executive action relay.
+4. Executive Portal = leadership visibility.
+
+Best line:
+“This is not four separate apps. This is one healthcare command flow.”`,
+
+    close:
+`EXECUTIVE SUMMARY CLOSE
+1. Click “🔒 EXECUTIVE SUMMARY CLOSE”.
+2. Let the value panel appear.
+3. Show Revenue at Risk, Recoverable, Time Saved.
+4. Use the bottom action rail.
+5. Ask: “Do we start with a 30-day pilot or walk your team through it live?”
+
+Do not over-explain. Pause after the question.`,
+
+    strategist:
+`HC MAIN STRATEGIST
+1. Click “OPEN HC MAIN STRATEGIST”.
+2. Confirm Nodes Reporting, Risk Posture, and Report Status.
+3. Read the BNCA summary.
+4. Explain: “Leadership sees what is open, risky, and next.”
+
+This is the executive action layer.`,
+
+    portal:
+`EXECUTIVE PORTAL
+1. Open the Executive Portal.
+2. Use Healthcare view for operational posture.
+3. Use Combined Executive View for leadership summary.
+4. Show node reporting, risk posture, and BNCA summary.
+
+Best line:
+“Executives do not need raw documents — they need clear decisions.”`,
+
+    pilot:
+`30-DAY PILOT PATH
+Recommended start:
+• Prior authorization
+• Denials
+• Compliance documentation
+• Executive BNCA reporting
+
+Goal:
+Prove measurable value in 30 days before expanding to all HC nodes.
+
+Price anchor:
+$1,750/month operating layer.`,
+
+    features:
+`CUSTOMIZED FEATURES AVAILABLE
+• Auto Demo Narrator
+• Executive Summary Close
+• Fixed action rail
+• Healthcare workflow runner
+• Prior auth review
+• Denials sweep
+• Compliance shield
+• Document/workflow intelligence runner
+• 13 HC node visibility
+• 4-layer command flow
+• HC Main Strategist relay
+• Executive Portal visibility
+• Pilot path capture
+• PDF-ready export
+• Demo coach talk track`
+  };
+
+  document.getElementById('tsmHowToAnswer').textContent = answers[topic] || 'Guide topic unavailable.';
+}
+</script>
+
 </body>
 </html>
