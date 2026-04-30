@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const HTML_ROOT = path.join(__dirname, "html");
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
@@ -67,8 +67,8 @@ app.get("/", (_req, res) => {
 
 app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}</pre>`));
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 TSM Shell on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}`));
   console.log();
 });
