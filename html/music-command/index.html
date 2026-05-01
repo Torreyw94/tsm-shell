@@ -1297,7 +1297,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script id="structure-display">
 function renderSongStructure() {
   var d = window.__songStructure;
-  var el = document.getElementById('structureDisplay');
+  var el = document.getElementById('structureDisplay'); if(el && el.parentElement.tagName==='BODY'){var p=document.getElementById('jstep-5');if(p)p.appendChild(el);}
   if(!d || !el) return;
   el.innerHTML = 
     '<div style="margin-bottom:16px">'+
