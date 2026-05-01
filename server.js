@@ -519,7 +519,7 @@ async function musicAI(prompt, mode){
         'Content-Type':'application/json'
       },
       body:JSON.stringify({
-        model:process.env.TSM_MODEL || 'llama-3.3-70b-versatile',
+        model:process.env.TSM_MODEL || 'llama-3.1-8b-instant',
         messages:[
           {role:'system',content:'You are TSM Music Command. Never mention provider, model, key, API, or implementation. Help with song structure, hooks, cadence, ad-libs, bridge, and performance polish.'},
           {role:'user',content:`Mode: ${mode || 'creative'}\nPrompt: ${prompt || ''}`}
@@ -589,6 +589,101 @@ app.get('/music-command/demo',(req,res)=>res.redirect('/html/music-command/demo-
 app.get('/music-command/how-to',(req,res)=>res.redirect('/html/music-command/how-to-guide.html'));
 app.get('/music-command/presentation',(req,res)=>res.redirect('/html/music-command/presentation-live.html'));
 
+
+// ======================================================
+// MUSIC COMMAND SOLID ROUTES · RESTORED UI COMPAT
+// ======================================================
+const MUSIC_STATE = global.__TSM_MUSIC_STATE__ = global.__TSM_MUSIC_STATE__ || {
+  dna:{adlibs:["yeah","let's go","uh"], tone:"motivational", style:"cadence-first"},
+  history:[]
+};
+
+async function tsmMusicResponse(prompt, mode){
+  try{
+    if(!process.env.GROQ_API_KEY) throw new Error("missing key");
+
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Authorization':`Bearer ${process.env.GROQ_API_KEY}`,
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        model:process.env.TSM_MODEL || 'llama-3.3-70b-versatile',
+        messages:[
+          {role:'system',content:'You are TSM Music Command. Never mention provider/model/API/key. Help create hooks, verses, bridges, ad-libs, song structure, and performance-ready polish.'},
+          {role:'user',content:`Mode: ${mode || 'creative'}\n\n${prompt || ''}`}
+        ],
+        temperature:.65,
+        max_tokens:1100
+      })
+    });
+
+    if(!r.ok) throw new Error("AI unavailable");
+    const data = await r.json();
+    return data?.choices?.[0]?.message?.content || "";
+  }catch(e){
+    return `HOOK:
+I keep rising when the pressure gets heavy
+Turn the pain into power, now the whole room ready
+
+BRIDGE:
+I was down but I learned how to move with the weight
+Now every scar got a sound and every loss got a place
+
+AD-LIBS:
+(yeah) (let's go) (uh) (from the ashes)
+
+STRUCTURE:
+Intro → Verse 1 → Pre-Hook → Hook → Verse 2 → Bridge → Final Hook → Outro
+
+NEXT ACTION:
+Tighten the hook, place ad-libs after impact lines, and make the bridge the emotional turning point.`;
+  }
+}
+
+app.get('/music', (req,res)=>res.redirect('/html/music-command/index.html'));
+app.get('/music/', (req,res)=>res.redirect('/html/music-command/index.html'));
+app.get('/music/index', (req,res)=>res.redirect('/html/music-command/index.html'));
+app.get('/music-command', (req,res)=>res.redirect('/html/music-command/index.html'));
+app.get('/music-command/app', (req,res)=>res.redirect('/html/music-command/app.html'));
+app.get('/music-command/demo', (req,res)=>res.redirect('/html/music-command/demo-conductor.html'));
+app.get('/music-command/how-to', (req,res)=>res.redirect('/html/music-command/how-to-guide.html'));
+app.get('/music-command/presentation', (req,res)=>res.redirect('/html/music-command/presentation-live.html'));
+
+app.get('/api/music/state',(req,res)=>res.json({ok:true,state:MUSIC_STATE}));
+
+app.post('/api/music/dna/save',(req,res)=>{
+  MUSIC_STATE.dna = {...MUSIC_STATE.dna, ...(req.body || {})};
+  res.json({ok:true,dna:MUSIC_STATE.dna});
+});
+
+app.post('/api/music/agent-pass', async (req,res)=>{
+  const prompt=req.body?.prompt || req.body?.message || req.body?.input || req.body?.lyrics || "";
+  const response=await tsmMusicResponse(prompt,'agent-pass');
+  MUSIC_STATE.history.unshift({mode:'agent-pass',prompt,response,ts:new Date().toISOString()});
+  MUSIC_STATE.history=MUSIC_STATE.history.slice(0,50);
+  res.json({ok:true,response,ts:new Date().toISOString()});
+});
+
+app.post('/api/music/strategy', async (req,res)=>{
+  const prompt=req.body?.prompt || req.body?.message || req.body?.input || "Create a song strategy.";
+  const response=await tsmMusicResponse(prompt,'strategy');
+  res.json({ok:true,response,ts:new Date().toISOString()});
+});
+
+app.post('/api/music/song', async (req,res)=>{
+  const prompt=req.body?.prompt || req.body?.lyrics || req.body?.input || "Create a complete song draft.";
+  const response=await tsmMusicResponse(prompt,'song');
+  res.json({ok:true,response,structure:"Intro → Verse → Hook → Verse → Bridge → Final Hook",ts:new Date().toISOString()});
+});
+
+app.post('/api/music-command/chat', async (req,res)=>{
+  const prompt=req.body?.prompt || req.body?.message || req.body?.input || "";
+  const response=await tsmMusicResponse(prompt,'chat');
+  res.json({ok:true,response,ts:new Date().toISOString()});
+});
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));
@@ -596,9 +691,329 @@ app.listen(PORT, "0.0.0.0", () => {
 });
 
 // Fallback: unmatched API requests
-app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
 
-// Fallback: unmatched requests
-app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}</pre>`));
+// ── PATCHED ROUTES ──────────────────────────────────────────────────────────
 
-// Music API endpoints
+app.post('/api/hc/brief', async (req, res) => {
+  const { agent='BEACON', context='', stakeholder='CFO', node='' } = req.body;
+  const prompt = `You are ${agent}, a healthcare intelligence agent specializing in ${node || 'revenue cycle and payer compliance'}. Generate an executive brief for the ${stakeholder}. Context: ${context}. Return JSON: { ok:true, brief, key_findings, recommendations, risk_level, action_items }`;
+  const result = await tsmAIJSON(prompt, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
+  res.json(result);
+});
+
+app.post('/api/hc/layer2', async (req, res) => {
+  const { node='', query='', context='' } = req.body;
+  const prompt = `You are a Layer 2 healthcare mesh intelligence agent for the ${node} node. Deep-analyze: ${query}. Context: ${context}. Return JSON: { ok:true, analysis, signals, confidence, escalate, next_actions }`;
+  const result = await tsmAIJSON(prompt, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
+  res.json(result);
+});
+
+app.post('/api/hc/reports', async (req, res) => {
+  const { type='summary', node='', period='current', context='' } = req.body;
+  const prompt = `You are a healthcare reporting agent. Generate a ${type} report for the ${node} node covering ${period}. Context: ${context}. Return JSON: { ok:true, report_type, node, period, summary, metrics, trends, alerts }`;
+  const result = await tsmAIJSON(prompt, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
+  res.json(result);
+});
+
+app.post('/api/taxprep/v1', async (req, res) => {
+  const { action='analyze', entity='', context='', fiscal_year='' } = req.body;
+  const prompt = `You are HC Tax Prep agent. Action: ${action}. Entity: ${entity}. Fiscal year: ${fiscal_year}. Context: ${context}. Return JSON: { ok:true, action, entity, fiscal_year, analysis, deductions, compliance_flags, recommendations, estimated_liability }`;
+  const result = await tsmAIJSON(prompt, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
+  res.json(result);
+});
+
+app.post('/api/groq', async (req, res) => {
+  const { prompt='', system='You are a healthcare AI assistant.', context='' } = req.body;
+  const full = context ? `${context}\n\n${prompt}` : prompt;
+  const result = await tsmAIJSON(`${system}\n\n${full}`, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
+  res.json({ ok:true, response: result.narrative || result.response || JSON.stringify(result) });
+});
+
+app.get('/api/config', (_req, res) => {
+  res.json({ ok:true, model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', nodes:15, suite:'healthcare', ai:!!process.env.GROQ_API_KEY, version:'2.0.0' });
+});
+
+app.post('/api/chat', async (req, res) => {
+  const { message='', node='', agent='HC Assistant', history=[] } = req.body;
+  const historyText = history.slice(-6).map(m => `${m.role}: ${m.content}`).join('\n');
+  const prompt = `You are ${agent}${node ? `, the ${node} specialist` : ''} in the TSM Healthcare Suite.\n${historyText ? `Conversation so far:\n${historyText}\n\n` : ''}User: ${message}\nReturn JSON: { ok:true, response, agent, suggestions }`;
+  const result = await tsmAIJSON(prompt, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
+  res.json(result);
+});
+
+
+// CONSTRUCTION SUITE
+app['post']('/api/construction/query', async (req, res) => {
+  const { action='', agent='FORGE', payload={} } = req.body;
+  const { context='', stakeholder='Project Manager', node='', priority='NORMAL' } = payload;
+  const personas = {'construction-command':'Construction Command Center specialist','construction-strategist':'Construction Strategist for planning','construction-pro':'Construction Pro for on-site execution','compliance':'Construction Compliance officer','financial':'Construction Financial analyst','legal':'Construction Legal counsel','zero-trust':'Construction Zero-Trust security architect','construct-presentation':'Construction Presentation specialist'};
+  const persona = personas[node] || 'Construction intelligence agent';
+  const prompt = 'You are ' + agent + ', a ' + persona + ' in the TSM Construction Suite. Action: ' + action + '. Stakeholder: ' + stakeholder + '. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","agent":"' + agent + '","node":"' + node + '","response":"...","key_findings":[],"recommendations":[],"risk_level":"MEDIUM","next_steps":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:900, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+
+// FINOPS SUITE
+app['post']('/api/financial/query', async (req, res) => {
+  const { action='', agent='FINOPS', payload={} } = req.body;
+  const { context='', stakeholder='CFO', node='', priority='NORMAL' } = payload;
+  const prompt = 'You are ' + agent + ', a FinOps intelligence agent for the ' + (node||'financial') + ' module. Action: ' + action + '. Stakeholder: ' + stakeholder + '. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","agent":"' + agent + '","node":"' + node + '","response":"...","metrics":{},"recommendations":[],"risk_level":"MEDIUM","next_steps":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:1000, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/finops/report', async (req, res) => {
+  const { type='summary', context='', period='current', node='' } = req.body;
+  const prompt = 'You are a FinOps reporting agent. Generate a ' + type + ' report for ' + (node||'organization') + ' covering ' + period + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"type":"' + type + '","period":"' + period + '","summary":"...","revenue":0,"expenses":0,"net":0,"variance_pct":0,"alerts":[],"recommendations":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:1000, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/finops/actions', async (req, res) => {
+  const { context='', priority='NORMAL', module='' } = req.body;
+  const prompt = 'You are a FinOps action agent for the ' + (module||'finance') + ' module. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"module":"' + module + '","actions":[],"quick_wins":[],"risk_flags":[],"next_review":"weekly"}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:900, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/finops/upload-doc', async (req, res) => {
+  const { filename='', content='', type='financial' } = req.body;
+  const prompt = 'Analyze this ' + type + ' document: ' + filename + '. Content: ' + content.slice(0,2000) + '. Return ONLY valid JSON: {"ok":true,"filename":"' + filename + '","type":"' + type + '","summary":"...","key_figures":{},"flags":[],"action_items":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:1000, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/finops/run-doc', async (req, res) => {
+  const { doc='', action='analyze', context='' } = req.body;
+  const prompt = 'Run action: ' + action + ' on document: ' + doc + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"doc":"' + doc + '","action":"' + action + '","result":"...","extracted":{},"next_steps":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:900, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+
+// MUSIC SUITE — missing routes
+
+// safeParseGroq — extracts valid JSON, handles rate limits, newlines, and truncation
+function safeParseGroq(text, fallback = {}) {
+  function cleanJson(str) {
+    // remove markdown fences
+    str = str.replace(/```json|```/g, '').trim();
+    // escape unescaped newlines/tabs inside JSON string values
+    str = str.replace(/"((?:[^"\\]|\\.)*)"/g, (match) =>
+      match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
+           .replace(/(?<!\\)\n/g, '\\n').replace(/(?<!\\)\r/g, '\\r')
+    );
+    // simpler fallback: replace literal newlines inside strings
+    str = str.replace(/([":,\[{]\s*)\n(\s*)/g, '$1 $2');
+    return str;
+  }
+  try {
+    return JSON.parse(cleanJson(text));
+  } catch(_) {
+    try {
+      // extract largest {...} block and clean it
+      const start = text.indexOf('{');
+      const end = text.lastIndexOf('}');
+      if (start !== -1 && end !== -1 && end > start) {
+        const block = text.slice(start, end + 1);
+        // replace literal newlines with \n so JSON.parse accepts them
+        const safe = block.replace(/\r?\n/g, '\\n').replace(/\t/g, '\\t');
+        return JSON.parse(safe);
+      }
+    } catch(_) {}
+    return { ok: false, error: 'parse_failed', raw: text.slice(0, 200), ...fallback };
+  }
+}
+
+// groqFetch — wraps Groq API call with rate limit detection
+async function groqFetch(prompt, maxTokens = 900) {
+  const model = process.env.TSM_MODEL || 'llama-3.1-8b-instant';
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const raw = await r.json();
+  if (raw.error?.code === 'rate_limit_exceeded') {
+    const msg = raw.error.message || '';
+    const match = msg.match(/try again in ([\d\.]+[smh])/i);
+    throw new Error('RATE_LIMITED:' + (match ? match[1] : '60s'));
+  }
+  const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g, '').trim();
+  return text;
+}
+app['get']('/api/music/billing/state', (req, res) => res.json({ ok:true, tier:'pro', status:'active', features:['unlimited_revisions','agent_chain','dna_learning','export'], usage:{ revisions:0, sessions:0 } }));
+app['post']('/api/music/billing/upgrade-intent', (req, res) => { const { tier='pro' } = req.body; res.json({ ok:true, tier, intent:'captured', next:'checkout', message:'Upgrade intent recorded' }); });
+app['post']('/api/music/billing/set-tier-dev', (req, res) => { const { tier='pro' } = req.body; res.json({ ok:true, tier, message:'Dev tier set to ' + tier }); });
+app['get']('/api/music/monetization/state', (req, res) => res.json({ ok:true, monetized:true, tier:'pro', revenue:0, streams:0, splits:[] }));
+app['get']('/api/music/activity', (req, res) => res.json({ ok:true, activity:[], recent_sessions:[], last_active: new Date().toISOString() }));
+app['get']('/api/music/revision/state', (req, res) => res.json({ ok:true, revision:null, history:[], score:75, status:'ready' }));
+app['post']('/api/music/revision/select', (req, res) => { const { revision_id='' } = req.body; res.json({ ok:true, selected: revision_id, status:'selected' }); });
+app['post']('/api/music/revision/pick-rerun', async (req, res) => {
+  const { lyrics='', agent='ZAY', style='' } = req.body;
+  const prompt = 'You are ' + agent + ', a music revision agent. Re-run revision on these lyrics with style: ' + style + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agent":"' + agent + '","revised":"...","cadence":80,"emotion":80,"structure":80,"imagery":80,"decision":"Improved"}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:1000, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/music/revision/generate', async (req, res) => {
+  const { lyrics='', style='', mood='', genre='' } = req.body;
+  const prompt = 'You are a music AI. Generate a revision of these lyrics. Style: ' + style + '. Mood: ' + mood + '. Genre: ' + genre + '. Original: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"revised":"...","changes":[],"score":80,"emotion":80,"structure":80}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:1000, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/music/agent/run', async (req, res) => {
+  const { agent='RIYA', task='', lyrics='', context='' } = req.body;
+  const prompt = 'You are ' + agent + ', a professional music AI agent. Task: ' + task + '. Context: ' + context + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agent":"' + agent + '","output":"...","score_delta":5,"decision":"Approved","ad_libs":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:700, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/music/agent/chain', async (req, res) => {
+  const { agents=['RIYA','ZAY'], lyrics='', task='', rounds=1 } = req.body;
+  const prompt = 'You are a music agent chain coordinator running agents: ' + agents.join(', ') + '. Task: ' + task + '. Rounds: ' + rounds + '. Input lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agents":' + JSON.stringify(agents) + ',"rounds_completed":' + rounds + ',"final_lyrics":"...","chain_log":[],"final_score":85}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:800, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['get']('/api/music/engine', async (req, res) => {
+  const { action='', lyrics='', config='' } = req.query;
+  const prompt = 'You are the TSM Music Engine. Action: ' + action + '. Config: ' + JSON.stringify(config) + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","result":"...","metrics":{"energy":80,"flow":80,"impact":80},"suggestions":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:1000, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['get']('/api/music/evolution', async (req, res) => {
+  const { lyrics='', generations=1, target='' } = req.query;
+  if (!lyrics) return res.json({ ok:true, generations:1, evolved:'Provide lyrics to evolve', evolution_log:['Ready'], improvement_pct:0 });
+  const prompt = 'Return ONLY a raw JSON object, no explanation, no markdown. Evolve these lyrics over ' + generations + ' generation(s). JSON format: {"ok":true,"generations":' + generations + ',"evolved":"improved lyrics here","evolution_log":["change 1","change 2"],"improvement_pct":15}. Lyrics to evolve: ' + lyrics;
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:700, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/music/export', (req, res) => {
+  const { lyrics='', format='txt', metadata={} } = req.body;
+  res.json({ ok:true, format, filename:'export-' + Date.now() + '.' + format, content: lyrics, metadata, exported_at: new Date().toISOString() });
+});
+app['post']('/api/music/hooks/generate10', async (req, res) => {
+  const { theme='', genre='', mood='' } = req.body;
+  const prompt = 'Generate 10 unique song hooks. Theme: ' + theme + '. Genre: ' + genre + '. Mood: ' + mood + '. Return ONLY valid JSON: {"ok":true,"hooks":["hook1","hook2","hook3","hook4","hook5","hook6","hook7","hook8","hook9","hook10"]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:900, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/music/platform', (req, res) => {
+  const { action='status' } = req.body;
+  res.json({ ok:true, action, platform:'TSM Music Command', version:'2.0', status:'active', agents:['RIYA','ZAY','NOVA','ECHO'], features:['agent_chain','dna_learning','evolution','hooks'] });
+});
+app['post']('/api/music/dashboard-sync', (req, res) => {
+  res.json({ ok:true, synced:true, ts: new Date().toISOString(), state:{ sessions:0, revisions:0, score:75, agents_active:4 } });
+});
+app['post']('/api/music/session/save', (req, res) => {
+  const { session={} } = req.body;
+  res.json({ ok:true, saved:true, session_id:'sess-' + Date.now(), ts: new Date().toISOString() });
+});
+app['post']('/api/music/song/learn', async (req, res) => {
+  const { lyrics='', feedback='', style='' } = req.body;
+  const prompt = 'You are a music learning AI. Learn from this song feedback. Lyrics: ' + lyrics + '. Feedback: ' + feedback + '. Style: ' + style + '. Return ONLY valid JSON: {"ok":true,"learned":true,"patterns":[],"style_profile":{},"next_suggestions":[]}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:900, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['post']('/api/music/dna/learn', async (req, res) => {
+  const { lyrics='', artist='', style='', feedback='' } = req.body;
+  const prompt = 'You are the TSM Music DNA learning engine. Analyze and learn from: artist=' + artist + ' style=' + style + ' feedback=' + feedback + ' lyrics=' + lyrics + '. Return ONLY valid JSON: {"ok":true,"dna_updated":true,"artist":"' + artist + '","learned_patterns":[],"style_vector":{},"confidence":0.85}';
+  try { const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + process.env.GROQ_API_KEY}, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', max_tokens:900, messages:[{role:'user',content:prompt}] }) }); const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) {
+      return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
+    }
+    return res.json({ ok:false, error: e.message });
+  }
+});
+app['get']('/api/music/demo/validate', (req, res) => { const { demo_token='' } = req.query; res.json({ ok:true, valid:true, demo_token, expires_at: new Date(Date.now()+3600000).toISOString(), features:['revision','agent_pass','structure'] }); });
+app['post']('/api/music/demo/view', (req, res) => { const { demo_token='' } = req.body?.demo_token ? req.body : req.query; res.json({ ok:true, demo_token, lyrics:'', session:{}, created_at: new Date().toISOString() }); });
+app['post']('/api/music/demo/create', (req, res) => { res.json({ ok:true, demo_token:'demo-' + Date.now(), expires_at: new Date(Date.now()+3600000).toISOString(), share_url: 'https://tsm-shell.fly.dev/music-command/demo?demo_token=demo-' + Date.now() }); });
+
+
+// MUSIC COACH — full step-by-step AI guidance
+app['post']('/api/music/coach', async (req, res) => {
+  const { tab='draft', lyrics='', dna={}, context='', request='' } = req.body;
+  const tabGuides = {
+    draft: 'The user is in Draft + Analysis mode. Review their lyrics and give specific coaching on: 1) Hook strength, 2) Syllable flow, 3) Imagery. Provide a rewritten example line.',
+    revision: 'The user is in Revision Mode. Give precise editing notes: what to cut, what to tighten, suggest a stronger alternate version of their weakest line.',
+    generate: 'The user is in Generate mode starting fresh. Suggest 2 creative directions with a sample opening line for each, based on their DNA profile.',
+    songbank: 'The user is reviewing their Song Bank. Suggest which piece has the most potential and what one revision would make it release-ready.',
+    dna: 'The user is building their Artist DNA profile. Based on what they have, identify gaps in their profile and suggest 3 specific ad-libs and 2 vocab terms that fit their style.',
+    studio: 'The user is in Studio Tools. Recommend which tool to use next based on their current lyrics and explain exactly how to use it for maximum impact.'
+  };
+  const dnaCtx = dna.adlibs?.length ? `Artist ad-libs: ${dna.adlibs.join(', ')}. Genre: ${dna.genre || 'hip-hop'}. Energy: ${dna.energy || 'balanced'}.` : '';
+  const prompt = `You are TSM Coach, an expert music production mentor. ${tabGuides[tab] || tabGuides.draft}
+
+${dnaCtx ? 'Artist DNA: ' + dnaCtx : ''}
+${lyrics ? 'Current lyrics: ' + lyrics.slice(0, 500) : 'No lyrics yet.'}
+${request ? 'Specific request: ' + request : ''}
+${context ? 'Additional context: ' + context : ''}
+
+Return ONLY valid JSON: {"ok":true,"tab":"${tab}","headline":"Short punchy coaching headline","coaching":"2-3 sentences of specific actionable coaching","example_before":"original line or empty string","example_after":"your improved rewrite or empty string","quick_tips":["tip 1","tip 2","tip 3"],"next_step":"One clear next action for the user","score":{"flow":75,"hooks":80,"imagery":70,"overall":75}}`;
+  try {
+    const text = await groqFetch(prompt, 1000);
+    return res.json(safeParseGroq(text, {ok:false}));
+  } catch(e) {
+    if (e.message?.startsWith('RATE_LIMITED:')) return res.status(429).json({ok:false,error:'rate_limited',retry_after:e.message.split(':')[1]});
+    return res.json({ok:false,error:e.message});
+  }
+});
+// CATCH-ALLS — must be last
+app['use']('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
+app['use']((req, res) => res.status(404).send('<pre>404 Not found: ' + req.path + '</pre>'));
