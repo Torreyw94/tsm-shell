@@ -499,6 +499,96 @@ Return JSON:
   );
   res.json({ ok: true, ...result });
 });
+
+// ======================================================
+// MUSIC COMMAND COMPAT ROUTES
+// Supports restored rich UI: /api/music/state, /agent-pass, /strategy, /song, /dna/save
+// ======================================================
+const MUSIC_MEMORY = global.__TSM_MUSIC_MEMORY__ = global.__TSM_MUSIC_MEMORY__ || {
+  dna:{adlibs:["yeah","let's go","ay"], tone:"confident", style:"performance-ready"},
+  history:[]
+};
+
+async function musicAI(prompt, mode){
+  try{
+    if(!process.env.GROQ_API_KEY) throw new Error("missing key");
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Authorization':`Bearer ${process.env.GROQ_API_KEY}`,
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        model:process.env.TSM_MODEL || 'llama-3.3-70b-versatile',
+        messages:[
+          {role:'system',content:'You are TSM Music Command. Never mention provider, model, key, API, or implementation. Help with song structure, hooks, cadence, ad-libs, bridge, and performance polish.'},
+          {role:'user',content:`Mode: ${mode || 'creative'}\nPrompt: ${prompt || ''}`}
+        ],
+        temperature:.58,
+        max_tokens:1100
+      })
+    });
+    if(!r.ok) throw new Error("AI unavailable");
+    const data = await r.json();
+    return data?.choices?.[0]?.message?.content || "";
+  }catch(e){
+    return `TSM Music Command fallback active.
+
+STRUCTURE:
+Intro → Verse 1 → Pre-Hook → Hook → Verse 2 → Bridge → Final Hook → Outro
+
+AD-LIB PLACEMENT:
+Use light ad-libs before the hook, stronger callouts after impact lines, and signature tags in the outro.
+
+BRIDGE:
+Shift the emotion. Make it the turning point before the final hook.
+
+NEXT ACTION:
+Tighten the hook, place ad-libs, strengthen the bridge, then generate a performance-ready final pass.`;
+  }
+}
+
+app.get('/api/music/state',(req,res)=>{
+  res.json({ok:true,state:MUSIC_MEMORY});
+});
+
+app.post('/api/music/dna/save',(req,res)=>{
+  MUSIC_MEMORY.dna = {...MUSIC_MEMORY.dna, ...(req.body || {})};
+  res.json({ok:true,dna:MUSIC_MEMORY.dna});
+});
+
+app.post('/api/music/agent-pass', async (req,res)=>{
+  const prompt = req.body?.prompt || req.body?.message || req.body?.input || '';
+  const response = await musicAI(prompt,'agent-pass');
+  MUSIC_MEMORY.history.unshift({type:'agent-pass',prompt,response,ts:new Date().toISOString()});
+  MUSIC_MEMORY.history = MUSIC_MEMORY.history.slice(0,50);
+  res.json({ok:true,response,actions:["Structure review","Ad-lib placement","Bridge improvement","Performance polish"],ts:new Date().toISOString()});
+});
+
+app.post('/api/music/strategy', async (req,res)=>{
+  const prompt = req.body?.prompt || req.body?.message || req.body?.input || 'Create a release/demo strategy.';
+  const response = await musicAI(prompt,'strategy');
+  res.json({ok:true,response,ts:new Date().toISOString()});
+});
+
+app.post('/api/music/song', async (req,res)=>{
+  const prompt = req.body?.prompt || req.body?.lyrics || req.body?.input || 'Create a complete song draft.';
+  const response = await musicAI(prompt,'song');
+  res.json({ok:true,response,structure:"Intro → Verse → Hook → Verse → Bridge → Final Hook",ts:new Date().toISOString()});
+});
+
+app.post('/api/music-command/chat', async (req,res)=>{
+  const prompt = req.body?.prompt || req.body?.message || req.body?.input || '';
+  const response = await musicAI(prompt,'chat');
+  res.json({ok:true,response,ts:new Date().toISOString()});
+});
+
+app.get('/music-command',(req,res)=>res.redirect('/html/music-command/index.html'));
+app.get('/music-command/app',(req,res)=>res.redirect('/html/music-command/app.html'));
+app.get('/music-command/demo',(req,res)=>res.redirect('/html/music-command/demo-conductor.html'));
+app.get('/music-command/how-to',(req,res)=>res.redirect('/html/music-command/how-to-guide.html'));
+app.get('/music-command/presentation',(req,res)=>res.redirect('/html/music-command/presentation-live.html'));
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));
