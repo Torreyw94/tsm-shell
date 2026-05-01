@@ -1,0 +1,139 @@
+
+<!doctype html>
+<html>
+<head>
+<title>Dee Command Center</title>
+<style>
+body{background:#050b14;color:#00ffa3;font-family:monospace;padding:20px}
+button{margin:5px;padding:10px;border:1px solid #00ffa3;background:#0a1822;color:#fff}
+#out{margin-top:20px;border:1px solid #00ffa3;padding:20px}
+</style>
+
+<style id="honor-scroll-fix">
+html, body {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+body {
+  display: block !important;
+}
+
+.wrap, .app, .shell, .main, .main-shell, .content, .content-shell, .dashboard, .portal-shell {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+section, article, main, aside, .card, .panel, .pane, .tab-panel, .tab-content {
+  max-height: none !important;
+}
+
+textarea, .console, .feed, .chat-log {
+  max-height: none !important;
+}
+
+#out, #view, #war-room, #dee-live-output, #dee-live-inner {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+[style*="100vh"], [style*="100dvh"], [style*="overflow:hidden"], [style*="max-height"] {
+  max-height: none !important;
+}
+
+@media (min-width: 900px) {
+  .grid, .grid2, .grid3, .grid4, .cols, .columns {
+    align-items: start !important;
+  }
+}
+</style>
+
+</head>
+<body>
+
+<h2>Dee Command Center (Stable)</h2>
+
+<button onclick="run('recovery')">Recovery</button>
+<button onclick="run('payer')">Payer</button>
+<button onclick="run('brief')">Brief</button>
+
+<div id="out">Loading...</div>
+
+<script>
+async function run(mode){
+  const out = document.getElementById('out');
+  out.innerHTML = "Running " + mode + "...";
+
+  const res = await fetch('/api/strategist/hc/dee-action',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system:'HonorHealth',
+      selectedOffice:'Scottsdale - Shea',
+      prompt: mode
+    })
+  });
+
+  const data = await res.json();
+
+  // PAYER MODE (has actionDetail)
+  if(data.actionDetail && data.actionDetail.steps){
+    out.innerHTML =
+      "<h3>"+data.actionDetail.title+"</h3>" +
+      "<ul>" + data.actionDetail.steps.map(s=>"<li>"+s+"</li>").join('') + "</ul>";
+    return;
+  }
+
+  // RECOVERY MODE (layer2)
+  if(data.layer2 && data.layer2.bestNextActions){
+    out.innerHTML =
+      "<h3>Recovery Plan</h3>" +
+      "<ul>" + data.layer2.bestNextActions.map(s=>"<li>"+s+"</li>").join('') + "</ul>";
+    return;
+  }
+
+  // BRIEF MODE (posture)
+  if(data.posture && data.posture.systemPosture){
+    out.innerHTML =
+      "<h3>Executive Brief</h3>" +
+      "<pre>"+JSON.stringify(data.posture.systemPosture,null,2)+"</pre>";
+    return;
+  }
+
+  // fallback
+  out.innerHTML = "<pre>"+JSON.stringify(data,null,2)+"</pre>";
+}
+
+run('recovery');
+</script>
+
+
+<script id="honor-scroll-fix-js">
+(function(){
+  const selectors = [
+    '.card', '.panel', '.pane', '.tab-panel', '.tab-content',
+    '#out', '#view', '#war-room', '#dee-live-output', '#dee-live-inner',
+    'main', 'section', 'article', '.content', '.dashboard'
+  ];
+
+  selectors.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      el.style.maxHeight = 'none';
+      el.style.height = 'auto';
+      el.style.overflow = 'visible';
+    });
+  });
+
+  document.documentElement.style.overflowY = 'auto';
+  document.body.style.overflowY = 'auto';
+})();
+</script>
+
+</body>
+</html>

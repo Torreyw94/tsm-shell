@@ -357,10 +357,8 @@ Return JSON:
   res.json({ok:true,result,ts:new Date().toISOString()});
 });
 
-app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
 app.get('/executive-portal',(req,res)=>res.redirect('/html/executive-portal/index.html'));
 app.get('/healthcare/executive-portal',(req,res)=>res.redirect('/html/executive-portal/index.html'));
-app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}</pre>`));
 
 
 // HEALTHCARE CLIENT PRESENTATION + ROUTE ALIASES
@@ -398,8 +396,119 @@ app.get('/healthcare/hc-presentation/',(req,res)=>sendFirstExisting(res,[
   'html/healthcare-presentation/index.html'
 ]));
 
+// Music API endpoints
+app.post("/api/music/revision/run", async (req, res) => {
+  try {
+    const body = req.body || {};
+    const lyrics = body.lyrics || body.draft || body.input || body.text || "";
+    const { agent="ZAY" } = body;
+    if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
+    const result = await tsmAIJSON(`You are music agent ${agent}. Revise these lyrics. Return JSON: { revised, cadence, emotion, structure, imagery, decision }. Lyrics: ${lyrics}`,{ revised: lyrics, cadence: 75, emotion: 75, structure: 75, imagery: 75, decision: "No change" });
+    res.json({ ok: true, ...result });
+  } catch(e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.post("/api/music/agent-pass", async (req, res) => {
+  try {
+    const body = req.body || {};
+    const lyrics = body.lyrics || body.draft || body.input || body.text || "";
+    const { agent="RIYA" } = body;
+    if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
+    const request = body.request || "improve and rewrite the lyrics";
+    const result = await tsmAIJSON(`You are ${agent}, a professional songwriter. Task: ${request}. Write actual song lyrics - real lines and verses, NOT descriptions. Original lyrics:\n${lyrics}\n\nReturn JSON: { output, score_delta, decision, ad_libs } where output is the full rewritten lyrics line by line.`,{ output: lyrics, score_delta: 0, decision: "Needs another pass", ad_libs: [] });
+    res.json({ ok: true, ...result });
+  } catch(e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+
+app.post('/api/music/guidance', express.json(), async (req, res) => {
+  const { lyrics, step, dna } = req.body;
+  const stepNames = {1:'Drop Idea',2:'Pick Version',3:'Refine',4:'Lock Hook',5:'Export'};
+  const result = await tsmAIJSON(
+    `You are ZAY, an elite music AI coach. User is on Step ${step} (${stepNames[step]||step}).\nLyrics:\n${lyrics||'(none yet)'}\nDNA: ${JSON.stringify(dna||{})}\nGive ONE sharp specific actionable tip for this step. Max 2 sentences. Be direct and musical. Return JSON: { tip, action }`,
+    { tip: "Keep going — your instincts are strong.", action: "Run the chain to see what the agents suggest." }
+  );
+  res.json({ ok: true, ...result });
+});
+
+app.post('/api/music/structure', express.json(), async (req, res) => {
+  const { lyrics, mood, bpm, key, context } = req.body || {};
+  const result = await tsmAIJSON(
+    `You are a professional music producer and songwriter. Analyze these lyrics and break them into song sections. Also suggest instrumental details.
+Lyrics: ${lyrics}
+Artist context: ${JSON.stringify(context||{})}
+
+Return JSON:
+{
+  "verse": "the verse lines",
+  "hook": "the catchiest 1-2 lines that repeat",
+  "bridge": "a contrasting section that adds depth",
+  "ad_libs": ["short ad-lib 1", "short ad-lib 2", "short ad-lib 3"],
+  "instrumental": {
+    "suggested_bpm": 90,
+    "key": "C minor",
+    "mood": "dark and motivational",
+    "genre": "hip-hop/trap",
+    "reference_artists": ["artist1", "artist2"],
+    "beat_description": "description of ideal beat"
+  },
+  "dna_update": {
+    "themes": ["theme1", "theme2"],
+    "vocab_style": "street/introspective",
+    "flow_pattern": "mid-tempo, punchy",
+    "signature_phrases": ["phrase1", "phrase2"]
+  }
+}`,
+    {
+      verse: lyrics,
+      hook: "Hook not generated",
+      bridge: "Bridge not generated", 
+      ad_libs: ["yeah", "let's go", "uh"],
+      instrumental: { suggested_bpm: 90, key: "C minor", mood: "motivational", genre: "hip-hop", reference_artists: [], beat_description: "Hard-hitting drums with melodic elements" },
+      dna_update: { themes: [], vocab_style: "street", flow_pattern: "mid-tempo", signature_phrases: [] }
+    }
+  );
+  res.json({ ok: true, ...result });
+});
+
+app.post('/api/music/dna/save', express.json(), async (req, res) => {
+  const { songTitle, dna_update, scores, lyrics } = req.body || {};
+  // In production this would persist to a DB - for now return enriched DNA
+  const result = await tsmAIJSON(
+    `You are an AI that builds an artist's musical DNA profile. A new song was created with these characteristics:
+Title: ${songTitle||'Untitled'}
+Scores: ${JSON.stringify(scores||{})}
+DNA Update: ${JSON.stringify(dna_update||{})}
+Lyrics sample: ${(lyrics||'').slice(0,500)}
+
+Based on this, generate an updated artist DNA profile that will help guide future songs.
+Return JSON:
+{
+  "style_summary": "2 sentence description of this artist's style",
+  "strengths": ["strength1", "strength2", "strength3"],
+  "growth_areas": ["area1", "area2"],
+  "signature_sound": "description",
+  "recommended_next": ["suggestion for next song type 1", "suggestion 2"],
+  "vocab_bank": ["word1", "word2", "word3", "word4", "word5"]
+}`,
+    { style_summary: "An artist with strong emotional delivery and street imagery.", strengths: ["Emotion", "Imagery"], growth_areas: ["Structure"], signature_sound: "Raw and authentic", recommended_next: ["Write a bridge-focused track", "Try a melodic hook"], vocab_bank: [] }
+  );
+  res.json({ ok: true, ...result });
+});
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));
   console.log();
 });
+
+// Fallback: unmatched API requests
+app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
+
+// Fallback: unmatched requests
+app.use((req, res) => res.status(404).send(`<pre>404 — Not found: ${req.path}</pre>`));
+
+// Music API endpoints

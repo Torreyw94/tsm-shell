@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ZY · Music Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0b0b0c;--bg2:#111114;--bg3:#18181c;--bg4:#1f1f25;--border:#2a2a32;--border2:#333340;--text:#e8e8f0;--muted:#77778a;--muted2:#4a4a58;--green:#39d98a;--pink:#f06292;--amber:#ffb347;--blue:#5b9cf6;--purple:#b39ddb;--mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+.app{display:flex;height:100vh}.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}.main{flex:1;display:flex;flex-direction:column;overflow:hidden}.topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:4px}.content{flex:1;display:flex;overflow:hidden}.workspace{flex:1;overflow:auto;padding:24px}.right-panel{width:260px;background:var(--bg2);border-left:1px solid var(--border);overflow:auto;padding:16px}
+.brand{padding:16px;border-bottom:1px solid var(--border)}.brand-logo{width:34px;height:34px;background:var(--green);border-radius:7px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:#000;margin-bottom:9px}.brand-name{font-weight:700}.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.nav-section{padding:14px 12px 5px;font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase}.nav-item{display:flex;gap:10px;padding:9px 12px;margin:1px 8px;border-radius:6px;color:var(--muted);font-size:13px}.nav-item.active{background:var(--bg4);color:var(--text)}
+.agent-card{margin:12px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px}.agent-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.35}}
+.dna-section{padding:12px 8px;border-top:1px solid var(--border);margin-top:auto}.dna-label{font-size:10px;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.dna-row,.evo-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px}.dna-val,.evo-val{color:var(--text);font-family:var(--mono)}
+.tab{height:100%;display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}.tab.active{color:var(--text);border-bottom:2px solid var(--green)}.agents-badge{margin-left:auto;color:var(--green);font-size:11px}
+.section-label{font-size:10px;color:var(--pink);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}.card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}.card-title{font-size:14px;font-weight:700}.card-sub{font-size:11px;color:var(--muted)}
+.lyric-input{width:100%;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:12px;padding:12px;min-height:120px;line-height:1.6;resize:vertical}.lyric-input:focus{outline:none;border-color:var(--green)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:6px;border:none;cursor:pointer;font-weight:700}.btn-primary{background:var(--green);color:#000}.btn-ghost,.sample-btn{background:transparent;border:1px solid var(--border2);color:var(--muted)}.sample-btn{font-size:11px;padding:5px 10px;font-family:var(--mono)}
+.agent-progress{display:none;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px}.agent-progress.visible,.results.visible{display:block}.results{display:none}.stages{display:flex;gap:4px;margin-top:10px}.stage{flex:1;padding:7px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:10px;color:var(--muted2);text-align:center;font-family:var(--mono)}.stage.active{background:rgba(57,217,138,.12);border-color:var(--green);color:var(--green)}.stage.done{color:var(--muted)}.stage.done:before{content:'✓ '}
+.result-decision{display:flex;gap:14px;padding:14px 16px;border-radius:8px;margin-bottom:12px;background:rgba(57,217,138,.1);border:1px solid rgba(57,217,138,.28)}.decision-score{font-size:30px;font-weight:700;font-family:var(--mono);color:var(--green)}.decision-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}.decision-sub{font-size:11px;color:var(--muted)}
+.versions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.version-card{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px;position:relative}.version-card.recommended{border-color:var(--green);background:rgba(57,217,138,.045)}.rec-badge{position:absolute;top:10px;right:10px;background:var(--green);color:#000;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono)}.version-label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono);margin-bottom:6px}.version-text{font-size:12px;line-height:1.6;font-family:var(--mono);white-space:pre-wrap}.version-tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;margin-top:8px;font-family:var(--mono);background:rgba(91,156,246,.15);color:var(--blue)}
+.panel-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px;font-family:var(--mono)}.score-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}.score-name{font-size:11px;color:var(--muted);width:72px}.score-bar-bg{flex:1;height:4px;background:var(--bg4);border-radius:3px;overflow:hidden}.score-bar{height:100%;background:var(--green);width:0%;transition:width .7s}.score-val{font-size:10px;font-family:var(--mono);width:30px;text-align:right}.box{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.84);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}.modal-overlay.hidden{display:none}.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:500px;padding:30px}.modal-title{font-size:24px;font-weight:800;margin:14px 0 8px}.modal-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:22px}.modal-logo{width:44px;height:44px;background:var(--green);border-radius:10px;display:grid;place-items:center;color:#000;font-family:var(--mono);font-weight:900}.modal-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}.modal-feat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px}.modal-feat-label{font-size:12px;font-weight:700}.modal-feat-sub{font-size:11px;color:var(--muted)}
+</style>
+
+<style id="guided-creation-loop-css">
+.loop-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:12px 0 18px;
+}
+.btn-loop{
+  background:rgba(57,217,138,.12);
+  color:#39d98a;
+  border:1px solid rgba(57,217,138,.35);
+  padding:9px 14px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn-loop:hover{
+  background:rgba(57,217,138,.2);
+}
+.btn-loop.secondary{
+  background:transparent;
+  color:#ffb347;
+  border-color:rgba(255,179,71,.35);
+}
+.loop-toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  z-index:99999;
+  background:#0f1726;
+  border:1px solid rgba(57,217,138,.35);
+  color:#e8e8f0;
+  padding:12px 16px;
+  border-radius:999px;
+  font-family:var(--mono,monospace);
+  font-size:11px;
+  box-shadow:0 0 30px rgba(57,217,138,.12);
+}
+.evolution-dots{
+  display:flex;
+  gap:6px;
+  align-items:flex-end;
+  height:46px;
+  margin-top:10px;
+}
+.evolution-dot{
+  flex:1;
+  min-height:6px;
+  background:linear-gradient(180deg,#39d98a,#5b9cf6);
+  border-radius:5px 5px 0 0;
+}
+</style>
+
+
+<script id="tsm-runtime-null-guard">
+(function(){
+  if(window.__TSM_RUNTIME_NULL_GUARD__) return;
+  window.__TSM_RUNTIME_NULL_GUARD__ = true;
+
+  window.safeSetText = function(id, value){
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+  };
+
+  window.addEventListener('error', function(e){
+    if(String(e.message || '').includes('Cannot set properties of null')){
+      console.warn('Suppressed null DOM write:', e.message);
+      e.preventDefault();
+      return true;
+    }
+  }, true);
+
+  window.addEventListener('unhandledrejection', function(e){
+    const msg = String(e.reason && (e.reason.message || e.reason) || '');
+    if(msg.includes('Cannot set properties of null')){
+      console.warn('Suppressed null promise:', msg);
+      e.preventDefault();
+    }
+  });
+
+  window.__SOVEREIGN_NO_RESET_ON_DEVTOOLS__ = true;
+})();
+</script>
+
+<style id="jcss">.journey-bar{display:flex;align-items:center;padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;gap:4px}.journey-step{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:6px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .2s;border:1px solid transparent}.journey-step.active{color:var(--green);border-color:var(--green);background:rgba(57,217,138,.08)}.journey-step.done .journey-num{background:var(--green);color:#000}.journey-num{width:18px;height:18px;border-radius:50%;background:var(--border2);display:grid;place-items:center;font-size:10px;font-weight:700;flex-shrink:0}.journey-arrow{color:var(--border2);padding:0 2px}.next-step-cta{margin-top:16px;padding:12px 16px;background:rgba(57,217,138,.08);border:1px solid rgba(57,217,138,.25);border-radius:8px;display:flex;align-items:center;justify-content:space-between}.cta-label{font-size:12px;color:var(--muted)}.cta-title{font-size:14px;font-weight:700;color:var(--green);margin-top:2px}.next-step-btn{background:var(--green);color:#000;border:none;padding:8px 18px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px}.refinement-area{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-bottom:14px}.refinement-label{font-size:10px;color:var(--pink);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}.refinement-text{font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap}.export-box{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:16px}.export-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn-export{padding:10px 18px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-weight:600}.btn-export.primary{background:var(--green);color:#000;border-color:var(--green)}</style></head>
+<body>
+<div style="text-align:center;font-size:0.8rem;color:#9ca3af;padding:8px;">
+You’re not writing alone. You’re refining with a system.
+</div>>
+<div class="modal-overlay" id="onboardingModal">
+  <div class="modal">
+    <div class="modal-logo">ZY</div>
+    <div class="modal-title">Welcome to Music Command</div>
+    <div class="modal-sub">Paste a lyric, load the sample, or start blank. The system will score the hook, generate options, recommend the strongest version, and update Artist DNA.</div>
+    <div class="modal-features">
+      <div class="modal-feat"><div>🧬</div><div class="modal-feat-label">DNA Scoring</div><div class="modal-feat-sub">Cadence, emotion, structure, imagery</div></div>
+      <div class="modal-feat"><div>🔁</div><div class="modal-feat-label">3 Options</div><div class="modal-feat-sub">Flow, emotion, hook path</div></div>
+      <div class="modal-feat"><div>📈</div><div class="modal-feat-label">Hit Trajectory</div><div class="modal-feat-sub">Release decision + score</div></div>
+      <div class="modal-feat"><div>🤖</div><div class="modal-feat-label">ZAY → RIYA → DJ</div><div class="modal-feat-sub">Full agent chain</div></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="startWithSample();setTimeout(function(){var b=document.getElementById('runBtn');if(b)b.click();},1200)">Load Sample &amp; Run →</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Start Blank</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-logo">ZY</div><div class="brand-name">Music Command Center</div><div class="brand-sub">Artist DNA · AI Collaboration</div></div>
+    <div class="nav-section">Workspace</div>
+    <div class="nav-item active">✦ Draft + Analysis</div><div class="nav-item">⟳ Revision Mode</div><div class="nav-item">◈ Generate</div><div class="nav-item">◻ Song Bank</div><div class="nav-item">◈ Artist DNA</div>
+    <div class="agent-card"><div style="font-size:10px;color:var(--muted);text-transform:uppercase">Your Agent</div><div style="margin-top:6px"><span class="agent-dot"></span><b>ZAY</b></div><div style="font-size:11px;color:var(--muted)">Cadence · Bounce · Live Feel</div></div>
+    <div class="dna-section"><div class="dna-label">DNA Evolution</div><div class="dna-row"><span>Cad</span><span class="dna-val" id="dna-cad">0.88</span></div><div class="dna-row"><span>Emo</span><span class="dna-val" id="dna-emo">0.91</span></div><div class="dna-row"><span>Str</span><span class="dna-val" id="dna-str">0.76</span></div><div class="dna-row"><span>Img</span><span class="dna-val" id="dna-img">0.82</span></div><div class="dna-row"><span>Learned Songs</span><span class="dna-val" id="dna-songs">0</span></div></div>
+  </aside>
+
+  <main class="main"><div class="journey-bar" id="journeyBar"><div class="journey-step active" id="jstep-1" onclick="goStep(1)"><span class="journey-num">1</span> Drop Idea</div><span class="journey-arrow">&#8250;</span><div class="journey-step" id="jstep-2" onclick="goStep(2)"><span class="journey-num">2</span> Pick Version</div><span class="journey-arrow">&#8250;</span><div class="journey-step" id="jstep-3" onclick="goStep(3)"><span class="journey-num">3</span> Refine</div><span class="journey-arrow">&#8250;</span><div class="journey-step" id="jstep-4" onclick="goStep(4)"><span class="journey-num">4</span> Lock Hook</div><span class="journey-arrow">&#8250;</span><div class="journey-step" id="jstep-5" onclick="goStep(5)"><span class="journey-num">5</span> Export</div></div>
+    <div class="topbar"><div class="tab active">Draft + Analysis</div><div class="tab">Revision Mode</div><div class="tab">Generate</div><div class="tab">Song Bank</div><div class="tab">Artist DNA</div><div class="agents-badge">● Agents Online</div></div>
+    <div class="content">
+      <section class="workspace">
+        <div class="section-label">Music Decision Engine · Draft Input</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><div><div class="card-title">Lyric / Hook Input</div><div class="card-sub">Paste your lyrics. Don’t overthink it.
+We’ll figure out what actually works.</div></div><button class="sample-btn" onclick="loadSample()">↓ Load Sample</button></div>
+          <textarea class="lyric-input" id="lyricInput" placeholder="Paste your lyric or hook here..."></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><div style="font-size:11px;color:var(--muted)">Agent Chain: <span style="color:var(--green)">ZAY → RIYA → DJ</span></div><button class="btn btn-primary" id="runBtn" onclick="runAnalysis()">⚡ ⚡ Analyze & Improve My Song</button></div>
+        </div>
+
+        <div class="agent-progress" id="agentProgress"><b>ZAY is working</b><div id="progressStatus" style="font-size:11px;color:var(--muted)">Initializing...</div><div class="stages"><div class="stage" id="s1">ANALYZE</div><div class="stage" id="s2">SCORE</div><div class="stage" id="s3">REWRITE</div><div class="stage" id="s4">DECIDE</div></div></div>
+
+        <div class="results" id="resultsPanel">
+          <div class="section-label">Analysis Output · Run #<span id="runNum">1</span></div>
+          <div class="result-decision"><div><div class="decision-score" id="hitScore">—</div><div class="hit-label">Strong foundation. Not release-ready yet.</div></div><div><div class="decision-label" id="decisionLabel">Analyzing</div><div class="decision-sub" id="decisionSub"></div></div></div>
+          <div class="section-label">Recommended Options</div><div class="versions-grid" id="versionsGrid"></div>
+          <div id="guidedLoopActions" class="loop-actions" style="display:none">
+            <button class="btn-loop" onclick="improveRecommended()">↻ Improve Picked Version</button>
+            <button class="btn-loop secondary" onclick="copyRecommended()">Copy Recommended</button>
+          </div>
+
+          <div class="section-label">Agent Analysis</div><div class="box" id="analysisText"></div>
+        </div>
+      </section>
+
+      <aside class="right-panel">
+        <div class="panel-title">Latest Score</div>
+        <div class="score-row"><span class="score-name">Cadence</span><div class="score-bar-bg"><div class="score-bar" id="bar-cad"></div></div><span class="score-val" id="val-cad">0%</span></div>
+        <div class="score-row"><span class="score-name">Emotion</span><div class="score-bar-bg"><div class="score-bar" id="bar-emo"></div></div><span class="score-val" id="val-emo">0%</span></div>
+        <div class="score-row"><span class="score-name">Structure</span><div class="score-bar-bg"><div class="score-bar" id="bar-str"></div></div><span class="score-val" id="val-str">0%</span></div>
+        <div class="score-row"><span class="score-name">Imagery</span><div class="score-bar-bg"><div class="score-bar" id="bar-img"></div></div><span class="score-val" id="val-img">0%</span></div>
+        <div class="panel-title">Hit Trajectory</div><div class="box" id="trajectoryBox">No runs yet. Run the chain first.</div>
+        <div class="panel-title">Release Decision</div><div class="box" id="releaseBox">Waiting for first run.</div>
+        <div class="panel-title">DNA Active</div><div class="evo-stat"><span>Style Match</span><span class="evo-val" id="styleMatch">—</span></div><div class="evo-stat"><span>Vocab Loaded</span><span class="evo-val">12 terms</span></div><div class="evo-stat"><span>Ad-libs</span><span class="evo-val">5 saved</span></div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+
+
+
+const SAMPLE=`I keep running but the finish line moves
+every win feels like just another bruise
+they clap when I'm up but go quiet when I bleed
+I'm building an empire nobody chose to see`;
+let runCount=0;
+function closeModal(){document.getElementById('onboardingModal').classList.add('hidden')}
+function loadSample(){document.getElementById('lyricInput').value=SAMPLE}
+function startWithSample(){closeModal();loadSample();setTimeout(runAnalysis,350)}
+function setStage(n){for(let i=1;i<=4;i++){const e=document.getElementById('s'+i);e.className='stage '+(i<n?'done':i===n?'active':'')}}
+function pct(v){return Math.round(Number(v||0)*100)}
+
+
+async function runAnalysis(){
+  const draft=document.getElementById('lyricInput').value.trim(); if(!draft)return document.getElementById('lyricInput').focus();
+  runCount++; document.getElementById('runNum').textContent=runCount; document.getElementById('runBtn').disabled=true;
+  document.getElementById('agentProgress').classList.add('visible'); document.getElementById('resultsPanel').classList.remove('visible');
+  setStage(1); document.getElementById('progressStatus').textContent='Analyzing cadence and structure...';
+  await new Promise(r=>setTimeout(r,500)); setStage(2); document.getElementById('progressStatus').textContent='Scoring DNA metrics...';
+  await new Promise(r=>setTimeout(r,500)); setStage(3); document.getElementById('progressStatus').textContent='Generating options...';
+
+    // ── Call backend agent chain ─────────────────────────────────────────────
+  let data;
+  try{
+    const r = await fetch('/api/music/revision/run',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({draft, request:'guided creation app'})
+    });
+    data = await r.json();
+  } catch(e){
+    data = { ok:false };
+  }
+  if(!data.ok) data = {
+    session:{ options:[
+      {id:'A',title:'Flow First',strategy:'Cadence and bounce',output:draft},
+      {id:'B',title:'Emotion First',strategy:'Imagery and vulnerability',output:draft},
+      {id:'C',title:'Hook First',strategy:'Structure and repeatability',output:draft}
+    ]},
+    run:{ score:{cadence:.78,emotion:.80,structure:.76,imagery:.74,overall:.79} }
+  };
+
+  setStage(4); await new Promise(r=>setTimeout(r,300));
+  const analysis = data.run && data.run.analysis ? data.run.analysis : null;
+  render(data, draft, analysis);
+  document.getElementById('runBtn').disabled=false;
+}
+function scoreObj(data){return data.session?.options?.[0]?.score || data.run?.score || {cadence:.78,emotion:.8,structure:.76,imagery:.74,overall:.79}}
+function render(data,draft,analysis){
+  document.getElementById('agentProgress').classList.remove('visible'); document.getElementById('resultsPanel').classList.add('visible');
+  const s=scoreObj(data), overall=pct(s.overall);
+  document.getElementById('hitScore').textContent=overall+'%';
+  const decision=overall>=86?'Release Ready':overall>=74?'Not the best version yet. Let us improve it.':'Scrap / Rework Hook';
+  document.getElementById('decisionLabel').textContent=decision;
+  document.getElementById('decisionSub').textContent='Score Delta '+(runCount>1?'+4':'+0');
+  [['cad',s.cadence],['emo',s.emotion],['str',s.structure],['img',s.imagery]].forEach(([k,v])=>{document.getElementById('bar-'+k).style.width=pct(v)+'%';document.getElementById('val-'+k).textContent=pct(v)+'%'});
+  document.getElementById('dna-cad').textContent=Number(s.cadence).toFixed(2); document.getElementById('dna-emo').textContent=Number(s.emotion).toFixed(2); document.getElementById('dna-str').textContent=Number(s.structure).toFixed(2); document.getElementById('dna-img').textContent=Number(s.imagery).toFixed(2); document.getElementById('dna-songs').textContent=runCount; document.getElementById('styleMatch').textContent=overall>=80?'High':'Medium';
+  document.getElementById('trajectoryBox').textContent=`${overall>=74?'Rising':'Developing'} · Score Delta ${runCount>1?'+4':'+0'}`;
+  document.getElementById('releaseBox').textContent= overall>=86?'Strong enough to move toward recording or release planning.': overall>=74?'Not ready yet. One more pass could make this a strong release.':'Hook needs rework before release consideration.';
+  const opts=data.session?.options || [
+    {id:'A',title:'Flow First',strategy:'Cadence and bounce',output:data.run?.output || draft,score:s},
+    {id:'B',title:'Emotion First',strategy:'Imagery and vulnerability',output:draft+'\n\n[Emotion pass] Make the image more specific and personal.',score:s},
+    {id:'C',title:'Hook First',strategy:'Structure and repeatability',output:draft+'\n\n[Hook pass] Move the strongest phrase into repeat position.',score:s}
+  ];
+  document.getElementById('versionsGrid').innerHTML=opts.map((o,i)=>`<div class="version-card ${i===0?'recommended':''}">${i===0?'<span class="rec-badge">★ PICK THIS</span>':''}<div class="version-label">${o.title||('Option '+o.id)}</div><div class="version-text">${o.output||''}</div><span class="version-tag">${o.strategy||'revision'}</span></div>`).join('');
+  document.getElementById('analysisText').textContent= analysis || `The strongest path is ${opts[0]?.title||'Flow First'} because it gives the draft clearer movement and a more repeatable hook direction.`;
+}
+window.addEventListener('load',()=>document.getElementById('onboardingModal').classList.remove('hidden'));
+</script>
+
+<script id="guided-creation-loop-js">
+(function(){
+  if(window.__GUIDED_CREATION_LOOP__) return;
+  window.__GUIDED_CREATION_LOOP__ = true;
+
+  window.__musicEvolutionScores = window.__musicEvolutionScores || [];
+
+  function toast(msg){
+    let el = document.createElement('div');
+    el.className = 'loop-toast';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 2200);
+  }
+
+  function recommendedText(){
+    const el = document.querySelector('.version-card.recommended .version-text');
+    return el ? el.innerText.trim() : '';
+  }
+
+  window.copyRecommended = async function(){
+    const txt = recommendedText();
+    if(!txt) return toast('No recommended version yet');
+    try{
+      await navigator.clipboard.writeText(txt);
+      toast('Recommended version copied');
+    }catch(e){
+      toast('Copy failed — select manually');
+    }
+  };
+
+  window.improveRecommended = function(){if(window.pickAndRefine)pickAndRefine();else runAnalysis();};
+
+  function enhanceAfterRender(){
+    const actions = document.getElementById('guidedLoopActions');
+    if(actions) actions.style.display = 'flex';
+
+    const scoreEl = document.getElementById('hitScore');
+    const score = scoreEl ? parseInt(scoreEl.textContent,10) : 0;
+    if(score){
+      window.__musicEvolutionScores.push(score);
+      window.__musicEvolutionScores = window.__musicEvolutionScores.slice(-8);
+      renderEvolutionMini();
+    }
+
+    if(!sessionStorage.getItem('zy_loop_prompt_seen')){
+      sessionStorage.setItem('zy_loop_prompt_seen','1');
+      setTimeout(()=>{
+        toast('Tip: click “Improve Picked Version” to keep building the song');
+      }, 900);
+    }
+  }
+
+  function renderEvolutionMini(){
+    const box = document.getElementById('trajectoryBox');
+    if(!box) return;
+    const scores = window.__musicEvolutionScores;
+    const bars = scores.map(s=>`<div class="evolution-dot" title="${s}%" style="height:${Math.max(8,s/2)}px"></div>`).join('');
+    box.innerHTML = `
+      <div>${scores.length > 1 ? 'Improving · Score Delta +' + Math.max(0, scores[scores.length-1]-scores[0]) : 'Your song is improving. Keep going.'}</div>
+      <div class="evolution-dots">${bars}</div>
+    `;
+  }
+
+  const oldRender = window.render;
+  if(typeof oldRender === 'function'){
+    window.render = function(){
+      const result = oldRender.apply(this, arguments);
+      setTimeout(enhanceAfterRender, 80);
+      return result;
+    };
+  }
+
+  const input = document.getElementById('lyricInput');
+  if(input){
+    let pasteTimer = null;
+    input.addEventListener('input', ()=>{
+      clearTimeout(pasteTimer);
+      const val = input.value.trim();
+      if(val.length > 80 && !sessionStorage.getItem('zy_auto_hint_seen')){
+        sessionStorage.setItem('zy_auto_hint_seen','1');
+        pasteTimer = setTimeout(()=>{
+          toast('Lyrics detected — click ⚡ Analyze & Improve My Song to get scored options');
+        }, 700);
+      }
+    });
+  }
+})();
+</script>
+
+
+<script id="tsm-music-tab-router">
+(function(){
+  if(window.__TSM_MUSIC_TAB_ROUTER__) return;
+  window.__TSM_MUSIC_TAB_ROUTER__ = true;
+
+  const sections = {
+    "Draft + Analysis": "draft",
+    "Revision Mode": "revision",
+    "Generate": "generate",
+    "Song Bank": "bank",
+    "Artist DNA": "dna"
+  };
+
+  function ensurePanels(){
+    let workspace = document.querySelector(".workspace");
+    if(!workspace) return;
+
+    if(!document.getElementById("panel-revision")){
+      workspace.insertAdjacentHTML("beforeend", `
+        <div class="card tsm-tab-panel" id="panel-revision" style="display:none">
+          <div class="section-label">Revision Mode</div>
+          <div class="card-title">Generate 3 Better Versions</div>
+          <div class="card-sub" style="margin-bottom:14px">Paste a new draft or improve your last picked version. The chain runs ZAY → RIYA → DJ and gives you 3 scored options.</div>
+          <textarea class="lyric-input" id="revisionInput" placeholder="Paste a lyric to revise, or load your last version..." style="margin-bottom:12px"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="runRevision()">⚡ Run Revision Chain</button>
+            <button class="btn btn-ghost" onclick="loadLastIntoRevision()">Load Last Version</button>
+          </div>
+          <div id="revisionOutput" style="display:none;margin-top:16px"></div>
+        </div>
+
+        <div class="card tsm-tab-panel" id="panel-generate" style="display:none">
+          <div class="section-label">Generate</div>
+          <div class="card-title">Start From a Concept</div>
+          <div class="card-sub">Load the sample or paste a rough idea, then run the full ZAY → RIYA → DJ chain.</div>
+          <div style="margin-top:14px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="startWithSample();setTimeout(function(){var b=document.getElementById('runBtn');if(b)b.click();},1200)">Load Sample &amp; Run →</button>
+          </div>
+        </div>
+
+        <div class="card tsm-tab-panel" id="panel-bank" style="display:none">
+          <div class="section-label">Song Bank</div>
+          <div class="card-title">Saved Directions</div>
+          <div class="box">Recommended versions and future saved songs will live here. For now, use “Copy Recommended” after a run.</div>
+        </div>
+
+        <div class="card tsm-tab-panel" id="panel-dna" style="display:none">
+          <div class="section-label">Artist DNA</div>
+          <div class="card-title">Style Memory</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <div class="box"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Cadence</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--green)" id="dna-tab-cad">—</div></div>
+            <div class="box"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Emotion</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--green)" id="dna-tab-emo">—</div></div>
+            <div class="box"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Structure</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--green)" id="dna-tab-str">—</div></div>
+            <div class="box"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Imagery</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--green)" id="dna-tab-img">—</div></div>
+          </div>
+          <div class="section-label">Learned Songs</div>
+          <div id="dna-learned-list"><div style="color:var(--muted);font-size:12px">No songs learned yet. Run the chain to build your DNA.</div></div>
+        </div>
+      `);
+    }
+  }
+
+  function showTab(name){
+    ensurePanels();
+
+    document.querySelectorAll(".tab,.nav-item").forEach(el=>{
+      const text = el.textContent.trim();
+      const clean = text.replace(/[✦⟳◈◻]/g,"").trim();
+      el.classList.toggle("active", clean === name);
+    });
+
+    const mainCards = Array.from(document.querySelectorAll(".workspace > .card, .workspace > .agent-progress, .workspace > .results"));
+    const panels = document.querySelectorAll(".tsm-tab-panel");
+    panels.forEach(p=>p.style.display="none");
+
+    const key = sections[name] || "draft";
+
+    if(key === "draft"){
+      mainCards.forEach(el=>{
+        if(!el.classList.contains("tsm-tab-panel")) el.style.display="";
+      });
+      return;
+    }
+
+    mainCards.forEach(el=>{
+      if(!el.classList.contains("tsm-tab-panel")) el.style.display="none";
+    });
+
+    const panel = document.getElementById("panel-" + key);
+    if(panel) panel.style.display = "block";
+  }
+
+  function bindTabs(){
+    ensurePanels();
+
+    document.querySelectorAll(".tab,.nav-item").forEach(el=>{
+      if(el.dataset.tsmTabBound) return;
+      el.dataset.tsmTabBound = "1";
+      el.style.cursor = "pointer";
+      el.addEventListener("click", ()=>{
+        const clean = el.textContent.replace(/[✦⟳◈◻]/g,"").trim();
+        if(sections[clean]) showTab(clean);
+      });
+    });
+  }
+
+  window.addEventListener("load", ()=>{
+    bindTabs();
+    showTab("Draft + Analysis");
+  });
+
+  setTimeout(bindTabs, 700);
+})();
+</script>
+
+
+<script>
+function showToast(msg){
+  let el = document.createElement('div');
+  el.innerText = msg;
+  el.style.position = 'fixed';
+  el.style.bottom = '20px';
+  el.style.left = '50%';
+  el.style.transform = 'translateX(-50%)';
+  el.style.background = 'rgba(0,0,0,0.85)';
+  el.style.color = '#fff';
+  el.style.padding = '10px 16px';
+  el.style.borderRadius = '8px';
+  el.style.fontSize = '12px';
+  el.style.zIndex = 9999;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 2500);
+}
+</script>
+
+<script id="tsm-demo-narration-layer">
+(function(){
+  if(window.__TSM_DEMO_NARRATION_LAYER__) return;
+  window.__TSM_DEMO_NARRATION_LAYER__ = true;
+
+  function toast(msg){
+    const el=document.createElement('div');
+    el.textContent=msg;
+    el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:#0b1220;color:#fff;border:1px solid rgba(57,217,138,.45);padding:11px 16px;border-radius:999px;font-size:12px;font-family:monospace;box-shadow:0 0 26px rgba(57,217,138,.14)';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2500);
+  }
+
+  window.showToast = window.showToast || toast;
+
+  const oldImprove = window.improveRecommended;
+  if(typeof oldImprove === 'function'){
+    window.improveRecommended = function(){
+      toast('Applying strongest direction… improving your song');
+      return oldImprove.apply(this, arguments);
+    };
+  }
+
+  const oldRender = window.render;
+  if(typeof oldRender === 'function'){
+    window.render = function(){
+      const before = parseInt((document.getElementById('hitScore')||{}).textContent)||0;
+      const result = oldRender.apply(this, arguments);
+      setTimeout(()=>{
+        const score = parseInt((document.getElementById('hitScore')||{}).textContent)||0;
+        if(score >= 85) toast('This is a strong version. Most creators stop here.');
+        else if(score > before && before) toast('This is better. You’re seeing why this version works.');
+      },120);
+      return result;
+    };
+  }
+})();
+</script>
+
+
+<script id="tsm-modal-action-fix">
+(function(){
+  if(window.__TSM_MODAL_ACTION_FIX__) return;
+  window.__TSM_MODAL_ACTION_FIX__ = true;
+
+  window.closeModal = window.closeModal || function(){
+    const modal = document.getElementById('onboardingModal');
+    if(modal) modal.classList.add('hidden');
+  };
+
+  window.startWithSample = window.startWithSample || function(){
+    if(typeof window.closeModal === 'function') window.closeModal();
+
+    if(typeof window.loadSample === 'function'){
+      window.loadSample();
+    } else {
+      const input = document.getElementById('lyricInput');
+      if(input){
+        input.value = `I keep running but the finish line moves
+every win feels like just another bruise
+they clap when I'm up but go quiet when I bleed
+I'm building an empire nobody chose to see`;
+      }
+    }
+
+    setTimeout(()=>{
+      if(typeof window.runAnalysis === 'function') window.runAnalysis();
+    }, 350);
+  };
+
+  // Bind buttons defensively in case inline handlers fail.
+  window.addEventListener('load', function(){
+    document.querySelectorAll('button').forEach(btn=>{
+      const txt = (btn.textContent || '').trim();
+      if(txt.includes('Load Sample')){
+        btn.addEventListener('click', function(e){
+          if(typeof window.startWithSample === 'function'){
+            e.preventDefault();
+            window.startWithSample();
+          }
+        });
+      }
+      if(txt === 'Start Blank'){
+        btn.addEventListener('click', function(e){
+          if(typeof window.closeModal === 'function'){
+            e.preventDefault();
+            window.closeModal();
+          }
+        });
+      }
+    });
+  });
+})();
+</script>
+
+
+<script id="tsm-live-ai-coaching">
+(function(){
+  if(window.__TSM_AI_COACHING__) return;
+  window.__TSM_AI_COACHING__ = true;
+
+  function coach(msg){
+    let el = document.getElementById('ai-coach-box');
+    if(!el){
+      el = document.createElement('div');
+      el.id = 'ai-coach-box';
+      el.style.cssText = `
+        position:fixed;
+        bottom:20px;
+        left:20px;
+        width:260px;
+        background:rgba(11,18,32,.96);
+        border:1px solid rgba(57,217,138,.35);
+        border-radius:14px;
+        padding:13px;
+        font-size:12px;
+        font-family:monospace;
+        color:#d1fae5;
+        z-index:99999;
+        box-shadow:0 0 24px rgba(57,217,138,.16);
+        line-height:1.45;
+      `;
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+  }
+
+  function runCoachingSequence(){
+    coach("ZAY → tightening your cadence so the flow lands cleaner…");
+    setTimeout(()=>coach("RIYA → easing the emotion into clearer, more natural lines…"), 900);
+    setTimeout(()=>coach("DJ → checking structure so the hook direction makes sense…"), 1800);
+    setTimeout(()=>coach("Scoring strongest version… then I’ll show you what to improve next."), 2700);
+  }
+
+  window.addEventListener('click', function(e){
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const txt = (btn.textContent || "").toLowerCase();
+    if(txt.includes("analyze") || txt.includes("run") || txt.includes("improve")){
+      runCoachingSequence();
+    }
+  }, true);
+})();
+</script>
+
+<script id="journey-system">
+(function(){
+  if(window.__JOURNEY__) return;
+  window.__JOURNEY__=true;
+  window.__journeyStep=1;
+  window.__pickedVersion="";
+  window.__refinedVersion="";
+  window.__lockedHook="";
+
+  window.goStep=function(n){
+    if(n>window.__journeyStep+1) return;
+    window.__journeyStep=n;
+    updateBar();
+    if(n===1) showDraft();
+    else if(n===2) showPick();
+    else if(n===3) showRefine();
+    else if(n===4) showLock();
+    else if(n===5) showExport();
+  };
+
+  function updateBar(){
+    for(var i=1;i<=5;i++){
+      var el=document.getElementById("jstep-"+i);
+      if(!el) continue;
+      el.className="journey-step"+(i===window.__journeyStep?" active":i<window.__journeyStep?" done":"");
+    }
+  }
+
+  function clearPanels(){document.querySelectorAll(".step-panel").forEach(function(p){p.remove()});}
+
+  function showDraft(){
+    clearPanels();
+    var c=document.getElementById("lyricInput");
+    if(c) c.closest(".card").style.display="";
+    var r=document.getElementById("resultsPanel");
+    if(r) r.classList.remove("visible");
+  }
+
+  function showPick(){
+    var r=document.getElementById("resultsPanel");
+    if(r){r.classList.add("visible");r.scrollIntoView({behavior:"smooth",block:"start"});}
+    if(!document.getElementById("step2-cta")){
+      var cta=document.createElement("div");
+      cta.id="step2-cta";
+      cta.className="next-step-cta step-panel active";
+      cta.innerHTML="<div><div class=\"cta-label\">Step 2 of 5</div><div class=\"cta-title\">Pick Recommended and move to Refine</div></div><button class=\"next-step-btn\" onclick=\"pickAndRefine()\">Pick Recommended and Refine</button>";
+      if(r) r.appendChild(cta);
+    }
+  }
+
+  window.pickAndRefine=function(){
+    var rec=document.querySelector(".version-card.recommended .version-text");
+    window.__pickedVersion=rec?rec.innerText.trim():(document.getElementById("lyricInput")||{}).value||"";
+    window.__journeyStep=3;
+    updateBar();
+    showRefine();
+  };
+
+  function showRefine(){
+    clearPanels();
+    var c=document.getElementById("lyricInput");
+    if(c) c.closest(".card").style.display="none";
+    var r=document.getElementById("resultsPanel");
+    if(r) r.classList.remove("visible");
+    var w=document.querySelector(".workspace");
+    var p=document.createElement("div");
+    p.className="step-panel active";
+    p.innerHTML="<div class=\"section-label\">Step 3 - Refine</div>"
+      +"<div class=\"refinement-area\"><div class=\"refinement-label\">Picked Version</div>"
+      +"<div class=\"refinement-text\" id=\"refineBase\">"+(window.__pickedVersion||"No version picked")+"</div></div>"
+      +"<div class=\"card\" style=\"margin-bottom:12px\"><div class=\"card-title\" style=\"margin-bottom:8px\">What should RIYA improve?</div>"
+      +"<textarea class=\"lyric-input\" id=\"refineNote\" placeholder=\"Make the hook punchier. Tighten cadence. Add more imagery...\" style=\"min-height:70px\"></textarea>"
+      +"<div style=\"margin-top:10px;display:flex;gap:10px\">"
+      +"<button class=\"btn btn-primary\" id=\"refineBtn\" onclick=\"runRefine()\">Refine with RIYA</button>"
+      +"<button class=\"btn btn-ghost\" onclick=\"goStep(2)\">Back</button></div></div>"
+      +"<div id=\"refineOutput\" style=\"display:none\">"
+      +"<div class=\"section-label\">Refined Version</div>"
+      +"<div class=\"refinement-area\"><div class=\"refinement-text\" id=\"refineResult\"></div></div>"
+      +"<div class=\"next-step-cta\"><div><div class=\"cta-label\">Happy with this?</div>"
+      +"<div class=\"cta-title\">Move to Step 4 - Lock your hook</div></div>"
+      +"<button class=\"next-step-btn\" onclick=\"goStep(4)\">Lock Hook</button></div></div>";
+    w.appendChild(p);
+  }
+
+  window.runRefine=async function(){
+    var note=(document.getElementById("refineNote")||{}).value||"";
+    var base=window.__pickedVersion;
+    if(!base) return;
+    var source=base;
+    var btn=document.getElementById("refineBtn");
+    if(btn){btn.disabled=true;btn.textContent="RIYA is working...";}
+    try{
+      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'DJ',draft:source,request:'Extract the single most powerful hook — the 1-2 lines most likely to be remembered'})});
+      var data=await resp.json();
+      var refined=(data.output||'').trim();
+      window.__refinedVersion=refined;
+      var out=document.getElementById("refineOutput");
+      var res=document.getElementById("refineResult");
+      if(out&&res){res.textContent=refined;out.style.display="block";out.scrollIntoView({behavior:"smooth"});}
+    }catch(e){console.error(e);}
+    if(btn){btn.disabled=false;btn.textContent="Refine with RIYA";}
+  };
+
+  function showLock(){
+    clearPanels();
+    var source=window.__refinedVersion||window.__pickedVersion;
+    var w=document.querySelector(".workspace");
+    var p=document.createElement("div");
+    p.className="step-panel active";
+    p.innerHTML="<div class=\"section-label\">Step 4 - Lock Hook</div>"
+      +"<div class=\"refinement-area\"><div class=\"refinement-label\">Current Version</div>"
+      +"<div class=\"refinement-text\">"+(source||"No version yet")+"</div></div>"
+      +"<div class=\"card\" style=\"margin-bottom:12px\"><div class=\"card-title\" style=\"margin-bottom:6px\">DJ is isolating your hook</div>"
+      +"<div class=\"card-sub\" style=\"margin-bottom:12px\">The 1-2 lines most likely to be remembered and repeated</div>"
+      +"<button class=\"btn btn-primary\" id=\"lockBtn\" onclick=\"runLock()\">Lock the Hook</button>"
+      +"<button class=\"btn btn-ghost\" style=\"margin-left:10px\" onclick=\"goStep(3)\">Back</button></div>"
+      +"<div id=\"lockOutput\" style=\"display:none\">"
+      +"<div class=\"section-label\">Locked Hook</div>"
+      +"<div class=\"refinement-area\" style=\"border-color:rgba(57,217,138,.4)\"><div class=\"refinement-text\" id=\"lockResult\" style=\"color:var(--green);font-size:14px\"></div></div>"
+      +"<div class=\"next-step-cta\"><div><div class=\"cta-label\">Hook locked.</div>"
+      +"<div class=\"cta-title\">Ready to export your final version</div></div>"
+      +"<button class=\"next-step-btn\" onclick=\"goStep(5)\">Export</button></div></div>";
+    w.appendChild(p);
+  }
+
+  window.runLock=async function(){
+    var source=window.__refinedVersion||window.__pickedVersion;
+    if(!source) return;
+    var btn=document.getElementById("lockBtn");
+    if(btn){btn.disabled=true;btn.textContent="DJ is working...";}
+    try{
+      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'DJ',draft:source,request:'Extract the single most powerful hook — the 1-2 lines most likely to be remembered'})});
+      var data=await resp.json();
+      var hook=(data.output||'').trim();
+      window.__lockedHook=hook; goStep(5);
+      var out=document.getElementById("lockOutput");
+      var res=document.getElementById("lockResult");
+      if(out&&res){res.textContent=hook;out.style.display="block";out.scrollIntoView({behavior:"smooth"});}
+    }catch(e){console.error(e);}
+    if(btn){btn.disabled=false;btn.textContent="Lock the Hook";}
+  };
+
+  function showExport(){
+    clearPanels();
+    var full=window.__refinedVersion||window.__pickedVersion;
+    var hook=window.__lockedHook;
+    var score=(document.getElementById("hitScore")||{}).textContent||"--";
+    var w=document.querySelector(".workspace");
+    var p=document.createElement("div");
+    p.className="step-panel active";
+    p.innerHTML="<div class=\"section-label\">Step 5 - Export</div>"
+      +"<div class=\"export-box\"><div class=\"export-title\">Your Song - Ready to Use</div>"
+      +"<div style=\"font-size:11px;color:var(--muted);margin-bottom:14px\">Hit Score: "+score+" - ZAY to RIYA to DJ Chain Complete</div>"
+      +(hook?"<div class=\"refinement-label\" style=\"margin-bottom:6px\">Locked Hook</div><div class=\"refinement-area\" style=\"border-color:rgba(57,217,138,.4);margin-bottom:14px\"><div class=\"refinement-text\" style=\"color:var(--green)\">"+hook+"</div></div>":"")
+      +"<div class=\"refinement-label\" style=\"margin-bottom:6px\">Full Version</div>"
+      +"<div class=\"refinement-area\" style=\"margin-bottom:0\"><div class=\"refinement-text\" id=\"exportFull\">"+(full||"No version generated yet.")+"</div></div>"
+      +"<div class=\"export-actions\">"
+      +"<button class=\"btn-export primary\" onclick=\"copyExport()\">Copy Full Version</button>"
+      +"<button class=\"btn-export\" onclick=\"copyHook()\">Copy Hook Only</button>"
+      +"<button class=\"btn-export\" onclick=\"startOver()\">Start New Song</button>"
+      +"</div></div>";
+    w.appendChild(p);
+  }
+
+  window.copyExport=async function(){
+    var txt=(document.getElementById("exportFull")||{}).innerText||"";
+    try{await navigator.clipboard.writeText(txt);alert("Copied!");}catch(e){alert("Select and copy manually");}
+  };
+  window.copyHook=async function(){
+    try{await navigator.clipboard.writeText(window.__lockedHook||"");alert("Hook copied!");}catch(e){}
+  };
+  window.startOver=function(){
+    window.__pickedVersion="";window.__refinedVersion="";window.__lockedHook="";
+    window.__journeyStep=1;
+    clearPanels();
+    var c=document.getElementById("lyricInput");
+    if(c){c.closest(".card").style.display="";c.value="";}
+    updateBar();
+  };
+
+  var origRender=window.render;
+  if(typeof origRender==="function"){
+    window.render=function(){
+      origRender.apply(this,arguments);
+      if(window.__journeyStep===1){
+        window.__journeyStep=2;
+        updateBar();
+        setTimeout(function(){
+          var r=document.getElementById("resultsPanel");
+          if(r) r.classList.add("visible");
+          if(!document.getElementById("step2-cta")){
+            var cta=document.createElement("div");
+            cta.id="step2-cta";
+            cta.className="next-step-cta step-panel active";
+            cta.innerHTML="<div><div class=\"cta-label\">Step 2 of 5</div><div class=\"cta-title\">Pick a version then refine it with RIYA</div></div><button class=\"next-step-btn\" onclick=\"pickAndRefine()\">Pick Recommended and Refine</button>";
+            if(r) r.appendChild(cta);
+          }
+        },200);
+      }
+    };
+  }
+})();
+</script>
+
+<script id="tsm-app-complete">
+(function(){
+  if(window.__TSM_APP_COMPLETE__) return;
+  window.__TSM_APP_COMPLETE__ = true;
+
+  // ── Song Bank ──────────────────────────────────────────────────────────────
+  window.__songBank = window.__songBank || [];
+
+  function saveSong(data){
+    const song = {
+      id: Date.now(),
+      title: 'Song ' + (window.__songBank.length + 1),
+      hook: window.__lockedHook || '',
+      full: window.__refinedVersion || window.__pickedVersion || '',
+      score: data && data.score ? data.score : null,
+      savedAt: new Date().toLocaleTimeString()
+    };
+    window.__songBank.unshift(song);
+    window.__songBank = window.__songBank.slice(0, 20);
+    renderSongBank();
+    return song;
+  }
+
+  function renderSongBank(){
+    const el = document.getElementById('songBankList');
+    if(!el) return;
+    if(!window.__songBank.length){
+      el.innerHTML = '<div style="color:var(--muted);font-size:12px">No songs saved yet.</div>';
+      return;
+    }
+    el.innerHTML = window.__songBank.map((s,i) => `
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <div style="font-weight:700;font-size:13px">${s.title}</div>
+          <div style="font-size:10px;color:var(--muted);font-family:var(--mono)">${s.savedAt}</div>
+        </div>
+        ${s.hook ? '<div style="font-size:11px;color:var(--green);font-family:var(--mono);margin-bottom:6px">Hook: ' + s.hook.split('\n')[0] + '</div>' : ''}
+        <div style="font-size:11px;color:var(--muted);white-space:pre-wrap;line-height:1.5">${(s.full||'').slice(0,120)}${s.full&&s.full.length>120?'...':''}</div>
+        <button onclick="loadSongFromBank(${i})" style="margin-top:8px;background:transparent;border:1px solid var(--border2);color:var(--muted);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer">Load into editor</button>
+      </div>
+    `).join('');
+  }
+
+  window.loadSongFromBank = function(i){
+    const song = window.__songBank[i];
+    if(!song) return;
+    const input = document.getElementById('lyricInput');
+    if(input) input.value = song.full;
+    // switch to draft tab
+    document.querySelectorAll('.tab').forEach(t=>{
+      if(t.textContent.trim()==='Draft + Analysis') t.click();
+    });
+  };
+
+  // Hook into copyExport to auto-save
+  const oldCopyExport = window.copyExport;
+  window.copyExport = async function(){
+    saveSong({});
+    if(typeof oldCopyExport === 'function') return oldCopyExport.apply(this, arguments);
+    const txt = window.__refinedVersion || window.__pickedVersion || '';
+    try{ await navigator.clipboard.writeText(txt); } catch(e){}
+    if(typeof window.showToast === 'function') window.showToast('Full version copied and saved to Song Bank');
+  };
+
+  // Hook into copyHook
+  const oldCopyHook = window.copyHook;
+  window.copyHook = async function(){
+    saveSong({});
+    if(typeof oldCopyHook === 'function') return oldCopyHook.apply(this, arguments);
+    const txt = window.__lockedHook || '';
+    try{ await navigator.clipboard.writeText(txt); } catch(e){}
+    if(typeof window.showToast === 'function') window.showToast('Hook copied and saved to Song Bank');
+  };
+
+  // ── Artist DNA Tab ─────────────────────────────────────────────────────────
+  function syncDNATab(){
+    const fields = [
+      ['dna-tab-cad', 'dna-cad'],
+      ['dna-tab-emo', 'dna-emo'],
+      ['dna-tab-str', 'dna-str'],
+      ['dna-tab-img', 'dna-img']
+    ];
+    fields.forEach(([tabId, sideId])=>{
+      const tab = document.getElementById(tabId);
+      const side = document.getElementById(sideId);
+      if(tab && side) tab.textContent = side.textContent;
+    });
+
+    // learned songs
+    const el = document.getElementById('dna-learned-list');
+    if(!el) return;
+    const count = parseInt((document.getElementById('dna-songs')||{}).textContent||'0');
+    if(!count){
+      el.innerHTML = '<div style="color:var(--muted);font-size:12px">No songs learned yet.</div>';
+      return;
+    }
+    el.innerHTML = Array.from({length:count}).map((_,i)=>`
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:8px;font-size:12px">
+        <span style="color:var(--green);font-family:var(--mono)">Run #${i+1}</span>
+        <span style="color:var(--muted);margin-left:8px">DNA updated · cadence + emotion weighted</span>
+      </div>
+    `).join('');
+  }
+
+  // Sync DNA tab whenever it's clicked
+  document.querySelectorAll('.tab,.nav-item').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const txt = el.textContent.replace(/[✦⟳◈◻]/g,'').trim();
+      if(txt === 'Artist DNA') setTimeout(syncDNATab, 100);
+      if(txt === 'Song Bank') setTimeout(renderSongBank, 100);
+    });
+  });
+
+  // ── Revision Mode ──────────────────────────────────────────────────────────
+  window.loadLastIntoRevision = function(){
+    const txt = window.__refinedVersion || window.__pickedVersion || '';
+    const input = document.getElementById('revisionInput');
+    if(input) input.value = txt;
+  };
+
+  window.runRevision = async function(){
+    const input = document.getElementById('revisionInput');
+    const draft = (input ? input.value : '').trim();
+    if(!draft) return;
+
+    const out = document.getElementById('revisionOutput');
+    if(out){ out.style.display='block'; out.innerHTML='<div style="color:var(--muted);font-size:12px">Running ZAY → RIYA → DJ chain...</div>'; }
+
+    try{
+      const r = await fetch('/api/music/revision/run',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({draft, request:'revision mode'})
+      });
+      const data = await r.json();
+      const opts = data.session && data.session.options ? data.session.options : [];
+      if(out){
+        out.innerHTML = opts.map((o,i)=>`
+          <div style="background:var(--bg4);border:1px solid ${i===0?'var(--green)':'var(--border)'};border-radius:8px;padding:14px;margin-bottom:10px">
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;font-family:var(--mono)">${o.title||'Option '+(i+1)}</div>
+            <div style="font-size:12px;font-family:var(--mono);white-space:pre-wrap;line-height:1.6">${o.output||''}</div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button onclick="loadRevisionOption(${JSON.stringify(o.output||'').replace(/'/g,'&#39;')})" style="background:var(--green);color:#000;border:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer">Use This</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    } catch(e){
+      if(out) out.innerHTML = '<div style="color:var(--muted)">Error running chain. Try again.</div>';
+    }
+  };
+
+  window.loadRevisionOption = function(txt){
+    const input = document.getElementById('lyricInput');
+    if(input) input.value = txt;
+    document.querySelectorAll('.tab').forEach(t=>{
+      if(t.textContent.trim()==='Draft + Analysis') t.click();
+    });
+  };
+
+  // Also sync DNA on render
+  const oldRender = window.render;
+  if(typeof oldRender === 'function'){
+    window.render = function(){
+      const result = oldRender.apply(this, arguments);
+      setTimeout(syncDNATab, 200);
+      return result;
+    };
+  }
+
+})();
+</script>
+
+</body>
+
+</html>

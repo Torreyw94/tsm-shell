@@ -1,0 +1,4 @@
+Vendor_Name,Service,Contract_Rate,Invoice_Rate,Variance,Impact
+Global_Labs,Blood_Work,$45.00,$62.50,$17.50,Overcharge
+Med_Staffing,Nurses_Hourly,$85.00,$98.00,$13.00,Contract_Leak
+Supply_Chain_Inc,PPE_Bulk,$2.10,$2.10,$0.00,On_Target

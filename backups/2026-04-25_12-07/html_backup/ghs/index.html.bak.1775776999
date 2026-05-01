@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(() => {
+  const apiBase = "/api/chat";
+  const modelName = "llama-3.3-70b-versatile";
+
+  const appMap = {
+    "MEDICAL":"https://hc-medical.tsmatter.com",
+    "PHARMACY":"https://hc-pharmacy.tsmatter.com",
+    "INSURANCE":"https://hc-insurance.tsmatter.com",
+    "FINANCIAL":"https://hc-financial.tsmatter.com",
+    "LEGAL":"https://hc-legal.tsmatter.com",
+    "VENDORS":"https://hc-vendors.tsmatter.com",
+    "COMPLIANCE":"https://hc-compliance.tsmatter.com",
+    "BILLING":"https://hc-billing.tsmatter.com",
+    "TAX PREP":"https://hc-taxprep.tsmatter.com",
+    "GRANTS":"https://hc-grants.tsmatter.com"
+  };
+
+  let selected = new Set(Object.keys(appMap));
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+
+  function updateClock(){
+    const d = new Date();
+    const hh = String(d.getUTCHours()).padStart(2,'0');
+    const mm = String(d.getUTCMinutes()).padStart(2,'0');
+    const ss = String(d.getUTCSeconds()).padStart(2,'0');
+    const el = $('#utcClock');
+    if (el) el.textContent = `UTC ${hh}:${mm}:${ss}`;
+  }
+
+  async function callGroq(userText){
+    const res = await fetch(apiBase, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: modelName,
+        messages: [
+          {
+            role: "system",
+            content: "You are the TSM Healthcare Command strategist. Give concise operational guidance for healthcare leadership across selected nodes."
+          },
+          {
+            role: "user",
+            content: userText
+          }
+        ]
+      })
+    });
+
+    const text = await res.text();
+    let data = null;
+    try { data = JSON.parse(text); } catch(e) {}
+
+    if(!res.ok){
+      throw new Error((data && (data.error || data.message)) || text || `HTTP ${res.status}`);
+    }
+
+    const content =
+      data?.choices?.[0]?.message?.content ||
+      data?.answer ||
+      data?.response ||
+      data?.message ||
+      text;
+
+    return { raw: data, content };
+  }
+
+  function card(node){
+    return document.querySelector(`.card[data-node="${node}"]`);
+  }
+
+  function setCard(node, body, status="LIVE"){
+    const c = card(node);
+    if(!c) return;
+    const bodyEl = c.querySelector('.body');
+    const statusEl = c.querySelector('.cta span:last-child');
+    if(bodyEl) bodyEl.textContent = body;
+    if(statusEl) statusEl.textContent = status;
+  }
+
+  function setSummary(text){
+    const s = $('#strategistSummary');
+    if (s) s.textContent = text;
+  }
+
+  function summarizeForNode(node, fullText){
+    return `${node}: ${fullText}`.slice(0, 260);
+  }
+
+  async function deploy(){
+    const prompt = ($('#hcQuery')?.value || '').trim();
+    if(!prompt) return alert('Enter a healthcare command first.');
+
+    const deployBtn = $('#deployBtn');
+    if (deployBtn) {
+      deployBtn.textContent = 'DEPLOYING';
+      deployBtn.disabled = true;
+    }
+
+    [...selected].forEach(n => setCard(n, 'Deploying analysis...', 'RUNNING'));
+    setSummary('HC-Strategist deploying command across selected nodes...');
+
+    const nodeLine = [...selected].join(", ");
+    const fullPrompt = `Selected nodes: ${nodeLine}\n\nCommand: ${prompt}\n\nReturn the best healthcare action plan, top risks, and immediate remediation priorities.`;
+
+    try {
+      const result = await callGroq(fullPrompt);
+      const output = result.content;
+
+      [...selected].forEach(n => setCard(n, summarizeForNode(n, output), 'LIVE'));
+      setSummary(output.slice(0, 1200));
+    } catch(err) {
+      [...selected].forEach(n => setCard(n, `Deploy failed: ${err.message}`, 'ERROR'));
+      setSummary(`Deploy failed: ${err.message}`);
+    } finally {
+      if (deployBtn) {
+        deployBtn.textContent = 'DEPLOY';
+        deployBtn.disabled = false;
+      }
+    }
+  }
+
+  async function synthesize(){
+    const synthBtn = $('#synthBtn');
+    if (synthBtn) {
+      synthBtn.textContent = 'SYNTH...';
+      synthBtn.disabled = true;
+    }
+
+    const nodeLine = [...selected].join(", ");
+    const prompt = ($('#hcQuery')?.value || '').trim();
+
+    try {
+      const result = await callGroq(
+        `Selected nodes: ${nodeLine}\n\nPrimary healthcare command: ${prompt || "Generate merged healthcare recommendations."}\n\nProvide a synthesized executive summary, top 3 risks, and best next course of action.`
+      );
+      setSummary(result.content);
+    } catch(err) {
+      setSummary(`Synthesis failed: ${err.message}`);
+    } finally {
+      if (synthBtn) {
+        synthBtn.textContent = 'SYNTHESIZE';
+        synthBtn.disabled = false;
+      }
+    }
+  }
+
+  function bindNodeTabs(){
+    $$('.deploybar .node-tab').forEach(tab => {
+      tab.classList.add('active');
+      tab.style.cursor = 'pointer';
+      tab.addEventListener('click', () => {
+        const node = tab.dataset.node;
+        if(selected.has(node)) {
+          selected.delete(node);
+          tab.classList.remove('active');
+          tab.style.opacity = '.45';
+        } else {
+          selected.add(node);
+          tab.classList.add('active');
+          tab.style.opacity = '1';
+        }
+      });
+    });
+  }
+
+  function bindOpenButtons(){
+    $$('.open-btn').forEach(btn => {
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', e => {
+        const c = e.target.closest('.card');
+        if (!c) return;
+        const node = c.dataset.node;
+        const url = appMap[node];
+        if(url) window.open(url, '_blank', 'noopener,noreferrer');
+      });
+    });
+  }
+
+  function bindTools(){
+    $$('.tool').forEach(tool => {
+      tool.style.cursor = 'pointer';
+      tool.addEventListener('click', async () => {
+        const action = tool.dataset.tool || tool.textContent.trim();
+        const nodeLine = [...selected].join(", ");
+        const q = ($('#hcQuery')?.value || '').trim();
+
+        try {
+          const result = await callGroq(
+            `Tool action: ${action}\nSelected nodes: ${nodeLine}\nContext: ${q || "Healthcare command context"}\n\nReturn concise healthcare operations guidance.`
+          );
+          setSummary(result.content.slice(0, 1200));
+        } catch(err) {
+          setSummary(`${action} failed: ${err.message}`);
+        }
+      });
+    });
+  }
+
+  function bindLeftRail(){
+    $$('.left .playbook').forEach(item => {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', () => {
+        $$('.left .playbook').forEach(x => x.classList.remove('active-playbook'));
+        item.classList.add('active-playbook');
+
+        const label = item.textContent.replace(/\s+/g,' ').trim();
+        const query = $('#hcQuery');
+        if (!query) return;
+
+        if (label.includes('Claim Recovery')) {
+          query.value = 'Review denial exposure and claims backlog, then produce the best claim recovery action plan across the full healthcare command.';
+        } else if (label.includes('Audit Sweep')) {
+          query.value = 'Run an audit sweep across all healthcare nodes and summarize the top risks and corrective actions.';
+        } else if (label.includes('Margin Review')) {
+          query.value = 'Analyze margin performance across all service lines, identify cost drivers, and recommend optimization paths.';
+        } else if (label.includes('Payer Contract')) {
+          query.value = 'Review payer contract exposure, reimbursement risk, and compliance drift ahead of the priority date.';
+        } else if (label.includes('Vendor / Supply Risk')) {
+          query.value = 'Assess vendor, supply chain, and service-level risks that could impact claims, billing, and care operations.';
+        } else if (label.includes('Cash Flow')) {
+          query.value = 'Evaluate healthcare cash flow risks, billing delays, and recovery opportunities across finance and billing.';
+        } else if (label.includes('Tax Sweep')) {
+          query.value = 'Review healthcare tax preparation deadlines, compliance exposure, and filing readiness.';
+        } else if (label.includes('BMCA')) {
+          query.value = 'Generate the best next course of action for the full healthcare command center.';
+        }
+      });
+    });
+  }
+
+  function bindStrategistTabs(){
+    $$('.right .node-tab').forEach(tab => {
+      tab.style.cursor = 'pointer';
+      tab.addEventListener('click', () => {
+        const node = tab.textContent.trim().toUpperCase();
+        const url = appMap[node];
+        if(url) window.open(url, '_blank', 'noopener,noreferrer');
+      });
+    });
+  }
+
+  function bindMain(){
+    $('#deployBtn')?.addEventListener('click', deploy);
+    $('#synthBtn')?.addEventListener('click', synthesize);
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  bindNodeTabs();
+  bindOpenButtons();
+  bindTools();
+  bindLeftRail();
+  bindStrategistTabs();
+  bindMain();
+})();
+</script>
+
+
+
+<script id="tsm-unified-render">
+function renderTSM(data, target){
+  try {
+    const el = document.querySelector(target) || document.body;
+
+    if (!data) {
+      el.innerHTML = "<div style='color:red'>No data</div>";
+      return;
+    }
+
+    // Normalize fallback
+    if (!data.feed && data.choices) {
+      data = {
+        report_title: "AI Response",
+        kpis: [],
+        feed: [{ message: data.choices[0].message.content }]
+      };
+    }
+
+    if (!data.feed) {
+      el.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      return;
+    }
+
+    let htmlOut = "<div style='padding:12px;font-family:monospace'>";
+
+    if (data.report_title) {
+      htmlOut += "<h3 style='color:#00ffc3'>" + data.report_title + "</h3>";
+    }
+
+    data.feed.forEach(item => {
+      htmlOut += "<div style='margin-bottom:10px'>";
+      htmlOut += "<div style='color:#d7f7ff'>" + (item.message || "") + "</div>";
+      if (item.detail) {
+        htmlOut += "<div style='opacity:0.6;font-size:12px'>" + item.detail + "</div>";
+      }
+      htmlOut += "</div>";
+    });
+
+    htmlOut += "</div>";
+    el.innerHTML = htmlOut;
+
+  } catch(e) {
+    console.error("Render error", e);
+  }
+}
+</script>
+
+</body>
+</html>

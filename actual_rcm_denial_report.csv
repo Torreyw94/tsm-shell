@@ -1,0 +1,5 @@
+Claim_ID,Payer,Amount,Status,Days_Open,CARC_Code,Reason
+CLM-9901,BlueCross,$14200.00,Denied,92,CO-16,Missing Clinical Documentation
+CLM-9902,Aetna,$8500.00,Pending,45,NA,Under Review
+CLM-9903,UnitedHC,$32000.00,Denied,104,CO-27,Coverage Terminated
+CLM-9904,Cigna,$1200.00,Rejected,12,CO-197,Pre-cert missing
