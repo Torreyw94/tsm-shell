@@ -31,6 +31,7 @@ suites.forEach(({ route, dir, index }) => {
   console.log(`✅  ${route} → ${dir}/${index}`);
 });
 
+app.use('/exports', express.static(path.join(__dirname, 'exports')));
 app.use('/html', express.static(path.join(__dirname, 'html'), { extensions: ['html'] }));
 
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare'), { index: 'index.html', extensions: ['html'] }));
@@ -95,7 +96,7 @@ async function tsmAIJSON(prompt, fallback){
         'Content-Type':'application/json'
       },
       body:JSON.stringify({
-        model:process.env.TSM_MODEL || process.env.TSM_FINOPS_MODEL || 'llama-3.3-70b-versatile',
+        model:process.env.TSM_MODEL || 'llama-3.1-8b-instant',
         messages:[
           {role:'system',content:'You are TSM Neural Core. Never mention provider, model, API, or implementation. Return JSON only.'},
           {role:'user',content:prompt}
@@ -400,24 +401,10 @@ app.get('/healthcare/hc-presentation/',(req,res)=>sendFirstExisting(res,[
 app.post("/api/music/revision/run", async (req, res) => {
   try {
     const body = req.body || {};
-    const lyrics = body.lyrics || body.draft || body.input || body.text || "";
+    const lyrics = body.lyrics || body.draft || body.input || body.text || body.prompt || "";
     const { agent="ZAY" } = body;
     if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
     const result = await tsmAIJSON(`You are music agent ${agent}. Revise these lyrics. Return JSON: { revised, cadence, emotion, structure, imagery, decision }. Lyrics: ${lyrics}`,{ revised: lyrics, cadence: 75, emotion: 75, structure: 75, imagery: 75, decision: "No change" });
-    res.json({ ok: true, ...result });
-  } catch(e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
-app.post("/api/music/agent-pass", async (req, res) => {
-  try {
-    const body = req.body || {};
-    const lyrics = body.lyrics || body.draft || body.input || body.text || "";
-    const { agent="RIYA" } = body;
-    if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
-    const request = body.request || "improve and rewrite the lyrics";
-    const result = await tsmAIJSON(`You are ${agent}, a professional songwriter. Task: ${request}. Write actual song lyrics - real lines and verses, NOT descriptions. Original lyrics:\n${lyrics}\n\nReturn JSON: { output, score_delta, decision, ad_libs } where output is the full rewritten lyrics line by line.`,{ output: lyrics, score_delta: 0, decision: "Needs another pass", ad_libs: [] });
     res.json({ ok: true, ...result });
   } catch(e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -562,7 +549,7 @@ app.post('/api/music/agent-pass', async (req,res)=>{
   const response = await musicAI(prompt,'agent-pass');
   MUSIC_MEMORY.history.unshift({type:'agent-pass',prompt,response,ts:new Date().toISOString()});
   MUSIC_MEMORY.history = MUSIC_MEMORY.history.slice(0,50);
-  res.json({ok:true,response,actions:["Structure review","Ad-lib placement","Bridge improvement","Performance polish"],ts:new Date().toISOString()});
+  res.json({ok:true,output:response,response,actions:["Structure review","Ad-lib placement","Bridge improvement","Performance polish"],ts:new Date().toISOString()});
 });
 
 app.post('/api/music/strategy', async (req,res)=>{
@@ -651,37 +638,80 @@ app.get('/music-command/demo', (req,res)=>res.redirect('/html/music-command/demo
 app.get('/music-command/how-to', (req,res)=>res.redirect('/html/music-command/how-to-guide.html'));
 app.get('/music-command/presentation', (req,res)=>res.redirect('/html/music-command/presentation-live.html'));
 
-app.get('/api/music/state',(req,res)=>res.json({ok:true,state:MUSIC_STATE}));
 
-app.post('/api/music/dna/save',(req,res)=>{
-  MUSIC_STATE.dna = {...MUSIC_STATE.dna, ...(req.body || {})};
-  res.json({ok:true,dna:MUSIC_STATE.dna});
-});
 
-app.post('/api/music/agent-pass', async (req,res)=>{
-  const prompt=req.body?.prompt || req.body?.message || req.body?.input || req.body?.lyrics || "";
-  const response=await tsmMusicResponse(prompt,'agent-pass');
-  MUSIC_STATE.history.unshift({mode:'agent-pass',prompt,response,ts:new Date().toISOString()});
-  MUSIC_STATE.history=MUSIC_STATE.history.slice(0,50);
-  res.json({ok:true,response,ts:new Date().toISOString()});
-});
+// ======================================================
+// FINOPS STAFF ACCOUNTANT COPILOT
+// Unified client-facing AP + AR + Tax + Compliance + Zero Trust + Strategist lane
+// ======================================================
+app.get('/finops/copilot',(req,res)=>res.redirect('/html/finops-suite/copilot.html'));
 
-app.post('/api/music/strategy', async (req,res)=>{
-  const prompt=req.body?.prompt || req.body?.message || req.body?.input || "Create a song strategy.";
-  const response=await tsmMusicResponse(prompt,'strategy');
-  res.json({ok:true,response,ts:new Date().toISOString()});
-});
+app.post('/api/finops/copilot', async (req,res)=>{
+  const body=req.body||{};
+  const workflow=body.workflow||'AP Aging';
+  const workflows=body.workflows||[workflow,'Compliance Shield','Zero Trust','Strategist BNCA'];
+  const context=body.context||'';
 
-app.post('/api/music/song', async (req,res)=>{
-  const prompt=req.body?.prompt || req.body?.lyrics || req.body?.input || "Create a complete song draft.";
-  const response=await tsmMusicResponse(prompt,'song');
-  res.json({ok:true,response,structure:"Intro → Verse → Hook → Verse → Bridge → Final Hook",ts:new Date().toISOString()});
-});
+  // Server-side AI if available; safe fallback if not.
+  async function ai(){
+    if(!process.env.GROQ_API_KEY) throw new Error('missing key');
+    const prompt=`You are TSM FinOps Staff Accountant Copilot.
 
-app.post('/api/music-command/chat', async (req,res)=>{
-  const prompt=req.body?.prompt || req.body?.message || req.body?.input || "";
-  const response=await tsmMusicResponse(prompt,'chat');
-  res.json({ok:true,response,ts:new Date().toISOString()});
+Workflow: ${workflow}
+Workflows chained: ${JSON.stringify(workflows)}
+Context: ${context}
+
+Return JSON only:
+{
+ "priority_rank":[{"rank":1,"lane":"...","issue":"...","impact":"...","owner":"...","status":"..."}],
+ "combined_bnca":"...",
+ "controller_note":"...",
+ "business_outcome":"...",
+ "confidence":0-100
+}
+
+Focus on AP, AR, bank reconciliation, month-end close, 1099/W-9 readiness, compliance support, zero-trust access risk, and controller-ready actions.`;
+
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':`Bearer ${process.env.GROQ_API_KEY}`,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:process.env.TSM_MODEL||'llama-3.3-70b-versatile',
+        messages:[
+          {role:'system',content:'You are TSM FinOps Staff Accountant Copilot. Never mention provider/model/API/key. Return JSON only.'},
+          {role:'user',content:prompt}
+        ],
+        temperature:.24,
+        max_tokens:1100
+      })
+    });
+    if(!r.ok) throw new Error('ai unavailable');
+    const data=await r.json();
+    const text=data?.choices?.[0]?.message?.content||'';
+    return JSON.parse(text.replace(/```json|```/g,'').trim());
+  }
+
+  try{
+    const result=await ai();
+    res.json({ok:true,workflow,workflows,...result,ts:new Date().toISOString()});
+  }catch(e){
+    res.json({
+      ok:true,
+      workflow,
+      workflows,
+      priority_rank:[
+        {rank:1,lane:'AP',issue:'Vendor invoices need validation/support',impact:'Payment timing and close risk',owner:'Staff Accountant',status:'ACTION REQUIRED'},
+        {rank:2,lane:'Reconciliation',issue:'Open reconciling items need documentation',impact:'Month-end close blocker',owner:'Staff Accountant / Controller',status:'WATCH'},
+        {rank:3,lane:'Tax / 1099',issue:'Vendors need W-9 / threshold review',impact:'Filing window exposure',owner:'Tax Prep / Controller',status:'DUE BEFORE FILING'},
+        {rank:4,lane:'Compliance / Zero Trust',issue:'Approval/support trail should be preserved',impact:'Audit readiness risk',owner:'Controller',status:'REVIEW'}
+      ],
+      combined_bnca:'Validate AP support first, resolve reconciliation gaps second, complete 1099/W-9 readiness third, then route the controller summary for close approval.',
+      controller_note:'AP support and reconciliation gaps are the highest immediate blockers. Tax and compliance readiness should be reviewed in the same close cycle.',
+      business_outcome:'Parallel FinOps apps converted into one staff-accountant workflow and controller-ready action plan.',
+      confidence:89,
+      ts:new Date().toISOString()
+    });
+  }
 });
 
 app.listen(PORT, "0.0.0.0", () => {
@@ -727,6 +757,170 @@ app.post('/api/groq', async (req, res) => {
   const full = context ? `${context}\n\n${prompt}` : prompt;
   const result = await tsmAIJSON(`${system}\n\n${full}`, { ok:false, response:'AI unavailable', ai_status:'fallback_no_mock_data_key_or_route_needed' });
   res.json({ ok:true, response: result.narrative || result.response || JSON.stringify(result) });
+});
+
+
+// ── MISSING ROUTES PATCH ──────────────────────────────────────────────────
+
+app.get('/api/music/activity', (_req, res) => {
+  res.json({ ok: true, activity: MUSIC_STATE.activity || [] });
+});
+
+app.get('/api/music/platform', (_req, res) => {
+  res.json({ ok: true, platform: { tier: 'pro', monetized: true, revenue: 0, streams: 0 } });
+});
+
+app.get('/api/music/engine', (_req, res) => {
+  res.json({ ok: true, engine: { version: '2.0', agents: ['ZAY','DJ'], status: 'online' } });
+});
+
+app.get('/api/music/revision/state', (_req, res) => {
+  res.json({ ok: true, revisions: MUSIC_STATE.revisions || [], current: MUSIC_STATE.currentRevision || null });
+});
+
+app.post('/api/music/song/learn', (req, res) => {
+  const { song, lyrics, style } = req.body || {};
+  if (!MUSIC_STATE.learnedSongs) MUSIC_STATE.learnedSongs = [];
+  MUSIC_STATE.learnedSongs.push({ song, lyrics, style, ts: Date.now() });
+  res.json({ ok: true, learned: MUSIC_STATE.learnedSongs.length });
+});
+
+app.post('/api/music/dna/learn', async (req, res) => {
+  const { lyrics, style, artist } = req.body || {};
+  if (!MUSIC_STATE.dna) MUSIC_STATE.dna = {};
+  MUSIC_STATE.dna.learnedFrom = artist || 'unknown';
+  MUSIC_STATE.dna.style = style || MUSIC_STATE.dna.style;
+  res.json({ ok: true, dna: MUSIC_STATE.dna });
+});
+
+// ── END MISSING ROUTES PATCH ──────────────────────────────────────────────
+
+
+
+
+// ── AI COACH ROUTE ────────────────────────────────────────────────────────────
+app.post('/api/music/coach', async (req, res) => {
+  const { tab = 'draft', lyrics = '', dna = {}, request = '' } = req.body || {};
+  const hasLyrics = lyrics.trim().length > 20;
+
+  const stepGuides = {
+    draft: {
+      headline: 'Score and strengthen your draft',
+      features: `FIELDS: "Your Lyrics / Hook / Verse / Draft" textarea (draft-input), "Focused Request" textarea (tell the agent exactly what you want), Agent selector, Priority selector.
+BUTTONS: "Run Agent Pass" (scores cadence, emotion, structure, imagery), "Load Demo Draft" (loads example), "Clear" (resets), "Save to Bank" (after output), "Copy", "Send to Revision Mode".
+METRICS shown after analysis: Hook Identity, Cadence Control, Lexical Sharpness, Structure Health, DNA Match.
+WORKFLOW: Paste lyrics → write focused request → pick agent → Run Agent Pass → read metrics → Iterate Again → Save to Bank or Send to Revision.`,
+      focus: 'lyric quality, cadence scoring, hook identity, and focused requests to the agent'
+    },
+    revision: {
+      headline: 'Revise with surgical precision',
+      features: `FIELDS: Box 1 "Current Draft" (what you want revised), Box 2 "Edit Instructions" (what should change — e.g. add pre-hook, tighten syllables, make darker), Box 3 "Protect" (lines that must not change), Box 4 "Output Options" (3 variant styles you want back), Agent selector, Output Format selector.
+BUTTONS: "Run Revision Mode" (sends all 4 boxes to agent), "Load Example" (demo content), "Save to Bank", "Copy".
+WORKFLOW: Fill Box 1 with draft → Box 2 with specific edits → Box 3 with protected lines → Box 4 with 3 output styles → Run Revision Mode → pick strongest option → Save to Bank.`,
+      focus: 'precise edit instructions, protecting key lines, and generating multiple revision options'
+    },
+    generate: {
+      headline: 'Generate new sections from your DNA',
+      features: `FIELDS: "What to Generate" selector (Hook, Bridge, Ad-libs, Song Structure, Verse, Outro), "Tone/Feel" selector (Triumphant, Melancholy, Hype, etc.), "Your Concept/Starting Point" textarea, "Reference Lines" textarea (optional — paste lines to match your style).
+BUTTONS: "Generate Hook" (3 hook variants from DNA), "Build Bridge" (emotional pivot section), "Place Ad-Libs" (adds signature vocal punctuation at impact points), "Song Structure" (maps full Verse/Hook/Bridge layout).
+WORKFLOW: Pick what to generate → set tone → describe concept → add reference lines → click the matching button → pick strongest output.`,
+      focus: 'concept clarity, tone selection, and using reference lines to match artist style'
+    },
+    songbank: {
+      headline: 'Manage and learn from your catalog',
+      features: `BUTTONS: "Save to Bank" (from Draft or Revision output), "Load" (reloads any saved song into Draft panel), "Learn from Song" (feeds song into Artist DNA), "Export TXT" (packages for DAW or notes app).
+WORKFLOW: Songs auto-save via Save to Bank → browse catalog → Load any song to keep refining → Learn from Song to update your DNA → Export TXT when ready for DAW.`,
+      focus: 'catalog organization, DNA learning from past songs, and export workflow'
+    },
+    dna: {
+      headline: 'Lock in your artist signature',
+      features: `FIELDS: Ad-libs list (edit your signature phrases — yeah, let's go, uh, ay), Style/Tone selector, Vocab terms.
+BUTTONS: "Learn from Lyrics" (extracts patterns from pasted lyrics), "Save DNA" (locks current profile), "Reset".
+DNA AFFECTS: Every agent pass, every hook generated, every ad-lib placement uses your DNA profile.
+WORKFLOW: Edit your ad-libs → set your tone → paste lyrics and hit Learn from Lyrics → Save DNA → all future generations match your style.`,
+      focus: 'signature ad-libs, tone consistency, and training DNA from existing lyrics'
+    },
+    studio: {
+      headline: 'Polish, export, and monetize',
+      features: `BUTTONS: "Generate 10 Hooks" (batch hook variants for A/B testing), "Export TXT" (full song packaged for DAW), "Save Artist Session" (saves entire workspace state), monetization tier buttons.
+COMMERCE STATE: Shows monetized status, revenue tier (Pro), stream count.
+WORKFLOW: Finalize lyrics in Draft → Generate 10 Hooks for A/B testing → Export TXT for DAW → Save Artist Session to preserve workspace → set monetization tier.`,
+      focus: 'export readiness, batch generation, session saving, and monetization setup'
+    }
+  };
+
+  const guide = stepGuides[tab] || stepGuides.draft;
+
+  const prompt = `You are TSM AI Coach inside the TSM Music Command Center app.
+
+CURRENT PANEL: ${tab.toUpperCase()}
+USER HAS LYRICS: ${hasLyrics ? 'YES: "' + lyrics.slice(0, 300) + '"' : 'NO — fields are empty'}
+ARTIST DNA: ${JSON.stringify(dna)}
+USER QUESTION: ${request || 'Guide me through this panel step by step'}
+
+EXACT FEATURES IN THIS PANEL:
+${guide.features}
+
+YOUR RULES:
+- Reference ONLY the actual buttons, fields, and selectors listed above — use their exact names
+- Be direct and specific — tell them exactly what to click or type right now
+- If they have lyrics, give ONE concrete line-level rewrite example (before → after)
+- If fields are empty, tell them exactly what to paste/type first
+- Keep coaching under 3 sentences
+- Quick tips must reference actual button/field names from this panel
+- Next Step must name a specific button to click
+
+Return ONLY valid JSON, no markdown, no explanation:
+{
+  "headline": "8 words max, action-oriented",
+  "coaching": "2-3 sentences, specific to their current state",
+  "example_before": "only if they have lyrics, else empty string",
+  "example_after": "only if they have lyrics, else empty string",
+  "quick_tips": ["tip referencing actual button/field", "tip referencing actual button/field", "tip referencing actual button/field"],
+  "next_step": "Name the exact button to click or field to fill right now",
+  "score": {"overall": 0, "flow": 0, "hooks": 0, "imagery": 0}
+}`;
+
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: process.env.TSM_MODEL || 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 700,
+        temperature: 0.6
+      })
+    });
+    const d = await r.json();
+    console.log('[COACH GROQ]', JSON.stringify(d).slice(0,500));
+    const text = d.choices?.[0]?.message?.content || '{}';
+    let parsed = {};
+    try {
+      parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+    } catch {
+      parsed = {
+        headline: guide.headline,
+        coaching: `You are in the ${tab} panel. ${guide.features.split('\n')[0]}`,
+        quick_tips: guide.features.split('\n').filter(l => l.includes(':')).slice(0,3).map(l => l.trim()),
+        next_step: hasLyrics ? 'Click Run Agent Pass to score your lyrics' : 'Paste your lyrics to get started'
+      };
+    }
+    res.json({ ok: true, tab, ...parsed });
+  } catch(e) {
+    console.error('[COACH ERROR]', e.message, e.stack);
+    res.json({
+      ok: false, tab,
+      error: e.message,
+      headline: guide.headline,
+      coaching: guide.features.split('\n')[0],
+      quick_tips: ['Fill all fields before running', 'Use Load Example to see expected input', 'Save to Bank after every strong output'],
+      next_step: hasLyrics ? 'Click Run Agent Pass' : 'Paste your lyrics first'
+    });
+  }
 });
 
 app.get('/api/config', (_req, res) => {
@@ -814,20 +1008,9 @@ app['post']('/api/finops/run-doc', async (req, res) => {
 
 // safeParseGroq — extracts valid JSON, handles rate limits, newlines, and truncation
 function safeParseGroq(text, fallback = {}) {
-  function cleanJson(str) {
-    // remove markdown fences
-    str = str.replace(/```json|```/g, '').trim();
-    // escape unescaped newlines/tabs inside JSON string values
-    str = str.replace(/"((?:[^"\\]|\\.)*)"/g, (match) =>
-      match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
-           .replace(/(?<!\\)\n/g, '\\n').replace(/(?<!\\)\r/g, '\\r')
-    );
-    // simpler fallback: replace literal newlines inside strings
-    str = str.replace(/([":,\[{]\s*)\n(\s*)/g, '$1 $2');
-    return str;
-  }
   try {
-    return JSON.parse(cleanJson(text));
+    const clean = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
   } catch(_) {
     try {
       // extract largest {...} block and clean it
@@ -987,33 +1170,60 @@ app['post']('/api/music/demo/create', (req, res) => { res.json({ ok:true, demo_t
 
 
 // MUSIC COACH — full step-by-step AI guidance
-app['post']('/api/music/coach', async (req, res) => {
-  const { tab='draft', lyrics='', dna={}, context='', request='' } = req.body;
-  const tabGuides = {
-    draft: 'The user is in Draft + Analysis mode. Review their lyrics and give specific coaching on: 1) Hook strength, 2) Syllable flow, 3) Imagery. Provide a rewritten example line.',
-    revision: 'The user is in Revision Mode. Give precise editing notes: what to cut, what to tighten, suggest a stronger alternate version of their weakest line.',
-    generate: 'The user is in Generate mode starting fresh. Suggest 2 creative directions with a sample opening line for each, based on their DNA profile.',
-    songbank: 'The user is reviewing their Song Bank. Suggest which piece has the most potential and what one revision would make it release-ready.',
-    dna: 'The user is building their Artist DNA profile. Based on what they have, identify gaps in their profile and suggest 3 specific ad-libs and 2 vocab terms that fit their style.',
-    studio: 'The user is in Studio Tools. Recommend which tool to use next based on their current lyrics and explain exactly how to use it for maximum impact.'
-  };
-  const dnaCtx = dna.adlibs?.length ? `Artist ad-libs: ${dna.adlibs.join(', ')}. Genre: ${dna.genre || 'hip-hop'}. Energy: ${dna.energy || 'balanced'}.` : '';
-  const prompt = `You are TSM Coach, an expert music production mentor. ${tabGuides[tab] || tabGuides.draft}
+// CATCH-ALLS — must be last
 
-${dnaCtx ? 'Artist DNA: ' + dnaCtx : ''}
-${lyrics ? 'Current lyrics: ' + lyrics.slice(0, 500) : 'No lyrics yet.'}
-${request ? 'Specific request: ' + request : ''}
-${context ? 'Additional context: ' + context : ''}
-
-Return ONLY valid JSON: {"ok":true,"tab":"${tab}","headline":"Short punchy coaching headline","coaching":"2-3 sentences of specific actionable coaching","example_before":"original line or empty string","example_after":"your improved rewrite or empty string","quick_tips":["tip 1","tip 2","tip 3"],"next_step":"One clear next action for the user","score":{"flow":75,"hooks":80,"imagery":70,"overall":75}}`;
+// ── Generic LLM route for frontend callClaude() ───────────────────────────────
+app.post('/api/music/llm', async (req, res) => {
   try {
-    const text = await groqFetch(prompt, 1000);
-    return res.json(safeParseGroq(text, {ok:false}));
+    const { system = '', user = '' } = req.body;
+    if (!user) return res.status(400).json({ ok: false, error: 'Missing user prompt' });
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: process.env.TSM_MODEL || 'llama-3.3-70b-versatile',
+        max_tokens: 1200,
+        temperature: 0.7,
+        messages: [
+          ...(system ? [{ role: 'system', content: system }] : []),
+          { role: 'user', content: user }
+        ]
+      })
+    });
+    const d = await r.json();
+    const text = d.choices?.[0]?.message?.content || '';
+    if (!text) {
+      console.error('[LLM] Empty:', JSON.stringify(d).slice(0,200));
+      return res.status(502).json({ ok: false, error: 'Empty LLM response' });
+    }
+    res.json({ ok: true, text });
   } catch(e) {
-    if (e.message?.startsWith('RATE_LIMITED:')) return res.status(429).json({ok:false,error:'rate_limited',retry_after:e.message.split(':')[1]});
-    return res.json({ok:false,error:e.message});
+    console.error('[LLM] Error:', e.message);
+    res.status(500).json({ ok: false, error: e.message });
   }
 });
-// CATCH-ALLS — must be last
+
+app.post("/api/music/agent-pass-v2", async (req, res) => {
+  const prompt = req.body?.prompt || req.body?.message || req.body?.input || "";
+  const result = await tsmAIJSON(`You are TSM Music Command. Return EXACTLY this JSON with 3 options: {"options":[{"label":"Option 1: [short descriptor]","text":"lyrics here"},{"label":"Option 2: [short descriptor]","text":"lyrics here"},{"label":"Option 3: [short descriptor]","text":"lyrics here"}],"hook_score":85,"cadence_score":88,"lex_score":82} Task: ${prompt} Keep lyrics raw, authentic, street. No explanation outside JSON.`, {options:[{label:"Option 1",text:prompt},{label:"Option 2",text:prompt},{label:"Option 3",text:prompt}],hook_score:75,cadence_score:75,lex_score:75});
+  res.json({ok:true, ...result, output: result.options?.[0]?.text || ""});
+});
 app['use']('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
 app['use']((req, res) => res.status(404).send('<pre>404 Not found: ' + req.path + '</pre>'));
+
+// Music export save to server
+app.post('/api/music/export/save', async (req, res) => {
+  const { content, filename } = req.body || {};
+  if (!content) return res.status(400).json({ ok: false, error: 'No content' });
+  const fs = require('fs');
+  const path = require('path');
+  const dir = path.join(__dirname, 'exports');
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+  const fname = filename || 'TSM_Export_' + Date.now() + '.txt';
+  fs.writeFileSync(path.join(dir, fname), content);
+  res.json({ ok: true, url: '/exports/' + fname, filename: fname });
+});
+
