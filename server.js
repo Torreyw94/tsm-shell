@@ -544,7 +544,15 @@ app.post('/api/music/dna/save',(req,res)=>{
   res.json({ok:true,dna:MUSIC_MEMORY.dna});
 });
 
-app.post('/api/music/agent-pass', async (req,res)=>{
+app.post('/api/music/agent-pass', async (req,res) => {
+  const prompt = req.body?.prompt || req.body?.message || req.body?.input || '';
+  const result = await tsmAIJSON(
+    'You are TSM Music Command. Return EXACTLY 3 different lyric options as JSON: {"options":[{"label":"Option 1: [descriptor]","text":"rewritten lyrics"},{"label":"Option 2: [descriptor]","text":"rewritten lyrics"},{"label":"Option 3: [descriptor]","text":"rewritten lyrics"}],"hook_score":85,"cadence_score":88,"lex_score":82}. Task: ' + prompt + '. Each option must have DIFFERENT lyrics. Raw, street, authentic only.',
+    {options:[{label:'Option 1',text:prompt},{label:'Option 2',text:prompt},{label:'Option 3',text:prompt}],hook_score:75,cadence_score:75,lex_score:75}
+  );
+  res.json({ok:true, ...result, output: result.options?.[0]?.text || ''});
+});
+app.post('/api/music/agent-pass-old', async (req,res)=>{
   const prompt = req.body?.prompt || req.body?.message || req.body?.input || '';
   const response = await musicAI(prompt,'agent-pass');
   MUSIC_MEMORY.history.unshift({type:'agent-pass',prompt,response,ts:new Date().toISOString()});
@@ -1208,22 +1216,20 @@ app.post('/api/music/llm', async (req, res) => {
 
 app.post("/api/music/agent-pass-v2", async (req, res) => {
   const prompt = req.body?.prompt || req.body?.message || req.body?.input || "";
-  const result = await tsmAIJSON(`You are TSM Music Command. Return EXACTLY this JSON with 3 options: {"options":[{"label":"Option 1: [short descriptor]","text":"lyrics here"},{"label":"Option 2: [short descriptor]","text":"lyrics here"},{"label":"Option 3: [short descriptor]","text":"lyrics here"}],"hook_score":85,"cadence_score":88,"lex_score":82} Task: ${prompt} Keep lyrics raw, authentic, street. No explanation outside JSON.`, {options:[{label:"Option 1",text:prompt},{label:"Option 2",text:prompt},{label:"Option 3",text:prompt}],hook_score:75,cadence_score:75,lex_score:75});
+  const result = await tsmAIJSON(`You are TSM Music Command. You MUST return EXACTLY 3 options in this JSON. Do not return fewer. All 3 must have different lyrics: {"options":[{"label":"Option 1: [short descriptor]","text":"lyrics here"},{"label":"Option 2: [short descriptor]","text":"lyrics here"},{"label":"Option 3: [short descriptor]","text":"lyrics here"}],"hook_score":85,"cadence_score":88,"lex_score":82} Task: ${prompt} Keep lyrics raw, authentic, street. No explanation outside JSON.`, {options:[{label:"Option 1",text:prompt},{label:"Option 2",text:prompt},{label:"Option 3",text:prompt}],hook_score:75,cadence_score:75,lex_score:75});
   res.json({ok:true, ...result, output: result.options?.[0]?.text || ""});
 });
-app['use']('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
-app['use']((req, res) => res.status(404).send('<pre>404 Not found: ' + req.path + '</pre>'));
-
-// Music export save to server
-app.post('/api/music/export/save', async (req, res) => {
+app.post("/api/music/export/save", async (req, res) => {
   const { content, filename } = req.body || {};
-  if (!content) return res.status(400).json({ ok: false, error: 'No content' });
-  const fs = require('fs');
-  const path = require('path');
-  const dir = path.join(__dirname, 'exports');
+  if (!content) return res.status(400).json({ ok: false, error: "No content" });
+  const fs = require("fs");
+  const path = require("path");
+  const dir = path.join(__dirname, "exports");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-  const fname = filename || 'TSM_Export_' + Date.now() + '.txt';
+  const fname = filename || "TSM_Export_" + Date.now() + ".txt";
   fs.writeFileSync(path.join(dir, fname), content);
-  res.json({ ok: true, url: '/exports/' + fname, filename: fname });
+  res.json({ ok: true, url: "/exports/" + fname, filename: fname });
 });
-
+app.use('/exports', require('express').static(require('path').join(__dirname, 'exports')));
+app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
+app.use((req, res) => res.status(404).send('<pre>404 Not found: ' + req.path + '</pre>'));
