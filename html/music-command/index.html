@@ -241,7 +241,7 @@ window.switchTab = window.switchTab || function(tab) {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
   }
 
   .topbar {
@@ -302,17 +302,18 @@ window.switchTab = window.switchTab || function(tab) {
     padding: 24px;
     scrollbar-width: thin;
     scrollbar-color: var(--bg4) transparent;
+    display: block;
   }
 
   .panel { display: none; }
-  .panel.active { display: flex; }
+  .panel.active { display: block; }
 
   /* METRIC CARDS */
   .metrics-row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
 
   .metric-card {
@@ -362,6 +363,7 @@ window.switchTab = window.switchTab || function(tab) {
   .metric-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
 
   /* SECTION HEADERS */
+  .section-head { margin-bottom: 8px !important; padding-bottom: 4px !important; }
   .section-head {
     display: flex;
     align-items: center;
@@ -409,6 +411,9 @@ window.switchTab = window.switchTab || function(tab) {
     padding-right: 32px;
   }
 
+  .input-group { }
+  #panel-draft .input-group:has(#draft-input) { flex: 1; display: flex; flex-direction: column; }
+  #panel-draft #draft-input { flex: 1; min-height: 280px; }
   .input-group {
     margin-bottom: 16px;
   }
@@ -984,6 +989,15 @@ window.switchTab = window.switchTab || function(tab) {
   .tool-icon { font-size: 28px; margin-bottom: 10px; }
   .tool-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
   .tool-desc { font-size: 11px; color: var(--text3); line-height: 1.5; }
+  /* DRAFT PANEL LAYOUT FIX */
+  #panel-draft { display: flex; flex-direction: column; flex: 1; overflow-y: auto; }
+  #panel-draft > * { flex-shrink: 0; }
+  #panel-draft .input-group:has(#draft-input) { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+  #panel-draft #draft-input { flex: 1 1 auto; min-height: 220px; resize: none; }
+  #music-evolution-panel { flex-shrink: 0 !important; margin-top: auto !important; }
+  #music-commerce-panel { flex-shrink: 0 !important; }
+  /* hide coach bar body by default */
+  #coach-tips-draft { display: none; }
 </style>
 
 <style id="tsm-music-viewport-scroll-fix">
@@ -1028,6 +1042,18 @@ window.switchTab = window.switchTab || function(tab) {
   #music-evolution-panel {
     margin-top: 10px !important;
   }
+  #music-evolution-panel.collapsed .evo-body {
+    display: none !important;
+  }
+  #music-evolution-panel.collapsed {
+    padding: 8px 14px !important;
+  }
+  #evo-toggle-btn {
+    background: none; border: none; color: #a855f7; cursor: pointer;
+    font-size: 11px; padding: 0; letter-spacing: .08em; text-transform: uppercase;
+    font-family: var(--mono); opacity: 0.7; transition: opacity 0.2s;
+  }
+  #evo-toggle-btn:hover { opacity: 1; }
 
   #music-commerce-panel,
   #music-pricing-panel {
@@ -1058,6 +1084,83 @@ window.switchTab = window.switchTab || function(tab) {
     background: rgba(168,85,247,.45);
     border-radius: 999px;
   }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style id="tsm-one-shot-layout">
+/* FINAL LAYOUT FIX — targets .content which is the real scrollable wrapper */
+html, body { height: 100%; overflow: hidden; }
+
+.app { height: 100vh; display: flex; overflow: hidden; }
+.sidebar { flex-shrink: 0; overflow-y: auto; }
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* nav/topbar stays fixed height */
+nav { flex-shrink: 0; }
+
+/* .content is the scrollable area */
+.content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: block !important;
+  padding: 24px !important;
+  min-height: 0 !important;
+}
+
+/* Panels just render naturally in document flow */
+.panel { display: none !important; }
+.panel.active {
+  display: block !important;
+  overflow: visible !important;
+}
+
+/* Draft textarea visible */
+#draft-input {
+  min-height: 200px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.9);
+}
+#draft-input::placeholder { color: rgba(255,255,255,0.2); }
+
+/* Evolution panel — no margin-top:auto pushing to bottom */
+#music-evolution-panel { margin-top: 16px !important; }
+
+/* Guide bar stays compact */
+.tsm-guide-bar { margin-bottom: 12px; }
+.tsm-workflow { margin-bottom: 12px; }
 </style>
 
 </head>
@@ -1159,6 +1262,9 @@ window.switchTab = window.switchTab || function(tab) {
 
     <!-- DRAFT + ANALYSIS PANEL -->
     <div class="panel active" id="panel-draft">
+      <!-- tsm-bar-draft -->
+      <div class="tsm-guide-bar" data-tsm-tab="draft" style="margin:0 0 16px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(20,10,40,0.6);font-size:13px;overflow:hidden;"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa">&#9835; TSM Coach &middot; Draft + Analysis</span><button data-coach-tab="draft" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;">&#10022; Get AI Coaching</button></div><div style="padding:10px 14px;"><div style="background:rgba(20,241,149,0.07);border:1px solid rgba(20,241,149,0.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#14f195;font-weight:600;">👇 START HERE: Paste your lyrics into the large text area below labeled "PASTE YOUR DRAFT"</div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>① Paste your hook, verse, or full draft into the big text box below</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>② Type what you want in "Focused Request" — e.g. "Make the hook stickier" or "Tighten the cadence"</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>③ Pick an Agent (ZAY = flow, DJ = structure, RIYA = imagery) then click RUN AGENT PASS</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>④ Review your scores: Hook Identity, Cadence Control, Lexical Sharpness, Structure Health, DNA Match</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>⑤ Click ITERATE AGAIN to improve — repeat until score rises — then click SAVE TO BANK</span></div><div class="tsm-ai-out" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:rgba(255,255,255,.8);line-height:1.7"></div></div></div>
+      <div class="tsm-workflow"><div class="tsm-step active"><span class="tsm-step-num">✏️</span>Draft</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">✂️</span>Revise</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">✨</span>Generate</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🗂️</span>Song Bank</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🧬</span>Artist DNA</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🎛️</span>Studio</div></div>
       <div class="metrics-row">
         <div class="metric-card gold">
           <div class="metric-label">Hook Identity</div>
@@ -1192,19 +1298,20 @@ window.switchTab = window.switchTab || function(tab) {
         <span class="section-hint">One focused pass at a time gives cleaner results</span>
       </div>
 
-      <div class="quick-prompts">
-        <span class="qp" onclick="setQP('Make this harder, more street')">↑ Street</span>
-        <span class="qp" onclick="setQP('Tighten the cadence, cut filler')">✂ Tighten</span>
-        <span class="qp" onclick="setQP('Boost emotional punch')">❤ Emotion</span>
-        <span class="qp" onclick="setQP('Fix syllable count for sing-along')">🎵 Syllables</span>
-        <span class="qp" onclick="setQP('Make hook more memorable and replay-worthy')">🔁 Replay</span>
-        <span class="qp" onclick="setQP('Add my signature ad-libs throughout')">🎤 Ad-libs</span>
-        <span class="qp" onclick="setQP('Rewrite in my voice and style DNA')">🧬 My Voice</span>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Your Lyrics / Hook / Verse / Draft</label>
-        <textarea id="draft-input" rows="7" placeholder="Paste any draft here — a hook, verse, bridge, or full song..."></textarea>
+      <div class="input-group" style="flex:1;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <label class="input-label" style="margin:0">Your Lyrics / Hook / Verse / Draft</label>
+          <div class="quick-prompts" style="margin:0;flex-wrap:nowrap;gap:5px">
+            <span class="qp" onclick="setQP('Make this harder, more street')">↑ Street</span>
+            <span class="qp" onclick="setQP('Tighten the cadence, cut filler')">✂ Tighten</span>
+            <span class="qp" onclick="setQP('Boost emotional punch')">❤ Emotion</span>
+            <span class="qp" onclick="setQP('Fix syllable count for sing-along')">🎵 Syllables</span>
+            <span class="qp" onclick="setQP('Make hook more memorable and replay-worthy')">🔁 Replay</span>
+            <span class="qp" onclick="setQP('Add my signature ad-libs throughout')">🎤 Ad-libs</span>
+            <span class="qp" onclick="setQP('Rewrite in my voice and style DNA')">🧬 My Voice</span>
+          </div>
+        </div>
+        <textarea id="draft-input" rows="16" style="flex:1;min-height:320px;resize:none;font-size:14px;line-height:1.7;height:100%" placeholder="Paste any draft here — a hook, verse, bridge, or full song..."></textarea>
       </div>
 
       <div class="input-row">
@@ -1232,7 +1339,7 @@ window.switchTab = window.switchTab || function(tab) {
 
       <div class="input-group">
         <label class="input-label">Focused Request — Tell the Agent Exactly What You Want</label>
-        <textarea id="draft-request" rows="3" placeholder="E.g. Make this a dark start to perseverance to setback to triumph..."></textarea>
+        <textarea id="draft-request" rows="5" placeholder="E.g. Make this a dark start to perseverance to setback to triumph..."></textarea>
       </div>
 
       <div class="btn-row">
@@ -1268,6 +1375,9 @@ window.switchTab = window.switchTab || function(tab) {
 
     <!-- REVISION MODE PANEL -->
     <div class="panel" id="panel-revision">
+      <!-- tsm-bar-revision -->
+      <div class="tsm-guide-bar" data-tsm-tab="revision" style="margin:0 0 16px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(20,10,40,0.6);font-size:13px;overflow:hidden;"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa">&#9835; TSM Coach &middot; Revision Mode</span><button data-coach-tab="revision" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;">&#10022; Get AI Coaching</button></div><div style="padding:10px 14px;"><div style="background:rgba(20,241,149,0.07);border:1px solid rgba(20,241,149,0.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#14f195;font-weight:600;">👇 START HERE: Paste the draft you want to revise into Box 1 "Current Draft — What You Want Revised"</div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>① Box 1: Paste the draft lines you want changed</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>② Box 2: Write exact edit instructions — "Add pre-hook", "Make darker", "Tighten syllables"</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>③ Box 3: Paste lines that must NOT change — the agent will protect these exactly</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>④ Box 4: List 3 output styles you want back — e.g. "street anthem / emotional trap / live energy"</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>⑤ Click RUN REVISION MODE — pick the strongest of the 3 options — click SAVE TO BANK</span></div><div class="tsm-ai-out" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:rgba(255,255,255,.8);line-height:1.7"></div></div></div>
+      <div class="tsm-workflow"><div class="tsm-step done"><span class="tsm-step-num">✏️</span>Draft</div><span class="tsm-step-arrow">→</span><div class="tsm-step active"><span class="tsm-step-num">✂️</span>Revise</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">✨</span>Generate</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🗂️</span>Song Bank</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🧬</span>Artist DNA</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🎛️</span>Studio</div></div>
       <div class="section-head">
         <span class="section-title">✂ True Revision Mode — Cleaner Than One-Box Prompting</span>
         <span class="section-hint">Fill each box precisely for the best output</span>
@@ -1337,6 +1447,9 @@ window.switchTab = window.switchTab || function(tab) {
 
     <!-- GENERATE PANEL -->
     <div class="panel" id="panel-generate">
+      <!-- tsm-bar-generate -->
+      <div class="tsm-guide-bar" data-tsm-tab="generate" style="margin:0 0 16px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(20,10,40,0.6);font-size:13px;overflow:hidden;"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa">&#9835; TSM Coach &middot; Generate</span><button data-coach-tab="generate" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;">&#10022; Get AI Coaching</button></div><div style="padding:10px 14px;"><div style="background:rgba(20,241,149,0.07);border:1px solid rgba(20,241,149,0.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#14f195;font-weight:600;">👇 START HERE: Pick what to generate from the "What to Generate" dropdown — start with "Hook Options"</div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>① Dropdown: pick Hook Options, Full Verse, Bridge, Ad-lib Sheet, or Full Song Skeleton</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>② Tone/Feel: pick the mood — Triumphant, Dark, Street, Melodic, Hyper, Vulnerable</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>③ Concept box: describe your idea — "Phoenix rising, pressure became power"</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>④ Reference Lines (optional): paste 1-2 of your own lines so AI matches your voice</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>⑤ Click GENERATE or GENERATE FROM DNA — then SAVE TO BANK or REFINE IN REVISION</span></div><div class="tsm-ai-out" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:rgba(255,255,255,.8);line-height:1.7"></div></div></div>
+      <div class="tsm-workflow"><div class="tsm-step done"><span class="tsm-step-num">✏️</span>Draft</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✂️</span>Revise</div><span class="tsm-step-arrow">→</span><div class="tsm-step active"><span class="tsm-step-num">✨</span>Generate</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🗂️</span>Song Bank</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🧬</span>Artist DNA</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🎛️</span>Studio</div></div>
       <div class="section-head">
         <span class="section-title">Generate New Material</span>
         <span class="section-hint">Start from scratch or from an idea</span>
@@ -1410,6 +1523,23 @@ window.switchTab = window.switchTab || function(tab) {
 
     <!-- SONG BANK -->
     <div class="panel" id="panel-songbank">
+      <!-- tsm-bar-songbank -->
+      <div class="tsm-guide-bar" data-tsm-tab="songbank" style="margin:0 0 16px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(20,10,40,0.6);font-size:13px;overflow:hidden;"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa">&#9835; TSM Coach &middot; Song Bank</span><button data-coach-tab="songbank" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;">&#10022; Get AI Coaching</button></div><div style="padding:10px 14px;"><div style="background:rgba(20,241,149,0.07);border:1px solid rgba(20,241,149,0.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#14f195;font-weight:600;">👇 Your saved songs appear as cards below — click any card to load it back into Draft or Revision</div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>① Every time you click SAVE TO BANK in Draft or Revision, it appears here as a card</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>② Click LOAD on any card to bring it back into the Draft panel for more work</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>③ Click LEARN FROM SONG to feed that song into your Artist DNA profile</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>④ Click EXPORT TXT to download the full song as a text file for your DAW or notes</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>⑤ Use the + New button top-right to start a fresh song from scratch</span></div><div class="tsm-ai-out" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:rgba(255,255,255,.8);line-height:1.7"></div></div></div>
+      <div class="tsm-workflow"><div class="tsm-step done"><span class="tsm-step-num">✏️</span>Draft</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✂️</span>Revise</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✨</span>Generate</div><span class="tsm-step-arrow">→</span><div class="tsm-step active"><span class="tsm-step-num">🗂️</span>Song Bank</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🧬</span>Artist DNA</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🎛️</span>Studio</div></div>
+      <div id="tsm-full-song-viewer" style="display:none;margin-bottom:16px;border-radius:10px;border:1px solid rgba(20,241,149,0.3);background:rgba(5,20,10,0.8);overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(20,241,149,0.08);border-bottom:1px solid rgba(20,241,149,0.2);">
+          <span style="font-size:12px;font-weight:600;color:#14f195" id="tsm-song-viewer-title">Complete Song</span>
+          <button onclick="document.getElementById('tsm-full-song-viewer').style.display='none'" 
+            style="background:none;border:none;color:rgba(20,241,149,0.5);cursor:pointer;font-size:16px;">✕</button>
+        </div>
+        <div id="tsm-song-viewer-content" style="padding:14px;font-family:monospace;font-size:13px;color:rgba(255,255,255,0.85);line-height:1.8;white-space:pre-wrap;max-height:400px;overflow-y:auto;"></div>
+        <div style="padding:10px 14px;border-top:1px solid rgba(20,241,149,0.15);display:flex;gap:8px;">
+          <button onclick="navigator.clipboard.writeText(document.getElementById('tsm-song-viewer-content').textContent)" 
+            style="font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid rgba(20,241,149,0.4);background:rgba(20,241,149,0.1);color:#14f195;cursor:pointer;">Copy Full Song</button>
+          <button onclick="refineFullSong()" 
+            style="font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid rgba(167,139,250,0.4);background:rgba(124,58,237,0.1);color:#a78bfa;cursor:pointer;">✂ Refine in Revision</button>
+        </div>
+      </div>
       <div class="section-head">
         <span class="section-title">Song Bank</span>
         <button class="btn btn-secondary" onclick="switchTab('generate')" style="font-size:12px;padding:6px 14px;">+ New</button>
@@ -1450,6 +1580,9 @@ window.switchTab = window.switchTab || function(tab) {
 
     <!-- ARTIST DNA PANEL -->
     <div class="panel" id="panel-dna">
+      <!-- tsm-bar-artistdna -->
+      <div class="tsm-guide-bar" data-tsm-tab="artistdna" style="margin:0 0 16px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(20,10,40,0.6);font-size:13px;overflow:hidden;"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa">&#9835; TSM Coach &middot; Artist DNA</span><button data-coach-tab="artistdna" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;">&#10022; Get AI Coaching</button></div><div style="padding:10px 14px;"><div style="background:rgba(20,241,149,0.07);border:1px solid rgba(20,241,149,0.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#14f195;font-weight:600;">👇 START HERE: Add your signature ad-libs in the SIGNATURE AD-LIBS box — these get woven into every output</div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>① Add your ad-libs: yeah, uh, let's go, ay — these appear automatically in every generation</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>② Add Vocabulary & Slang words that are native to your voice — pressure, on sight, locked in</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>③ Add Flow Patterns — triplets on the 3, pause-punch delivery, double-time</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>④ Add Themes & Motifs — Phoenix rising, loyalty, perseverance — AI uses these as your creative lens</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>⑤ Click ANALYZE MY DNA to lock in your profile — all future generations will match your style</span></div><div class="tsm-ai-out" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:rgba(255,255,255,.8);line-height:1.7"></div></div></div>
+      <div class="tsm-workflow"><div class="tsm-step done"><span class="tsm-step-num">✏️</span>Draft</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✂️</span>Revise</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✨</span>Generate</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">🗂️</span>Song Bank</div><span class="tsm-step-arrow">→</span><div class="tsm-step active"><span class="tsm-step-num">🧬</span>Artist DNA</div><span class="tsm-step-arrow">→</span><div class="tsm-step "><span class="tsm-step-num">🎛️</span>Studio</div></div>
       <div class="section-head">
         <span class="section-title">🧬 Artist DNA — Your Creative Blueprint</span>
         <span class="section-hint">Everything here shapes every output</span>
@@ -1549,6 +1682,9 @@ window.switchTab = window.switchTab || function(tab) {
 
     <!-- STUDIO TOOLS PANEL -->
     <div class="panel" id="panel-studio">
+      <!-- tsm-bar-studiotools -->
+      <div class="tsm-guide-bar" data-tsm-tab="studiotools" style="margin:0 0 16px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(20,10,40,0.6);font-size:13px;overflow:hidden;"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);"><span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa">&#9835; TSM Coach &middot; Studio Tools</span><button data-coach-tab="studiotools" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;">&#10022; Get AI Coaching</button></div><div style="padding:10px 14px;"><div style="background:rgba(20,241,149,0.07);border:1px solid rgba(20,241,149,0.25);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12.5px;color:#14f195;font-weight:600;">👇 START HERE: Use the tools above to polish your finalized lyrics before export</div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>① GENERATE 10 HOOKS: batch-generates 10 hook variants for A/B testing with your team</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>② EXPORT TXT: packages your full song (hook + verse + bridge + ad-libs) as a clean text file</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>③ SAVE ARTIST SESSION: saves your entire workspace — DNA, songs, and settings</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>④ Metaphor Lab: paste a theme and get 5 metaphor options to elevate your imagery</span></div><div style="display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);margin-bottom:5px"><span>⑤ When ready — set your monetization tier and export for your DAW session</span></div><div class="tsm-ai-out" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07);font-size:12px;color:rgba(255,255,255,.8);line-height:1.7"></div></div></div>
+      <div class="tsm-workflow"><div class="tsm-step done"><span class="tsm-step-num">✏️</span>Draft</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✂️</span>Revise</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">✨</span>Generate</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">🗂️</span>Song Bank</div><span class="tsm-step-arrow">→</span><div class="tsm-step done"><span class="tsm-step-num">🧬</span>Artist DNA</div><span class="tsm-step-arrow">→</span><div class="tsm-step active"><span class="tsm-step-num">🎛️</span>Studio</div></div>
       <div class="section-head">
         <span class="section-title">Studio Tools</span>
         <span class="section-hint">Precision instruments for your craft</span>
@@ -1674,14 +1810,19 @@ function buildDNAContext() {
 }
 
 // API CALL
-async function callClaude(systemPrompt, userPrompt, loadingId, callback) {
+async function callGroq(systemPrompt, userPrompt, loadingId, callback) {
   const loading = document.getElementById(loadingId);
   if (loading) { loading.classList.add('show'); loading.innerHTML = `<div><div style="text-align:center;margin-bottom:8px;color:var(--text2);font-family:var(--font-mono);font-size:12px;">Agent pass running...</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>`; }
 
   try {
-    const resp = await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: input || document.getElementById('draft-input')?.value || ''})});
+    const resp = await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: userPrompt || systemPrompt || document.getElementById('draft-input')?.value || ''})});
     const data = await resp.json();
-    const text = data.content?.map(b => b.text || '').join('') || '';
+    // server returns {ok, output} not Anthropic {content:[]} format
+    const text = data.output
+      || data.content?.map(b => b.text || '').join('')
+      || data.result
+      || data.text
+      || '';
     if (loading) loading.classList.remove('show');
     callback(text);
     updateSessionTime();
@@ -1711,7 +1852,7 @@ Keep lyrics raw, authentic, and true to the artist's voice. No explanation text.
 
   const user = `DRAFT:\n${draft}\n\nAGENT: ${agent}\nPRIORITY: ${priority}\nREQUEST: ${request || 'Analyze and improve this draft'}`;
 
-  callClaude(sys, user, 'draft-loading', (text) => {
+  callGroq(sys, user, 'draft-loading', (text) => {
     try {
       const clean = text.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
@@ -1776,7 +1917,7 @@ Preserve exactly what is marked to protect. Apply edits precisely. No explanatio
 
   const user = `CURRENT DRAFT:\n${current}\n\nEDIT INSTRUCTIONS:\n${edit}\n\nPROTECT:\n${protect || 'Nothing specified'}\n\nOUTPUT OPTIONS REQUESTED:\n${options || 'Agent decides'}\n\nAGENT: ${agent}\nFORMAT: ${format}`;
 
-  callClaude(sys, user, 'rev-loading', (text) => {
+  callGroq(sys, user, 'rev-loading', (text) => {
     try {
       const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
       const out = document.getElementById('rev-output');
@@ -1819,7 +1960,7 @@ Raw, authentic, no fluff.`;
 
   const user = `TYPE: ${type}\nTONE: ${tone}\nCONCEPT: ${concept}\n${ref ? 'REFERENCE LINES (match this voice):\n' + ref : ''}`;
 
-  callClaude(sys, user, 'gen-loading', (text) => {
+  callGroq(sys, user, 'gen-loading', (text) => {
     try {
       const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
       const out = document.getElementById('gen-output');
@@ -1914,7 +2055,7 @@ function analyzeFromDNA() {
   const sys = `You are a music A&R and style analyst. Analyze the artist's DNA and produce a sharp, useful creative profile.
 Return plain text — no JSON. Be specific, sharp, honest. Keep it under 200 words. Focus on what makes them unique.`;
 
-  callClaude(sys, `ARTIST DNA:\n${dnaCtx}\n\nAnalyze this artist's unique style, strengths, signature elements, and what distinguishes them. Be specific and actionable.`, 'dna-loading', (text) => {
+  callGroq(sys, `ARTIST DNA:\n${dnaCtx}\n\nAnalyze this artist's unique style, strengths, signature elements, and what distinguishes them. Be specific and actionable.`, 'dna-loading', (text) => {
     const out = document.getElementById('dna-output');
     out.style.display = 'block';
     document.getElementById('dna-out-content').textContent = text;
@@ -1923,7 +2064,7 @@ Return plain text — no JSON. Be specific, sharp, honest. Keep it under 200 wor
 }
 
 function loadDemoDNA() {
-  STATE.dna.adlibs = ['yeah!', 'let\'s go', 'ay', 'run it', 'uh'];
+  STATE.dna.adlibs = ["yeah!", "let's go", "ay", "run it", "uh"];
   STATE.dna.vocab = ['pressure', 'weight to gold', 'on sight', 'the bag', 'locked in'];
   STATE.dna.flow = ['triplets on the 3', 'pause-punch delivery', 'hook elongation'];
   STATE.dna.themes = ['Phoenix rising', 'loyalty', 'street to success', 'city energy'];
@@ -1972,14 +2113,14 @@ function runTool() {
     concept: `Expand this seed idea into a full song concept with theme, story arc, verse focus, hook message, and bridge purpose:\n"${input}"`,
     structure: `Build a complete song structure outline for: "${input}". Include intro, verse 1, pre-hook, hook, verse 2, bridge, outro. Describe what each section does emotionally.`,
     metaphor: `Generate 15 fresh, vivid metaphors for "${input}". Avoid clichés. Raw, visual, street-literate. Numbered list.`,
-    adlib: `Insert these ad-libs: ${STATE.dna.adlibs.join(', ') || 'yeah, let\'s go, ay'} naturally into these lyrics at the right moments. Return the full lyrics with (ad-lib) in parentheses:\n\n${input}`,
+    adlib: `Insert these ad-libs: ${STATE.dna.adlibs.join(', ') || "yeah, let's go, ay"} naturally into these lyrics at the right moments. Return the full lyrics with (ad-lib) in parentheses:\n\n${input}`,
     contrast: `This is the dark verse:\n${input}\n\nWrite a triumphant, uplifting hook that contrasts perfectly — same themes, opposite emotional resolution. Give 3 hook options.`,
     replay: `Optimize this hook for maximum replay value and memorability:\n"${input}"\n\nReturn 3 improved versions with notes on what makes each more sticky. Match artist's voice.`
   };
 
   const sys = `You are a precision music craft tool. ${dnaCtx ? 'ARTIST DNA:\n' + dnaCtx : ''} Be specific, raw, and useful. No fluff.`;
 
-  callClaude(sys, prompts[activeTool], 'dna-loading', (text) => {
+  callGroq(sys, prompts[activeTool], 'dna-loading', (text) => {
     document.getElementById('tool-out-content').textContent = text;
     STATE.lastOutput.tool = text;
   });
@@ -1999,9 +2140,42 @@ function copyOutput(mode) {
   navigator.clipboard.writeText(text.replace(/<br>/g,'\n')).then(() => showNotif('Copied!'));
 }
 
+
+function refineFullSong() {
+  var txt = document.getElementById('tsm-song-viewer-content');
+  if (!txt) return;
+  var el = document.getElementById('rev-draft-text');
+  if (el) el.value = txt.textContent;
+  document.querySelector('[data-tab="revision"], #tab-revision, [onclick*="revision"]')?.click();
+}
+
+function tsmViewFullSong(song) {
+  var viewer = document.getElementById('tsm-full-song-viewer');
+  var title  = document.getElementById('tsm-song-viewer-title');
+  var body   = document.getElementById('tsm-song-viewer-content');
+  if (!viewer || !body) return;
+  title.textContent = (song.title || 'Complete Song') + ' — Full View';
+  var parts = [];
+  if (song.hook)      parts.push('HOOK:\n' + song.hook);
+  if (song.verse)     parts.push('VERSE:\n' + song.verse);
+  if (song.bridge)    parts.push('BRIDGE:\n' + song.bridge);
+  if (song.adlibs)    parts.push('AD-LIBS:\n' + song.adlibs);
+  if (song.structure) parts.push('STRUCTURE:\n' + song.structure);
+  if (song.content)   parts.push(song.content);
+  if (song.lyrics)    parts.push(song.lyrics);
+  if (song.text)      parts.push(song.text);
+  body.textContent = parts.length ? parts.join('\n\n') : JSON.stringify(song, null, 2);
+  viewer.style.display = 'block';
+  viewer.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
 function saveToBank(mode) {
+  if (!STATE.bank) STATE.bank = [];
   const text = STATE.lastOutput[mode];
   if (!text) { showNotif('Nothing to save'); return; }
+  const entry = { text: typeof text === 'string' ? text : JSON.parse(text)?.[0]?.text || text, mode, ts: new Date().toISOString(), label: mode.toUpperCase() + ' · ' + new Date().toLocaleDateString() };
+  STATE.bank.push(entry);
+  renderBank();
   showNotif('💾 Saved to Bank');
 }
 
@@ -2526,7 +2700,7 @@ window.addEventListener('load', musicSuiteBoot);
     let panel = document.getElementById('music-evolution-panel');
     if(!panel){
       panel = document.createElement('section');
-      panel.id = 'music-evolution-panel';
+      panel.id = 'music-evolution-panel'; panel.classList.add('collapsed');
       panel.style.cssText = `
         margin-top:14px;
         padding:14px;
@@ -2555,22 +2729,22 @@ window.addEventListener('load', musicSuiteBoot);
     const color = decisionColor(decision);
 
     panel.innerHTML = `
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
-        <div>
-          <div style="font-family:var(--mono);font-size:.58rem;color:#14f195;letter-spacing:.14em;text-transform:uppercase">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="font-family:var(--mono);font-size:.58rem;color:#14f195;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap">
             Music Decision Engine · Evolution Timeline
           </div>
-          <h3 style="margin:6px 0 4px;font-family:var(--head);color:${color}">
-            ${decision} · ${hit.percent || 0}%
-          </h3>
-          <div style="font-size:.75rem;color:var(--text2)">
-            ${hit.label || 'No hit label'} · Score Delta ${data.delta >= 0 ? '+' : ''}${data.delta || 0}
+          <div style="font-size:.72rem;color:var(--text2);white-space:nowrap">
+            ${decision} · ${hit.percent || 0}% · Delta ${data.delta >= 0 ? '+' : ''}${data.delta || 0}
           </div>
         </div>
-        <button class="btn btn-purple" onclick="refreshMusicEvolutionPanel()">Refresh Evolution</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          <button class="btn btn-purple" style="padding:4px 10px;font-size:11px" onclick="refreshMusicEvolutionPanel()">↺ Refresh</button>
+          <button id="evo-toggle-btn" onclick="(function(){var p=document.getElementById('music-evolution-panel');p.classList.toggle('collapsed');document.getElementById('evo-toggle-btn').textContent=p.classList.contains('collapsed')?'▼ Expand':'▲ Collapse';})()">▲ Collapse</button>
+        </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:12px">
+      <div class="evo-body"><div style="display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:12px">
         <div>
           <div style="font-family:var(--mono);font-size:.55rem;color:#a855f7;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">
             Hit Trajectory
@@ -2621,6 +2795,7 @@ window.addEventListener('load', musicSuiteBoot);
           </div>
         </div>
       </div>
+    </div>
     `;
   };
 
@@ -2752,28 +2927,37 @@ window.addEventListener('load', musicSuiteBoot);
 
     if(!panel){
       panel = document.createElement('section');
-      panel.id = 'music-commerce-panel';
+      panel.id = 'music-commerce-panel'; panel.classList.add('collapsed');
       panel.style.cssText = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
-      const target = document.getElementById('mainContent') || document.querySelector('main') || document.body;
+      const target = document.getElementById('panel-draft') || document.body;
       target.appendChild(panel);
     }
 
     const tiers = data?.monetization?.tiers || {};
     panel.innerHTML = `
-      <div style="font-family:var(--mono);font-size:.58rem;color:#a855f7;text-transform:uppercase;letter-spacing:.14em">Monetization Layer</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
-        ${Object.values(tiers).map(t => `
-          <div style="border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px;background:rgba(255,255,255,.03)">
-            <div style="color:var(--text);font-weight:700">${t.name}</div>
-            <div style="font-family:var(--mono);color:#14f195;margin-top:4px">$${t.price}/mo</div>
-            <div style="font-size:.7rem;color:var(--text2);margin-top:4px">${t.hooks} hooks · ${t.sessions} sessions</div>
-          </div>
-        `).join('')}
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--mono);font-size:.58rem;color:#a855f7;text-transform:uppercase;letter-spacing:.14em">💰 Monetization Layer</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" style="padding:4px 10px;font-size:11px" onclick="exportCurrentMusicSession()">Export TXT</button>
+          <button class="btn" style="padding:4px 10px;font-size:11px" onclick="saveCurrentArtistSession()">Save Session</button>
+          <button id="commerce-toggle-btn" style="background:none;border:none;color:#a855f7;cursor:pointer;font-size:11px;padding:0;letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)" onclick="(function(){var p=document.getElementById('music-commerce-panel');p.classList.toggle('collapsed');document.getElementById('commerce-toggle-btn').textContent=p.classList.contains('collapsed')?'▼ Expand':'▲ Collapse';})()">▼ Expand</button>
+        </div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-        <button class="btn btn-purple" onclick="generateTenHooksUpsell()">Generate 10 Hooks · $25</button>
-        <button class="btn" onclick="exportCurrentMusicSession()">Export TXT</button>
-        <button class="btn" onclick="saveCurrentArtistSession()">Save Artist Session</button>
+      <div class="evo-body">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+          ${Object.values(tiers).map(t => `
+            <div style="border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px;background:rgba(255,255,255,.03)">
+              <div style="color:var(--text);font-weight:700">${t.name}</div>
+              <div style="font-family:var(--mono);color:#14f195;margin-top:4px">$${t.price}/mo</div>
+              <div style="font-size:.7rem;color:var(--text2);margin-top:4px">${t.hooks} hooks · ${t.sessions} sessions</div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn btn-purple" onclick="generateTenHooksUpsell()">Generate 10 Hooks · $25</button>
+          <button class="btn" onclick="exportCurrentMusicSession()">Export TXT</button>
+          <button class="btn" onclick="saveCurrentArtistSession()">Save Artist Session</button>
+        </div>
       </div>
     `;
 
@@ -2846,8 +3030,9 @@ window.addEventListener('load', musicSuiteBoot);
     return data;
   };
 
-  window.showMusicModule ActiveModal = async function(reason){
+  window.showMusicModuleActiveModal = async function(reason){
     const data = await musicBilling.state();
+    if (!data?.billing?.tiers) return;
     const tiers = data.billing.tiers;
 
     let modal = document.getElementById('music-upgrade-modal');
@@ -2882,10 +3067,11 @@ window.addEventListener('load', musicSuiteBoot);
       panel = document.createElement('section');
       panel.id = 'music-pricing-panel';
       panel.style.cssText = 'margin-top:14px;padding:14px;border:1px solid rgba(168,85,247,.28);background:rgba(5,10,20,.96);border-radius:10px;';
-      const target = document.getElementById('mainContent') || document.querySelector('main') || document.body;
+      const target = document.getElementById('panel-draft') || document.body;
       target.appendChild(panel);
     }
 
+    if (!data?.billing?.tiers) return;
     const tiers = data.billing.tiers;
 
     panel.innerHTML = `
@@ -3008,7 +3194,7 @@ window.addEventListener('load', musicSuiteBoot);
   // ── Styles ─────────────────────────────────────────────────────────────────
   const style = document.createElement('style');
   style.textContent = `
-    #tsm-coach-fab {
+    #tsm-coach-fab { display:none !important; /* hidden - redundant with tab coaching */ 
       position: fixed; bottom: 24px; right: 24px; z-index: 9999;
       width: 52px; height: 52px; border-radius: 50%;
       background: linear-gradient(135deg, #7c3aed, #4f46e5);
@@ -3319,7 +3505,7 @@ Intro → Verse 1 → Pre-Hook → Hook → Verse 2 → Bridge → Final Hook �
     if(!out){
       out = document.createElement("pre");
       out.id = "musicOutput";
-      out.style.cssText = "position:fixed;left:250px;bottom:90px;right:360px;max-height:220px;overflow:auto;z-index:9998;background:#07111b;color:#d9f3ff;border:1px solid #00f59f;border-radius:14px;padding:14px;white-space:pre-wrap;font-family:monospace";
+      out.style.cssText = "position:relative;max-height:300px;overflow:auto;z-index:1;background:#07111b;color:#d9f3ff;border:1px solid #00f59f;border-radius:14px;padding:14px;white-space:pre-wrap;font-family:monospace;margin:8px 0";
       document.body.appendChild(out);
     }
     out.textContent = response;
@@ -3360,23 +3546,1346 @@ Intro → Verse 1 → Pre-Hook → Hook → Verse 2 → Bridge → Final Hook �
   };
 
   function addActionBar(){
-    if($("tsmMusicActionBar")) return;
-    const bar = document.createElement("div");
-    bar.id = "tsmMusicActionBar";
-    bar.style.cssText = "position:fixed;left:250px;bottom:20px;right:360px;z-index:9999;background:#05090d;border:1px solid #00f59f;border-radius:14px;padding:12px;display:flex;gap:10px;flex-wrap:wrap;box-shadow:0 0 28px rgba(0,245,159,.18)";
-    bar.innerHTML = `
-      <button onclick="generateHook()" style="background:#00f59f;color:#001018;border:0;border-radius:9px;padding:10px 12px;font-weight:900">GENERATE HOOK</button>
-      <button onclick="generateBridge()" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:9px;padding:10px 12px;font-weight:900">BUILD BRIDGE</button>
-      <button onclick="placeAdlibs()" style="background:transparent;color:#ffc857;border:1px solid #ffc857;border-radius:9px;padding:10px 12px;font-weight:900">PLACE AD-LIBS</button>
-      <button onclick="runStructureBuilder()" style="background:transparent;color:#c084fc;border:1px solid #c084fc;border-radius:9px;padding:10px 12px;font-weight:900">SONG STRUCTURE</button>
-    `;
-    document.body.appendChild(bar);
+    // Disabled — buttons now exist in static HTML monetization section
   }
-
-  setTimeout(addActionBar,700);
   console.log("✅ TSM Music solid compatibility active");
 })();
 </script>
 
+
+
+
+
+
+
+<script id="tsm-coach-v4">
+(function(){
+'use strict';
+var TIPS = {
+  draft:[
+    ["Paste lyrics in the left panel, then hit Analyze to score cadence, emotion, structure and imagery."],
+    ["Use Iterate Again after each analysis — each pass sharpens your score toward hit potential."],
+    ["Low cadence score? Break long lines into two shorter punchy lines."],
+    ["Check the Evolution Timeline to see which revision moved your score the most."]
+  ],
+  revision:[
+    ["Use Revision Mode to compare your current draft against a rewritten version side by side."],
+    ["Focus on the hook first — if the first 8 bars do not grab, the rest will not matter."],
+    ["Try the Tighten button to cut filler words and sharpen each line automatically."],
+    ["Use Save to Song Bank after each strong revision — never lose a good version."]
+  ],
+  generate:[
+    ["Generate Hook creates 3 hook variants based on your Artist DNA — pick the strongest and build from it."],
+    ["Build Bridge generates an emotional pivot — use it when your song needs a moment of contrast."],
+    ["Place Ad-Libs adds signature vocal punctuation in the right spots automatically."],
+    ["Song Structure maps your full layout — use it before generating sections so everything fits."]
+  ],
+  songbank:[
+    ["Tag songs by mood, tempo, and release readiness so you can filter your catalog instantly."],
+    ["Mark your top 3 unreleased tracks — these should be your next revision priority."],
+    ["Sort by Last Modified to find drafts you have abandoned — they often have hidden gems."],
+    ["Export TXT from any song to share with a producer or co-writer without losing your format."]
+  ],
+  artistdna:[
+    ["Your DNA profile trains every AI generation — the more specific you are, the more on-brand the output."],
+    ["Add 3 to 5 sonic influences (artists, not genres) — this helps AI nail your sound."],
+    ["Write your Emotional Signature as one sentence: I make music that makes people feel ___."],
+    ["Style keywords are the most powerful DNA field — use adjectives like raw, cinematic, punchy."]
+  ],
+  studiotools:[
+    ["Run the Vocal Chain preset that matches your DNA style before recording — it sets the right tone."],
+    ["Use Beat Match to lock your syllable flow to the target BPM before writing."],
+    ["Key Analyzer finds the best key for your vocal range — always check this before a session."],
+    ["Write Mix Notes using: [element] sounds [adjective], needs [action] — producers love clarity."]
+  ]
+};
+
+var TAB_LABELS = {
+  draft:"Draft + Analysis", revision:"Revision Mode", generate:"Generate",
+  songbank:"Song Bank", artistdna:"Artist DNA", studiotools:"Studio Tools"
+};
+
+var ICONS = ["🎯","🔁","💡","📊"];
+
+function getTab(){
+  var tabs = document.querySelectorAll("[class*=tab], [role=tab], nav button");
+  for(var i=0;i<tabs.length;i++){
+    var t = tabs[i]; var txt = (t.textContent||"").toLowerCase();
+    var active = t.classList.contains("active")||t.getAttribute("aria-selected")==="true";
+    if(!active) continue;
+    if(txt.indexOf("draft")>-1||txt.indexOf("analysis")>-1) return "draft";
+    if(txt.indexOf("revision")>-1) return "revision";
+    if(txt.indexOf("generate")>-1) return "generate";
+    if(txt.indexOf("song bank")>-1) return "songbank";
+    if(txt.indexOf("dna")>-1||txt.indexOf("artist")>-1) return "artistdna";
+    if(txt.indexOf("studio")>-1) return "studiotools";
+  }
+  var side = document.querySelector(".active");
+  if(side){
+    var st = (side.textContent||"").toLowerCase();
+    if(st.indexOf("draft")>-1) return "draft";
+    if(st.indexOf("revision")>-1) return "revision";
+    if(st.indexOf("generate")>-1) return "generate";
+    if(st.indexOf("song")>-1) return "songbank";
+    if(st.indexOf("dna")>-1) return "artistdna";
+    if(st.indexOf("studio")>-1) return "studiotools";
+  }
+  return "draft";
+}
+
+function getLyrics(){
+  var els = document.querySelectorAll("textarea,[contenteditable=true]");
+  for(var i=0;i<els.length;i++){
+    var v=(els[i].value||els[i].textContent||"").trim();
+    if(v.length>15) return v.slice(0,500);
+  }
+  return "";
+}
+
+function makeBar(tabKey){
+  var tips = TIPS[tabKey]||TIPS.draft;
+  var label = TAB_LABELS[tabKey]||"Guide";
+  var bar = document.createElement("div");
+  bar.id = "tsm-guide-bar";
+  bar.style.cssText = "margin:0 0 14px;border-radius:10px;border:1px solid rgba(124,58,237,0.35);background:rgba(124,58,237,0.07);font-size:13px;overflow:hidden;";
+
+  var hdr = document.createElement("div");
+  hdr.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(124,58,237,0.14);border-bottom:1px solid rgba(124,58,237,0.2);cursor:pointer;";
+  hdr.innerHTML = "<span style='font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a78bfa'>♪ TSM Coach &middot; "+label+"</span>";
+
+  var actions = document.createElement("div");
+  actions.style.cssText = "display:flex;gap:8px;align-items:center;";
+
+  var askBtn = document.createElement("button");
+  askBtn.textContent = "✦ Get AI Coaching";
+  askBtn.style.cssText = "font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(167,139,250,0.5);background:rgba(124,58,237,0.15);color:#a78bfa;cursor:pointer;";
+
+  var tog = document.createElement("button");
+  tog.textContent = "▲";
+  tog.style.cssText = "background:none;border:none;color:rgba(167,139,250,0.5);cursor:pointer;font-size:11px;";
+
+  actions.appendChild(askBtn);
+  actions.appendChild(tog);
+  hdr.appendChild(actions);
+  bar.appendChild(hdr);
+
+  var body = document.createElement("div");
+  body.style.cssText = "padding:12px 14px;";
+
+  var tipsDiv = document.createElement("div");
+  tipsDiv.style.cssText = "display:flex;flex-direction:column;gap:6px;";
+  tips.forEach(function(t,i){
+    var row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;font-size:12px;color:rgba(255,255,255,0.65);padding:5px 8px;border-radius:6px;background:rgba(255,255,255,0.04);border-left:2px solid rgba(124,58,237,0.4);";
+    row.innerHTML = "<span style='flex-shrink:0'>"+ICONS[i%4]+"</span><span>"+t[0]+"</span>";
+    tipsDiv.appendChild(row);
+  });
+  body.appendChild(tipsDiv);
+
+  var aiDiv = document.createElement("div");
+  aiDiv.style.cssText = "display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.07);";
+  aiDiv.innerHTML = "<div style='font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(167,139,250,0.5);margin-bottom:8px'>AI Coaching</div><div class=tsm-ai-out style='font-size:12.5px;color:rgba(255,255,255,.82);line-height:1.7'></div>";
+  body.appendChild(aiDiv);
+  bar.appendChild(body);
+
+  // toggle
+  var collapsed = false;
+  function toggleBar(){
+    collapsed=!collapsed;
+    body.style.display=collapsed?"none":"";
+    tog.textContent=collapsed?"▼":"▲";
+  }
+  hdr.addEventListener("click",toggleBar);
+  tog.addEventListener("click",function(e){e.stopPropagation();toggleBar();});
+
+  // AI fetch
+  askBtn.addEventListener("click",function(e){
+    e.stopPropagation();
+    aiDiv.style.display="block";
+    var out = aiDiv.querySelector(".tsm-ai-out");
+    out.innerHTML="<span style='opacity:.5'>Loading coaching...</span>";
+    askBtn.disabled=true; askBtn.textContent="...";
+    fetch("/api/music/coach",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({tab:tabKey,lyrics:getLyrics()})
+    }).then(function(r){return r.json();}).then(function(d){
+      if(d.ok){
+        var html = "";
+        if(d.headline) html += "<strong style='color:#c4b5fd;font-size:13px'>"+d.headline+"</strong><br><br>";
+        if(d.coaching) html += d.coaching + "<br><br>";
+        if(d.quick_tips&&d.quick_tips.length){
+          html += "<ul>" + d.quick_tips.map(function(t){return "<li>"+t+"</li>";}).join("") + "</ul>";
+        }
+        if(d.example_before&&d.example_after){
+          html += "<div style='margin-top:8px;padding:8px;background:rgba(0,0,0,0.3);border-radius:6px;font-size:11px'>";
+          html += "<span style='color:rgba(255,100,100,0.7)'>&#x2715; "+d.example_before+"</span><br>";
+          html += "<span style='color:rgba(100,255,150,0.8)'>&#x2713; "+d.example_after+"</span></div>";
+        }
+        if(d.next_step){
+          html += "<div style='margin-top:8px;font-size:11px;color:#a78bfa'>&#x27A1; "+d.next_step+"</div>";
+        }
+        out.innerHTML = html || "No coaching returned.";
+      } else {
+        out.innerHTML="<span style='color:rgba(255,100,100,.8)'>Error: "+(d.error||"unknown")+"</span>";
+      }
+      askBtn.disabled=false; askBtn.textContent="↻ Refresh";
+    }).catch(function(err){
+      out.innerHTML="<span style='color:rgba(255,100,100,.8)'>Network error</span>";
+      askBtn.disabled=false; askBtn.textContent="↻ Refresh";
+    });
+  });
+
+  return bar;
+}
+
+function inject(tabKey){
+  var bars = document.querySelectorAll(".tsm-guide-bar");
+  bars.forEach(function(b){ b.style.display = b.dataset.tsmTab===tabKey?"block":"none"; });
+}
+
+// collapse generation box
+function collapseBox(){
+  var btns = Array.from(document.querySelectorAll("button"));
+  var hb = btns.find(function(b){return b.textContent.toLowerCase().indexOf("generate hook")>-1;});
+  if(!hb) return;
+  var box=hb.parentElement;
+  for(var i=0;i<6;i++){
+    if(!box||box===document.body) break;
+    var all=Array.from(box.querySelectorAll("button"));
+    if(all.some(function(b){return b.textContent.toLowerCase().indexOf("generate hook")>-1;})&&
+       all.some(function(b){return b.textContent.toLowerCase().indexOf("build bridge")>-1;})) break;
+    box=box.parentElement;
+  }
+  if(!box||box===document.body||box.dataset.tsmDone) return;
+  box.dataset.tsmDone="1";
+  if(window.getComputedStyle(box).position==="static") box.style.position="relative";
+  var cb=document.createElement("button");
+  cb.textContent="✕";
+  cb.title="Collapse";
+  cb.style.cssText="position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:14px;cursor:pointer;z-index:999;";
+  var open=true;
+  cb.addEventListener("click",function(e){
+    e.stopPropagation(); open=!open; cb.textContent=open?"✕":"▼";
+    Array.from(box.children).forEach(function(c){if(c!==cb)c.style.display=open?"":"none";});
+  });
+  box.appendChild(cb);
+}
+
+var lastTab=null;
+function check(){
+  var t=getTab();
+  if(t!==lastTab){lastTab=t;inject(t);}
+}
+
+document.addEventListener("click",function(){setTimeout(check,250);});
+setInterval(check,2000);
+check();
+setTimeout(collapseBox,500);
+setTimeout(collapseBox,1500);
+new MutationObserver(collapseBox).observe(document.body,{childList:true,subtree:true});
+
+// Wire up Get AI Coaching buttons
+document.addEventListener("click", function(e) {
+  var btn = e.target.closest("[data-coach-tab]");
+  if (!btn) return;
+  e.stopPropagation();
+  var tabKey = btn.dataset.coachTab;
+  var bar = btn.closest(".tsm-guide-bar");
+  if (!bar) return;
+  var out = bar.querySelector(".tsm-ai-out");
+  if (!out) return;
+  out.style.display = "block";
+  out.innerHTML = "<span style='opacity:.5'>Loading coaching...</span>";
+  btn.disabled = true;
+  btn.textContent = "...";
+  fetch("/api/music/coach", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({tab: tabKey, lyrics: getLyrics()})
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (d.ok) {
+      var h = "";
+      if (d.headline) h += "<strong style='color:#c4b5fd'>" + d.headline + "</strong><br><br>";
+      if (d.coaching) h += d.coaching + "<br><br>";
+      if (d.quick_tips && d.quick_tips.length) {
+        h += "<ul style='margin:4px 0;padding-left:16px'>" + 
+          d.quick_tips.map(function(t){ return "<li style='margin-bottom:4px'>" + t + "</li>"; }).join("") + 
+          "</ul>";
+      }
+      if (d.example_before && d.example_after) {
+        h += "<div style='margin-top:8px;padding:8px;background:rgba(0,0,0,0.3);border-radius:6px;font-size:11px'>";
+        h += "<div style='color:rgba(255,100,100,0.8);margin-bottom:4px'>&#x2715; " + d.example_before + "</div>";
+        h += "<div style='color:rgba(100,255,150,0.8)'>&#x2713; " + d.example_after + "</div></div>";
+      }
+      if (d.next_step) {
+        h += "<div style='margin-top:8px;font-size:11px;color:#a78bfa'>&#x27A1; Next: " + d.next_step + "</div>";
+      }
+      out.innerHTML = h || "No coaching returned.";
+    } else {
+      out.innerHTML = "<span style='color:rgba(255,100,100,.8)'>Error: " + (d.error || "unknown") + "</span>";
+    }
+    btn.disabled = false;
+    btn.textContent = "↻ Refresh";
+    btn.innerHTML = "&#10022; Get AI Coaching";
+  }).catch(function(err) {
+    out.innerHTML = "<span style='color:rgba(255,100,100,.8)'>Network error</span>";
+    btn.disabled = false;
+    btn.innerHTML = "&#10022; Get AI Coaching";
+  });
+});
+
+})();
+</script>
 </body>
 </html>
+<script id="tsm-action-fix">
+// Fix mismatched function names
+window.buildBridge = window.generateBridge;
+window.songStructure = window.runStructureBuilder;
+window.placeAdLibs = window.placeAdlibs;
+
+// Unified action runner with visible output
+window.runAction = async function(label, prompt) {
+  const out = document.getElementById('gen-output') || document.getElementById('agent-output');
+  const content = document.getElementById('gen-out-content') || document.getElementById('output-content');
+  if (out) out.style.display = 'block';
+  if (content) content.textContent = 'Running ' + label + '...';
+  const data = await musicSafeFetch("/api/music/agent-pass", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({prompt})
+  });
+  const result = data.output || data.response || data.result || JSON.stringify(data);
+  if (content) content.textContent = result;
+  return result;
+};
+
+// Rewire all action buttons to use runAction
+window.generateHook = () => runAction('Hook Generator', 'Generate 3 strong hook options with ad-libs for: ' + (document.getElementById('draft-input')?.value || ''));
+window.buildBridge = () => runAction('Bridge Builder', 'Write a powerful bridge and emotional turning point for: ' + (document.getElementById('draft-input')?.value || ''));
+window.placeAdlibs = () => runAction('Ad-lib Placer', 'Place signature ad-libs naturally throughout these lyrics: ' + (document.getElementById('draft-input')?.value || ''));
+window.runStructureBuilder = () => runAction('Song Structure', 'Build complete song structure (intro, verse, pre-hook, hook, verse 2, bridge, outro) for: ' + (document.getElementById('draft-input')?.value || ''));
+</script>
+<style>
+#tsm-action-fab { position:fixed;bottom:24px;right:24px;z-index:99999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#14f195);border:none;cursor:pointer;font-size:22px;box-shadow:0 4px 20px rgba(124,58,237,0.5);transition:transform .2s; }
+#tsm-action-fab:hover { transform:scale(1.1); }
+#tsm-action-popup { display:none;position:fixed;bottom:86px;right:24px;z-index:99998;background:rgba(10,5,30,0.97);border:1px solid rgba(124,58,237,0.6);border-radius:14px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,0.6);min-width:280px; }
+#tsm-action-popup.open { display:block; }
+.tsm-act-row { display:flex;flex-wrap:wrap;gap:8px; }
+.tsm-act-btn { padding:8px 14px;border-radius:8px;border:2px solid;cursor:pointer;font-weight:700;font-size:12px;letter-spacing:.05em;background:transparent;transition:all .2s; }
+.tsm-act-btn:hover { opacity:.8; }
+.tsm-act-close { position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:16px; }
+</style>
+<button id="tsm-action-fab" onclick="document.getElementById('tsm-action-popup').classList.toggle('open')">⚡</button>
+<div id="tsm-action-popup">
+  <button class="tsm-act-close" onclick="document.getElementById('tsm-action-popup').classList.remove('open')">✕</button>
+  <div class="tsm-act-row">
+    <button class="tsm-act-btn" style="color:#14f195;border-color:#14f195;" onclick="generateHook();document.getElementById('tsm-action-popup').classList.remove('open')">GENERATE HOOK</button>
+    <button class="tsm-act-btn" style="color:#fff;border-color:#fff;" onclick="buildBridge();document.getElementById('tsm-action-popup').classList.remove('open')">BUILD BRIDGE</button>
+    <button class="tsm-act-btn" style="color:#f59e0b;border-color:#f59e0b;" onclick="placeAdlibs();document.getElementById('tsm-action-popup').classList.remove('open')">PLACE AD-LIBS</button>
+    <button class="tsm-act-btn" style="color:#a78bfa;border-color:#a78bfa;" onclick="runStructureBuilder();document.getElementById('tsm-action-popup').classList.remove('open')">SONG STRUCTURE</button>
+  </div>
+</div>
+<script id="tsm-action-fix-v2">
+// Fix runAction to use the correct output panel
+window.runAction = async function(label, prompt) {
+  const out = document.getElementById('gen-output');
+  if (out) out.style.display = 'block';
+  showDraftOutputRaw('Running ' + label + '...');
+  try {
+    const data = await musicSafeFetch("/api/music/agent-pass", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({prompt})
+    });
+    const result = data.output || data.response || data.result || JSON.stringify(data);
+    showDraftOutputRaw(result);
+    // Switch to Draft+Analysis tab to show result
+    if (typeof switchTab === 'function') switchTab('draft');
+  } catch(e) {
+    showDraftOutputRaw('Error: ' + e.message);
+  }
+};
+</script>
+<style id="tsm-workflow-styles">
+#tsm-workflow {
+  position: sticky; top: 0; z-index: 888;
+  background: linear-gradient(135deg, rgba(10,5,30,0.98), rgba(20,10,50,0.98));
+  border-bottom: 1px solid rgba(124,58,237,0.4);
+  padding: 10px 16px; font-size: 12px;
+}
+#tsm-workflow-steps {
+  display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap;
+}
+.tsm-wf-step {
+  padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700;
+  letter-spacing: .06em; cursor: pointer; border: 1px solid rgba(124,58,237,0.3);
+  color: rgba(255,255,255,0.4); background: transparent; transition: all .2s;
+}
+.tsm-wf-step.active {
+  background: rgba(124,58,237,0.3); border-color: #a78bfa; color: #a78bfa;
+}
+.tsm-wf-step.done {
+  background: rgba(20,241,149,0.1); border-color: #14f195; color: #14f195;
+}
+#tsm-workflow-body {
+  display: flex; align-items: center; gap: 10px;
+}
+#tsm-workflow-tip {
+  flex: 1; color: rgba(255,255,255,0.85); line-height: 1.5;
+}
+#tsm-workflow-tip strong { color: #14f195; }
+#tsm-wf-next {
+  padding: 6px 16px; border-radius: 8px; border: none; cursor: pointer;
+  background: linear-gradient(135deg,#7c3aed,#14f195); color: #000;
+  font-weight: 800; font-size: 11px; letter-spacing: .05em; white-space: nowrap;
+}
+#tsm-wf-prev {
+  padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+  background: transparent; color: rgba(255,255,255,0.5); cursor: pointer;
+  font-size: 11px; white-space: nowrap;
+}
+#tsm-wf-toggle {
+  background: none; border: none; color: rgba(255,255,255,0.3);
+  cursor: pointer; font-size: 11px; white-space: nowrap;
+}
+</style>
+
+<script id="tsm-workflow-engine">
+(function(){
+  const STEPS = [
+    {
+      id: 'dna', tab: 'dna', label: '1 · DNA',
+      title: 'Set Your Artist DNA',
+      tip: '<strong>START HERE.</strong> Go to <strong>Artist DNA</strong> → fill in your Style, Influences, and Vocab. This is what makes every AI output sound like <em>you</em>, not generic. Hit <strong>Save DNA</strong> when done.'
+    },
+    {
+      id: 'draft', tab: 'draft', label: '2 · Draft',
+      title: 'Paste Your Draft',
+      tip: '<strong>Paste your lyrics</strong> in the text area. Even a rough idea, a hook line, or a concept works. Then hit <strong>Run Agent Pass</strong> to get AI analysis — structure, score, and next steps.'
+    },
+    {
+      id: 'generate', tab: 'generate', label: '3 · Generate',
+      title: 'Generate Hook & Options',
+      tip: '<strong>Pick what to generate</strong> from the dropdown (start with Hook Options). Set the Tone/Feel, describe your concept, then hit <strong>GENERATE</strong>. Save anything you like to the Song Bank.'
+    },
+    {
+      id: 'revision', tab: 'revision', label: '4 · Revise',
+      title: 'Refine Your Best Lines',
+      tip: '<strong>Paste your current draft</strong> in box 1. Tell the AI what to change in box 2. Protect your best lines in box 3. Pick your output style in box 4. Hit <strong>Run Revision</strong>.'
+    },
+    {
+      id: 'adlibs', tab: 'draft', label: '5 · Ad-libs',
+      title: 'Place Ad-libs',
+      tip: 'Hit the <strong>⚡ button</strong> bottom-right → click <strong>PLACE AD-LIBS</strong>. The AI will naturally insert your signature ad-libs throughout the draft. Review and keep what fits your delivery.'
+    },
+    {
+      id: 'songbank', tab: 'songbank', label: '6 · Bank',
+      title: 'Save to Song Bank',
+      tip: 'Go to <strong>Song Bank</strong> and review everything saved. Drag your best hook, verse, bridge, and ad-libs into order. This is your master reference before export.'
+    },
+    {
+      id: 'studio', tab: 'studio', label: '7 · Export',
+      title: 'Polish & Export',
+      tip: 'Go to <strong>Studio Tools</strong> → use <strong>Rhyme Engine</strong> or <strong>Syllable Counter</strong> for final polish. Then hit <strong>Export TXT</strong> to get a clean DAW-ready file with your full song.'
+    }
+  ];
+
+  let current = 0;
+  let done = new Set();
+  let collapsed = false;
+
+  function render() {
+    const s = STEPS[current];
+    document.getElementById('tsm-workflow-steps').innerHTML = STEPS.map((st, i) => {
+      let cls = 'tsm-wf-step';
+      if (i === current) cls += ' active';
+      else if (done.has(i)) cls += ' done';
+      return `<button class="${cls}" onclick="window._wfGoto(${i})">${st.label}</button>`;
+    }).join('');
+    document.getElementById('tsm-workflow-tip').innerHTML =
+      `<strong style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step ${current+1} of ${STEPS.length}: ${s.title}</strong><br>${s.tip}`;
+    document.getElementById('tsm-wf-body-wrap').style.display = collapsed ? 'none' : 'flex';
+    document.getElementById('tsm-wf-toggle').textContent = collapsed ? '▼ Show guide' : '▲ Hide';
+  }
+
+  function goto(i) {
+    done.add(current);
+    current = i;
+    const tab = STEPS[i].tab;
+    if (typeof switchTab === 'function') switchTab(tab);
+    render();
+  }
+
+  window._wfGoto = goto;
+  window._wfNext = () => { if (current < STEPS.length-1) goto(current+1); };
+  window._wfPrev = () => { if (current > 0) goto(current-1); };
+  window._wfToggle = () => { collapsed = !collapsed; render(); };
+
+  // Inject HTML
+  const nav = document.querySelector('.nav, .tabs, #panel-draft')?.parentElement
+    || document.querySelector('.content')
+    || document.body;
+
+  const el = document.createElement('div');
+  el.id = 'tsm-workflow';
+  el.innerHTML = `
+    <div id="tsm-workflow-steps"></div>
+    <div id="tsm-wf-body-wrap" style="display:flex;align-items:center;gap:10px;">
+      <div id="tsm-workflow-tip" style="flex:1;color:rgba(255,255,255,0.85);line-height:1.5;font-size:12px;"></div>
+      <button id="tsm-wf-prev" onclick="window._wfPrev()">← Back</button>
+      <button id="tsm-wf-next" onclick="window._wfNext()">Next Step →</button>
+      <button id="tsm-wf-toggle" onclick="window._wfToggle()">▲ Hide</button>
+    </div>
+  `;
+
+  // Insert before the main nav
+  const mainNav = document.querySelector(".tab-bar");
+  const contentDiv = document.querySelector(".content"); if (contentDiv) contentDiv.prepend(el); else if (mainNav) mainNav.after(el);
+  else document.body.prepend(el);
+
+  render();
+})();
+</script>
+<style id="tsm-layout-fix-v2">
+/* Fill dead space at bottom */
+.content { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.panel.active { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; }
+#panel-draft { flex: 1; }
+#draft-input { flex: 1; min-height: 0; }
+</style>
+<script id="tsm-response-fix">
+// Fix agent pass response handler — server returns data.output
+const _origSafeFetch = window.musicSafeFetch;
+window.musicSafeFetch = async function(url, opts={}, retries=3) {
+  const data = await _origSafeFetch(url, opts, retries);
+  // Normalize response so all handlers find what they need
+  if (data && data.ok && data.output && !data.text && !data.result) {
+    data.text = data.output;
+    data.result = data.output;
+    data.content = [{ type: 'text', text: data.output }];
+  }
+  return data;
+};
+</script>
+<style id="tsm-height-fix">
+.main { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.content { flex: 1; overflow-y: auto; min-height: 0; padding-bottom: 80px; }
+#panel-draft { min-height: 100%; }
+#draft-output, #agent-output { min-height: 200px; }
+</style>
+<script id="tsm-studio-fix">
+// Fix Export TXT to grab from draft-input or last output
+window.exportCurrentMusicSession = function() {
+  const draft = document.getElementById('draft-input')?.value || '';
+  const agentOut = document.getElementById('gen-out-content')?.textContent || '';
+  const revOut = document.getElementById('rev-out-options')?.innerText || '';
+  const content = [
+    draft ? '=== DRAFT ===\n' + draft : '',
+    agentOut ? '\n=== AGENT OUTPUT ===\n' + agentOut : '',
+    revOut ? '\n=== REVISION ===\n' + revOut : ''
+  ].filter(Boolean).join('\n') || 'No content to export yet.';
+  const blob = new Blob([content], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TSM_Song_' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// Add Export bar to Studio Tools panel
+document.addEventListener('DOMContentLoaded', () => {
+  const studioPanel = document.getElementById('panel-studio');
+  if (!studioPanel) return;
+  const bar = document.createElement('div');
+  bar.style = 'display:flex;gap:10px;padding:12px 0 4px;flex-wrap:wrap;';
+  bar.innerHTML = `
+    <button class="btn btn-primary" onclick="exportCurrentMusicSession()" style="flex:1">📄 Export TXT</button>
+    <button class="btn" onclick="saveCurrentArtistSession?.()" style="flex:1">💾 Save Session</button>
+    <button class="btn btn-purple" onclick="generateTenHooksUpsell?.()" style="flex:1">🎣 Generate 10 Hooks</button>
+  `;
+  studioPanel.insertBefore(bar, studioPanel.querySelector('.studio-tools-grid') || studioPanel.firstChild);
+});
+</script>
+<script id="tsm-bank-fix">
+window.renderBank = function() {
+  const grid = document.getElementById('bank-grid');
+  if (!grid) return;
+  const bank = STATE.bank || [];
+  if (!bank.length) {
+    grid.innerHTML = '<div style="color:rgba(255,255,255,0.3);padding:20px;text-align:center;font-size:13px;">No songs saved yet — hit Save to Bank after running an agent pass.</div>';
+    return;
+  }
+  grid.innerHTML = bank.map((item, i) => `
+    <div class="song-card" style="border:1px solid rgba(124,58,237,0.3);border-radius:10px;padding:14px;background:rgba(20,10,40,0.6);cursor:pointer;">
+      <div style="font-size:11px;color:#a78bfa;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">${item.label}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;max-height:80px;overflow:hidden;">${(item.text||'').slice(0,200)}...</div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button onclick="loadFromBank(${i})" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(20,241,149,0.4);background:transparent;color:#14f195;cursor:pointer;">Load</button>
+        <button onclick="STATE.bank.splice(${i},1);renderBank()" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(255,100,100,0.3);background:transparent;color:rgba(255,100,100,0.7);cursor:pointer;">Remove</button>
+      </div>
+    </div>
+  `).join('');
+};
+
+// Re-render bank when tab is switched
+const _origSwitch = window.switchTab;
+window.switchTab = function(tab) {
+  _origSwitch(tab);
+  if (tab === 'songbank') renderBank();
+};
+</script>
+<script id="tsm-export-server">
+window.exportCurrentMusicSession = async function() {
+  const draft = document.getElementById('draft-input')?.value || '';
+  const agentOut = document.getElementById('gen-out-content')?.textContent || '';
+  const revOut = document.getElementById('rev-out-options')?.innerText || '';
+  const content = [
+    draft ? '=== DRAFT ===\n' + draft : '',
+    agentOut ? '\n=== AGENT OUTPUT ===\n' + agentOut : '',
+    revOut ? '\n=== REVISION ===\n' + revOut : ''
+  ].filter(Boolean).join('\n') || 'No content to export yet.';
+  const filename = 'TSM_Song_' + new Date().toISOString().slice(0,10) + '_' + Date.now() + '.txt';
+  const resp = await fetch('/api/music/export/save', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ content, filename })
+  });
+  const data = await resp.json();
+  if (data.ok) {
+    const url = 'https://tsm-shell.fly.dev' + data.url;
+    showNotif('Export saved! Copy link below');
+    // Show link in output area
+    const out = document.getElementById('gen-out-content') || document.getElementById('draft-output');
+    if (out) out.innerHTML = '<div style="padding:12px;background:rgba(20,241,149,0.1);border:1px solid rgba(20,241,149,0.3);border-radius:8px;margin-top:10px"><div style="color:#14f195;font-weight:700;margin-bottom:6px">Export Ready</div><a href="' + url + '" target="_blank" style="color:#a78bfa;word-break:break-all">' + url + '</a></div>';
+  }
+};
+</script>
+<script id="tsm-next-action">
+// After every AI response, show a clear "What's next?" prompt
+function showNextAction(context) {
+  const actions = {
+    'draft': {
+      msg: '✅ Agent pass complete!',
+      tip: 'Happy with this output? Click <strong>Save to Bank</strong> to keep it. Want to refine it? Click <strong>→ Revision Mode</strong>. Need a hook? Hit the <strong>⚡ button → Generate Hook</strong>.',
+      buttons: [
+        { label: '💾 Save to Bank', fn: "saveToBank('draft')" },
+        { label: '✂ Refine in Revision', fn: "sendToRevision()" },
+        { label: '⚡ Generate Hook', fn: "generateHook()" }
+      ]
+    },
+    'revision': {
+      msg: '✅ Revision complete!',
+      tip: 'Pick the option that hits hardest. Click it to select, then <strong>Save to Bank</strong> or send back for another pass.',
+      buttons: [
+        { label: '💾 Save to Bank', fn: "saveToBank('rev')" },
+        { label: '🔁 Run Again', fn: "runRevision()" }
+      ]
+    },
+    'generate': {
+      msg: '✅ Generated!',
+      tip: 'Select the option you want, then <strong>Save to Bank</strong> or <strong>Refine in Revision Mode</strong>.',
+      buttons: [
+        { label: '💾 Save to Bank', fn: "saveToBank('gen')" },
+        { label: '✂ Refine', fn: "refineGenerated()" }
+      ]
+    }
+  };
+  const a = actions[context];
+  if (!a) return;
+  const existing = document.getElementById('tsm-next-action-bar');
+  if (existing) existing.remove();
+  const bar = document.createElement('div');
+  bar.id = 'tsm-next-action-bar';
+  bar.style = 'margin:12px 0;padding:12px 14px;border-radius:10px;border:1px solid rgba(20,241,149,0.3);background:rgba(20,241,149,0.06);font-size:13px;';
+  bar.innerHTML = `
+    <div style="color:#14f195;font-weight:700;margin-bottom:6px">${a.msg}</div>
+    <div style="color:rgba(255,255,255,0.8);margin-bottom:10px;line-height:1.6">${a.tip}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${a.buttons.map(b => `<button onclick="${b.fn}" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(20,241,149,0.4);background:rgba(20,241,149,0.1);color:#14f195;cursor:pointer;font-size:12px;font-weight:600">${b.label}</button>`).join('')}
+    </div>
+  `;
+  // Insert after output area
+  const targets = {
+    draft: document.getElementById('agent-output') || document.getElementById('draft-output'),
+    revision: document.getElementById('rev-output'),
+    generate: document.getElementById('gen-output')
+  };
+  const target = targets[context];
+  if (target) target.after(bar);
+}
+
+// Hook into existing output renderers
+const _origShowDraftOutputRaw = window.showDraftOutputRaw;
+window.showDraftOutputRaw = function(text) {
+  _origShowDraftOutputRaw(text);
+  if (!text.startsWith('Running') && !text.startsWith('Error')) showNextAction('draft');
+};
+</script>
+<script id="tsm-guidance-fix">
+// Override step 3 (Generate) and step 5 (Ad-libs) tips with detailed guidance
+const _origWfRender = window._wfGoto;
+
+// Patch STEPS tips for Generate and Ad-libs
+document.addEventListener('DOMContentLoaded', () => {
+  // Update Generate Hook / Ad-libs FAB button tooltips
+  const fabPopup = document.getElementById('tsm-action-popup');
+  if (fabPopup) {
+    fabPopup.innerHTML = `
+      <button class="tsm-act-close" onclick="document.getElementById('tsm-action-popup').classList.remove('open')">✕</button>
+      <div style="font-size:11px;color:#a78bfa;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Quick Actions — When to Use</div>
+      <div class="tsm-act-row">
+        <div style="width:100%;margin-bottom:8px">
+          <button class="tsm-act-btn" style="color:#14f195;border-color:#14f195;width:100%;text-align:left;padding:10px 14px" onclick="generateHook();document.getElementById('tsm-action-popup').classList.remove('open')">
+            <div style="font-weight:800">⚡ GENERATE HOOK</div>
+            <div style="font-size:10px;opacity:.7;font-weight:400;margin-top:3px">Use when: You have a verse/concept but your hook isn't landing. AI generates 3 hook options matched to your DNA.</div>
+          </button>
+        </div>
+        <div style="width:100%;margin-bottom:8px">
+          <button class="tsm-act-btn" style="color:#fff;border-color:#fff;width:100%;text-align:left;padding:10px 14px" onclick="buildBridge();document.getElementById('tsm-action-popup').classList.remove('open')">
+            <div style="font-weight:800">🌉 BUILD BRIDGE</div>
+            <div style="font-size:10px;opacity:.7;font-weight:400;margin-top:3px">Use when: You have a hook + verse but the song needs a turning point. Bridge shifts emotion before the final hook.</div>
+          </button>
+        </div>
+        <div style="width:100%;margin-bottom:8px">
+          <button class="tsm-act-btn" style="color:#f59e0b;border-color:#f59e0b;width:100%;text-align:left;padding:10px 14px" onclick="placeAdlibs();document.getElementById('tsm-action-popup').classList.remove('open')">
+            <div style="font-weight:800">🎤 PLACE AD-LIBS</div>
+            <div style="font-size:10px;opacity:.7;font-weight:400;margin-top:3px">Use when: Lyrics are mostly done. AI places your signature ad-libs (yeah, uh, let's go) at natural performance moments.</div>
+          </button>
+        </div>
+        <div style="width:100%">
+          <button class="tsm-act-btn" style="color:#a78bfa;border-color:#a78bfa;width:100%;text-align:left;padding:10px 14px" onclick="runStructureBuilder();document.getElementById('tsm-action-popup').classList.remove('open')">
+            <div style="font-weight:800">🏗 SONG STRUCTURE</div>
+            <div style="font-size:10px;opacity:.7;font-weight:400;margin-top:3px">Use when: Starting from scratch or need a full blueprint. Generates Intro→Verse→Pre-Hook→Hook→Bridge→Outro layout.</div>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+});
+
+// Studio Tools next action guidance
+const _origOpenTool = window.openTool;
+window.openTool = function(tool) {
+  if (_origOpenTool) _origOpenTool(tool);
+  const tips = {
+    rhyme: 'Paste a word or line → get multi-syllable rhyme schemes. Use to tighten cadence and find words that flow.',
+    syllable: 'Paste your lyrics → counts syllables per line. Use to match flow across verses and hooks.',
+    structure: 'Paste full draft → get a complete Intro→Hook→Outro blueprint with ad-lib suggestions.',
+    adlib: 'Paste your hook or verse → AI inserts your DNA ad-libs at the right performance moments.',
+    title: 'Paste your concept or hook → get 10 title options. Use when you need a name before pitching.',
+    metaphor: 'Paste a theme or feeling → get 5 metaphor options to elevate your imagery.'
+  };
+  const tip = tips[tool];
+  if (!tip) return;
+  showNotif('💡 ' + tip, 4000);
+};
+</script>
+<script id="tsm-options-fix">
+// Route all agent calls through v2 for structured options
+const _origFetch = window.musicSafeFetch;
+window.musicSafeFetch = async function(url, opts={}, retries=3) {
+  if (url === '/api/music/agent-pass') url = '/api/music/agent-pass-v2';
+  return _origFetch(url, opts, retries);
+};
+
+// Fix selectOption to actually load selected text into draft
+window.selectOption = function(idx, mode) {
+  try {
+    const opts = JSON.parse(STATE.lastOutput[mode]);
+    const selected = opts[idx];
+    if (!selected) return;
+    // Highlight selected card
+    document.querySelectorAll('.option-card').forEach((c,i) => {
+      c.style.border = i === idx ? '2px solid #14f195' : '';
+    });
+    STATE.selectedOption = selected.text;
+    showNotif('✅ Option ' + (idx+1) + ' selected — Save to Bank or Refine');
+    // Show action bar
+    const bar = document.getElementById('tsm-next-action-bar');
+    if (bar) {
+      bar.innerHTML = `
+        <div style="color:#14f195;font-weight:700;margin-bottom:8px">Option ${idx+1} selected</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="saveSelectedToBank()" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(20,241,149,0.4);background:rgba(20,241,149,0.1);color:#14f195;cursor:pointer;font-weight:600">💾 Save to Bank</button>
+          <button onclick="loadSelectedToDraft()" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(167,139,250,0.4);background:rgba(124,58,237,0.1);color:#a78bfa;cursor:pointer;font-weight:600">✏ Load to Draft</button>
+          <button onclick="loadSelectedToRevision()" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;font-weight:600">✂ Refine in Revision</button>
+        </div>
+      `;
+    }
+  } catch(e) { console.error(e); }
+};
+
+window.saveSelectedToBank = function() {
+  if (!STATE.selectedOption) return showNotif('Select an option first');
+  if (!STATE.bank) STATE.bank = [];
+  STATE.bank.push({ text: STATE.selectedOption, label: 'SELECTED · ' + new Date().toLocaleDateString(), ts: new Date().toISOString() });
+  renderBank();
+  showNotif('💾 Saved to Bank');
+};
+
+window.loadSelectedToDraft = function() {
+  if (!STATE.selectedOption) return;
+  const el = document.getElementById('draft-input');
+  if (el) { el.value = STATE.selectedOption; switchTab('draft'); }
+};
+
+window.loadSelectedToRevision = function() {
+  if (!STATE.selectedOption) return;
+  const el = document.getElementById('rev-current');
+  if (el) { el.value = STATE.selectedOption; switchTab('revision'); }
+};
+</script>
+<script id="tsm-callfixv2">
+// Patch callGroq to handle structured options from server
+const _origCallClaude = window.callGroq;
+window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) {
+  const loading = document.getElementById(loadingId);
+  if (loading) loading.classList.add('show');
+  try {
+    const resp = await fetch('/api/music/agent-pass', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({prompt: userPrompt || systemPrompt || document.getElementById('draft-input')?.value || ''})
+    });
+    const data = await resp.json();
+    if (loading) loading.classList.remove('show');
+    // If server returned structured options, render them directly
+    if (data.options && data.options.length > 0) {
+      showDraftOutput(data);
+      updateMetrics && updateMetrics(data);
+      showNextAction('draft');
+    } else {
+      callback(data.output || data.response || data.text || '');
+    }
+    updateSessionTime && updateSessionTime();
+  } catch(e) {
+    if (loading) loading.classList.remove('show');
+    callback('Error running agent pass. Please try again.');
+  }
+};
+</script>
+<style id="tsm-assistant-styles">
+#tsm-smart-assistant {
+  position: fixed; bottom: 90px; right: 24px; z-index: 9997;
+  width: 320px; background: rgba(10,5,30,0.97);
+  border: 1px solid rgba(124,58,237,0.5); border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6); font-size: 13px;
+  transition: all .3s;
+}
+#tsm-assistant-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: rgba(124,58,237,0.15);
+  border-bottom: 1px solid rgba(124,58,237,0.2); border-radius: 14px 14px 0 0;
+}
+#tsm-assistant-title { color: #a78bfa; font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+#tsm-assistant-toggle { background: none; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 14px; }
+#tsm-assistant-body { padding: 12px 14px; }
+#tsm-assistant-msg { color: rgba(255,255,255,.9); line-height: 1.6; margin-bottom: 10px; }
+#tsm-assistant-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.tsm-ast-btn {
+  padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(20,241,149,0.4);
+  background: rgba(20,241,149,0.08); color: #14f195; cursor: pointer;
+  font-size: 11px; font-weight: 700;
+}
+</style>
+
+<div id="tsm-smart-assistant">
+  <div id="tsm-assistant-header">
+    <span id="tsm-assistant-title">🤖 TSM Assistant</span>
+    <button id="tsm-assistant-toggle" onclick="tsmAssistantToggle()">▼</button>
+  </div>
+  <div id="tsm-assistant-body">
+    <div id="tsm-assistant-msg">👋 Welcome! Start by clicking <strong>1 · DNA</strong> above to set your artist style. This makes every AI output sound like you.</div>
+    <div id="tsm-assistant-actions">
+      <button class="tsm-ast-btn" onclick="switchTab('dna');tsmAssistantUpdate('dna')">Go to Artist DNA →</button>
+    </div>
+  </div>
+</div>
+
+<script id="tsm-assistant-engine">
+(function(){
+  let collapsed = false;
+
+  window.tsmAssistantToggle = function() {
+    collapsed = !collapsed;
+    document.getElementById('tsm-assistant-body').style.display = collapsed ? 'none' : 'block';
+    document.getElementById('tsm-assistant-toggle').textContent = collapsed ? '▲' : '▼';
+  };
+
+  const STATES = {
+    dna: {
+      msg: '🧬 Fill in your <strong>Style</strong>, <strong>Influences</strong>, and <strong>Vocab</strong> fields. The more detail you add, the more the AI sounds like you. Hit <strong>Save DNA Profile</strong> when done.',
+      actions: [{ label: 'Done → Go to Draft', fn: "switchTab('draft');tsmAssistantUpdate('draft_empty')" }]
+    },
+    draft_empty: {
+      msg: '✏️ <strong>Paste your lyrics</strong> into the text area below. Even 2 lines works. Then hit <strong>Run Agent Pass</strong> to get 3 AI-generated options.',
+      actions: [{ label: 'Load Demo to Try', fn: "loadDemoContent();tsmAssistantUpdate('draft_ready')" }]
+    },
+    draft_ready: {
+      msg: '▶️ Lyrics are in! Hit <strong>Run Agent Pass</strong> to generate 3 different versions. The AI will analyze structure, hook strength, and cadence.',
+      actions: [{ label: 'Run Agent Pass', fn: "runDraftAnalysis();tsmAssistantUpdate('options_shown')" }]
+    },
+    options_shown: {
+      msg: '👆 <strong>Click the option card</strong> that hits hardest. Each one is a different take on your lyrics. Once selected, you can Save it, Load it to Draft, or Refine it in Revision.',
+      actions: [
+        { label: 'Save Best to Bank', fn: "saveToBank('draft');tsmAssistantUpdate('saved')" },
+        { label: 'Refine in Revision', fn: "sendToRevision();tsmAssistantUpdate('revision')" }
+      ]
+    },
+    saved: {
+      msg: '💾 Saved! Now use the <strong>⚡ button</strong> bottom-right to place ad-libs or build a bridge. Or go to <strong>Revision Mode</strong> to tighten specific lines.',
+      actions: [
+        { label: '⚡ Place Ad-libs', fn: "placeAdlibs();tsmAssistantUpdate('adlibs')" },
+        { label: 'Refine in Revision', fn: "switchTab('revision');tsmAssistantUpdate('revision')" }
+      ]
+    },
+    revision: {
+      msg: '✂️ In <strong>Revision Mode</strong>: ① Paste current draft in box 1 ② Tell AI what to change in box 2 ③ Protect your best lines in box 3 ④ Hit <strong>Run Revision</strong>.',
+      actions: [{ label: 'Run Revision Now', fn: "runRevision();tsmAssistantUpdate('revised')" }]
+    },
+    revised: {
+      msg: '✅ Revised! Pick the version you like. Then either <strong>Save to Bank</strong> or use the <strong>⚡ Generate Hook</strong> to craft a catchier hook.',
+      actions: [
+        { label: 'Save to Bank', fn: "saveToBank('rev');tsmAssistantUpdate('saved')" },
+        { label: 'Generate Hook', fn: "generateHook();tsmAssistantUpdate('hook')" }
+      ]
+    },
+    adlibs: {
+      msg: '🎤 Ad-libs placed! Review them and keep what fits your delivery. Now go to <strong>Song Bank</strong> to review everything saved, then <strong>Export TXT</strong> when ready.',
+      actions: [
+        { label: 'View Song Bank', fn: "switchTab('songbank');tsmAssistantUpdate('bank')" },
+        { label: 'Export Song', fn: "exportCurrentMusicSession()" }
+      ]
+    },
+    bank: {
+      msg: '🗂️ Your saved pieces are here. Click <strong>Load</strong> on any card to bring it back for more work. When your full song is ready, go to <strong>Studio Tools → Export TXT</strong>.',
+      actions: [
+        { label: 'Go to Studio Tools', fn: "switchTab('studio');tsmAssistantUpdate('studio')" }
+      ]
+    },
+    studio: {
+      msg: '🎛️ Final polish time! Use <strong>Rhyme Engine</strong> for rhyme schemes, <strong>Syllable Counter</strong> to match flow, or <strong>Ad-lib Placer</strong> for performance markers. Then hit <strong>Export TXT</strong>.',
+      actions: [
+        { label: 'Export My Song', fn: "exportCurrentMusicSession()" },
+        { label: 'Start New Song', fn: "switchTab('draft');document.getElementById('draft-input').value='';tsmAssistantUpdate('draft_empty')" }
+      ]
+    },
+    hook: {
+      msg: '🎣 Hook generated! Compare it to your original. If it\'s stronger, <strong>Save to Bank</strong>. Then build a bridge or go to <strong>Studio Tools</strong> to finalize.',
+      actions: [
+        { label: 'Build Bridge', fn: "buildBridge();tsmAssistantUpdate('saved')" },
+        { label: 'Export Song', fn: "exportCurrentMusicSession()" }
+      ]
+    }
+  };
+
+  window.tsmAssistantUpdate = function(state) {
+    const s = STATES[state];
+    if (!s) return;
+    document.getElementById('tsm-assistant-msg').innerHTML = s.msg;
+    document.getElementById('tsm-assistant-actions').innerHTML = s.actions.map(a =>
+      `<button class="tsm-ast-btn" onclick="${a.fn}">${a.label}</button>`
+    ).join('');
+    if (collapsed) tsmAssistantToggle();
+  };
+
+  // Auto-update based on tab switches
+  const _origSwitchTab = window.switchTab;
+  window.switchTab = function(tab) {
+    _origSwitchTab(tab);
+    const map = { dna:'dna', draft:'draft_empty', revision:'revision', songbank:'bank', studio:'studio' };
+    if (map[tab]) tsmAssistantUpdate(map[tab]);
+  };
+
+  // Auto-update after agent pass
+  const _origShowDraftOutput = window.showDraftOutput;
+  window.showDraftOutput = function(data) {
+    _origShowDraftOutput(data);
+    tsmAssistantUpdate('options_shown');
+  };
+
+})();
+</script>
+<script id="tsm-callgroq-fix">
+// Override callGroq to route correctly based on context
+const _baseCallGroq = window.callGroq;
+window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) {
+  const loading = document.getElementById(loadingId);
+  if (loading) { loading.classList.add('show'); }
+  try {
+    // Route revision calls to revision endpoint
+    const isRevision = loadingId === 'rev-loading';
+    const isGenerate = loadingId === 'gen-loading';
+    
+    let url, body;
+    if (isRevision) {
+      url = '/api/music/revision/generate';
+      const current = document.getElementById('rev-current')?.value || userPrompt;
+      const style = document.getElementById('rev-format')?.value || '';
+      const mood = document.getElementById('rev-options-text')?.value || '';
+      body = { lyrics: current, style, mood, prompt: userPrompt };
+    } else {
+      url = '/api/music/agent-pass';
+      body = { prompt: userPrompt || systemPrompt || document.getElementById('draft-input')?.value || '' };
+    }
+
+    const resp = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const data = await resp.json();
+
+    if (loading) loading.classList.remove('show');
+
+    // Handle structured options
+    if (data.options && data.options.length > 0) {
+      showDraftOutput && showDraftOutput(data);
+      tsmAssistantUpdate && tsmAssistantUpdate('options_shown');
+      return;
+    }
+
+    const text = data.revised || data.output || data.text || data.result || '';
+    callback(text);
+    updateSessionTime && updateSessionTime();
+  } catch(e) {
+    if (loading) loading.classList.remove('show');
+    callback('Error: ' + e.message);
+  }
+};
+</script>
+<script id="tsm-rev-display-fix">
+// Fix revision output display — server returns {revised} not {options}
+const _origRunRevision = window.runRevision;
+window.runRevision = async function() {
+  const current = document.getElementById('rev-current')?.value?.trim();
+  const edit = document.getElementById('rev-edit')?.value?.trim();
+  const protect = document.getElementById('rev-protect')?.value?.trim();
+  const options = document.getElementById('rev-options-text')?.value?.trim();
+  const agent = document.getElementById('rev-agent')?.value || 'ZAY';
+  if (!current) { showNotif('Add your draft first'); return; }
+  
+  const loading = document.getElementById('rev-loading');
+  if (loading) loading.classList.add('show');
+  
+  const resp = await fetch('/api/music/revision/run', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ lyrics: current, edit, protect, options, agent })
+  });
+  const data = await resp.json();
+  if (loading) loading.classList.remove('show');
+  
+  const out = document.getElementById('rev-output');
+  const opts = document.getElementById('rev-out-options');
+  if (out) out.style.display = 'block';
+  
+  const revised = data.revised || data.output || data.text || '';
+  if (opts) opts.innerHTML = `
+    <div style="grid-column:1/-1">
+      <div class="option-card" style="border-color:#14f195">
+        <div class="option-label" style="color:#14f195">✅ Revised Version</div>
+        <div class="option-text">${revised.replace(/\n/g,'<br>')}</div>
+      </div>
+      ${data.decision ? `<div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.5);padding:6px 10px;border-left:2px solid rgba(124,58,237,.4)">Decision: ${data.decision}</div>` : ''}
+    </div>
+  `;
+  STATE.lastOutput.rev = revised;
+  tsmAssistantUpdate && tsmAssistantUpdate('revised');
+  out?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+};
+</script>
+<script id="tsm-generate-fix">
+// Fix runGenerate to bypass callGroq and call agent-pass directly
+const _origRunGenerate = window.runGenerate;
+window.runGenerate = async function() {
+  const type = document.getElementById('gen-type')?.value || 'Hook Options';
+  const tone = document.getElementById('gen-tone')?.value || 'Triumphant';
+  const concept = document.getElementById('gen-concept')?.value?.trim();
+  const ref = document.getElementById('gen-ref')?.value?.trim();
+  if (!concept) { showNotif('Add a concept or starting point'); return; }
+
+  const loading = document.getElementById('gen-loading');
+  if (loading) loading.classList.add('show');
+
+  const prompt = `Generate ${type} with tone: ${tone}. Concept: ${concept}. ${ref ? 'Match this voice/style: ' + ref : ''} Return 3 distinct options as JSON: {"options":[{"label":"Option 1: descriptor","text":"lyrics here"},{"label":"Option 2: descriptor","text":"lyrics here"},{"label":"Option 3: descriptor","text":"lyrics here"}]}`;
+
+  const resp = await fetch('/api/music/agent-pass', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ prompt })
+  });
+  const data = await resp.json();
+  if (loading) loading.classList.remove('show');
+
+  const out = document.getElementById('gen-output');
+  const opts = document.getElementById('gen-out-options');
+  const content = document.getElementById('gen-out-content');
+  if (out) out.style.display = 'block';
+  document.getElementById('gen-out-status') && (document.getElementById('gen-out-status').textContent = '✓ ' + type);
+
+  if (data.options && data.options.length > 0) {
+    if (content) content.innerHTML = '';
+    if (opts) opts.innerHTML = data.options.map((o, i) => `
+      <div class="option-card" onclick="selectOption(${i},'gen')">
+        <div class="option-label">${o.label}</div>
+        <div class="option-text">${o.text}</div>
+      </div>`).join('');
+    STATE.lastOutput.gen = JSON.stringify(data.options);
+  } else {
+    const text = data.output || data.response || '';
+    if (content) content.textContent = text;
+    STATE.lastOutput.gen = text;
+  }
+  tsmAssistantUpdate && tsmAssistantUpdate('generate');
+  out?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+};
+</script>
+<script id="tsm-assistant-v2">
+(function(){
+// Complete song creation flow based on proven working endpoints
+const FLOW = [
+  {
+    id: 'start',
+    msg: '👋 <strong>Welcome to Music Command Center.</strong> To make a complete song, follow these steps in order. Start by setting your Artist DNA so every AI output sounds like you.',
+    actions: [
+      { label: '1. Set Artist DNA →', fn: "switchTab('dna');tsmAssistantUpdate('dna')" },
+      { label: 'Skip → Paste Draft', fn: "switchTab('draft');tsmAssistantUpdate('draft_paste')" }
+    ]
+  },
+  {
+    id: 'dna',
+    msg: '🧬 <strong>Artist DNA — Do this first.</strong> Fill in: Style (e.g. "grimy trap, street"), Influences (e.g. "Meek Mill, Nipsey"), Vocab (your signature words/phrases). Then hit <strong>Save DNA Profile</strong>. This makes every AI output sound like YOU not generic.',
+    actions: [
+      { label: 'DNA Saved → Go to Draft', fn: "switchTab('draft');tsmAssistantUpdate('draft_paste')" }
+    ]
+  },
+  {
+    id: 'draft_paste',
+    msg: '✏️ <strong>Step 1 of 5: Paste Your Draft.</strong> Paste your lyrics — even 2 rough lines works. Then hit <strong>Run Agent Pass</strong>. The AI will give you <strong>3 completely different rewrites</strong> to choose from.',
+    actions: [
+      { label: 'Load Demo Lyrics', fn: "loadDemoContent();tsmAssistantUpdate('draft_ready')" },
+      { label: 'I pasted mine → Run', fn: "runDraftAnalysis();tsmAssistantUpdate('options_ready')" }
+    ]
+  },
+  {
+    id: 'draft_ready',
+    msg: '▶️ <strong>Demo lyrics loaded.</strong> Now hit <strong>Run Agent Pass</strong> — you\'ll get 3 different versions of your lyrics. Each has a different energy: raw street, melodic, or aggressive.',
+    actions: [
+      { label: 'Run Agent Pass Now', fn: "runDraftAnalysis();tsmAssistantUpdate('options_ready')" }
+    ]
+  },
+  {
+    id: 'options_ready',
+    msg: '👆 <strong>Step 2 of 5: Pick Your Best Option.</strong> Click the card that hits hardest. Each is a different rewrite of your lyrics. Once you click one it highlights — then choose what to do with it.',
+    actions: [
+      { label: 'I picked one → Save to Bank', fn: "saveToBank('draft');tsmAssistantUpdate('saved_to_bank')" },
+      { label: 'I picked one → Refine It', fn: "sendToRevision();tsmAssistantUpdate('revision_fill')" }
+    ]
+  },
+  {
+    id: 'saved_to_bank',
+    msg: '💾 <strong>Saved!</strong> Now go to <strong>Revision Mode</strong> to tighten specific lines. Paste your saved draft in Box 1, tell AI what to change in Box 2, protect your best lines in Box 3, then hit <strong>Run Revision Mode</strong>.',
+    actions: [
+      { label: '→ Go to Revision Mode', fn: "switchTab('revision');tsmAssistantUpdate('revision_fill')" },
+      { label: 'Skip to Ad-libs', fn: "tsmAssistantUpdate('adlibs')" }
+    ]
+  },
+  {
+    id: 'revision_fill',
+    msg: '✂️ <strong>Step 3 of 5: Revision Mode.</strong> ① Box 1: paste your current draft ② Box 2: what to change (e.g. "make hook harder", "add street slang") ③ Box 3: what to protect (e.g. "keep Rule 1: No Fakeness") ④ Hit <strong>Run Revision Mode</strong>.',
+    actions: [
+      { label: 'Run Revision Now', fn: "runRevision();tsmAssistantUpdate('revision_done')" }
+    ]
+  },
+  {
+    id: 'revision_done',
+    msg: '✅ <strong>Revised!</strong> The rewrite is showing below. Save it to bank, then use the <strong>⚡ button</strong> to place ad-libs throughout your lyrics.',
+    actions: [
+      { label: 'Save Revision to Bank', fn: "saveToBank('rev');tsmAssistantUpdate('adlibs')" },
+      { label: 'Run Again with Different Edit', fn: "runRevision();tsmAssistantUpdate('revision_done')" }
+    ]
+  },
+  {
+    id: 'adlibs',
+    msg: '🎤 <strong>Step 4 of 5: Place Ad-libs.</strong> Click the <strong>⚡ button</strong> bottom-right → click <strong>PLACE AD-LIBS</strong>. The AI will insert your signature ad-libs (yeah, uh, let\'s go) at natural performance moments throughout your lyrics.',
+    actions: [
+      { label: '⚡ Place Ad-libs Now', fn: "placeAdlibs();tsmAssistantUpdate('adlibs_done')" },
+      { label: 'Skip → Build Bridge', fn: "buildBridge();tsmAssistantUpdate('bridge_done')" }
+    ]
+  },
+  {
+    id: 'adlibs_done',
+    msg: '🎤 <strong>Ad-libs placed!</strong> Review them — keep what fits your delivery style. Now build a <strong>bridge</strong> if you need an emotional turning point before your final hook.',
+    actions: [
+      { label: 'Build Bridge Now', fn: "buildBridge();tsmAssistantUpdate('bridge_done')" },
+      { label: 'Skip → Export Song', fn: "switchTab('studio');tsmAssistantUpdate('export_ready')" }
+    ]
+  },
+  {
+    id: 'bridge_done',
+    msg: '🌉 <strong>Bridge built!</strong> Save it to bank if it works. Now go to <strong>Song Bank</strong> to review everything — your best hook, verse, bridge, and ad-libs.',
+    actions: [
+      { label: 'Save Bridge to Bank', fn: "saveToBank('draft');tsmAssistantUpdate('review_bank')" },
+      { label: 'View Song Bank', fn: "switchTab('songbank');tsmAssistantUpdate('review_bank')" }
+    ]
+  },
+  {
+    id: 'review_bank',
+    msg: '🗂️ <strong>Step 5 of 5: Review Your Song Bank.</strong> All your saved pieces are here. Click <strong>Load</strong> on any card to bring it back for more work. When your full song is ready — go to Studio Tools and hit <strong>Export TXT</strong> to get a shareable link.',
+    actions: [
+      { label: 'Go to Studio Tools → Export', fn: "switchTab('studio');tsmAssistantUpdate('export_ready')" }
+    ]
+  },
+  {
+    id: 'export_ready',
+    msg: '🎛️ <strong>Final Step: Polish & Export.</strong> Use <strong>Rhyme Engine</strong> to check rhyme schemes, <strong>Syllable Counter</strong> to match flow, or <strong>Ad-lib Placer</strong> for final performance markers. Then hit <strong>Export TXT</strong> — you\'ll get a shareable link to your complete song.',
+    actions: [
+      { label: 'Export My Song Now', fn: "exportCurrentMusicSession()" },
+      { label: 'Start a New Song', fn: "document.getElementById('draft-input').value='';switchTab('draft');tsmAssistantUpdate('draft_paste')" }
+    ]
+  },
+  {
+    id: 'generate',
+    msg: '✨ <strong>Generate Tab Tips:</strong> Use this when you need fresh hook ideas, a new verse concept, or a full song skeleton from scratch. Pick from the dropdown, set the tone/feel, describe your concept, then hit <strong>Generate</strong>. Save anything you like to the Song Bank.',
+    actions: [
+      { label: 'Done → Save to Bank', fn: "saveToBank('gen');tsmAssistantUpdate('saved_to_bank')" },
+      { label: 'Refine in Revision', fn: "refineGenerated();tsmAssistantUpdate('revision_fill')" }
+    ]
+  },
+  {
+    id: 'studio',
+    msg: '🎛️ <strong>Studio Tools Guide:</strong> • <strong>Rhyme Engine</strong> — paste a word/line, get rhyme schemes • <strong>Syllable Counter</strong> — paste lyrics, match flow per line • <strong>Ad-lib Placer</strong> — paste hook/verse, get performance markers • <strong>Song Structure</strong> — get full Intro→Hook→Outro blueprint • <strong>Export TXT</strong> — saves your full song as a shareable link',
+    actions: [
+      { label: 'Export Song Now', fn: "exportCurrentMusicSession()" }
+    ]
+  }
+];
+
+// Build lookup
+const STATE_MAP = {};
+FLOW.forEach(s => STATE_MAP[s.id] = s);
+
+window.tsmAssistantUpdate = function(stateId) {
+  const s = STATE_MAP[stateId];
+  if (!s) return;
+  const msg = document.getElementById('tsm-assistant-msg');
+  const acts = document.getElementById('tsm-assistant-actions');
+  if (!msg || !acts) return;
+  msg.innerHTML = s.msg;
+  acts.innerHTML = s.actions.map(a =>
+    `<button class="tsm-ast-btn" onclick="${a.fn}">${a.label}</button>`
+  ).join('');
+  // Expand if collapsed
+  const body = document.getElementById('tsm-assistant-body');
+  if (body && body.style.display === 'none') {
+    body.style.display = 'block';
+    const tog = document.getElementById('tsm-assistant-toggle');
+    if (tog) tog.textContent = '▼';
+  }
+};
+
+// Tab switch wiring
+const _sw = window.switchTab;
+window.switchTab = function(tab) {
+  _sw(tab);
+  const map = {
+    dna: 'dna',
+    draft: 'draft_paste',
+    revision: 'revision_fill',
+    songbank: 'review_bank',
+    studio: 'export_ready',
+    generate: 'generate'
+  };
+  if (map[tab]) tsmAssistantUpdate(map[tab]);
+};
+
+// After agent pass shows options
+const _origShowDraftOutput = window.showDraftOutput;
+window.showDraftOutput = function(data) {
+  if (_origShowDraftOutput) _origShowDraftOutput(data);
+  tsmAssistantUpdate('options_ready');
+};
+
+// After revision shows output  
+const _origRunRev = window.runRevision;
+window.runRevision = async function() {
+  if (_origRunRev) await _origRunRev();
+  setTimeout(() => tsmAssistantUpdate('revision_done'), 3000);
+};
+
+// Init
+tsmAssistantUpdate('start');
+
+})();
+</script>
+<script id="tsm-showdraft-fix">
+// After every successful agent-pass, check if response has options and render cards
+const _mSF = window.musicSafeFetch;
+window.musicSafeFetch = async function(url, opts={}, retries=3) {
+  const data = await _mSF(url, opts, retries);
+  if (url.includes('agent-pass') && data?.options?.length > 0) {
+    showDraftOutput(data);
+    STATE.lastOutput.draft = JSON.stringify(data.options);
+    tsmAssistantUpdate('options_ready');
+  }
+  return data;
+};
+</script>
+</script>
+<script id="tsm-draft-direct">
+// Bypass all callGroq layers — call agent-pass directly
+window.runDraftAnalysis = async function() {
+  const draft = document.getElementById('draft-input')?.value?.trim();
+  const request = document.getElementById('draft-request')?.value?.trim();
+  const agent = document.getElementById('draft-agent')?.value || 'ZAY';
+  if (!draft) { showNotif('Paste your lyrics first'); return; }
+
+  const loading = document.getElementById('draft-loading');
+  if (loading) { loading.classList.add('show'); loading.innerHTML = '<div style="text-align:center;padding:12px;color:#a78bfa;font-size:12px;">Agent pass running...</div>'; }
+
+  const prompt = `${request ? request + ': ' : ''}${draft}`;
+  const resp = await fetch('/api/music/agent-pass', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ prompt })
+  });
+  const data = await resp.json();
+  if (loading) loading.classList.remove('show');
+
+  if (data.options?.length > 0) {
+    showDraftOutput(data);
+    STATE.lastOutput.draft = JSON.stringify(data.options);
+    tsmAssistantUpdate('options_ready');
+  } else {
+    showDraftOutputRaw(data.output || data.response || JSON.stringify(data));
+  }
+};
+</script>
+<script id="tsm-draft-v3">
+window.runDraftAnalysis = async function() {
+  const draft = document.getElementById('draft-input')?.value?.trim();
+  const request = document.getElementById('draft-request')?.value?.trim();
+  if (!draft) { showNotif('Paste your lyrics first'); return; }
+
+  const loading = document.getElementById('draft-loading');
+  if (loading) { loading.classList.add('show'); loading.innerHTML = '<div style="text-align:center;padding:12px;color:#a78bfa;font-size:12px;">Generating 3 options...</div>'; }
+
+  const prompt = request 
+    ? `Rewrite these lyrics (${request}): ${draft}`
+    : draft;
+
+  const resp = await fetch('/api/music/agent-pass', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ prompt })
+  });
+  const data = await resp.json();
+  if (loading) loading.classList.remove('show');
+
+  if (data.options?.length > 0) {
+    showDraftOutput(data);
+    STATE.lastOutput.draft = JSON.stringify(data.options);
+    tsmAssistantUpdate('options_ready');
+  } else {
+    showDraftOutputRaw(data.output || data.response || '');
+  }
+};
+</script>

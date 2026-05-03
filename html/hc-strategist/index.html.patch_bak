@@ -618,36 +618,35 @@ function copyPresentationScript() {
 
 
 async function generateLeadershipBrief() {
-    const statusBox = document.querySelector(".leadership-brief-error");
-    const stakeholder = document.querySelector("select:first-of-type").value;
-    const metricText = document.querySelector(".leadership-brief-input")?.value || "current operations";
-    
-    statusBox.innerText = `> BEACON analyzing ${metricText} for ${stakeholder}...`;
-    statusBox.style.color = "#00f2ff";
-    
-    try {
-        const response = await fetch("/api/hc/query", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                action: "GENERATE_BRIEF",
-                agent: "BEACON",
-                payload: {
-                    target_stakeholder: stakeholder,
-                    context: metricText,
-                    priority: "CRITICAL"
-                }
-            })
-        });
-        
-        if (!response.ok) throw new Error(`Link Failure: ${response.status}`);
-        const data = await response.json();
-        statusBox.innerHTML = `<div class="brief-output">${data.brief}</div>`;
-    } catch (err) {
-        statusBox.innerText = `> Error: ${err.message}. Check machine 891334a66735e8 status.`;
-        statusBox.style.color = "#ff0055";
-    }
-}
+  const out = document.getElementById('brief-res');
+  if (!out) return;
+
+  const system =
+    document.getElementById('system-filter')?.value ||
+    'HonorHealth';
+
+  const location =
+    document.getElementById('location-filter')?.value ||
+    'Scottsdale - Shea';
+
+  const audience =
+    document.getElementById('brief-audience')?.value ||
+    'om';
+
+  const format =
+    document.getElementById('brief-format')?.value ||
+    'brief';
+
+  const question =
+    document.getElementById('brief-question')?.value ||
+    '';
+
+  out.innerHTML = '⏳ Generating leadership brief...';
+
+  try {
+    const res = await fetch('/api/hc/brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ system, location, audience, format, question })
     });
 

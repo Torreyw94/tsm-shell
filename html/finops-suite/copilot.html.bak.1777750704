@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TSM FinOps · Staff Accountant Copilot</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:ui-monospace,Menlo,monospace}
+header{padding:26px 34px;border-bottom:1px solid #123050;background:#061018}
+h1{margin:0;color:#00e0ff;letter-spacing:.12em}
+.sub{color:#8fb0c8;margin-top:8px}
+.wrap{padding:24px 34px 90px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.card h2,.card h3{color:#00e0ff;margin-top:0}
+.big{font-size:28px;color:#00f59f;font-weight:900}
+select,textarea{width:100%;background:#02070d;color:#d9f3ff;border:1px solid #123050;border-radius:10px;padding:12px;font-family:inherit}
+textarea{height:105px}
+button,a.btn{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:9px;padding:11px 14px;margin:5px 5px 5px 0;text-decoration:none;font-weight:900;font-size:11px;cursor:pointer}
+button.primary,a.primary{background:#00f59f;color:#001018;border-color:#00f59f}
+.output{white-space:pre-wrap;background:#02070d;border:1px solid #123050;border-radius:12px;padding:16px;min-height:210px;line-height:1.55}
+.step{border-left:3px solid #00f59f;padding:10px 14px;margin:10px 0;background:#07111b}
+.rail{position:fixed;left:0;right:0;bottom:0;background:#061018;border-top:1px solid #123050;padding:10px 28px;display:flex;gap:10px;align-items:center;justify-content:center;z-index:50}
+</style>
+</head>
+<body>
+<header>
+<h1>TSM FINOPS · STAFF ACCOUNTANT COPILOT</h1>
+<div class="sub">One client-facing workspace: AP · AR · Bank Rec · Month-End · 1099 · Compliance · Zero Trust · Strategist BNCA</div>
+</header>
+
+<main class="wrap">
+<section class="grid">
+  <div class="card"><h3>Daily Workload</h3><div class="big">6 lanes</div><p>AP, AR, rec, tax, audit, close.</p></div>
+  <div class="card"><h3>Risk Focus</h3><div class="big">$18.4K</div><p>AR / timing exposure.</p></div>
+  <div class="card"><h3>Close Readiness</h3><div class="big">84%</div><p>Month-end prep score.</p></div>
+  <div class="card"><h3>System Price</h3><div class="big">$1,750/mo</div><p>Staff accountant copilot layer.</p></div>
+</section>
+
+<section class="card">
+<h2>START HERE · WHAT ARE YOU WORKING ON?</h2>
+<select id="workflow">
+<option>AP Aging / Vendor Invoices</option>
+<option>AR Collections / Ledger</option>
+<option>Bank Reconciliation</option>
+<option>Month-End Close</option>
+<option>1099 / W-9 Tax Readiness</option>
+<option>Audit / Compliance Support</option>
+<option>Budget Variance</option>
+<option>Run Full AP + AR + Tax Chain</option>
+</select>
+<br><br>
+<textarea id="context" placeholder="Optional: paste invoice notes, AR aging, reconciliation issue, tax deadline, audit finding, or month-end blocker..."></textarea>
+<br><br>
+<button class="primary" onclick="runCopilot()">RUN STAFF ACCOUNTANT COPILOT</button>
+<button onclick="openDocs()">OPEN DOC SHOWCASE</button>
+<button onclick="openCommand()">OPEN FINANCIAL COMMAND</button>
+<button onclick="openStrategist()">OPEN FINOPS STRATEGIST</button>
+</section>
+
+<section class="card">
+<h2>HOW THIS HELPS STAFF ACCOUNTANTS</h2>
+<div class="step"><b>1 · Select work</b><br>Pick AP, AR, reconciliation, 1099, audit, or close work.</div>
+<div class="step"><b>2 · Run full analysis</b><br>The copilot checks financial, tax, compliance, zero-trust, and strategist lanes.</div>
+<div class="step"><b>3 · Review ranked actions</b><br>You get what is blocked, why it matters, who owns it, and what to do next.</div>
+<div class="step"><b>4 · Push to controller</b><br>The output becomes a controller-ready action note.</div>
+</section>
+
+<section class="card">
+<h2>COPILOT OUTPUT</h2>
+<div id="status">Ready.</div>
+<pre id="output" class="output">Waiting for staff accountant workflow...</pre>
+</section>
+</main>
+
+<div class="rail">
+  <span>Most teams start with a 30-day pilot.</span>
+  <button class="primary" onclick="runCopilot()">RUN COPILOT</button>
+  <button onclick="openStrategist()">CONTROLLER ACTION PLAN</button>
+</div>
+
+<script>
+async function post(url, body){
+  const r = await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})});
+  return await r.json();
+}
+
+async function runCopilot(){
+  const wf=document.getElementById("workflow").value;
+  const ctx=document.getElementById("context").value;
+  const status=document.getElementById("status");
+  const out=document.getElementById("output");
+
+  status.textContent="Running financial, tax, compliance, zero-trust, and strategist lanes...";
+  out.textContent="Analyzing " + wf + "...";
+
+  try{
+    const chain = wf.includes("Full") ? ["AP Aging","AR Ledger","1099 Tracker"] : [wf,"Compliance Shield","Zero Trust","Strategist BNCA"];
+    const data = await post("/api/finops/copilot",{workflow:wf,workflows:chain,context:ctx});
+
+    const rows=(data.priority_rank||[]).map(x =>
+      `${x.rank}. ${x.lane || "Lane"} — ${x.issue}\n   Impact: ${x.impact || "Review required"}\n   Owner: ${x.owner || "Staff Accountant / Controller"}\n   Status: ${x.status || "ACTION"}`
+    ).join("\n\n");
+
+    out.textContent =
+`STAFF ACCOUNTANT COPILOT RESULT
+
+WORKFLOW:
+${wf}
+
+PRIORITY ACTIONS:
+${rows}
+
+BNCA:
+${data.combined_bnca || data.bnca || "Prepare controller-ready action summary."}
+
+CONTROLLER NOTE:
+${data.controller_note || "Review blockers before month-end close."}
+
+BUSINESS OUTCOME:
+${data.business_outcome || "Manual follow-up converted into clear next actions."}
+
+CONFIDENCE:
+${data.confidence || 88}%`;
+
+    status.textContent="Complete — controller-ready.";
+  }catch(e){
+    out.textContent="Fallback active: Review AP/AR/tax/compliance blockers, resolve missing support, and prepare controller summary.\n\n"+e.message;
+    status.textContent="Complete with fallback.";
+  }
+}
+
+function openDocs(){ location.href="/html/finops-suite/finops-showcase/index.html"; }
+function openCommand(){ location.href="/html/finops-suite/financial-command/index.html"; }
+function openStrategist(){ location.href="/html/finops-suite/finops-main-strategist/index.html"; }
+</script>
+</body>
+</html>
