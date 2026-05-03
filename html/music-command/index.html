@@ -12,91 +12,11 @@ window.switchTab = window.switchTab || function(tab) {
   if (tabBtn) tabBtn.classList.add('active');
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script>window.isExpired = false; window.demoActive = true; localStorage.setItem("demo_status", "active");
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <meta charset="UTF-8">
@@ -2434,47 +2354,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('draft-loading').classList.remove('show');
 });
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -2519,47 +2399,7 @@ async function musicSuiteBoot(){
 
 window.addEventListener('load', musicSuiteBoot);
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -2650,47 +2490,7 @@ function showAssistant(text){
   });
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -2769,47 +2569,7 @@ function showAssistant(text){
   };
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -2876,47 +2636,7 @@ function showAssistant(text){
   };
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -3010,47 +2730,7 @@ function showAssistant(text){
   };
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -3106,47 +2786,7 @@ function showAssistant(text){
   };
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -3314,47 +2954,7 @@ function showAssistant(text){
   });
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -3505,47 +3105,7 @@ function showAssistant(text){
   });
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -3685,47 +3245,7 @@ function showAssistant(text){
   });
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -3796,47 +3316,7 @@ function showAssistant(text){
   console.log("✅ TSM Music compatibility layer active");
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -4220,47 +3700,7 @@ function showAssistant(text){
 
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -4376,47 +3816,7 @@ Intro → Verse 1 → Pre-Hook → Hook → Verse 2 → Bridge → Final Hook �
   console.log("✅ TSM Music solid compatibility active");
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -4705,47 +4105,7 @@ document.addEventListener("click", function(e) {
 
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -4834,47 +4194,7 @@ CRITICAL OUTPUT RULES:
   console.log("✅ TSM Music AI guidance fix active");
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
@@ -5021,6 +4341,44 @@ function showAssistant(text){
 })();
 </script>
 
+
+<script id="tsm-assistant-action-fix">
+(function(){
+  if(window.__tsmAssistantActionFix) return;
+  window.__tsmAssistantActionFix = true;
+
+  window.showAssistant = function(text){
+    const box =
+      document.querySelector('#tsm-assistant-box') ||
+      document.querySelector('.tsm-assistant') ||
+      document.querySelector('[class*="assistant"]');
+
+    if(box){
+      box.innerHTML = String(text || '');
+    } else {
+      console.log("TSM Assistant:", text);
+    }
+  };
+
+  window.handleAssistantUpdate = function(action, payload){
+    const messages = {
+      draft_empty: "Paste a draft or drop an idea to begin.",
+      draft_paste: "Nice. Now click Analyze or Run Agent Pass to generate improved options.",
+      options_ready: "Review the 3 options. Pick one to refine or generate again.",
+      options_shown: "These are your strongest directions. Choose what feels closest.",
+      analysis_complete: "Analysis complete. You can now refine, add ad-libs, or lock your hook.",
+      error: "Something failed. Try again or adjust your input."
+    };
+
+    if(messages[action]){
+      window.showAssistant(messages[action]);
+    }
+  };
+
+  console.log("✅ assistant action handler repaired");
+})();
+</script>
+
 </body>
 </html>
 <script id="tsm-action-fix">
@@ -5051,47 +4409,7 @@ window.buildBridge = () => runAction('Bridge Builder', 'Write a powerful bridge 
 window.placeAdlibs = () => runAction('Ad-lib Placer', 'Place signature ad-libs naturally throughout these lyrics: ' + (document.getElementById('draft-input')?.value || ''));
 window.runStructureBuilder = () => runAction('Song Structure', 'Build complete song structure (intro, verse, pre-hook, hook, verse 2, bridge, outro) for: ' + (document.getElementById('draft-input')?.value || ''));
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <style>
@@ -5135,47 +4453,7 @@ window.runAction = async function(label, prompt) {
   }
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <style id="tsm-workflow-styles">
@@ -5318,47 +4596,7 @@ function showAssistant(text){
   render();
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <style id="tsm-layout-fix-v2">
@@ -5382,47 +4620,7 @@ window.musicSafeFetch = async function(url, opts={}, retries=3) {
   return data;
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <style id="tsm-height-fix">
@@ -5465,47 +4663,7 @@ document.addEventListener('DOMContentLoaded', () => {
   studioPanel.insertBefore(bar, studioPanel.querySelector('.studio-tools-grid') || studioPanel.firstChild);
 });
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-bank-fix">
@@ -5536,47 +4694,7 @@ window.switchTab = function(tab) {
   if (tab === 'songbank') renderBank();
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-export-server">
@@ -5605,47 +4723,7 @@ window.exportCurrentMusicSession = async function() {
   }
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-next-action">
@@ -5709,47 +4787,7 @@ window.showDraftOutputRaw = function(text) {
   if (!text.startsWith('Running') && !text.startsWith('Error')) showNextAction('draft');
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-guidance-fix">
@@ -5811,47 +4849,7 @@ window.openTool = function(tool) {
   showNotif('💡 ' + tip, 4000);
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-options-fix">
@@ -5909,47 +4907,7 @@ window.loadSelectedToRevision = function() {
   if (el) { el.value = STATE.selectedOption; switchTab('revision'); }
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-callfixv2">
@@ -5981,47 +4939,7 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
   }
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <style id="tsm-assistant-styles">
@@ -6166,47 +5084,7 @@ function showAssistant(text){
 
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-callgroq-fix">
@@ -6253,47 +5131,7 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
   }
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-rev-display-fix">
@@ -6337,47 +5175,7 @@ window.runRevision = async function() {
   out?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-generate-fix">
@@ -6426,47 +5224,7 @@ window.runGenerate = async function() {
   out?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-assistant-v2">
@@ -6647,47 +5405,7 @@ tsmAssistantUpdate('start');
 
 })();
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-showdraft-fix">
@@ -6703,91 +5421,11 @@ window.musicSafeFetch = async function(url, opts={}, retries=3) {
   return data;
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-draft-direct">
@@ -6818,47 +5456,7 @@ window.runDraftAnalysis = async function() {
   }
 };
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
 <script id="tsm-draft-v3">
@@ -7075,46 +5673,6 @@ function tsmAssistantUpdate(action, payload) {
 }
 
 
-window.handleAssistantUpdate = function(action, payload={}){
-  console.log("🧠 AssistantUpdate:", action);
 
-  switch(action){
-
-    case "draft_empty":
-      showAssistant("Paste a draft or drop an idea to begin.");
-      break;
-
-    case "draft_paste":
-      showAssistant("Nice. Now click Analyze to generate improved options.");
-      break;
-
-    case "options_ready":
-      showAssistant("Review the 3 options. Pick one to refine or generate again.");
-      break;
-
-    case "options_shown":
-      showAssistant("These are your strongest directions. Choose what feels closest.");
-      break;
-
-    case "analysis_complete":
-      showAssistant("Analysis complete. You can now refine, add ad-libs, or lock your hook.");
-      break;
-
-    case "error":
-      showAssistant("Something failed. Try again or adjust your input.");
-      break;
-
-    default:
-      // silent fallback (no console spam)
-      break;
-  }
-}
-
-
-function showAssistant(text){
-  const box = document.querySelector('#tsm-assistant-box') || document.querySelector('.tsm-assistant');
-  if(!box) return;
-  box.innerHTML = text;
-}
 
 </script>
