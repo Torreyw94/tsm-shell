@@ -4363,15 +4363,23 @@ CRITICAL OUTPUT RULES:
     }
   };
 
-  window.handleAssistantUpdate = function(action, payload){
-    const messages = {
-      draft_empty: "Paste a draft or drop an idea to begin.",
-      draft_paste: "Nice. Now click Analyze or Run Agent Pass to generate improved options.",
-      options_ready: "Review the 3 options. Pick one to refine or generate again.",
-      options_shown: "These are your strongest directions. Choose what feels closest.",
-      analysis_complete: "Analysis complete. You can now refine, add ad-libs, or lock your hook.",
-      error: "Something failed. Try again or adjust your input."
-    };
+  
+window.handleAssistantUpdate = function(action, payload){
+  const messages = {
+    draft_empty: "Paste a draft or drop an idea to begin.",
+    draft_paste: "Nice. Now click Analyze or Run Agent Pass.",
+    options_ready: "Review the 3 options and choose your direction.",
+    options_shown: "These are your strongest directions.",
+    options_html: "Options rendered. Focus on the strongest hook and cadence.",
+    analysis_complete: "Analysis complete. Refine or add ad-libs next.",
+    error: "Something failed. Adjust your input and try again."
+  };
+
+  if(messages[action]){
+    window.showAssistant(messages[action]);
+  }
+};
+
 
     if(messages[action]){
       window.showAssistant(messages[action]);
