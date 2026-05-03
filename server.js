@@ -663,6 +663,8 @@ app.get('/api/finops/mesh-health', async (req,res)=>{
   res.json({ok:online===results.length,suite:'finops',online,total:results.length,score:`${online}/${results.length}`,results,ts:new Date().toISOString()});
 });
 
+app.get('/how-to', (req,res) => res.sendFile(path.join(__dirname,'html/finops-suite/how-to.html')));
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));

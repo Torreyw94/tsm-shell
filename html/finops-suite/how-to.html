@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM FinOps · How To Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0a0e14;--bg2:#0f1520;--bg3:#141e2e;--border:#1e3a5a;--cyan:#00e5c8;--cyan2:#00b89c;--teal:#0af0d0;--text:#c8d8e8;--muted:#6a8aa8;--white:#e8f4ff;--accent:#ff6b35;--gold:#f0c040;--green:#40e080;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;line-height:1.6;}
+.mono{font-family:'Share Tech Mono',monospace;}
+.guide-wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.hdr{border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;}
+.hdr-title{font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--cyan);letter-spacing:2px;margin-bottom:4px;}
+.hdr-sub{color:var(--muted);font-size:13px;letter-spacing:1px;}
+.back-btn{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:4px;transition:all .15s;}
+.back-btn:hover{color:var(--cyan);border-color:var(--cyan2);}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:2rem;}
+.toc-btn{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;cursor:pointer;text-align:left;transition:all .15s;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);width:100%;}
+.toc-btn:hover{border-color:var(--cyan2);color:var(--cyan);background:var(--bg3);}
+.toc-btn.active{border-color:var(--cyan);color:var(--cyan);background:var(--bg3);}
+.toc-num{color:var(--cyan2);margin-right:6px;font-size:11px;}
+.section{display:none;}
+.section.active{display:block;}
+.feat-header{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid var(--border);}
+.feat-badge{background:var(--bg3);border:1px solid var(--cyan2);border-radius:4px;padding:3px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan2);letter-spacing:1px;}
+.feat-title{font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--white);}
+.feat-desc{color:var(--text);font-size:14px;margin-bottom:1.2rem;line-height:1.7;}
+.steps-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan2);letter-spacing:2px;margin-bottom:.6rem;}
+.step{display:flex;gap:12px;margin-bottom:12px;padding:10px 14px;background:var(--bg2);border-left:2px solid var(--cyan2);border-radius:0 6px 6px 0;}
+.step-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan);min-width:20px;padding-top:2px;}
+.step-body{flex:1;}
+.step-title{font-weight:600;color:var(--white);margin-bottom:3px;font-size:13px;}
+.step-detail{color:var(--muted);font-size:13px;}
+.step-detail code{font-family:'Share Tech Mono',monospace;color:var(--teal);background:rgba(0,200,180,.08);padding:1px 5px;border-radius:3px;font-size:12px;}
+.report-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-top:1.4rem;}
+.report-box-title{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:.8rem;}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(30,58,90,.5);font-size:13px;}
+.report-row:last-child{border-bottom:none;}
+.report-key{color:var(--muted);}
+.report-val{font-family:'Share Tech Mono',monospace;color:var(--cyan);font-size:12px;}
+.tip-box{margin-top:1rem;padding:10px 14px;background:rgba(0,200,180,.05);border:1px solid rgba(0,200,180,.2);border-radius:6px;font-size:13px;color:var(--text);}
+.tip-box strong{color:var(--teal);}
+.workflow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:1rem 0;}
+.wf-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;}
+.wf-card-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan2);letter-spacing:1px;margin-bottom:5px;}
+.wf-card-val{font-size:13px;color:var(--white);}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:'Share Tech Mono',monospace;margin:2px 3px;}
+.pill-action{background:rgba(255,107,53,.1);color:var(--accent);border:1px solid rgba(255,107,53,.3);}
+.pill-watch{background:rgba(240,192,64,.08);color:var(--gold);border:1px solid rgba(240,192,64,.25);}
+.pill-ok{background:rgba(64,224,128,.08);color:var(--green);border:1px solid rgba(64,224,128,.25);}
+.chain-list{list-style:none;margin:1rem 0;}
+.chain-list li{padding:8px 14px;margin-bottom:6px;background:var(--bg2);border-left:2px solid var(--border);border-radius:0 5px 5px 0;font-size:13px;color:var(--text);display:flex;gap:10px;align-items:center;}
+.chain-list li .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan2);flex-shrink:0;}
+.nav-btns{display:flex;gap:8px;margin-top:2rem;}
+.nav-btn{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:8px 20px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);transition:all .15s;text-decoration:none;display:inline-block;}
+.nav-btn:hover{border-color:var(--cyan2);color:var(--cyan);}
+.nav-btn.primary{border-color:var(--cyan2);color:var(--cyan);}
+.open-btn{font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 20px;background:var(--cyan2);color:#000;border:none;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block;margin-left:auto;}
+.open-btn:hover{background:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="guide-wrap">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title mono">TSM FINOPS · HOW TO GUIDE</div>
+      <div class="hdr-sub mono">STAFF ACCOUNTANT COPILOT · ALL FEATURES · CUSTOM REPORTS</div>
+    </div>
+    <a class="back-btn" href="/html/finops-suite/copilot.html">← BACK TO COPILOT</a>
+  </div>
+
+  <div class="toc">
+    <button class="toc-btn active" onclick="show(0)"><span class="toc-num">01</span>Staff Accountant Copilot</button>
+    <button class="toc-btn" onclick="show(1)"><span class="toc-num">02</span>AP Aging</button>
+    <button class="toc-btn" onclick="show(2)"><span class="toc-num">03</span>Compliance Shield</button>
+    <button class="toc-btn" onclick="show(3)"><span class="toc-num">04</span>Zero Trust</button>
+    <button class="toc-btn" onclick="show(4)"><span class="toc-num">05</span>Strategist BNCA</button>
+    <button class="toc-btn" onclick="show(5)"><span class="toc-num">06</span>Multi-Chain Reports</button>
+    <button class="toc-btn" onclick="show(6)"><span class="toc-num">07</span>Custom Reports</button>
+    <button class="toc-btn" onclick="show(7)"><span class="toc-num">08</span>Controller Action Plan</button>
+  </div>
+
+  <div id="s0" class="section active">
+    <div class="feat-header"><span class="feat-badge">CORE</span><span class="feat-title">Staff Accountant Copilot</span></div>
+    <div class="feat-desc">Your unified command layer. Select a workflow lane, optionally paste raw context (invoices, aging data, notes), and the copilot runs all six FinOps lanes simultaneously — returning a ranked action list with owner assignments and a controller-ready summary.</div>
+    <div class="steps-label">HOW TO USE</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Choose your workflow lane</div><div class="step-detail">Use the dropdown: <code>AP Aging / Vendor Invoices</code>, <code>AR Ledger</code>, <code>1099 / Tax</code>, <code>Bank Reconciliation</code>, <code>Month-End Close</code>, or <code>Compliance Audit</code>.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Paste context (optional but powerful)</div><div class="step-detail">Drop raw invoice notes, aging bucket data, reconciliation gaps, or audit findings into the text area. The AI uses this to personalize the output.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Click "Run Staff Accountant Copilot"</div><div class="step-detail">Calls <code>POST /api/finops/copilot</code>. Returns <code>priority_rank[]</code>, <code>combined_bnca</code>, <code>controller_note</code>, and <code>confidence</code> score.</div></div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-body"><div class="step-title">Read the ranked output</div><div class="step-detail">Actions sorted by impact. Status badges: <span class="pill pill-action">ACTION REQUIRED</span> <span class="pill pill-watch">WATCH</span> <span class="pill pill-ok">OK</span></div></div></div>
+    <div class="step"><div class="step-num">05</div><div class="step-body"><div class="step-title">Push to controller</div><div class="step-detail">Click "Controller Action Plan" to generate a controller-ready summary note from the same session data.</div></div></div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Paste multiple invoice lines or a CSV-style aging table directly into the context box. The copilot will extract vendor names, amounts, and aging buckets automatically.</div>
+  </div>
+
+  <div id="s1" class="section">
+    <div class="feat-header"><span class="feat-badge">LANE · AP</span><span class="feat-title">AP Aging / Vendor Invoices</span></div>
+    <div class="feat-desc">Validates vendor invoice support, flags payment timing risk, and identifies aging buckets that threaten month-end close. Returns ranked vendor issues with owner assignments.</div>
+    <div class="steps-label">HOW TO RUN</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Select "AP Aging / Vendor Invoices" in the dropdown</div><div class="step-detail">Sets <code>workflow: "AP Aging"</code> in the API payload.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Paste aging data</div><div class="step-detail">Include vendor name, invoice date, amount, and bucket (current / 30 / 60 / 90+). Plain text or CSV works.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Review output fields</div><div class="step-detail"><code>issue</code> = what's wrong · <code>impact</code> = close risk · <code>owner</code> = Staff Accountant or Controller · <code>status</code> = action level</div></div></div>
+    <div class="report-box">
+      <div class="report-box-title">CUSTOM REPORT · AP AGING</div>
+      <div class="report-row"><div class="report-key">Workflow param</div><div class="report-val">"AP Aging"</div></div>
+      <div class="report-row"><div class="report-key">Context to include</div><div class="report-val">Vendor · Invoice # · Amount · Bucket</div></div>
+      <div class="report-row"><div class="report-key">Key output fields</div><div class="report-val">priority_rank · payment_timing · close_risk</div></div>
+      <div class="report-row"><div class="report-key">Recommended action</div><div class="report-val">Validate support before close date</div></div>
+    </div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Include "close date: [date]" in your context. The copilot will calculate days-to-close pressure and escalate anything in the 60+ bucket automatically.</div>
+  </div>
+
+  <div id="s2" class="section">
+    <div class="feat-header"><span class="feat-badge">LANE · COMPLIANCE</span><span class="feat-title">Compliance Shield</span></div>
+    <div class="feat-desc">Scans for approval trail gaps, missing documentation, and audit readiness issues across your close cycle. Generates a compliance posture score and controller-ready risk summary.</div>
+    <div class="steps-label">HOW TO RUN</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Navigate to Compliance UI</div><div class="step-detail">Go to <code>/html/finops-suite/compliance.html</code> or click "Compliance" in the suite nav.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Describe your audit scope</div><div class="step-detail">Enter period, entity, or transaction type. Include any known gaps or findings.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Run shield analysis</div><div class="step-detail">Calls <code>POST /api/finops/copilot</code> with <code>workflow: "Compliance Shield"</code>. Returns approval trail status, documentation gaps, and audit risk level.</div></div></div>
+    <div class="report-box">
+      <div class="report-box-title">CUSTOM REPORT · COMPLIANCE</div>
+      <div class="report-row"><div class="report-key">Workflow param</div><div class="report-val">"Compliance Shield"</div></div>
+      <div class="report-row"><div class="report-key">Context to include</div><div class="report-val">Period · Entity · Known findings</div></div>
+      <div class="report-row"><div class="report-key">Key output</div><div class="report-val">approval_trail · doc_gaps · audit_risk</div></div>
+      <div class="report-row"><div class="report-key">Escalation trigger</div><div class="report-val">Any gap flagged HIGH → Controller</div></div>
+    </div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Paste your internal audit checklist items as context. The AI will match each item against best-practice requirements and flag specific gaps.</div>
+  </div>
+
+  <div id="s3" class="section">
+    <div class="feat-header"><span class="feat-badge">LANE · ZERO TRUST</span><span class="feat-title">Zero Trust</span></div>
+    <div class="feat-desc">Validates that every transaction in your close cycle has a verifiable approval and support trail. Flags any transaction that could fail an external audit challenge.</div>
+    <div class="steps-label">HOW TO RUN</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Open Zero Trust app</div><div class="step-detail">Navigate to <code>/finops/zero-trust.html</code>.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Submit transactions for verification</div><div class="step-detail">Paste transaction IDs, amounts, or journal entry references. The system checks each for approval chain completeness.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Review trust posture</div><div class="step-detail">Output shows which transactions are <code>VERIFIED</code>, <code>UNVERIFIED</code>, or <code>ESCALATE</code>.</div></div></div>
+    <div class="report-box">
+      <div class="report-box-title">CUSTOM REPORT · ZERO TRUST</div>
+      <div class="report-row"><div class="report-key">Workflow param</div><div class="report-val">"Zero Trust"</div></div>
+      <div class="report-row"><div class="report-key">Context to include</div><div class="report-val">Transaction IDs · Approver names · Dates</div></div>
+      <div class="report-row"><div class="report-key">Key output</div><div class="report-val">trust_status · approval_chain · escalate flag</div></div>
+    </div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Run Zero Trust after AP Aging and Compliance to create a full three-lane close readiness picture before presenting to the controller.</div>
+  </div>
+
+  <div id="s4" class="section">
+    <div class="feat-header"><span class="feat-badge">LANE · STRATEGY</span><span class="feat-title">Strategist BNCA</span></div>
+    <div class="feat-desc">BNCA = Best Next Closing Action. Synthesizes all open lanes into a single prioritized narrative for the controller. Converts parallel FinOps threads into one staff-accountant workflow and a controller-ready action plan.</div>
+    <div class="steps-label">HOW TO RUN</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Open Main Strategist</div><div class="step-detail">Navigate to <code>/html/finops-suite/finops-main-strategist/index.html</code> or click "Open FinOps Strategist" from Copilot.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Load prior lane outputs</div><div class="step-detail">Paste or reference output from AP, Compliance, and Zero Trust lanes. The strategist synthesizes across all three.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Generate BNCA narrative</div><div class="step-detail">Returns <code>combined_bnca</code>: a plain-English closing sequence with ranked next actions and owner assignments.</div></div></div>
+    <div class="workflow-grid">
+      <div class="wf-card"><div class="wf-card-label">INPUT</div><div class="wf-card-val">AP + Compliance + Zero Trust lane results</div></div>
+      <div class="wf-card"><div class="wf-card-label">OUTPUT</div><div class="wf-card-val">combined_bnca · controller_note · confidence %</div></div>
+      <div class="wf-card"><div class="wf-card-label">AUDIENCE</div><div class="wf-card-val">Controller · CFO · Audit partner</div></div>
+    </div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Use Strategist BNCA at the end of every close cycle. The <code>controller_note</code> field is designed to be copy-pasted directly into your close memo.</div>
+  </div>
+
+  <div id="s5" class="section">
+    <div class="feat-header"><span class="feat-badge">API</span><span class="feat-title">Multi-Chain Reports</span></div>
+    <div class="feat-desc">Runs multiple workflow lanes in a single API call. Returns a consolidated report across all selected workflows — ideal for month-end close packages.</div>
+    <div class="steps-label">HOW TO RUN</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Call the multi-report endpoint</div><div class="step-detail">POST to <code>/api/finops/multi-report</code> with a <code>workflows</code> array.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Specify workflows array</div><div class="step-detail">Example: <code>{"workflows":["AP Aging","Compliance Shield","Zero Trust"]}</code></div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Receive combined output</div><div class="step-detail">Returns one consolidated result per workflow plus a cross-lane priority summary.</div></div></div>
+    <div class="report-box">
+      <div class="report-box-title">AVAILABLE WORKFLOW COMBINATIONS</div>
+      <div class="report-row"><div class="report-key">Close Package</div><div class="report-val">AP Aging + Bank Rec + Month-End</div></div>
+      <div class="report-row"><div class="report-key">Risk Package</div><div class="report-val">Compliance Shield + Zero Trust</div></div>
+      <div class="report-row"><div class="report-key">Tax Package</div><div class="report-val">1099 Tracker + AR Ledger</div></div>
+      <div class="report-row"><div class="report-key">Full Suite</div><div class="report-val">All 4 workflows simultaneously</div></div>
+    </div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Schedule the Full Suite call nightly during close week. The multi-chain output gives your controller a live dashboard without manual re-runs.</div>
+  </div>
+
+  <div id="s6" class="section">
+    <div class="feat-header"><span class="feat-badge">ADVANCED</span><span class="feat-title">Generating Custom Reports</span></div>
+    <div class="feat-desc">Any lane can be extended into a custom report by shaping the context you pass. The AI interprets structured context and returns structured JSON you can pipe into any reporting tool.</div>
+    <div class="steps-label">CUSTOM REPORT TEMPLATE</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Choose your workflow lane</div><div class="step-detail">Pick the lane that matches your report scope (AP, AR, Tax, Compliance, Close, Zero Trust).</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Structure your context block</div><div class="step-detail">Lead with: <code>REPORT TYPE: [name]</code> then data rows then <code>FOCUS: [what you want highlighted]</code></div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Request specific output fields</div><div class="step-detail">End with: <code>OUTPUT: summary, ranked_actions, owner_assignments, deadline</code> — the AI will honor these field names in its JSON response.</div></div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-body"><div class="step-title">Parse and export</div><div class="step-detail">The response is clean JSON. Pipe it to Excel, Google Sheets, or your GL system. Use <code>priority_rank[]</code> as your report rows.</div></div></div>
+    <ul class="chain-list">
+      <li><div class="dot"></div>Vendor aging report → AP Aging lane + paste aging table as context</li>
+      <li><div class="dot"></div>1099 readiness checklist → 1099 Tracker lane + paste vendor W-9 status</li>
+      <li><div class="dot"></div>Month-end close sign-off → Strategist BNCA after all lanes complete</li>
+      <li><div class="dot"></div>Audit trail report → Zero Trust lane + paste transaction log</li>
+      <li><div class="dot"></div>AR collection priority → AR Ledger lane + paste customer aging</li>
+      <li><div class="dot"></div>Bank rec gap report → Bank Rec lane + paste unmatched items</li>
+    </ul>
+    <div class="tip-box"><strong>PRO TIP:</strong> To generate a PDF-ready report, run the copilot, copy the <code>priority_rank</code> and <code>controller_note</code> fields, and paste into the Doc Showcase — it formats them into a print-ready layout automatically.</div>
+  </div>
+
+  <div id="s7" class="section">
+    <div class="feat-header"><span class="feat-badge">CONTROLLER</span><span class="feat-title">Controller Action Plan</span></div>
+    <div class="feat-desc">A one-click summary layer that converts any copilot session into a controller-ready memo. Includes all ranked actions, owner assignments, deadlines, and an executive BNCA narrative.</div>
+    <div class="steps-label">HOW TO USE</div>
+    <div class="step"><div class="step-num">01</div><div class="step-body"><div class="step-title">Run any copilot workflow first</div><div class="step-detail">Complete at least one lane. The Controller Action Plan synthesizes the current session output.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-body"><div class="step-title">Click "Controller Action Plan"</div><div class="step-detail">Available in the sticky footer bar at the bottom of the Copilot UI.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-body"><div class="step-title">Review and share</div><div class="step-detail">Fields: <code>controller_note</code> · <code>priority_rank</code> · <code>combined_bnca</code> · <code>confidence</code> · <code>ts</code></div></div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-body"><div class="step-title">Export to Doc Showcase</div><div class="step-detail">Click "Open Doc Showcase" to render as a formatted, shareable document.</div></div></div>
+    <div class="workflow-grid">
+      <div class="wf-card"><div class="wf-card-label">BEST FOR</div><div class="wf-card-val">Month-end close sign-off memos</div></div>
+      <div class="wf-card"><div class="wf-card-label">AUDIENCE</div><div class="wf-card-val">Controller · CFO · External auditor</div></div>
+      <div class="wf-card"><div class="wf-card-label">FORMAT</div><div class="wf-card-val">JSON → Doc Showcase → PDF-ready</div></div>
+    </div>
+    <div class="tip-box"><strong>PRO TIP:</strong> Confidence score below 70 = gather more context before sharing with the controller. Above 85 = ready to sign off.</div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn" id="prevBtn" onclick="nav(-1)">← PREV</button>
+    <button class="nav-btn primary" id="nextBtn" onclick="nav(1)">NEXT →</button>
+    <a class="open-btn" href="/html/finops-suite/copilot.html">OPEN COPILOT →</a>
+  </div>
+</div>
+
+<script>
+let cur=0;const total=8;
+function show(i){
+  document.querySelectorAll('.section').forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  document.querySelectorAll('.toc-btn').forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  cur=i;
+  document.getElementById('prevBtn').style.opacity=cur===0?'0.3':'1';
+  document.getElementById('nextBtn').style.opacity=cur===total-1?'0.3':'1';
+  window.scrollTo(0,0);
+}
+function nav(d){show(Math.max(0,Math.min(total-1,cur+d)));}
+show(0);
+</script>
+</body>
+</html>
