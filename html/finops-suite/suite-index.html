@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TSM · Suite Home</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0a0e14;--bg2:#0f1520;--bg3:#141e2e;--border:#1e3a5a;--cyan:#00e5c8;--text:#c8d8e8;--muted:#6a8aa8;--white:#e8f4ff;--green:#40e080;--red:#ff4444;--gold:#f0c040;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;}
+.wrap{max-width:980px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.hdr{border-bottom:1px solid var(--border);padding-bottom:1.2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+.hdr-title{font-family:'Share Tech Mono',monospace;font-size:26px;color:var(--cyan);letter-spacing:3px;}
+.hdr-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:1px;}
+.mesh-pill{font-family:'Share Tech Mono',monospace;font-size:12px;padding:7px 16px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;transition:all .2s;}
+.mesh-pill.online{border-color:var(--green);color:var(--green);}
+.suite-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:2rem;}
+.suite-card{border-radius:12px;border:1px solid var(--border);background:var(--bg2);padding:1.4rem 1.6rem;text-decoration:none;display:block;transition:all .2s;position:relative;overflow:hidden;}
+.suite-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--card-accent);}
+.suite-card:hover{transform:translateY(-3px);background:var(--bg3);border-color:var(--card-accent);}
+.suite-icon{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--card-accent);margin-bottom:.8rem;}
+.suite-title{font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--white);margin-bottom:.5rem;}
+.suite-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+.suite-footer{display:flex;justify-content:space-between;align-items:center;}
+.suite-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--card-accent);}
+.suite-arrow{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);}
+.section-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:1rem;margin-top:2rem;}
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;}
+.quick-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;text-decoration:none;display:block;transition:all .15s;}
+.quick-card:hover{border-color:var(--cyan);background:var(--bg3);}
+.quick-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:3px;}
+.quick-title{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--white);}
+.howto-float{position:fixed;right:20px;bottom:20px;background:#00FFC6;color:#001;padding:10px 14px;border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;z-index:9999;box-shadow:0 2px 12px rgba(0,255,198,.25);}
+</style></head><body>
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">TSM INTELLIGENCE SUITES</div>
+      <div class="hdr-sub">STAFF ACCOUNTANT COPILOT · MULTI-VERTICAL INTELLIGENCE PLATFORM</div>
+    </div>
+    <div class="mesh-pill" id="meshPill" onclick="loadMesh()">CHECK MESH</div>
+  </div>
+
+  <div class="section-label">VERTICAL SUITES</div>
+  <div class="suite-grid">
+    <a class="suite-card" href="/suite" style="--card-accent:#00e5c8;">
+      <div class="suite-icon">FINOPS</div>
+      <div class="suite-title">FinOps Suite</div>
+      <div class="suite-desc">AP Aging · AR Ledger · Compliance Shield · Zero Trust · Strategist BNCA · Month-End Close</div>
+      <div class="suite-footer"><span class="suite-count">10 APPS</span><span class="suite-arrow">ENTER →</span></div>
+    </a>
+    <a class="suite-card" href="/suite/healthcare" style="--card-accent:#00c8ff;">
+      <div class="suite-icon">HEALTHCARE</div>
+      <div class="suite-title">Healthcare Suite</div>
+      <div class="suite-desc">Revenue cycle · Payer compliance · BEACON agent · Layer 2 mesh intelligence</div>
+      <div class="suite-footer"><span class="suite-count">22 APPS</span><span class="suite-arrow">ENTER →</span></div>
+    </a>
+    <a class="suite-card" href="/suite/construction" style="--card-accent:#f0a030;">
+      <div class="suite-icon">CONSTRUCTION</div>
+      <div class="suite-title">Construction Suite</div>
+      <div class="suite-desc">Job costing · Subcontractor management · Lien & compliance · Project close</div>
+      <div class="suite-footer"><span class="suite-count">12 APPS</span><span class="suite-arrow">ENTER →</span></div>
+    </a>
+    <a class="suite-card" href="/suite/insurance" style="--card-accent:#c060ff;">
+      <div class="suite-icon">INSURANCE</div>
+      <div class="suite-title">Insurance Suite</div>
+      <div class="suite-desc">Policy management · Claims triage · Fraud detection · Compliance review</div>
+      <div class="suite-footer"><span class="suite-count">9 APPS</span><span class="suite-arrow">ENTER →</span></div>
+    </a>
+  </div>
+
+  <div class="section-label">QUICK ACCESS</div>
+  <div class="quick-grid">
+    <a class="quick-card" href="/html/finops-suite/copilot.html"><div class="quick-label">CORE</div><div class="quick-title">Staff Accountant Copilot</div></a>
+    <a class="quick-card" href="/html/finops-suite/finops-main-strategist/index.html"><div class="quick-label">STRATEGY</div><div class="quick-title">Main Strategist BNCA</div></a>
+    <a class="quick-card" href="/html/finops-suite/compliance.html"><div class="quick-label">COMPLIANCE</div><div class="quick-title">Compliance Shield</div></a>
+    <a class="quick-card" href="/finops/zero-trust.html"><div class="quick-label">ZERO TRUST</div><div class="quick-title">Zero Trust</div></a>
+    <a class="quick-card" href="/html/finops-suite/finops-showcase/index.html"><div class="quick-label">DOCS</div><div class="quick-title">Doc Showcase</div></a>
+    <a class="quick-card" href="/how-to"><div class="quick-label">GUIDE</div><div class="quick-title">How To Guide</div></a>
+    <a class="quick-card" href="/api/finops/mesh-health" target="_blank"><div class="quick-label">API</div><div class="quick-title">Mesh Health JSON</div></a>
+    <a class="quick-card" href="/html/finops-suite/financial-command/index.html"><div class="quick-label">COMMAND</div><div class="quick-title">Financial Command</div></a>
+  </div>
+</div>
+<div class="howto-float" onclick="window.open('/how-to','_blank')">HOW TO</div>
+<script>
+async function loadMesh(){
+  const pill = document.getElementById('meshPill');
+  pill.textContent = 'CHECKING...';
+  try {
+    const r = await fetch('/api/finops/mesh-health');
+    const d = await r.json();
+    pill.textContent = 'MESH ' + d.score;
+    pill.className = 'mesh-pill ' + (d.online===d.total?'online':'');
+  } catch(e) { pill.textContent = 'MESH OFFLINE'; }
+}
+loadMesh();
+</script>
+</body></html>

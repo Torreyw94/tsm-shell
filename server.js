@@ -667,6 +667,30 @@ app.get('/how-to', (req,res) => res.sendFile(path.join(__dirname,'html/finops-su
 
 app.get('/how-to', (req,res) => res.sendFile(require('path').join(__dirname,'html/finops-suite/how-to.html')));
 
+
+app.get('/suite', (req,res) => res.sendFile(require('path').join(__dirname,'html/finops-suite/suite-index.html')));
+app.get('/suite/healthcare', (req,res) => res.sendFile(require('path').join(__dirname,'html/healthcare/suite-index.html')));
+app.get('/suite/construction', (req,res) => res.sendFile(require('path').join(__dirname,'html/construction-suite/suite-index.html')));
+app.get('/suite/insurance', (req,res) => res.sendFile(require('path').join(__dirname,'html/tsm-insurance/suite-index.html')));
+
+app.get('/api/finops/mesh-score', async (req,res) => {
+  try {
+    const r = await fetch('http://localhost:' + PORT + '/api/finops/mesh-health');
+    const d = await r.json();
+    res.json({score:d.score, online:d.online, total:d.total, ts:d.ts});
+  } catch(e) { res.json({score:'0/10',online:0,total:10,ts:new Date().toISOString()}); }
+});
+
+app.post('/api/finops/export-pdf', (req, res) => {
+  const { controller_note='', priority_rank=[], combined_bnca='', confidence=0, workflow='', ts='' } = req.body;
+  const rows = priority_rank.map((r,i) => `<tr><td>${i+1}</td><td>${r.lane||''}</td><td>${r.issue||''}</td><td>${r.impact||''}</td><td>${r.owner||''}</td><td>${r.status||''}</td></tr>`).join('');
+  const col = confidence>=85?'#2e7d32':confidence>=70?'#f57c00':'#c62828';
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:40px;}h1{font-size:18px;color:#00796b;border-bottom:2px solid #00796b;padding-bottom:8px;margin-bottom:20px;}h2{font-size:13px;color:#333;margin:20px 0 8px;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th{background:#00796b;color:#fff;padding:6px 8px;text-align:left;font-size:11px;}td{padding:5px 8px;border-bottom:1px solid #ddd;font-size:11px;}.note{background:#f0f9f7;border-left:3px solid #00796b;padding:10px 14px;margin:16px 0;font-size:12px;}.meta{font-size:10px;color:#888;margin-top:30px;border-top:1px solid #eee;padding-top:10px;}</style></head><body><h1>TSM FINOPS · CONTROLLER ACTION PLAN</h1><p><strong>Workflow:</strong> ${workflow} &nbsp; <strong>Confidence:</strong> <span style="font-weight:bold;color:${col}">${confidence}%</span></p><h2>PRIORITY ACTION ITEMS</h2><table><thead><tr><th>#</th><th>Lane</th><th>Issue</th><th>Impact</th><th>Owner</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><h2>BEST NEXT CLOSING ACTION</h2><div class="note">${combined_bnca}</div><h2>CONTROLLER NOTE</h2><div class="note">${controller_note}</div><div class="meta">Generated: ${ts||new Date().toISOString()} · TSM FinOps · tsm-shell.fly.dev</div></body></html>`;
+  res.setHeader('Content-Type','text/html');
+  res.setHeader('Content-Disposition','attachment; filename="tsm-controller-action-plan.html"');
+  res.send(html);
+});
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));

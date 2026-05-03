@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TSM · Insurance Suite</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0a0e14;--bg2:#0f1520;--bg3:#141e2e;--border:#1e3a5a;--accent:#c060ff;--text:#c8d8e8;--muted:#6a8aa8;--white:#e8f4ff;--green:#40e080;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;}
+.wrap{max-width:980px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.hdr-title{font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--accent);letter-spacing:2px;}
+.hdr-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px;}
+.hdr-right{display:flex;gap:8px;align-items:center;}
+.btn{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:4px;transition:all .15s;cursor:pointer;background:none;}
+.btn:hover{color:var(--accent);border-color:var(--accent);}
+.btn.cta{color:var(--accent);border-color:var(--accent);}
+.count-badge{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);background:rgba(255,255,255,.04);border:1px solid var(--border);padding:4px 12px;border-radius:4px;}
+.section-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:.8rem;margin-top:1.5rem;}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.app-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;cursor:pointer;transition:all .18s;text-decoration:none;display:block;}
+.app-card:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-2px);}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.card-badge{font-family:'Share Tech Mono',monospace;font-size:10px;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.04);color:var(--accent);border:1px solid rgba(255,255,255,.08);letter-spacing:1px;}
+.card-status{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+.card-status.ok{background:var(--green);}
+.card-title{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--white);margin-bottom:4px;}
+.card-desc{font-size:11px;color:var(--muted);word-break:break-all;}
+.quick-bar{display:flex;gap:10px;margin-top:2rem;flex-wrap:wrap;}
+.howto-float{position:fixed;right:20px;bottom:20px;background:#00FFC6;color:#001;padding:10px 14px;border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;z-index:9999;box-shadow:0 2px 12px rgba(0,255,198,.25);}
+</style></head><body>
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">INSURANCE SUITE</div>
+      <div class="hdr-sub">TSM INTELLIGENCE SUITE · 9 APPLICATIONS</div>
+    </div>
+    <div class="hdr-right">
+      <span class="count-badge">9 APPS</span>
+      <a class="btn" href="/suite">← ALL SUITES</a>
+    </div>
+  </div>
+  <div class="section-label">APPLICATIONS</div>
+  <div class="app-grid">
+    <a class="app-card" href="/html/tsm-insurance/agents-ins.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Agents Ins</div>
+      <div class="card-desc">/html/tsm-insurance/agents-ins.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/az-ins.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Az Ins</div>
+      <div class="card-desc">/html/tsm-insurance/az-ins.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/compliance.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Compliance</div>
+      <div class="card-desc">/html/tsm-insurance/compliance.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/dme.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Dme</div>
+      <div class="card-desc">/html/tsm-insurance/dme.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/ins-presentation.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Ins Presentation</div>
+      <div class="card-desc">/html/tsm-insurance/ins-presentation.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/legal.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Legal</div>
+      <div class="card-desc">/html/tsm-insurance/legal.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/pc-command.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Pc Command</div>
+      <div class="card-desc">/html/tsm-insurance/pc-command.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/pricing.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Pricing</div>
+      <div class="card-desc">/html/tsm-insurance/pricing.html</div>
+    </a>
+    <a class="app-card" href="/html/tsm-insurance/tax-prep.html">
+      <div class="card-top"><span class="card-badge">INS</span><div class="card-status"></div></div>
+      <div class="card-title">Tax Prep</div>
+      <div class="card-desc">/html/tsm-insurance/tax-prep.html</div>
+    </a>
+    <a class="app-card" href="/how-to">
+      <div class="card-top"><span class="card-badge">GUIDE</span><div class="card-status ok"></div></div>
+      <div class="card-title">How To Guide</div>
+      <div class="card-desc">/how-to</div>
+    </a>
+  </div>
+  <div class="quick-bar">
+    <a class="btn cta" href="/suite">← ALL SUITES</a>
+    <a class="btn" href="/how-to">HOW TO GUIDE</a>
+    <a class="btn" href="/html/finops-suite/copilot.html">FINOPS COPILOT</a>
+    <a class="btn" href="/suite">SUITE HOME</a>
+  </div>
+</div>
+<div class="howto-float" onclick="window.open('/how-to','_blank')">HOW TO</div>
+</body></html>
