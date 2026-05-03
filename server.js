@@ -651,8 +651,9 @@ app.get('/api/finops/mesh-health', async (req,res)=>{
   for(const c of checks){
     const started=Date.now();
     try{
-      // ⚠️ removed invalid top-level await fetch
-results.push({name:c.name,path:c.path,status:r.status,ok:r.ok,ms:Date.now()-started});
+      const opts=c.type==='POST'?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c.body||{})}:{};
+      const r=await fetch(base+c.path,opts);
+      results.push({name:c.name,path:c.path,status:r.status,ok:r.ok,ms:Date.now()-started});
     }catch(e){
       results.push({name:c.name,path:c.path,status:0,ok:false,error:e.message,ms:Date.now()-started});
     }
@@ -1231,39 +1232,6 @@ app.post('/api/finops/multi-report',(req,res)=>{
     ts:new Date().toISOString()
   });
 });
-
-app.get('/api/finops/mesh-health', async (req,res)=>{
-  const checks=[
-    {name:'Copilot UI',path:'/html/finops-suite/copilot.html',type:'GET'},
-    {name:'Financial UI',path:'/html/finops-suite/financial-ui.html',type:'GET'},
-    {name:'Financial Command',path:'/html/finops-suite/financial-command/index.html',type:'GET'},
-    {name:'Doc Showcase',path:'/html/finops-suite/finops-showcase/index.html',type:'GET'},
-    {name:'Compliance',path:'/html/finops-suite/compliance.html',type:'GET'},
-    {name:'Tax',path:'/html/finops-suite/tax.html',type:'GET'},
-    {name:'Zero Trust',path:'/finops/zero-trust.html',type:'GET'},
-    {name:'Main Strategist',path:'/html/finops-suite/finops-main-strategist/index.html',type:'GET'},
-    {name:'Copilot API',path:'/api/finops/copilot',type:'POST',body:{workflow:'AP Aging',context:'mesh health test'}},
-    {name:'Multi Chain API',path:'/api/finops/multi-report',type:'POST',body:{workflows:['AP Aging','AR Ledger','1099 Tracker']}}
-  ];
-
-  const base=`${req.protocol}://${req.get('host')}`;
-  const results=[];
-
-  for(const c of checks){
-    const started=Date.now();
-    try{
-      // ⚠️ removed invalid top-level await fetch
-results.push({name:c.name,path:c.path,status:r.status,ok:r.ok,ms:Date.now()-started});
-    }catch(e){
-      results.push({name:c.name,path:c.path,status:0,ok:false,error:e.message,ms:Date.now()-started});
-    }
-  }
-
-  const online=results.filter(x=>x.ok).length;
-  res.json({ok:online===results.length,suite:'finops',online,total:results.length,score:`${online}/${results.length}`,results,ts:new Date().toISOString()});
-});
-
-// Fallback: unmatched API requests
 
 // ── PATCHED ROUTES ──────────────────────────────────────────────────────────
 
