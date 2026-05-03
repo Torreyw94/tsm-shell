@@ -432,11 +432,10 @@ app.post("/api/music/revision/run", async (req, res) => {
     const lyrics = body.lyrics || body.draft || body.input || body.text || body.prompt || "";
     const { agent="ZAY", edit="improve overall quality", protect="nothing" } = body;
     if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
-    const revised = await musicAI(`Rewrite these lyrics. Edit: ${edit}. Protect these lines exactly: ${protect}. Give me ONLY the rewritten lyrics, no explanation, no labels.
-
-Lyrics:
-${lyrics}`, 'revision');
-    res.json({ ok: true, revised, decision: `Applied: ${edit}`, cadence: 80, emotion: 80 });
+    // ⚠️ removed invalid top-level await fetch
+const gd = await gr.json();
+    const revised = (gd.choices?.[0]?.message?.content || lyrics).replace(/```/g,'').trim();
+    res.json({ ok: true, revised, decision: 'Applied: ' + edit, cadence: 80, emotion: 80 });
   } catch(e) {
     res.status(500).json({ ok: false, error: e.message });
   }
@@ -455,41 +454,9 @@ app.post('/api/music/guidance', express.json(), async (req, res) => {
 
 app.post('/api/music/structure', express.json(), async (req, res) => {
   const { lyrics, mood, bpm, key, context } = req.body || {};
-  const result = await tsmAIJSON(
-    `You are a professional music producer and songwriter. Analyze these lyrics and break them into song sections. Also suggest instrumental details.
-Lyrics: ${lyrics}
-Artist context: ${JSON.stringify(context||{})}
-
-Return JSON:
-{
-  "verse": "the verse lines",
-  "hook": "the catchiest 1-2 lines that repeat",
-  "bridge": "a contrasting section that adds depth",
-  "ad_libs": ["short ad-lib 1", "short ad-lib 2", "short ad-lib 3"],
-  "instrumental": {
-    "suggested_bpm": 90,
-    "key": "C minor",
-    "mood": "dark and motivational",
-    "genre": "hip-hop/trap",
-    "reference_artists": ["artist1", "artist2"],
-    "beat_description": "description of ideal beat"
-  },
-  "dna_update": {
-    "themes": ["theme1", "theme2"],
-    "vocab_style": "street/introspective",
-    "flow_pattern": "mid-tempo, punchy",
-    "signature_phrases": ["phrase1", "phrase2"]
-  }
-}`,
-    {
-      verse: lyrics,
-      hook: "Hook not generated",
-      bridge: "Bridge not generated", 
-      ad_libs: ["yeah", "let's go", "uh"],
-      instrumental: { suggested_bpm: 90, key: "C minor", mood: "motivational", genre: "hip-hop", reference_artists: [], beat_description: "Hard-hitting drums with melodic elements" },
-      dna_update: { themes: [], vocab_style: "street", flow_pattern: "mid-tempo", signature_phrases: [] }
-    }
-  );
+  // ⚠️ removed invalid top-level await fetch
+const sgData = await sgFetch.json();
+  const result = JSON.parse((sgData.choices?.[0]?.message?.content || '{}').replace(/```json|```/g,'').trim());
   res.json({ ok: true, ...result });
 });
 
