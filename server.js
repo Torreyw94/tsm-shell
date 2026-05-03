@@ -86,39 +86,15 @@ app.get("/", (_req, res) => {
 // Server-side only. No provider/model/key exposed in browser.
 // ======================================================
 async function tsmAIJSON(prompt, fallback){
-  try{
+  try {
     if(!process.env.GROQ_API_KEY) throw new Error("GROQ_API_KEY missing");
-
-    const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{
-        'Authorization':`Bearer ${process.env.GROQ_API_KEY}`,
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        model:process.env.TSM_MODEL || 'llama-3.1-8b-instant',
-        messages:[
-          {role:'system',content:'You are TSM Neural Core. Never mention provider, model, API, or implementation. Return JSON only.'},
-          {role:'user',content:prompt}
-        ],
-        temperature:.22,
-        max_tokens:1200
-      })
-    });
-
-    if(!r.ok) throw new Error("AI unavailable");
-    const data=await r.json();
-    const text=data?.choices?.[0]?.message?.content || "";
-    try{return JSON.parse(text.replace(/```json|```/g,'').trim());}
-    catch(e){return {...fallback, narrative:text};}
-  }catch(e){
+    const text = await musicAI(prompt, 'json');
+    try { return JSON.parse(text.replace(/```json|```/g,'').trim()); }
+    catch(e) { return {...fallback, narrative: text}; }
+  } catch(e) {
     return {...fallback, ai_status:'fallback_no_mock_data_key_or_route_needed'};
   }
 }
-
-const TSM_MEMORY = global.__TSM_MEMORY__ = global.__TSM_MEMORY__ || {
-  healthcare:{nodes:{}, hcStrategist:null, mainStrategist:null, executive:null}
-};
 
 async function runAIQuery(body, defaultSystem){
   const system = body.system || defaultSystem || 'You are TSM Neural Core. Answer precisely.';
@@ -402,10 +378,13 @@ app.post("/api/music/revision/run", async (req, res) => {
   try {
     const body = req.body || {};
     const lyrics = body.lyrics || body.draft || body.input || body.text || body.prompt || "";
-    const { agent="ZAY" } = body;
+    const { agent="ZAY", edit="improve overall quality", protect="nothing" } = body;
     if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
-    const result = await tsmAIJSON(`You are music agent ${agent}. Revise these lyrics. Return JSON: { revised, cadence, emotion, structure, imagery, decision }. Lyrics: ${lyrics}`,{ revised: lyrics, cadence: 75, emotion: 75, structure: 75, imagery: 75, decision: "No change" });
-    res.json({ ok: true, ...result });
+    const revised = await musicAI(`Rewrite these lyrics. Edit: ${edit}. Protect these lines exactly: ${protect}. Give me ONLY the rewritten lyrics, no explanation, no labels.
+
+Lyrics:
+${lyrics}`, 'revision');
+    res.json({ ok: true, revised, decision: `Applied: ${edit}`, cadence: 80, emotion: 80 });
   } catch(e) {
     res.status(500).json({ ok: false, error: e.message });
   }
@@ -720,6 +699,43 @@ Focus on AP, AR, bank reconciliation, month-end close, 1099/W-9 readiness, compl
       ts:new Date().toISOString()
     });
   }
+});
+
+
+// FINOPS MESH HEALTHCHECK
+app.get('/api/finops/mesh-health', async (req,res)=>{
+  const checks=[
+    {name:'Copilot UI',path:'/html/finops-suite/copilot.html',type:'GET'},
+    {name:'Financial UI',path:'/html/finops-suite/financial-ui.html',type:'GET'},
+    {name:'Financial Command',path:'/html/finops-suite/financial-command/index.html',type:'GET'},
+    {name:'Doc Showcase',path:'/html/finops-suite/finops-showcase/index.html',type:'GET'},
+    {name:'Compliance',path:'/html/finops-suite/compliance.html',type:'GET'},
+    {name:'Tax',path:'/html/finops-suite/tax.html',type:'GET'},
+    {name:'Zero Trust',path:'/finops/zero-trust.html',type:'GET'},
+    {name:'Main Strategist',path:'/html/finops-suite/finops-main-strategist/index.html',type:'GET'},
+    {name:'Copilot API',path:'/api/finops/copilot',type:'POST',body:{workflow:'AP Aging',context:'mesh health test'}},
+    {name:'Multi Chain API',path:'/api/finops/multi-report',type:'POST',body:{workflows:['AP Aging','AR Ledger','1099 Tracker']}}
+  ];
+
+  const base=`${req.protocol}://${req.get('host')}`;
+  const results=[];
+
+  for(const c of checks){
+    const started=Date.now();
+    try{
+      const r=await fetch(base+c.path,{
+        method:c.type,
+        headers:{'Content-Type':'application/json'},
+        body:c.type==='POST'?JSON.stringify(c.body||{}):undefined
+      });
+      results.push({name:c.name,path:c.path,status:r.status,ok:r.ok,ms:Date.now()-started});
+    }catch(e){
+      results.push({name:c.name,path:c.path,status:0,ok:false,error:e.message,ms:Date.now()-started});
+    }
+  }
+
+  const online=results.filter(x=>x.ok).length;
+  res.json({ok:online===results.length,suite:'finops',online,total:results.length,score:`${online}/${results.length}`,results,ts:new Date().toISOString()});
 });
 
 app.listen(PORT, "0.0.0.0", () => {
@@ -1216,7 +1232,7 @@ app.post('/api/music/llm', async (req, res) => {
 
 app.post("/api/music/agent-pass-v2", async (req, res) => {
   const prompt = req.body?.prompt || req.body?.message || req.body?.input || "";
-  const result = await tsmAIJSON(`You are TSM Music Command. You MUST return EXACTLY 3 options in this JSON. Do not return fewer. All 3 must have different lyrics: {"options":[{"label":"Option 1: [short descriptor]","text":"lyrics here"},{"label":"Option 2: [short descriptor]","text":"lyrics here"},{"label":"Option 3: [short descriptor]","text":"lyrics here"}],"hook_score":85,"cadence_score":88,"lex_score":82} Task: ${prompt} Keep lyrics raw, authentic, street. No explanation outside JSON.`, {options:[{label:"Option 1",text:prompt},{label:"Option 2",text:prompt},{label:"Option 3",text:prompt}],hook_score:75,cadence_score:75,lex_score:75});
+  const result = await tsmAIJSON(`You are TSM Music Command. Create 3 COMPLETELY DIFFERENT rewrites. STRICT RULES: each option must use DIFFERENT words, DIFFERENT rhymes, DIFFERENT imagery. Option 1 MUST be raw gritty street. Option 2 MUST be melodic and emotional - focus on feeling. Option 3 MUST be hard aggressive trap - anger and hunger. If any two options share a line, you have FAILED. Input lyrics to rewrite: {"options":[{"label":"Option 1: [short descriptor]","text":"lyrics here"},{"label":"Option 2: [short descriptor]","text":"lyrics here"},{"label":"Option 3: [short descriptor]","text":"lyrics here"}],"hook_score":85,"cadence_score":88,"lex_score":82} Task: ${prompt} Keep lyrics raw, authentic, street. No explanation outside JSON.`, {options:[{label:"Option 1",text:prompt},{label:"Option 2",text:prompt},{label:"Option 3",text:prompt}],hook_score:75,cadence_score:75,lex_score:75});
   res.json({ok:true, ...result, output: result.options?.[0]?.text || ""});
 });
 app.post("/api/music/export/save", async (req, res) => {
