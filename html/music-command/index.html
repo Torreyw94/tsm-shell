@@ -1821,16 +1821,20 @@ async function callGroq(systemPrompt, userPrompt, loadingId, callback) {
   if (loading) { loading.classList.add('show'); loading.innerHTML = `<div><div style="text-align:center;margin-bottom:8px;color:var(--text2);font-family:var(--font-mono);font-size:12px;">Agent pass running...</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>`; }
 
   try {
-    const resp = await fetch('/api/music/agent-pass-v2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: userPrompt || systemPrompt || document.getElementById('draft-input')?.value || ''})});
+    const resp = await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemPrompt: systemPrompt, userPrompt: userPrompt || document.getElementById('draft-input')?.value || ''})});
     const data = await resp.json();
-    // server returns {ok, output} not Anthropic {content:[]} format
-    const text = data.output
-      || data.content?.map(b => b.text || '').join('')
-      || data.result
-      || data.text
-      || '';
     if (loading) loading.classList.remove('show');
-    callback(text);
+    // If structured options returned, pass full JSON string so callers can parse it
+    if (data.options && Array.isArray(data.options)) {
+      callback(JSON.stringify(data));
+    } else {
+      const text = data.output
+        || data.content?.map(b => b.text || '').join('')
+        || data.result
+        || data.text
+        || '';
+      callback(text);
+    }
     updateSessionTime();
   } catch (e) {
     if (loading) loading.classList.remove('show');
@@ -3473,9 +3477,9 @@ window.addEventListener('load', musicSuiteBoot);
       document.getElementById('coach-body').innerHTML =
         '<div class="coach-loading">🎤 Step 1/4 — Running Agent Pass...</div>';
 
-      const agentRes = await fetch('/api/music/agent-pass-v2', {
+      const agentRes = await fetch('/api/music/agent-pass', {
         method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ prompt: lyrics })
+        body: JSON.stringify({ systemPrompt: 'You are a professional music production AI. Return ONLY valid JSON: {"options":[{"label":"Option 1: descriptor","text":"lyrics"},{"label":"Option 2: descriptor","text":"lyrics"},{"label":"Option 3: descriptor","text":"lyrics"}],"hook_score":85,"cadence_score":90,"lex_score":70,"structure":"Stable","dna_match":"87%"}', userPrompt: lyrics })
       });
       const agentData = await agentRes.json();
 
@@ -3515,18 +3519,17 @@ window.addEventListener('load', musicSuiteBoot);
       const bridge = structData.sections?.find(s => s.name?.toLowerCase().includes('bridge'))?.description || '';
       const adlibs = adlibData.ad_libs || [];
       const fullSong = [
-        topHook ? '🎣 HOOK
-' + topHook : '',
-        '
+        topHook ? `🎣 HOOK
+${topHook}` : '',
+        `
 🎤 VERSE
-' + bestOption,
-        bridge ? '
+${bestOption}`,
+        bridge ? `
 🌉 BRIDGE
-' + bridge : '',
-        adlibs.length ? '
-🎙️ AD-LIBS: ' + adlibs.join(' · ') : ''
-      ].filter(Boolean).join('
-');
+${bridge}` : '',
+        adlibs.length ? `
+🎙️ AD-LIBS: ${adlibs.join(' · ')}` : ''
+      ].filter(Boolean).join('\n');
 
       // Auto-save to Song Bank
       const bankItem = {
@@ -4364,34 +4367,10 @@ CRITICAL OUTPUT RULES:
   };
 
   
-window.handleAssistantUpdate = function(action, payload){
-  const messages = {
-    draft_empty: "Paste a draft or drop an idea to begin.",
-    draft_paste: "Nice. Now click Analyze or Run Agent Pass.",
-    options_ready: "Review the 3 options and choose your direction.",
-    options_shown: "These are your strongest directions.",
-    options_html: "Options rendered. Focus on the strongest hook and cadence.",
-    analysis_complete: "Analysis complete. Refine or add ad-libs next.",
-    error: "Something failed. Adjust your input and try again."
-  };
-
-  if(messages[action]){
-    window.showAssistant(messages[action]);
-  }
-};
-
-
-    if(messages[action]){
-      window.showAssistant(messages[action]);
-    }
-  };
-
-  console.log("✅ assistant action handler repaired");
+console.log("✅ assistant action handler repaired");
 })();
 </script>
 
-</body>
-</html>
 <script id="tsm-action-fix">
 // Fix mismatched function names
 window.buildBridge = window.generateBridge;
@@ -4864,12 +4843,7 @@ window.openTool = function(tool) {
 
 </script>
 <script id="tsm-options-fix">
-// Route all agent calls through v2 for structured options
-const _origFetch = window.musicSafeFetch;
-window.musicSafeFetch = async function(url, opts={}, retries=3) {
-  if (url === '/api/music/agent-pass') url = '/api/music/agent-pass-v2';
-  return _origFetch(url, opts, retries);
-};
+// agent-pass-v2 redirect REMOVED — agent-pass now returns structured options natively
 
 // Fix selectOption to actually load selected text into draft
 window.selectOption = function(idx, mode) {
@@ -5068,32 +5042,7 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
     }
   };
 
-  window.tsmAssistantUpdate = function(state) {
-    const s = STATES[state];
-    if (!s) return;
-    document.getElementById('tsm-assistant-msg').innerHTML = s.msg;
-    document.getElementById('tsm-assistant-actions').innerHTML = s.actions.map(a =>
-      `<button class="tsm-ast-btn" onclick="${a.fn}">${a.label}</button>`
-    ).join('');
-    if (collapsed) tsmAssistantToggle();
-  };
-
-  // Auto-update based on tab switches
-  const _origSwitchTab = window.switchTab;
-  window.switchTab = function(tab) {
-    _origSwitchTab(tab);
-    const map = { dna:'dna', draft:'draft_empty', revision:'revision', songbank:'bank', studio:'studio' };
-    if (map[tab]) tsmAssistantUpdate(map[tab]);
-  };
-
-  // Auto-update after agent pass
-  const _origShowDraftOutput = window.showDraftOutput;
-  window.showDraftOutput = function(data) {
-    _origShowDraftOutput(data);
-    tsmAssistantUpdate('options_shown');
-  };
-
-})();
+  // tsmAssistantUpdate unified below
 
 
 
@@ -5363,58 +5312,7 @@ const FLOW = [
 const STATE_MAP = {};
 FLOW.forEach(s => STATE_MAP[s.id] = s);
 
-window.tsmAssistantUpdate = function(stateId) {
-  const s = STATE_MAP[stateId];
-  if (!s) return;
-  const msg = document.getElementById('tsm-assistant-msg');
-  const acts = document.getElementById('tsm-assistant-actions');
-  if (!msg || !acts) return;
-  msg.innerHTML = s.msg;
-  acts.innerHTML = s.actions.map(a =>
-    `<button class="tsm-ast-btn" onclick="${a.fn}">${a.label}</button>`
-  ).join('');
-  // Expand if collapsed
-  const body = document.getElementById('tsm-assistant-body');
-  if (body && body.style.display === 'none') {
-    body.style.display = 'block';
-    const tog = document.getElementById('tsm-assistant-toggle');
-    if (tog) tog.textContent = '▼';
-  }
-};
-
-// Tab switch wiring
-const _sw = window.switchTab;
-window.switchTab = function(tab) {
-  _sw(tab);
-  const map = {
-    dna: 'dna',
-    draft: 'draft_paste',
-    revision: 'revision_fill',
-    songbank: 'review_bank',
-    studio: 'export_ready',
-    generate: 'generate'
-  };
-  if (map[tab]) tsmAssistantUpdate(map[tab]);
-};
-
-// After agent pass shows options
-const _origShowDraftOutput = window.showDraftOutput;
-window.showDraftOutput = function(data) {
-  if (_origShowDraftOutput) _origShowDraftOutput(data);
-  tsmAssistantUpdate('options_ready');
-};
-
-// After revision shows output  
-const _origRunRev = window.runRevision;
-window.runRevision = async function() {
-  if (_origRunRev) await _origRunRev();
-  setTimeout(() => tsmAssistantUpdate('revision_done'), 3000);
-};
-
-// Init
-tsmAssistantUpdate('start');
-
-})();
+  // tsmAssistantUpdate unified below
 
 
 
@@ -5438,7 +5336,6 @@ window.musicSafeFetch = async function(url, opts={}, retries=3) {
 
 
 
-</script>
 <script id="tsm-draft-direct">
 // Bypass all callGroq layers — call agent-pass directly
 window.runDraftAnalysis = async function() {
@@ -5642,48 +5539,235 @@ function tsmStudioGuide() {
 }
 
 function tsmAssistantUpdate(action, payload) {
-  switch (action) {
+  const dispatchers = {
+    place_adlibs:    () => { if(payload){var t=document.getElementById('rev-current');if(t)t.value=payload;} placeAdlibs(); },
+    generate_hook:   () => { if(payload) STATE.lastOutput.draft=payload; generateHook(); },
+    build_bridge:    () => { if(payload) STATE.lastOutput.draft=payload; buildBridge(); },
+    send_to_revision:() => sendToRevision(),
+    save_to_bank:    () => saveToBank(payload||'draft'),
+    open_tool:       () => { if(payload&&TOOL_CONFIG[payload]) openTool(payload); },
+    studio_guide:    () => tsmStudioGuide(),
+  };
+  if (dispatchers[action]) { dispatchers[action](); return; }
 
-    case 'place_adlibs':
-      if (payload) {
-        var t = document.getElementById('rev-current');
-        if (t) t.value = payload;
-      }
-      placeAdlibs();
-      break;
+  const aliases = {
+    draft_paste:'draft_empty', options_ready:'options_shown',
+    saved_to_bank:'saved', revision_fill:'revision',
+    review_bank:'bank', export_ready:'studio',
+  };
+  const stateId = aliases[action] || action;
 
-    case 'generate_hook':
-      if (payload) STATE.lastOutput.draft = payload;
-      generateHook();
-      break;
+  const BTNS = {
+    start:        [{label:'Set Artist DNA',      fn:"switchTab('dna')"}],
+    dna:          [{label:'Done - Go to Draft',  fn:"switchTab('draft')"}],
+    draft_empty:  [{label:'Load Demo to Try',    fn:"loadDemoContent()"}],
+    options_shown:[{label:'Save Best to Bank',   fn:"saveToBank('draft')"},{label:'Refine in Revision',fn:"sendToRevision()"}],
+    revision:     [{label:'Run Revision',        fn:"runRevision()"}],
+    revision_done:[{label:'Place Ad-libs',       fn:"placeAdlibs()"},{label:'Save to Bank',fn:"saveToBank('draft')"}],
+    saved:        [{label:'View Song Bank',      fn:"switchTab('songbank')"}],
+    bank:         [{label:'Export TXT',          fn:"exportTxt()"}],
+    studio:       [{label:'Generate 10 Hooks',   fn:"generate10Hooks()"}],
+    generate:     [{label:'Back to Draft',       fn:"switchTab('draft')"}],
+    adlibs:       [{label:'Save to Bank',        fn:"saveToBank('draft')"}],
+  };
 
-    case 'build_bridge':
-      if (payload) STATE.lastOutput.draft = payload;
-      buildBridge();
-      break;
+  const btns = BTNS[stateId] || [];
+  const actsEl = document.getElementById('tsm-assistant-actions');
+  const msgEl  = document.getElementById('tsm-assistant-msg');
+  if (!msgEl) return;
 
-    case 'send_to_revision':
-      sendToRevision();
-      break;
+  if (actsEl) actsEl.innerHTML = btns.map(a =>
+    '<button class="tsm-ast-btn" onclick="' + a.fn + '">' + a.label + '</button>'
+  ).join('');
 
-    case 'save_to_bank':
-      saveToBank(payload || 'draft');
-      break;
-
-    case 'open_tool':
-      if (payload && TOOL_CONFIG[payload]) openTool(payload);
-      break;
-
-    case 'studio_guide':
-      tsmStudioGuide();
-      break;
-
-    default:
-      console.warn('tsmAssistantUpdate: unknown action', action);
+  const body = document.getElementById('tsm-assistant-body');
+  if (body && body.style.display === 'none') {
+    body.style.display = 'block';
+    const tog = document.getElementById('tsm-assistant-toggle');
+    if (tog) tog.textContent = 'v';
   }
+
+  msgEl.innerHTML = '<em style="opacity:0.5">Coaching...</em>';
+  const draft  = document.getElementById('draft-input')?.value?.slice(0,300) || '';
+  const output = document.getElementById('draft-output')?.innerText?.slice(0,300) || '';
+  const dna    = window.STATE?.dna || {};
+
+  fetch('/api/music/coach', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ action: stateId, draft, output, dna })
+  })
+  .then(r => r.json())
+  .then(d => { if(msgEl) msgEl.innerHTML = d.msg || ''; })
+  .catch(() => { if(msgEl) msgEl.innerHTML = 'Keep pushing - pick your strongest direction.'; });
 }
 
 
 
-
 </script>
+
+<script id="tsm-zay-producer-mode">
+(function(){
+  if(window.__tsmZayProducerMode) return;
+  window.__tsmZayProducerMode = true;
+
+  let producerStep = 0;
+
+  const steps = [
+    {
+      title:"1 · Capture Raw Idea",
+      msg:"ZAY Producer Mode: paste your raw idea, hook, or verse. Do not polish yet — I need the real emotion first.",
+      action:"Paste 4–12 lines into Draft + Analysis."
+    },
+    {
+      title:"2 · Build Hook",
+      msg:"Now we find the hook. The hook should be the line people remember after one listen.",
+      action:"Click GENERATE HOOK or RUN AGENT PASS."
+    },
+    {
+      title:"3 · Shape Verse",
+      msg:"Verse time. Keep the story moving. Each bar should either reveal pain, flex, conflict, or motion.",
+      action:"Choose the strongest option, then refine the verse around it."
+    },
+    {
+      title:"4 · Add Bridge",
+      msg:"The bridge is the emotional turn. Shift the energy before the final hook.",
+      action:"Click BUILD BRIDGE or ask ZAY for a turning point."
+    },
+    {
+      title:"5 · Place Ad-libs",
+      msg:"Ad-libs should respond to impact lines. Don’t crowd every bar — place them like performance accents.",
+      action:"Click PLACE AD-LIBS."
+    },
+    {
+      title:"6 · Lock Session",
+      msg:"Now lock the best version. Save it to Song Bank so Artist DNA learns the sound.",
+      action:"Click SAVE TO BANK or export the final version."
+    }
+  ];
+
+  function box(){
+    return document.querySelector('#tsm-assistant-box') ||
+           document.querySelector('.tsm-assistant') ||
+           document.querySelector('[class*="assistant"]');
+  }
+
+  function say(text){
+    if(window.showAssistant){
+      try{ window.showAssistant(text); }catch(e){}
+    }
+    const b = box();
+    if(b) b.innerHTML = text;
+    console.log("ZAY Producer:", text);
+  }
+
+  function renderProducerPanel(){
+    let panel = document.getElementById("zayProducerPanel");
+    if(!panel){
+      panel = document.createElement("div");
+      panel.id = "zayProducerPanel";
+      panel.style.cssText = `
+        position:fixed;
+        right:340px;
+        bottom:78px;
+        width:330px;
+        z-index:10000;
+        background:#0b0618;
+        border:1px solid #a855f7;
+        border-radius:14px;
+        box-shadow:0 0 35px rgba(168,85,247,.25);
+        color:#f5e8ff;
+        font-family:monospace;
+        padding:14px;
+      `;
+      document.body.appendChild(panel);
+    }
+
+    const s = steps[producerStep];
+
+    panel.innerHTML = `
+      <div style="color:#a855f7;font-weight:900;margin-bottom:8px">🎛️ ZAY PRODUCER MODE</div>
+      <div style="color:#00f59f;font-weight:900;margin-bottom:8px">${s.title}</div>
+      <div style="font-size:12px;line-height:1.55;margin-bottom:10px">${s.msg}</div>
+      <div style="font-size:11px;color:#ffc857;margin-bottom:12px">Next: ${s.action}</div>
+      <button onclick="window.zayProducerPrev()" style="background:transparent;color:#a855f7;border:1px solid #a855f7;border-radius:8px;padding:7px 10px">← Back</button>
+      <button onclick="window.zayProducerNext()" style="background:#00f59f;color:#001018;border:0;border-radius:8px;padding:7px 10px;font-weight:900">Next Step →</button>
+      <button onclick="window.zayProducerAuto()" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:7px 10px">Auto Coach</button>
+    `;
+
+    say(`${s.title}: ${s.msg}`);
+  }
+
+  window.zayProducerNext = function(){
+    producerStep = Math.min(producerStep + 1, steps.length - 1);
+    renderProducerPanel();
+  };
+
+  window.zayProducerPrev = function(){
+    producerStep = Math.max(producerStep - 1, 0);
+    renderProducerPanel();
+  };
+
+  window.zayProducerAuto = function(){
+    let i = producerStep;
+    const timer = setInterval(()=>{
+      producerStep = i;
+      renderProducerPanel();
+      i++;
+      if(i >= steps.length) clearInterval(timer);
+    }, 3800);
+  };
+
+  window.startZayProducerMode = function(){
+    producerStep = 0;
+    renderProducerPanel();
+  };
+
+  window.handleAssistantUpdate = function(action, payload){
+    const messages = {
+      draft_empty:"Paste a draft or drop an idea to begin.",
+      draft_paste:"Draft received. ZAY recommends building the hook next.",
+      options_ready:"Options are ready. Pick the one with the strongest hook identity.",
+      options_shown:"Compare hook strength, cadence, and DNA match.",
+      options_html:"Options rendered. Choose the direction that feels most repeatable.",
+      analysis_complete:"Analysis complete. Next move: refine, add bridge, then place ad-libs.",
+      error:"Something failed. Adjust the input and run again."
+    };
+    if(messages[action]) say(messages[action]);
+  };
+
+  function addButton(){
+    if(document.getElementById("zayProducerBtn")) return;
+    const btn = document.createElement("button");
+    btn.id = "zayProducerBtn";
+    btn.innerText = "🎛️ Producer Mode";
+    btn.onclick = window.startZayProducerMode;
+    btn.style.cssText = `
+      position:fixed;
+      right:24px;
+      bottom:24px;
+      z-index:10001;
+      background:#a855f7;
+      color:white;
+      border:0;
+      border-radius:999px;
+      padding:12px 16px;
+      font-weight:900;
+      box-shadow:0 0 25px rgba(168,85,247,.45);
+      cursor:pointer;
+    `;
+    document.body.appendChild(btn);
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", addButton);
+  }else{
+    addButton();
+  }
+
+  console.log("✅ ZAY Producer Mode active");
+})();
+</script>
+
+</body>
+</html>
