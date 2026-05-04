@@ -795,6 +795,50 @@ app.post('/api/finops/export-pdf', (req, res) => {
   res.send(html);
 });
 
+
+// =====================================================
+// TSM HEALTHCARE BNCA SAFE ENDPOINT
+// Client-safe JSON fallback for Healthcare Command Center
+// =====================================================
+app.post('/api/hc/bnca', express.json(), async (req, res) => {
+  const body = req.body || {};
+  const profile = body.profile || 'HonorHealth';
+  const nodes = Array.isArray(body.nodes) ? body.nodes : [];
+  const question = body.question || body.message || 'Return healthcare BNCA.';
+
+  const fallback = {
+    ok: true,
+    profile,
+    mode: 'healthcare_bnca',
+    question,
+    bnca: {
+      priority: 'Rebalance intake and prior authorization workload before end of day.',
+      why: 'Staffing pressure, intake backlog, prior auth delays, vendor pressure, and compliance drift are converging.',
+      actions: [
+        'Move one coordinator to intake until pending queue drops below 25.',
+        'Escalate prior-auth blocked appointments by value and age.',
+        'Audit documentation gaps before billing handoff.',
+        'Send vendor SLA exceptions to compliance/legal review.'
+      ],
+      risk: 'Delayed care, claim leakage, vendor disputes, and audit exposure.',
+      owner: 'Office Manager',
+      timeline: 'Today'
+    },
+    metrics: {
+      staffingCoverage: 84,
+      intakePending: 47,
+      criticalItems: 12,
+      throughputScore: 78,
+      vendorAlerts: 2
+    },
+    nodes,
+    timestamp: new Date().toISOString()
+  };
+
+  return res.json(fallback);
+});
+
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 TSM Shell on http://0.0.0.0:${PORT}`);
   suites.forEach(s => console.log(`   ${s.route} → ${s.dir}/${s.index}`));
