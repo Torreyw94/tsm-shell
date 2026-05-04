@@ -164,7 +164,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 </style>
 <script src="/html/shared/tsm-zero-trust.js"></script>
 </head>
-<body>
+<body class="hc-full-strategist-harmony">
 <nav style="position:sticky;top:0;z-index:999;background:#050d1a;border-bottom:2px solid #00c2a8;padding:10px 24px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
   <span style="color:#00c2a8;font-weight:900;font-size:11px">HC COMMAND CHAIN:</span>
   <span style="color:#666;font-size:11px">OM →</span>
@@ -870,28 +870,32 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     const st = document.createElement('style');
     st.id = 'tsm-hc-full-strategist-css';
     st.textContent = `
+      
       #tsm-hc-executive-feed{
-        position:fixed;right:18px;top:132px;width:315px;max-height:calc(100vh - 160px);
-        overflow:auto;z-index:9998;background:rgba(4,12,22,.96);
-        border:1px solid rgba(0,255,198,.36);box-shadow:0 0 24px rgba(0,255,198,.12);
-        color:#dffcff;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-        padding:14px;border-radius:14px;
+        position:fixed;right:10px;top:202px;width:250px;max-height:calc(100vh - 230px);
+        overflow:auto;z-index:20;background:#07111e;
+        border-left:2px solid #16395d;border-top:1px solid #16395d;border-bottom:1px solid #16395d;
+        box-shadow:none;color:#d6ecff;
+        font-family:'Share Tech Mono',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+        padding:12px;border-radius:0;
       }
-      .tsm-feed-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:10px;margin-bottom:10px}
-      .tsm-feed-kicker{font-size:10px;letter-spacing:2px;color:#00ffc6}
-      .tsm-feed-title{font-size:16px;color:#fff;font-weight:800;margin-top:4px}
-      .tsm-feed-live{font-size:10px;color:#001;background:#00ffc6;border-radius:999px;padding:5px 8px;font-weight:900}
-      .tsm-feed-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-      .tsm-feed-metrics div{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);padding:8px;border-radius:10px}
-      .tsm-feed-metrics b{display:block;color:#00d5ff;font-size:18px}
-      .tsm-feed-metrics span{font-size:10px;color:#8ba8be;text-transform:uppercase}
-      .tsm-feed-section{border-top:1px solid rgba(255,255,255,.1);padding-top:10px;margin-top:10px;font-size:12px;line-height:1.45}
-      .tsm-feed-label{font-size:10px;color:#c060ff;letter-spacing:1.5px;margin-bottom:6px}
-      #hc-feed-actions{padding-left:18px;margin:0}
-      .hc-node-chip{border:1px solid rgba(0,213,255,.35);background:rgba(0,213,255,.06);padding:7px;border-radius:9px;margin:6px 0}
-      .hc-node-chip b{color:#00d5ff}
+      .tsm-feed-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border-bottom:1px solid rgba(65,164,255,.22);padding-bottom:9px;margin-bottom:9px}
+      .tsm-feed-kicker{font-size:9px;letter-spacing:2px;color:#5b83a7}
+      .tsm-feed-title{font-size:13px;color:#c060ff;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+      .tsm-feed-live{font-size:9px;color:#00ffc6;background:rgba(0,255,198,.08);border:1px solid rgba(0,255,198,.45);border-radius:3px;padding:4px 7px;font-weight:700;letter-spacing:1px}
+      .tsm-feed-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:9px 0}
+      .tsm-feed-metrics div{border:1px solid rgba(65,164,255,.25);background:#0b1726;padding:7px;border-radius:0}
+      .tsm-feed-metrics b{display:block;color:#00d5ff;font-size:15px;line-height:1}
+      .tsm-feed-metrics span{display:block;font-size:8px;color:#5b83a7;text-transform:uppercase;margin-top:5px;letter-spacing:1px}
+      .tsm-feed-section{border-top:1px solid rgba(65,164,255,.18);padding-top:9px;margin-top:9px;font-size:10px;line-height:1.55;color:#d6ecff}
+      .tsm-feed-label{font-size:9px;color:#8d5cff;letter-spacing:1.8px;margin-bottom:6px;text-transform:uppercase}
+      #hc-feed-actions{padding-left:15px;margin:0}
+      #hc-feed-actions li{margin-bottom:5px}
+      .hc-node-chip{border:1px solid rgba(0,213,255,.28);background:#091625;padding:7px;border-radius:0;margin:6px 0;color:#b8d7ee}
+      .hc-node-chip b{color:#00d5ff;text-transform:uppercase;letter-spacing:1px}
       .hc-ai-live{white-space:pre-wrap}
-      @media(max-width:1050px){#tsm-hc-executive-feed{position:static;width:auto;margin:16px}}
+      @media(max-width:1050px){#tsm-hc-executive-feed{position:static;width:auto;max-height:none;margin:12px;border:1px solid #16395d}}
+
     `;
     document.head.appendChild(st);
   }
