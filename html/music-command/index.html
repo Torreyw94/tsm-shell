@@ -5705,5 +5705,177 @@ window.tsmToggleAssistant = function(){
   console.log('✅ Coach + ZAY neurally connected');
 })();
 </script>
+
+<script id="tsm-finish-producer-ui">
+(function(){
+  if(window.__TSM_FINISH_PRODUCER_UI__) return;
+  window.__TSM_FINISH_PRODUCER_UI__ = true;
+
+  function findOutputBox(){
+    const byId = document.querySelector('#agent-output, #agentOutput, #output, #ai-output, #zay-output, #producer-output');
+    if(byId) return byId;
+
+    const candidates = Array.from(document.querySelectorAll('div, section, article, pre'))
+      .filter(el => {
+        const t = (el.innerText || '').trim();
+        const cls = (el.className || '').toString();
+        const id = el.id || '';
+        return /output|agent|response|result/i.test(cls + ' ' + id + ' ' + t) && t.length < 2500;
+      })
+      .sort((a,b) => (a.innerText || '').length - (b.innerText || '').length);
+
+    return candidates[0] || null;
+  }
+
+  function ensureOutputBox(){
+    let out = findOutputBox();
+    if(out) {
+      out.classList.add('agent-output');
+      return out;
+    }
+
+    const host = document.querySelector('main, .main, .workspace, .content, body') || document.body;
+    out = document.createElement('div');
+    out.className = 'agent-output';
+    out.style.cssText = 'margin:16px;padding:16px;border:1px solid rgba(0,255,198,.25);border-radius:12px;background:rgba(255,255,255,.035);color:#eaffff;font-family:ui-monospace,Menlo,monospace;line-height:1.55;';
+    host.appendChild(out);
+    return out;
+  }
+
+  function getDraftText(){
+    const inputs = Array.from(document.querySelectorAll('textarea, input'))
+      .filter(el => !/search|password|file/i.test(el.type || ''));
+
+    const active = inputs.find(el => (el.value || '').trim().length > 15);
+    if(active) return active.value.trim();
+
+    const editor = document.querySelector('[contenteditable="true"]');
+    if(editor && editor.innerText.trim()) return editor.innerText.trim();
+
+    return '';
+  }
+
+  function escapeHtml(str){
+    return String(str || '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+  }
+
+  function formatProducerText(text){
+    let safe = escapeHtml(text || 'No output');
+
+    const labels = [
+      ['HOOK OPTION 1:', 'HOOK OPTION 1', '#00ffc6'],
+      ['HOOK OPTION 2:', 'HOOK OPTION 2', '#00ffc6'],
+      ['HOOK OPTION 3:', 'HOOK OPTION 3', '#00ffc6'],
+      ['HOOK OPTION 4:', 'HOOK OPTION 4', '#00ffc6'],
+      ['HOOK:', 'HOOK', '#00ffc6'],
+      ['ADLIBS:', 'ADLIBS', '#ff9d00'],
+      ['BRIDGE:', 'BRIDGE', '#9fe7ff'],
+      ['PRODUCER NOTE:', 'PRODUCER NOTE', '#ffc400']
+    ];
+
+    for(const [raw,label,color] of labels){
+      const re = new RegExp(raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+      safe = safe.replace(re, `<div style="color:${color};font-weight:900;letter-spacing:1px;margin-top:12px;margin-bottom:4px;">${label}</div>`);
+    }
+
+    return safe.replace(/\n/g,'<br>');
+  }
+
+  function renderProducer(data){
+    const out = ensureOutputBox();
+    const text = data?.reply || data?.content || data?.output || data?.message || '';
+
+    out.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:8px;">
+        <div style="color:#00ffc6;font-weight:900;letter-spacing:1px;">ZAY PRODUCER PASS</div>
+        <div style="color:#6ef3c5;font-size:11px;">LIVE</div>
+      </div>
+      <div style="color:#eaffff;font-size:13px;line-height:1.6;">
+        ${formatProducerText(text)}
+      </div>
+    `;
+
+    out.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  async function runProducerPass(){
+    const out = ensureOutputBox();
+    const draft = getDraftText() || "Grindin' n Slavin' while Misbavin'! Feelin' so Fresh n So Clean even Missed on Shavin'! Some look at the Hustle! n Cant Stand the Struggle, Those Real in the Field see A Time for Muscle! I Plan for Greatest! Rule 1: No Fakeness! Real is What You FEEL! That's Pill! So Take This!";
+
+    out.innerHTML = '<div style="color:#00ffc6;font-weight:900;">ZAY is building hook, adlibs, bridge, and producer notes...</div>';
+
+    try{
+      const res = await fetch('/api/music/agent-pass', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          agent:'ZAY',
+          step:'Full Producer Pass',
+          draft,
+          message:'Return HOOK, ADLIBS, BRIDGE, PRODUCER NOTE.'
+        })
+      });
+
+      const data = await res.json();
+      renderProducer(data);
+      window.__TSM_LAST_ZAY_PASS__ = data;
+    }catch(e){
+      out.innerHTML = '<div style="color:#ff4d6d;">Producer pass failed: '+escapeHtml(e.message)+'</div>';
+    }
+  }
+
+  // Wrap fetch so any successful /api/music/agent-pass call renders automatically.
+  const originalFetch = window.fetch;
+  window.fetch = async function(input, init){
+    const res = await originalFetch.apply(this, arguments);
+
+    try{
+      const url = typeof input === 'string' ? input : (input && input.url) || '';
+      if(url.includes('/api/music/agent-pass')){
+        const clone = res.clone();
+        clone.json().then(data => {
+          if(data && data.ok) renderProducer(data);
+        }).catch(()=>{});
+      }
+    }catch(e){}
+
+    return res;
+  };
+
+  // Make relevant buttons trigger full producer pass without breaking existing handlers.
+  document.addEventListener('click', function(e){
+    const txt = ((e.target && (e.target.innerText || e.target.textContent)) || '').trim();
+    if(/Run Agent Pass|Producer Pass|Ad-libs|Bridge|Actions|Coach|Next/i.test(txt)){
+      setTimeout(() => {
+        const out = findOutputBox();
+        const current = out ? (out.innerText || '').trim() : '';
+        if(!current || /^OUTPUT$/i.test(current) || /complete/i.test(current)){
+          runProducerPass();
+        }
+      }, 700);
+    }
+  }, true);
+
+  window.runZAYProducerPass = runProducerPass;
+
+  // Add a visible button if none exists.
+  function addButton(){
+    if(document.getElementById('zayFullProducerPassBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'zayFullProducerPassBtn';
+    btn.textContent = '🎛 Full Producer Pass';
+    btn.style.cssText = 'position:fixed;right:18px;bottom:58px;z-index:99999;background:#00ffc6;color:#001;border:0;border-radius:10px;padding:10px 14px;font-weight:900;box-shadow:0 0 18px rgba(0,255,198,.25);cursor:pointer;';
+    btn.onclick = runProducerPass;
+    document.body.appendChild(btn);
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addButton);
+  else addButton();
+})();
+</script>
+
 </body>
 </html>
