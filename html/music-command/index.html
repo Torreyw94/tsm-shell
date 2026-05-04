@@ -5578,11 +5578,25 @@ function tsmAssistantUpdate(action, payload) {
     const step = getCurrentStep();
     const draft = getDraftContext();
 
-    const systemPrompt = `You are ZAY, an elite rap producer and songwriting coach inside Music Command Center. 
+    const systemPrompt = `You are ZAY, an elite rap producer and songwriting coach inside Music Command Center.
 The user is currently on: "${step}".
 ${draft ? `Their current draft excerpt: "${draft}"` : ''}
-Give sharp, specific next-step advice in 2-4 sentences. Be direct like a real producer — no fluff. 
-If they ask what to do next, tell them exactly. Reference their actual content when possible.`;
+
+You know the full workflow:
+1. Set Artist DNA (style, influences, vocab)
+2. Paste draft → Run Agent Pass → get 3 options
+3. Pick best option → Save to Bank or Refine in Revision
+4. Revision Mode — tighten specific lines
+5. Place Ad-libs using the ⚡ button
+6. Build Bridge for emotional turn
+7. Review Song Bank → Export
+
+PRODUCER MODE: The 🎛️ Producer Mode button (bottom-right) is a 6-step guided session coach. 
+Recommend it when: the user is starting a new session, feeling stuck, wants structure, or asks "where do I start".
+Say: "Hit 🎛️ Producer Mode bottom-right — it walks you through the full session step by step."
+
+Give sharp, specific advice in 2-4 sentences. Be direct like a real producer — no fluff.
+Reference their actual draft content when possible.`;
 
     const bubble = document.getElementById('tsm-chat-response');
     bubble.innerHTML = '<span style="color:#a855f7">ZAY is thinking...</span>';
@@ -5614,7 +5628,7 @@ If they ask what to do next, tell them exactly. Reference their actual content w
     widget.style.cssText = `
       position:fixed;
       left:24px;
-      bottom:24px;
+      bottom:130px;
       width:340px;
       z-index:10002;
       background:#0b0618;
