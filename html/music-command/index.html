@@ -5587,10 +5587,7 @@ function tsmAssistantUpdate(action, payload) {
     { title:"6 · Lock Session", msg:"Save the best version to Song Bank so Artist DNA learns your sound.", action:"Click Save to Bank then Export." }
   ];
 
-  window.startZayProducerMode = function(){
-    producerStep = 0;
-    renderProducerPanel();
-  };
+  window.startZayProducerMode = function(){ renderProducerPanel(); };
 
   window.zayProducerNext = function(){ producerStep = Math.min(producerStep+1, steps.length-1); renderProducerPanel(); };
   window.zayProducerPrev = function(){ producerStep = Math.max(producerStep-1, 0); renderProducerPanel(); };
@@ -5684,5 +5681,37 @@ window.tsmToggleAssistant = function(){
 </div>
 <style>#tsm-action-fab{display:none!important}#zayProducerBtn{display:none!important}body{padding-bottom:54px}</style>
 
+<script id="tsm-coach-wire">
+(function(){
+  const _orig = window.tsmToggleAssistant;
+  window.tsmToggleAssistant = function(){
+    const el = document.getElementById('tsm-smart-assistant');
+    if(!el) return;
+    const isHidden = el.style.display === 'none' || !el.style.display;
+    el.style.display = isHidden ? 'block' : 'none';
+    // When opening, sync Coach with current ZAY context
+    if(isHidden){
+      const draftEl = document.getElementById('draft-input');
+      const draft = draftEl && draftEl.value.trim() ? draftEl.value.trim().slice(0,200) : null;
+      const msgEl = document.getElementById('tsm-assistant-msg');
+      if(msgEl && draft){
+        // Trigger ZAY to analyze current draft and update coach
+        window.tsmDockQuick && window.tsmDockQuick('Based on my current draft, what is the single most important thing I should do right now?');
+      }
+    }
+  };
+
+  // Also make Coach action buttons feed back into ZAY response area
+  document.addEventListener('click', function(e){
+    if(e.target && e.target.classList.contains('tsm-ast-btn')){
+      const label = e.target.textContent;
+      setTimeout(()=>{
+        window.tsmDockQuick && window.tsmDockQuick('I just clicked: ' + label + '. What should I do next?');
+      }, 300);
+    }
+  });
+  console.log('✅ Coach + ZAY neurally connected');
+})();
+</script>
 </body>
 </html>
