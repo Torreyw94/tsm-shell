@@ -99,6 +99,15 @@ Keep the hook short, repeatable, and chant-ready. Build the verse around the pre
   }
 });
 
+
+
+// =====================================================
+// MUSIC COMMAND DEMO ROUTES
+// =====================================================
+app.get(['/music','/suite/music','/html/music-command','/html/music-command/','/html/music-command/index.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'html', 'music-command', 'index.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
