@@ -6,6 +6,10 @@ const app = express();
 
 // FINOPS COPILOT API · TOP MOUNT
 app.post('/api/finops/copilot', express.json({limit:'10mb'}), (req,res)=>{
+
+
+
+
   const body=req.body||{};
   const workflow=body.workflow||'AP Aging';
   const workflows=body.workflows||[workflow,'Compliance Shield','Zero Trust','Strategist BNCA'];
@@ -36,23 +40,17 @@ app.get('/api/finops/copilot',(req,res)=>{
 
 
 // FINOPS COPILOT API · TOP MOUNT
-app.get('/api/finops/copilot',(req,res)=>{
-  res.json({ok:true,status:'TSM FinOps Staff Accountant Copilot online'});
-});
+
 
 
 
 // FINOPS COPILOT API · TOP MOUNT
-app.get('/api/finops/copilot',(req,res)=>{
-  res.json({ok:true,status:'TSM FinOps Staff Accountant Copilot online'});
-});
+
 
 
 
 // FINOPS COPILOT API · TOP MOUNT
-app.get('/api/finops/copilot',(req,res)=>{
-  res.json({ok:true,status:'TSM FinOps Staff Accountant Copilot online'});
-});
+
 
 
 app.use(express.json({ limit: '10mb' }));
@@ -173,7 +171,7 @@ async function runAIQuery(body, defaultSystem){
 app.post('/api/ai/query', async (req, res) => {
   try {
     const result = await runAIQuery(req.body || {}, 'You are an enterprise AI assistant.');
-    res.json({ ok:true, ...result, ts:new Date().toISOString() });
+    res.json({ ok:true, content: result.narrative || result.response || result.bnca || '', ...result, ts:new Date().toISOString() });
   } catch(e) {
     res.status(500).json({ ok:false, error:e.message });
   }
@@ -182,7 +180,7 @@ app.post('/api/ai/query', async (req, res) => {
 app.post('/api/hc/query', async (req, res) => {
   try {
     const result = await runAIQuery(req.body || {}, 'You are a healthcare AI expert in auth denials, payer appeals, and compliance.');
-    res.json({ ok:true, ...result, ts:new Date().toISOString() });
+    res.json({ ok:true, content: result.narrative || result.response || result.bnca || '', ...result, ts:new Date().toISOString() });
   } catch(e) {
     res.status(500).json({ ok:false, error:e.message });
   }
@@ -190,8 +188,19 @@ app.post('/api/hc/query', async (req, res) => {
 
 app.post('/api/hc/ask', async (req, res) => {
   try {
-    const result = await runAIQuery(req.body || {}, 'You are a healthcare AI expert in auth denials, payer appeals, and compliance.');
-    res.json({ ok:true, ...result, ts:new Date().toISOString() });
+    const body = req.body || {};
+    const query = body.query || body.message || body.prompt || '';
+    const nodeKey = body.nodeKey || 'general';
+    const system = 'You are a healthcare AI expert for HonorHealth Scottsdale. Analyze ' + nodeKey + ' node issues including auth denials, payer appeals, billing, compliance, and staffing. Be concise and actionable.';
+    const prompt = system + '\n\nQuery: ' + query;
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 600, temperature: 0.7 })
+    });
+    const d = await r.json();
+    const content = d.choices?.[0]?.message?.content || 'AI unavailable';
+    res.json({ ok:true, content, ts:new Date().toISOString() });
   } catch(e) {
     res.status(500).json({ ok:false, error:e.message });
   }
@@ -238,11 +247,20 @@ app.post('/api/honor/dee/dashboard', async (req,res)=>{
   }
 });
 
+app.get('/api/hc/reports',(req,res)=>{
+  try {
+    const mem = (typeof TSM_MEMORY!=='undefined' && TSM_MEMORY.healthcare && TSM_MEMORY.healthcare.nodes) || {};
+    const reports = Object.entries(mem).map(([k,n],i)=>({
+      id:'r'+i, title:k+' Node Report', company:'HonorHealth', summary:n.bnca||'', updatedAt:new Date().toISOString()
+    }));
+    res.json({ok:true,reports});
+  } catch(e){ res.json({ok:true,reports:[]}); }
+});
 app.get('/api/hc/nodes',(req,res)=>{
   res.json({ok:true,status:'HC node route online',nodes:['operations','billing','medical','pharmacy','financial','legal','vendors','compliance','tax-prep','grants','insurance']});
 });
 
-app.post('/api/hc/node/:node', async (req,res)=>{
+app.post('/api/hc/nodes/:node', async (req,res)=>{
   const node=req.params.node;
   const payload=req.body || {};
   const prompt=`Analyze this healthcare node for Office Manager readiness.
@@ -262,14 +280,32 @@ Return JSON:
  "confidence":0-100
 }`;
 
-  const result=await tsmAIJSON(prompt,{
-    node,status:'WATCH',top_issue:'Node requires review',findings:[],actions:[],bnca:'Review node output and assign owner lane.',owner_lane:'office manager',confidence:80
-  });
-
-  TSM_MEMORY.healthcare.nodes[node]=result;
-  res.json({ok:true,node,result,ts:new Date().toISOString()});
+  try {
+    const gr2 = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+process.env.GROQ_API_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:'You are a healthcare operations AI. Respond with valid JSON only. No markdown, no explanation, just a JSON object.'},{role:'user',content:prompt}],max_tokens:800,temperature:0.2,response_format:{type:'json_object'}})
+    });
+    const gd2 = await gr2.json();
+    const raw = gd2.choices?.[0]?.message?.content || '{}';
+    console.log('[HC Node Raw]', raw.slice(0,500));
+    let result;
+    try {
+      const clean = raw.replace(/```json|```/g,'').trim();
+      const jsonMatch = clean.match(/\{[\s\S]*\}/);
+      result = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+      if(!result || !result.status) throw new Error('no valid JSON');
+    } catch(_) {
+      result = {node, status:'WATCH', bnca:raw.slice(0,500), top_issue:'Model returned unstructured response', findings:[], actions:[], confidence:60};
+    }
+    result.node = node;
+    if(typeof TSM_MEMORY !== "undefined" && TSM_MEMORY.healthcare) TSM_MEMORY.healthcare.nodes[node] = result;
+    res.json({ok:true,node,result,ts:new Date().toISOString()});
+  } catch(e) {
+    console.error('[HC Node Error]', e.message, e.stack);
+    res.json({ok:false,error:e.message,node:req.params.node,result:{status:'WATCH',bnca:'Node fallback active. Error: '+e.message,confidence:80},ts:new Date().toISOString()});
+  }
 });
-
 app.post('/api/hc/bnca', async (req,res)=>{
   const payload=req.body || {};
   const prompt=`You are Healthcare Command Center Office Manager Edition.
@@ -294,12 +330,26 @@ Return JSON:
  "confidence":0-100
 }`;
 
-  const result=await tsmAIJSON(prompt,{
-    suite:'healthcare-command',top_issue:'Healthcare operations require review',risk_level:'WATCH',node_summary:[],bnca:'Prioritize billing/auth/compliance blockers and assign owner lanes.',owner_lanes:['office manager'],hitl_review_required:true,confidence:82
-  });
-
-  TSM_MEMORY.healthcare.hcCommand=result;
-  res.json({ok:true,result,ts:new Date().toISOString()});
+  try {
+    const gr3 = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+process.env.GROQ_API_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({model:process.env.TSM_MODEL||'llama-3.1-8b-instant',messages:[{role:'user',content:prompt}],max_tokens:800,temperature:0.3})
+    });
+    const gd3 = await gr3.json();
+    const raw3 = gd3.choices?.[0]?.message?.content || '{}';
+    let result;
+    try {
+      const clean3 = raw3.replace(/```json|```/g,'').trim();
+      result = JSON.parse(clean3);
+    } catch(_) {
+      result = {suite:'healthcare-command',bnca:raw3,risk_level:'WATCH',confidence:60};
+    }
+    TSM_MEMORY.healthcare.hcCommand = result;
+    res.json({ok:true,result,ts:new Date().toISOString()});
+  } catch(e) {
+    res.json({ok:false,error:e.message,ts:new Date().toISOString()});
+  }
 });
 
 app.post('/api/hc-strategist/bnca', async (req,res)=>{
