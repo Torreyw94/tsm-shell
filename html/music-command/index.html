@@ -5626,18 +5626,15 @@ Reference their actual draft content when possible.`;
     const widget = document.createElement('div');
     widget.id = 'tsm-chat-widget';
     widget.style.cssText = `
-      position:fixed;
-      left:24px;
-      bottom:130px;
-      width:340px;
-      z-index:10002;
+      display:inline-flex;
+      flex-direction:column;
+      width:320px;
       background:#0b0618;
-      border:1px solid #a855f7;
-      border-radius:16px;
-      box-shadow:0 0 35px rgba(168,85,247,.3);
+      border-right:1px solid #2a1a4a;
       font-family:monospace;
       color:#f5e8ff;
       overflow:hidden;
+      flex-shrink:0;
     `;
 
     widget.innerHTML = `
@@ -5695,6 +5692,55 @@ Reference their actual draft content when possible.`;
   }
 
   console.log('✅ TSM Assistant Chat active');
+})();
+</script>
+
+
+<script id="tsm-dock-controller">
+(function(){
+  window.tsmDockSend = async function(){
+    const input = document.getElementById('tsm-dock-input');
+    const resp = document.getElementById('tsm-dock-response');
+    const q = input ? input.value.trim() : '';
+    if(!q) return;
+    input.value = '';
+    resp.style.display = 'block';
+    resp.innerHTML = '<span style="color:#a855f7">ZAY is thinking...</span>';
+
+    const step = (document.querySelector('.step-label, [class*="step-title"], #tsm-step-indicator') || {textContent:''}).textContent.trim();
+    const draftEl = document.getElementById('draft-input');
+    const draft = draftEl && draftEl.value.trim() ? draftEl.value.trim().slice(0,300) : null;
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-20250514",
+          max_tokens:1000,
+          system:`You are ZAY, an elite rap producer coach inside Music Command Center.
+Current step: "${step}".${draft ? ` Draft excerpt: "${draft}"` : ''}
+Workflow: DNA → Draft → Agent Pass → Pick Option → Revise → Ad-libs → Bridge → Bank → Export.
+PRODUCER MODE: Recommend 🎛️ Producer Mode button (in the bar below Evolution Timeline) when user is starting fresh or stuck.
+Be sharp, direct, 2-4 sentences max. Real producer energy.`,
+          messages:[{role:"user", content:q}]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b=>b.text||'').join('') || 'No response.';
+      resp.innerHTML = '<span style="color:#00f59f;font-weight:900">ZAY:</span> ' + text;
+    } catch(e) {
+      resp.innerHTML = '<span style="color:#ff4444">Error: ' + e.message + '</span>';
+    }
+  };
+
+  // Hide old floating chat widget if it exists
+  const old = document.getElementById('tsm-chat-widget');
+  if(old) old.style.display = 'none';
+  const oldBtn = document.getElementById('zayProducerBtn');
+  if(oldBtn) oldBtn.style.display = 'none';
+  const oldPanel = document.getElementById('zayProducerPanel');
+  if(oldPanel) oldPanel.style.display = 'none';
 })();
 </script>
 
