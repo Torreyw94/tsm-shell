@@ -364,24 +364,7 @@ BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247
   </div>
 </div>
 </div>
-      ${(data.topNodes || []).slice(0,4).map(n => `
-        <div style="border:1px solid rgba(0,213,255,.28);background:#091625;padding:7px;margin:6px 0;color:#b8d7ee;font-size:10px;line-height:1.4;">
-          <b style="color:#00d5ff;text-transform:uppercase;">${n.title}</b><br>${n.bnca?.priority || n.finding || 'Active'}
-        </div>
-      `).join('')}
-    `;
-  }
-
-  async function load(){
-    try{
-      const res = await fetch('/api/hc/strategist', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          profile:'General Healthcare',
-          nodes:NODES,
-          question:'Synthesize all healthcare nodes into BNCA.'
-        })
+      
       });
       render(await res.json());
     }catch(e){}
@@ -390,6 +373,74 @@ BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
   else load();
   setInterval(load, 15000);
+})();
+</script>
+
+
+<script id="tsm-hc-native-strategist-binding">
+(function(){
+  if (window.__HC_BIND__) return;
+  window.__HC_BIND__ = true;
+
+  const NODES = ['operations','medical','pharmacy','insurance','financial','legal','vendors','compliance','billing','taxprep','grants'];
+
+  function findPanel(){
+    return [...document.querySelectorAll('*')]
+      .find(el => (el.innerText || '').includes('Healthcare Strategist'));
+  }
+
+  function render(data){
+    const panel = findPanel();
+    if (!panel || !data) return;
+
+    const actions = (data.bnca?.actions || [])
+      .map(a => "<li>"+a+"</li>").join("");
+
+    const nodes = (data.topNodes || [])
+      .slice(0,4)
+      .map(n => `
+        <div style="border:1px solid rgba(0,213,255,.3);padding:8px;margin-bottom:6px;">
+          <b style="color:#00d5ff;">${n.title}</b><br>
+          ${n.bnca?.priority || ''}
+        </div>
+      `).join("");
+
+    panel.innerHTML = `
+      <div style="color:#c060ff;font-size:12px;">Healthcare Strategist</div>
+
+      <div style="display:flex;gap:6px;margin:10px 0;">
+        <div><b style="color:#00d5ff;">${data.metrics?.avgHealth}</b><br><span>HEALTH</span></div>
+        <div><b style="color:#00ffc6;">${data.metrics?.openItems}</b><br><span>OPEN</span></div>
+        <div><b style="color:#ff4d6d;">${data.metrics?.urgentItems}</b><br><span>URGENT</span></div>
+      </div>
+
+      <div style="margin:10px 0;color:#fff;">
+        ${data.bnca?.priority || ''}
+      </div>
+
+      <ol>${actions}</ol>
+
+      <div>${nodes}</div>
+    `;
+  }
+
+  async function load(){
+    try{
+      const res = await fetch('/api/hc/strategist',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          profile:'General Healthcare',
+          nodes:NODES,
+          question:'Synthesize nodes into BNCA'
+        })
+      });
+      render(await res.json());
+    }catch(e){}
+  }
+
+  load();
+  setInterval(load,15000);
 })();
 </script>
 
