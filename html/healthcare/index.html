@@ -1034,105 +1034,108 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
+
+
 <script id="tsm-hc-auto-node-ai">
 (function(){
-  if(window.__TSM_AUTO_NODE_AI_V2__) return;
-  window.__TSM_AUTO_NODE_AI_V2__ = true;
+  if(window.__TSM_HC_PLAIN_AI_CARDS__) return;
+  window.__TSM_HC_PLAIN_AI_CARDS__ = true;
 
-  const NODES = [
-    'operations','medical','pharmacy','insurance','financial',
-    'legal','vendors','compliance','billing','taxprep','grants'
-  ];
+  const NODES = {
+    operations: ['OPERATIONS','Staffing · Scheduling · Intake · Throughput'],
+    medical: ['MEDICAL','CPT Billing · Clinical Compliance · Audit'],
+    pharmacy: ['PHARMACY','DEA Schedules · Drug Interactions · Rx'],
+    financial: ['FINANCIAL','Revenue Cycle · Billing · P&L Analysis'],
+    legal: ['LEGAL','HIPAA · Contracts · Regulatory Defense'],
+    vendors: ['VENDORS','Supply Chain · Contract Review · ROI'],
+    compliance: ['COMPLIANCE','HIPAA · CMS · Joint Commission · OIG'],
+    billing: ['BILLING','Claims · Revenue Cycle · CPT Audit'],
+    taxprep: ['TAX PREP','Healthcare Tax · 1099 · Compliance Filing'],
+    grants: ['GRANTS','HRSA · NIH · CMS Innovation · Foundation']
+  };
 
-  function nodeLabel(node){
-    return node === 'taxprep' ? 'TAX PREP' : node.toUpperCase();
-  }
-
-  function findNodeCard(node){
-    const label = nodeLabel(node);
-    const candidates = [...document.querySelectorAll('div,section,article')];
-
-    // Prefer smallest card-like container that contains the node heading
-    return candidates
+  function findCardByTitle(title){
+    const els = [...document.querySelectorAll('div,section,article')];
+    return els
       .filter(el => {
-        const txt = (el.innerText || '').trim();
-        return txt.includes(label) &&
-               /LIVE|PORT|AI unavailable|INTEL|OPEN/i.test(txt) &&
-               txt.length < 1600;
+        const t = (el.innerText || '').trim();
+        return t.includes(title) && /PORT|LIVE|INTEL|OPEN/i.test(t) && t.length < 1200;
       })
       .sort((a,b) => (a.innerText || '').length - (b.innerText || '').length)[0];
   }
 
-  function removeUnavailable(card){
-    [...card.childNodes].forEach(n => {
-      if(n.nodeType === 3 && /AI unavailable/i.test(n.textContent || '')){
-        n.textContent = '';
-      }
-    });
-
-    [...card.querySelectorAll('*')].forEach(el => {
-      if((el.innerText || '').trim() === 'AI unavailable'){
+  function hideUnavailable(card){
+    [...card.querySelectorAll('*')].forEach(el=>{
+      if((el.textContent || '').trim() === 'AI unavailable'){
         el.style.display = 'none';
       }
     });
+    card.innerHTML = card.innerHTML.replace(/AI unavailable/g, '');
   }
 
-  async function loadNode(node){
+  function renderPlain(card, data){
+    hideUnavailable(card);
+
+    let box = card.querySelector('.tsm-ai-output-v3');
+    if(!box){
+      box = document.createElement('div');
+      box.className = 'tsm-ai-output-v3';
+      box.style.cssText = `
+        margin-top:9px;
+        padding:8px;
+        border-top:1px solid rgba(0,213,255,.25);
+        background:rgba(0,213,255,.045);
+        color:#d6ecff;
+        font-size:10px;
+        line-height:1.45;
+      `;
+      card.appendChild(box);
+    }
+
+    const actions = (data.bnca?.actions || []).slice(0,2);
+
+    box.innerHTML = `
+      <div style="color:#00ffc6;font-weight:900;letter-spacing:1px;margin-bottom:4px;">AI ANALYSIS</div>
+      <div style="color:#fff;margin-bottom:6px;">${data.bnca?.priority || data.finding || 'Node analysis active.'}</div>
+      <div style="color:#8fb9d8;">
+        ${actions.map(a => '• ' + a).join('<br>')}
+      </div>
+      <div style="margin-top:6px;color:#ffc400;">Owner: ${data.bnca?.owner || 'Node Lead'} · ${data.bnca?.timeline || 'Today'}</div>
+    `;
+  }
+
+  async function loadNode(node, title){
+    const card = findCardByTitle(title);
+    if(!card) return;
+
     try{
-      const res = await fetch('/api/hc/node',{
+      const res = await fetch('/api/hc/node', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           node,
-          message:'Run live healthcare node analysis for '+node
+          message:'Return plain-language operational AI analysis for '+title
         })
       });
 
       const data = await res.json();
-      const card = findNodeCard(node);
-      if(!card) return;
-
-      removeUnavailable(card);
-
-      let box = card.querySelector('.tsm-ai-output-v2');
-      if(!box){
-        box = document.createElement('div');
-        box.className = 'tsm-ai-output-v2';
-        box.style.cssText = `
-          margin-top:8px;
-          padding:7px;
-          border-top:1px solid rgba(0,213,255,.25);
-          color:#9fffdc;
-          font-size:10px;
-          line-height:1.45;
-          white-space:normal;
-        `;
-        card.appendChild(box);
-      }
-
-      box.innerHTML = `
-        <b style="color:#00ffc6;">AI ANALYSIS</b><br>
-        ${data.bnca?.priority || data.finding || 'Node analysis active.'}
-      `;
+      renderPlain(card, data);
     }catch(e){
-      console.warn('node AI failed', node, e);
+      hideUnavailable(card);
     }
   }
 
   async function run(){
-    for(const node of NODES){
-      await loadNode(node);
-      await new Promise(r => setTimeout(r,120));
+    for(const [node, meta] of Object.entries(NODES)){
+      await loadNode(node, meta[0]);
+      await new Promise(r=>setTimeout(r,100));
     }
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', run);
-  } else {
-    run();
-  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
 
-  setTimeout(run, 2500);
+  setTimeout(run, 2000);
 })();
 </script>
 
