@@ -179,7 +179,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
   <span style="color:#666;font-size:11px">→</span>
   <a href="/html/healthcare/hc-main-strategist/index.html" target="_blank" style="background:#0a1a30;color:#00e0ff;border:1px solid #00e0ff;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">Main Strategist</a>
   <span style="color:#666;font-size:11px">→</span>
-  <a href="/html/healthcare/executive-portal.html" target="_blank" style="background:#00c2a8;color:#000;border:0;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">⚡ Executive Portal</a>
+  <a href="/html/healthcare/executive-portal.html" target="_blank" style="background:#00c2a8;color:#000;border:0;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">⚡ Executive Portal</a> <a href="/html/healthcare/poc-html/index.html" style="background:#f0c040;color:#000;border:0;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">⚡ DOC ANALYSIS</a>
 </nav>
 <div class="ticker"><div class="ticker-inner">
 BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS &nbsp;//&nbsp; DENIAL RATE — 18.4% VS TARGET 9% &nbsp;//&nbsp; PRIOR AUTH FRICTION — HIGH &nbsp;//&nbsp; OPERATIONS NODE — LIVE &nbsp;//&nbsp; STAFFING / THROUGHPUT — WATCHLIST ACTIVE &nbsp;//&nbsp; ALL HEALTHCARE NODES ONLINE 11 / 11
@@ -735,14 +735,14 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 <script id="tsm-hc-node-real-app-router">
 (function(){
   const NODE_URLS = {
-    operations: "/html/hc-operations/index.html",
-    medical: "/html/hc-medical/index.html",
-    pharmacy: "/html/hc-pharmacy/index.html",
+    operations: "/html/healthcare/hc-operations/index.html",
+    medical: "/html/healthcare/hc-medical/index.html",
+    pharmacy: "/html/healthcare/hc-pharmacy/index.html",
     financial: "/html/hc-financial/index.html",
     legal: "/html/hc-legal/index.html",
     vendors: "/html/hc-vendors/index.html",
-    compliance: "/html/hc-compliance/index.html",
-    billing: "/html/hc-billing/index.html",
+    compliance: "/html/healthcare/hc-compliance/index.html",
+    billing: "/html/healthcare/hc-billing/index.html",
     taxprep: "/html/hc-taxprep/index.html",
     "tax prep": "/html/hc-taxprep/index.html",
     grants: "/html/hc-grants/index.html"
@@ -810,6 +810,185 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       }
     }
   });
+})();
+</script>
+
+
+<script id="tsm-hc-full-strategist-mode">
+(function(){
+  if (window.__TSM_HC_FULL_STRATEGIST_MODE__) return;
+  window.__TSM_HC_FULL_STRATEGIST_MODE__ = true;
+
+  const HC_NODES = [
+    'operations','medical','pharmacy','insurance','financial','legal',
+    'vendors','compliance','billing','taxprep','grants'
+  ];
+
+  const nodeState = {};
+
+  function qs(sel){ return document.querySelector(sel); }
+  function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
+
+  function ensurePanel(){
+    let panel = qs('#tsm-hc-executive-feed');
+    if (panel) return panel;
+
+    panel = document.createElement('aside');
+    panel.id = 'tsm-hc-executive-feed';
+    panel.innerHTML = `
+      <div class="tsm-feed-head">
+        <div>
+          <div class="tsm-feed-kicker">EXECUTIVE FEED</div>
+          <div class="tsm-feed-title">Healthcare Strategist</div>
+        </div>
+        <div class="tsm-feed-live">LIVE</div>
+      </div>
+      <div class="tsm-feed-metrics">
+        <div><b id="hc-feed-health">--</b><span>Health</span></div>
+        <div><b id="hc-feed-open">--</b><span>Open</span></div>
+        <div><b id="hc-feed-urgent">--</b><span>Urgent</span></div>
+      </div>
+      <div class="tsm-feed-section">
+        <div class="tsm-feed-label">BNCA PRIORITY</div>
+        <div id="hc-feed-priority">Loading strategist relay...</div>
+      </div>
+      <div class="tsm-feed-section">
+        <div class="tsm-feed-label">NEXT ACTIONS</div>
+        <ol id="hc-feed-actions"></ol>
+      </div>
+      <div class="tsm-feed-section">
+        <div class="tsm-feed-label">TOP NODE PRESSURE</div>
+        <div id="hc-feed-nodes"></div>
+      </div>
+    `;
+    document.body.appendChild(panel);
+    return panel;
+  }
+
+  function injectStyles(){
+    if (qs('#tsm-hc-full-strategist-css')) return;
+    const st = document.createElement('style');
+    st.id = 'tsm-hc-full-strategist-css';
+    st.textContent = `
+      #tsm-hc-executive-feed{
+        position:fixed;right:18px;top:132px;width:315px;max-height:calc(100vh - 160px);
+        overflow:auto;z-index:9998;background:rgba(4,12,22,.96);
+        border:1px solid rgba(0,255,198,.36);box-shadow:0 0 24px rgba(0,255,198,.12);
+        color:#dffcff;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+        padding:14px;border-radius:14px;
+      }
+      .tsm-feed-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:10px;margin-bottom:10px}
+      .tsm-feed-kicker{font-size:10px;letter-spacing:2px;color:#00ffc6}
+      .tsm-feed-title{font-size:16px;color:#fff;font-weight:800;margin-top:4px}
+      .tsm-feed-live{font-size:10px;color:#001;background:#00ffc6;border-radius:999px;padding:5px 8px;font-weight:900}
+      .tsm-feed-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+      .tsm-feed-metrics div{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);padding:8px;border-radius:10px}
+      .tsm-feed-metrics b{display:block;color:#00d5ff;font-size:18px}
+      .tsm-feed-metrics span{font-size:10px;color:#8ba8be;text-transform:uppercase}
+      .tsm-feed-section{border-top:1px solid rgba(255,255,255,.1);padding-top:10px;margin-top:10px;font-size:12px;line-height:1.45}
+      .tsm-feed-label{font-size:10px;color:#c060ff;letter-spacing:1.5px;margin-bottom:6px}
+      #hc-feed-actions{padding-left:18px;margin:0}
+      .hc-node-chip{border:1px solid rgba(0,213,255,.35);background:rgba(0,213,255,.06);padding:7px;border-radius:9px;margin:6px 0}
+      .hc-node-chip b{color:#00d5ff}
+      .hc-ai-live{white-space:pre-wrap}
+      @media(max-width:1050px){#tsm-hc-executive-feed{position:static;width:auto;margin:16px}}
+    `;
+    document.head.appendChild(st);
+  }
+
+  function findNodeCards(){
+    const cards = [];
+    HC_NODES.forEach(node => {
+      const rx = new RegExp(node, 'i');
+      const candidates = qsa('section, article, .card, .node-card, .module, div');
+      const found = candidates.find(el => {
+        const text = (el.innerText || '').slice(0,200);
+        return rx.test(text) && /live|port|ai|command|node/i.test(text);
+      });
+      if (found) cards.push({node, el:found});
+    });
+    return cards;
+  }
+
+  function attachNodeOutput(node, el){
+    let box = el.querySelector(`[data-hc-ai="${node}"]`);
+    if (!box){
+      box = document.createElement('div');
+      box.className = 'hc-ai-live';
+      box.dataset.hcAi = node;
+      box.style.cssText = 'margin-top:10px;border-top:1px solid rgba(255,255,255,.10);padding-top:8px;color:#dffcff;font-size:11px;line-height:1.45;';
+      box.textContent = 'Loading node intelligence...';
+      el.appendChild(box);
+    }
+    return box;
+  }
+
+  async function loadNode(node, el){
+    const box = attachNodeOutput(node, el);
+    try{
+      const r = await fetch('/api/hc/node', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({node, message:`Analyze ${node} healthcare node and return operational BNCA.`})
+      });
+      const data = await r.json();
+      nodeState[node] = data;
+      box.textContent = `${data.bnca.priority}\nOwner: ${data.bnca.owner} · Timeline: ${data.bnca.timeline}`;
+    }catch(e){
+      box.textContent = 'Node intelligence fallback active.';
+    }
+  }
+
+  async function loadStrategist(){
+    ensurePanel();
+    try{
+      const r = await fetch('/api/hc/strategist', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          profile:'General Healthcare',
+          nodes:HC_NODES,
+          data:nodeState,
+          question:'Synthesize all healthcare nodes into a best next course of action.'
+        })
+      });
+      const data = await r.json();
+
+      const m = data.metrics || {};
+      const b = data.bnca || {};
+      qs('#hc-feed-health').textContent = m.avgHealth ?? '--';
+      qs('#hc-feed-open').textContent = m.openItems ?? '--';
+      qs('#hc-feed-urgent').textContent = m.urgentItems ?? '--';
+      qs('#hc-feed-priority').textContent = b.priority || data.executive?.priority || 'Strategist relay active.';
+      qs('#hc-feed-actions').innerHTML = (b.actions || []).map(a => `<li>${a}</li>`).join('');
+      qs('#hc-feed-nodes').innerHTML = (data.topNodes || []).map(n => `
+        <div class="hc-node-chip">
+          <b>${n.title}</b><br>
+          ${n.bnca?.priority || n.finding || 'Active'}
+        </div>
+      `).join('');
+    }catch(e){
+      qs('#hc-feed-priority').textContent = 'Strategist relay fallback active.';
+    }
+  }
+
+  async function boot(){
+    injectStyles();
+    ensurePanel();
+
+    const cards = findNodeCards();
+    await Promise.all(cards.map(({node, el}) => loadNode(node, el)));
+    await loadStrategist();
+
+    setInterval(async () => {
+      const cards = findNodeCards();
+      await Promise.all(cards.map(({node, el}) => loadNode(node, el)));
+      await loadStrategist();
+    }, 15000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
 </script>
 

@@ -123,6 +123,177 @@ app.post('/api/hc/bnca', express.json(), async (req, res) => {
   });
 });
 
+
+
+// =====================================================
+// TSM HEALTHCARE FULL STRATEGIST MODE
+// General healthcare node intelligence + BNCA relay
+// =====================================================
+const HC_NODE_LIBRARY = {
+  operations: {
+    title: 'Operations',
+    focus: 'staffing, intake, scheduling, throughput, handoffs',
+    risk: 'care delays, backlog growth, missed handoffs',
+    action: 'Rebalance intake, scheduling, and documentation workload before backlog expands.'
+  },
+  medical: {
+    title: 'Medical',
+    focus: 'clinical throughput, documentation gaps, care coordination',
+    risk: 'delayed care routing, incomplete documentation, provider bottlenecks',
+    action: 'Prioritize clinical documentation gaps and route blocked cases to the right owner.'
+  },
+  pharmacy: {
+    title: 'Pharmacy',
+    focus: 'medication access, refill friction, prior authorization, drug interaction risk',
+    risk: 'therapy delays, refill escalations, patient access friction',
+    action: 'Escalate medication access blockers and clear prior authorization dependencies.'
+  },
+  insurance: {
+    title: 'Insurance',
+    focus: 'eligibility, authorization, denial prevention, payer friction',
+    risk: 'claim delays, denials, revenue leakage',
+    action: 'Clear authorization and eligibility blockers before downstream billing.'
+  },
+  financial: {
+    title: 'Financial',
+    focus: 'revenue cycle, payment leakage, claim aging, cash acceleration',
+    risk: 'aging receivables, missed collections, avoidable write-offs',
+    action: 'Prioritize high-value aging claims and blocked payment workflows.'
+  },
+  legal: {
+    title: 'Legal',
+    focus: 'contracts, regulatory exposure, documentation defensibility',
+    risk: 'contract disputes, regulatory findings, escalation exposure',
+    action: 'Review documentation and contract-risk exceptions before escalation.'
+  },
+  vendors: {
+    title: 'Vendors',
+    focus: 'vendor SLA, supply chain pressure, service exceptions',
+    risk: 'service delays, supply interruption, unresolved vendor disputes',
+    action: 'Escalate vendor SLA exceptions and confirm next-action ownership.'
+  },
+  compliance: {
+    title: 'Compliance',
+    focus: 'audit readiness, policy drift, documentation gaps, coding accuracy',
+    risk: 'audit exposure, policy violations, corrective action requirements',
+    action: 'Close high-risk documentation and policy gaps before billing handoff.'
+  },
+  billing: {
+    title: 'Billing',
+    focus: 'claim submission, denial prevention, coding, charge capture',
+    risk: 'denials, delayed reimbursement, underbilling',
+    action: 'Clear billing blockers tied to documentation, authorization, and coding.'
+  },
+  taxprep: {
+    title: 'Tax Prep',
+    focus: 'filing windows, documentation readiness, deductible support',
+    risk: 'missed filing windows, incomplete records, avoidable penalties',
+    action: 'Confirm tax documentation readiness and flag missing support items.'
+  },
+  grants: {
+    title: 'Grants',
+    focus: 'funding opportunities, eligibility, submission readiness',
+    risk: 'missed funding windows, incomplete applications, weak justification',
+    action: 'Prioritize open funding windows and assemble required support documents.'
+  }
+};
+
+function hcNormalizeNodeName(node){
+  return String(node || 'operations').toLowerCase().replace(/^hc-/, '').replace(/[^a-z0-9-]/g, '');
+}
+
+function hcBuildNodePayload(nodeName, incoming){
+  const key = hcNormalizeNodeName(nodeName);
+  const node = HC_NODE_LIBRARY[key] || HC_NODE_LIBRARY.operations;
+  const pressure = incoming.pressure || incoming.message || incoming.question || 'general healthcare operational pressure';
+
+  return {
+    ok: true,
+    node: key,
+    title: node.title,
+    mode: 'healthcare_node_agent',
+    summary: `${node.title} review: ${node.focus}.`,
+    signal: pressure,
+    finding: `Primary risk area: ${node.risk}.`,
+    bnca: {
+      priority: node.action,
+      why: `This node impacts ${node.focus}, and unresolved pressure can create ${node.risk}.`,
+      actions: [
+        node.action,
+        'Assign one accountable owner for the next action.',
+        'Document blockers before downstream handoff.',
+        'Escalate items older than the current operating window.'
+      ],
+      owner: `${node.title} lead`,
+      timeline: 'Today',
+      risk: node.risk
+    },
+    metrics: {
+      healthScore: key === 'operations' ? 78 : key === 'compliance' ? 84 : key === 'billing' ? 81 : 80,
+      openItems: key === 'operations' ? 31 : key === 'pharmacy' ? 18 : key === 'billing' ? 22 : 14,
+      urgentItems: key === 'operations' ? 7 : key === 'compliance' ? 5 : key === 'vendors' ? 4 : 3
+    },
+    timestamp: new Date().toISOString()
+  };
+}
+
+app.post('/api/hc/node', express.json(), async (req, res) => {
+  const body = req.body || {};
+  const node = hcNormalizeNodeName(body.node || body.name || 'operations');
+  return res.json(hcBuildNodePayload(node, body));
+});
+
+app.post('/api/hc/strategist', express.json(), async (req, res) => {
+  const body = req.body || {};
+  const nodes = Array.isArray(body.nodes) && body.nodes.length
+    ? body.nodes.map(hcNormalizeNodeName)
+    : Object.keys(HC_NODE_LIBRARY);
+
+  const nodeReports = nodes.map(n => hcBuildNodePayload(n, body.data?.[n] || body));
+
+  const urgentTotal = nodeReports.reduce((sum, n) => sum + (n.metrics?.urgentItems || 0), 0);
+  const openTotal = nodeReports.reduce((sum, n) => sum + (n.metrics?.openItems || 0), 0);
+  const avgHealth = Math.round(nodeReports.reduce((sum, n) => sum + (n.metrics?.healthScore || 80), 0) / nodeReports.length);
+
+  const top = nodeReports
+    .sort((a,b) => (b.metrics.urgentItems - a.metrics.urgentItems) || (a.metrics.healthScore - b.metrics.healthScore))
+    .slice(0, 4);
+
+  return res.json({
+    ok: true,
+    mode: 'healthcare_full_strategist',
+    profile: body.profile || 'General Healthcare',
+    executive: {
+      headline: 'Cross-node operational pressure requires same-day coordination.',
+      priority: 'Stabilize the highest-risk backlog, authorization, documentation, and handoff blockers today.',
+      why: 'Node signals show combined pressure across operations, reimbursement, compliance, and service coordination.',
+      owner: 'Office Manager / Operations Lead',
+      timeline: 'Today'
+    },
+    metrics: {
+      avgHealth,
+      openItems: openTotal,
+      urgentItems: urgentTotal,
+      nodesLive: nodeReports.length
+    },
+    bnca: {
+      priority: 'Run a same-day command review across the highest-risk healthcare nodes.',
+      actions: [
+        'Clear the highest-value backlog first.',
+        'Escalate authorization and documentation blockers older than 24 hours.',
+        'Assign owners for intake, billing, compliance, and vendor handoffs.',
+        'Refresh the strategist view every operating cycle until urgent items drop.'
+      ],
+      risk: 'Delayed care, avoidable denials, compliance exposure, and operational drag.',
+      owner: 'Office Manager / Operations Lead',
+      timeline: 'Today'
+    },
+    topNodes: top,
+    nodes: nodeReports,
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use('/html', express.static(path.join(__dirname, 'html'), { extensions: ['html'] }));
 
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare'), { index: 'index.html', extensions: ['html'] }));
