@@ -4902,10 +4902,14 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
     }
   };
 
-  // tsmAssistantUpdate unified below
+  window.tsmAssistantUpdate = function(action) {
+    const state = STATES[action];
+    if (!state) return;
+    if (window.showAssistant) window.showAssistant(state.msg, state.actions);
+  };
 
-
-
+  window.tsmAssistantUpdate('draft_empty');
+})();
 </script>
 <script id="tsm-callgroq-fix">
 // Override callGroq to route correctly based on context
@@ -5172,10 +5176,14 @@ const FLOW = [
 const STATE_MAP = {};
 FLOW.forEach(s => STATE_MAP[s.id] = s);
 
-  // tsmAssistantUpdate unified below
+  window.tsmAssistantUpdate = function(action) {
+    const state = STATE_MAP[action];
+    if (!state) return;
+    if (window.showAssistant) window.showAssistant(state.msg, state.actions);
+  };
 
-
-
+  window.tsmAssistantUpdate('start');
+})();
 </script>
 <script id="tsm-showdraft-fix">
 // After every successful agent-pass, check if response has options and render cards
