@@ -813,5 +813,104 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 })();
 </script>
 
+
+<script id="tsm-hc-doc-analysis-binding">
+(function(){
+  if (window.__TSM_HC_DOC_ANALYSIS__) return;
+  window.__TSM_HC_DOC_ANALYSIS__ = true;
+
+  function css(){
+    if(document.getElementById('hc-doc-analysis-css')) return;
+    const s=document.createElement('style');
+    s.id='hc-doc-analysis-css';
+    s.textContent=`
+      #hcDocModal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99999;display:none;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace}
+      #hcDocBox{width:min(920px,92vw);max-height:88vh;overflow:auto;background:#07111e;border:1px solid #00d5ff;color:#d6ecff;box-shadow:0 0 30px rgba(0,213,255,.18)}
+      #hcDocBox header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(0,213,255,.25)}
+      #hcDocBox h3{color:#ffc400;letter-spacing:2px;font-size:14px;margin:0}
+      #hcDocBox textarea{width:100%;height:210px;background:#02070d;color:#d6ecff;border:1px solid #16395d;padding:12px;font-family:inherit}
+      #hcDocBox button{background:#00d5ff;color:#001;border:0;padding:9px 14px;font-weight:800;cursor:pointer}
+      #hcDocBox .ghost{background:transparent;color:#00d5ff;border:1px solid #16395d}
+      #hcDocResult{white-space:pre-wrap;background:#02070d;border:1px solid #16395d;padding:12px;margin-top:12px;line-height:1.5}
+    `;
+    document.head.appendChild(s);
+  }
+
+  function modal(){
+    let m=document.getElementById('hcDocModal');
+    if(m) return m;
+    m=document.createElement('div');
+    m.id='hcDocModal';
+    m.innerHTML=`
+      <div id="hcDocBox">
+        <header>
+          <div>
+            <h3>DOC ANALYSIS · HEALTHCARE</h3>
+            <div style="color:#5b83a7;font-size:11px;margin-top:4px;">Paste policy, claim notes, denial text, audit notes, vendor issue, or operations report.</div>
+          </div>
+          <button class="ghost" id="hcDocClose">CLOSE</button>
+        </header>
+        <div style="padding:16px;">
+          <textarea id="hcDocText" placeholder="Paste document text here..."></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button id="hcDocRun">ANALYZE DOCUMENT</button>
+            <button class="ghost" id="hcDocSample">LOAD SAMPLE</button>
+          </div>
+          <div id="hcDocResult">Waiting for document...</div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(m);
+
+    document.getElementById('hcDocClose').onclick=()=>m.style.display='none';
+    document.getElementById('hcDocSample').onclick=()=>{
+      document.getElementById('hcDocText').value='Denial backlog increased due to prior authorization delays. Several claims are missing documentation. Vendor SLA response is late and staffing coverage is below target for intake handoffs.';
+    };
+    document.getElementById('hcDocRun').onclick=run;
+    return m;
+  }
+
+  async function run(){
+    const text=document.getElementById('hcDocText').value || '';
+    const out=document.getElementById('hcDocResult');
+    out.textContent='Analyzing...';
+    try{
+      const r=await fetch('/api/hc/doc-analysis',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text})
+      });
+      const d=await r.json();
+      out.innerHTML =
+        'RISK LEVEL: '+d.riskLevel+'\\n\\n' +
+        'SIGNALS:\\n- '+(d.signals||[]).join('\\n- ')+'\\n\\n' +
+        'BNCA:\\n'+d.bnca.priority+'\\n\\n' +
+        'ACTIONS:\\n- '+(d.bnca.actions||[]).join('\\n- ')+'\\n\\n' +
+        'OWNER: '+d.bnca.owner+'\\nTIMELINE: '+d.bnca.timeline;
+    }catch(e){
+      out.textContent='Analysis failed: '+e.message;
+    }
+  }
+
+  function wire(){
+    css();
+    modal();
+
+    [...document.querySelectorAll('button,a,div,span')]
+      .filter(el => /DOC ANALYSIS/i.test(el.innerText || el.textContent || ''))
+      .forEach(el => {
+        el.style.cursor='pointer';
+        el.addEventListener('click', function(ev){
+          ev.preventDefault();
+          document.getElementById('hcDocModal').style.display='flex';
+        });
+      });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', wire);
+  else wire();
+})();
+</script>
+
 </body>
 </html>

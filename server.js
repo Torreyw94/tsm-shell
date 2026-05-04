@@ -294,6 +294,54 @@ app.post('/api/hc/strategist', express.json(), async (req, res) => {
   });
 });
 
+
+
+// =====================================================
+// TSM HEALTHCARE DOC ANALYSIS
+// General document/risk/BNCA parser
+// =====================================================
+app.post('/api/hc/doc-analysis', express.json({limit:'2mb'}), async (req, res) => {
+  const body = req.body || {};
+  const text = String(body.text || body.document || body.content || '').slice(0, 12000);
+  const docType = body.docType || 'general_healthcare_document';
+
+  const lower = text.toLowerCase();
+
+  const signals = [];
+  if (/claim|denial|payer|auth|authorization|eligibility/.test(lower)) signals.push('Claims / authorization pressure');
+  if (/audit|compliance|hipaa|cms|oig|policy|documentation/.test(lower)) signals.push('Compliance / documentation risk');
+  if (/staff|schedule|intake|queue|throughput|handoff/.test(lower)) signals.push('Operations / staffing throughput');
+  if (/vendor|sla|supply|contract/.test(lower)) signals.push('Vendor / contract dependency');
+  if (/billing|charge|coding|revenue|payment|ar|receivable/.test(lower)) signals.push('Billing / revenue cycle exposure');
+
+  const primarySignals = signals.length ? signals : ['General operational review'];
+
+  return res.json({
+    ok: true,
+    mode: 'healthcare_doc_analysis',
+    docType,
+    summary: text
+      ? 'Document reviewed for operational, compliance, billing, authorization, and staffing risk signals.'
+      : 'No document text was provided. Paste document text into the analysis panel.',
+    signals: primarySignals,
+    riskLevel: primarySignals.length >= 3 ? 'HIGH' : primarySignals.length === 2 ? 'MEDIUM' : 'WATCH',
+    bnca: {
+      priority: primarySignals.length >= 3
+        ? 'Escalate the document findings into same-day operational review.'
+        : 'Route document findings to the responsible healthcare operations owner.',
+      actions: [
+        'Identify the accountable owner for each flagged issue.',
+        'Separate urgent blockers from routine follow-up items.',
+        'Check documentation, authorization, billing, and compliance dependencies.',
+        'Route unresolved risks into the Healthcare Strategist BNCA workflow.'
+      ],
+      owner: 'Office Manager / Operations Lead',
+      timeline: primarySignals.length >= 3 ? 'Today' : 'Next operating cycle'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use('/html', express.static(path.join(__dirname, 'html'), { extensions: ['html'] }));
 
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare'), { index: 'index.html', extensions: ['html'] }));
