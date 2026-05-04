@@ -161,7 +161,7 @@ Every day a battle every night a new light</textarea>
 <section class="slide">
   <div class="kicker">Evolution Timeline</div>
   <h1>Hit trajectory, not guesswork.</h1>
-  <div class="timeline" id="timeline"><div style="color:var(--muted)">Loading /api/music/agent-pass...</div></div>
+  <div class="timeline" id="timeline"><div style="color:var(--muted)">Loading /api/music/evolution...</div></div>
   <div class="grid" style="margin-top:36px">
     <div class="card hot"><div class="label">Release Decision</div><h2 id="decision">—</h2></div>
     <div class="card"><div class="label">Hit Potential</div><h2 id="hit">—</h2></div>
@@ -226,7 +226,7 @@ async function runLiveChain(){
   await loadEvolution();
 }
 async function loadEvolution(){
-  const data=await safeJson('/api/music/agent-pass');
+  const data=await safeJson('/api/music/evolution');
   const tl=document.getElementById('timeline');
   const timeline=data.timeline||[];
   tl.innerHTML = timeline.length ? timeline.map(t=>`<div class="tbar" style="height:${Math.max(10,pct(t.overall))}%"><span>${pct(t.overall)}</span></div>`).join('') : '<div style="color:var(--muted)">Analysis Complete: High Hit Potential. Run the live agent chain first.</div>';

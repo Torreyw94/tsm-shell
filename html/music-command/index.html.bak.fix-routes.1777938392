@@ -2814,7 +2814,7 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicEvolution = {
     state(){
-      return musicSafeFetch('/api/music/agent-pass');
+      return musicSafeFetch('/api/music/evolution');
     }
   };
 
@@ -2986,7 +2986,7 @@ window.addEventListener('load', musicSuiteBoot);
       });
     },
     generate10Hooks(payload){
-      return musicSafeFetch('/api/music/agent-passs/generate10', {
+      return musicSafeFetch('/api/music/hooks/generate10', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
@@ -3496,7 +3496,7 @@ window.addEventListener('load', musicSuiteBoot);
       document.getElementById('coach-body').innerHTML =
         '<div class="coach-loading">🎣 Step 2/4 — Generating Hooks...</div>';
 
-      const hooksRes = await fetch('/api/music/agent-passs/generate10', {
+      const hooksRes = await fetch('/api/music/hooks/generate10', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ theme: lyrics.slice(0,100), genre: 'hip-hop', mood: 'confident' })
       });
