@@ -554,7 +554,25 @@ app.post("/api/music/agent-pass", async (req,res) => {
       headers: { "Authorization": "Bearer " + process.env.GROQ_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages, max_tokens: 1200, temperature: 0.4 })
     });
-    if (!r.ok) throw new Error("Groq HTTP " + r.status);
+    if (!r.ok) {
+      if (r.status === 429 && process.env.ANTHROPIC_API_KEY) {
+        // Groq rate limited — fallback to Anthropic
+        const ar = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "x-api-key": process.env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1200, system: systemPrompt, messages: [{ role: "user", content: userPrompt }] })
+        });
+        if (!ar.ok) throw new Error("Anthropic fallback HTTP " + ar.status);
+        const ad = await ar.json();
+        const raw = ad.content?.[0]?.text || "";
+        const text = raw.replace(/```json|```/g, "").trim();
+        let parsed;
+        try { const match = text.match(/\{[\s\S]*\}/); parsed = JSON.parse(match ? match[0] : text); }
+        catch(_) { parsed = { options: [{ text: raw, score: 80 }], hook: "", bridge: "", adlibs: [] }; }
+        return res.json({ ok: true, ...parsed, output: parsed.options?.[0]?.text || raw, via: "anthropic-fallback" });
+      }
+      throw new Error("Groq HTTP " + r.status);
+    }
     const d = await r.json();
     const raw = d.choices?.[0]?.message?.content || "";
     const text = raw.replace(/```json|```/g, "").trim();
