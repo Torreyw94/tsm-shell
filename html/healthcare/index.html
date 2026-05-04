@@ -1031,5 +1031,75 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 
+
+<script id="tsm-hc-auto-node-ai">
+(function(){
+  if(window.__TSM_AUTO_NODE_AI__) return;
+  window.__TSM_AUTO_NODE_AI__ = true;
+
+  const NODES = [
+    'operations','medical','pharmacy','insurance',
+    'financial','legal','vendors','compliance',
+    'billing','taxprep','grants'
+  ];
+
+  function findCard(node){
+    const rx=new RegExp(node,'i');
+    const els=[...document.querySelectorAll('div,section,article')];
+    return els.find(el=>{
+      const t=(el.innerText||'').slice(0,200);
+      return rx.test(t) && /LIVE|PORT|AI unavailable|COMMAND/i.test(t);
+    });
+  }
+
+  async function loadNode(node){
+    try{
+      const res = await fetch('/api/hc/node',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          node,
+          message:'Run real-time analysis for '+node
+        })
+      });
+
+      const data = await res.json();
+
+      const card = findCard(node);
+      if(!card) return;
+
+      let box = card.querySelector('.tsm-ai-output');
+      if(!box){
+        box = document.createElement('div');
+        box.className = 'tsm-ai-output';
+        box.style.cssText = "margin-top:8px;padding:6px;border-top:1px solid rgba(0,213,255,.2);font-size:10px;color:#9fffdc;";
+        card.appendChild(box);
+      }
+
+      box.innerHTML = `
+        <b>AI ANALYSIS</b><br>
+        ${data.bnca?.priority || 'Analysis unavailable'}
+      `;
+
+    }catch(e){
+      console.warn('Node AI failed', node);
+    }
+  }
+
+  async function run(){
+    for(const n of NODES){
+      loadNode(n);
+      await new Promise(r=>setTimeout(r,150));
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
+</script>
+
 </body>
 </html>
