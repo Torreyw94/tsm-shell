@@ -259,76 +259,104 @@ main {
 })();
 </script>
 
-<script>
+
+
+<script id="tsm-hc-node-ai-clean-output">
 (function(){
-  if(window.__TSM_NODE_AI__) return;
-  window.__TSM_NODE_AI__ = true;
+  if(window.__TSM_HC_NODE_AI_CLEAN__) return;
+  window.__TSM_HC_NODE_AI_CLEAN__ = true;
 
-  const nodeName = location.pathname.split('/')[2].replace('hc-','').replace('/','');
+  const nodeName = location.pathname.split('/').filter(Boolean).find(x => x.startsWith('hc-'))?.replace('hc-','') || 'operations';
 
-  function getInput(){
-    return document.querySelector('input, textarea');
+  function hideUnavailable(){
+    document.querySelectorAll('*').forEach(el => {
+      const txt = (el.textContent || '').trim();
+      if(txt === 'AI unavailable'){
+        el.style.display = 'none';
+      }
+    });
   }
 
-  function getOutput(){
-    let el = document.querySelector('.tsm-ai-output');
-    if(!el){
-      el = document.createElement('div');
-      el.className = 'tsm-ai-output';
-      el.style.cssText = "margin-top:10px;padding:10px;border:1px solid rgba(0,255,170,.2);color:#bfffe6;font-size:12px;";
-      document.body.appendChild(el);
-    }
-    return el;
+  function findOutputBox(){
+    const candidates = Array.from(document.querySelectorAll('div,pre,code,section,article'));
+
+    let exact = candidates.find(el => (el.textContent || '').trim() === 'AI unavailable');
+    if(exact) return exact;
+
+    let neural = candidates.find(el => /TSM NEURAL|AI ready|AI unavailable/i.test(el.textContent || '') && (el.textContent || '').length < 600);
+    if(neural) return neural;
+
+    let existing = document.querySelector('.tsm-ai-output-clean');
+    if(existing) return existing;
+
+    const panels = candidates.filter(el => /AI ANALYSIS|DEEP AI ANALYSIS/i.test(el.textContent || '') && (el.textContent || '').length < 1800);
+    if(panels[0]) return panels[0];
+
+    let fallback = document.createElement('div');
+    fallback.className = 'tsm-ai-output-clean';
+    fallback.style.cssText = "margin:12px 0;padding:12px;border:1px solid rgba(0,255,170,.25);color:#bfffe6;font-size:12px;background:rgba(0,255,170,.04);";
+    document.body.appendChild(fallback);
+    return fallback;
+  }
+
+  function getPrompt(){
+    const inputs = Array.from(document.querySelectorAll('input, textarea'));
+    const active = inputs.find(i => (i.value || '').trim().length > 0);
+    return active?.value || 'Run department AI analysis and return best next actions.';
+  }
+
+  function render(out, data){
+    const actions = (data.bnca && data.bnca.actions ? data.bnca.actions : []).slice(0,3);
+    out.classList.add('tsm-ai-output-clean');
+    out.style.display = 'block';
+    out.style.whiteSpace = 'normal';
+    out.innerHTML = `
+      <div style="color:#00ffc6;font-weight:800;letter-spacing:1px;margin-bottom:8px;">AI ANALYSIS</div>
+      <div style="color:#fff;margin-bottom:8px;line-height:1.5;">
+        ${data.bnca?.priority || data.finding || 'Node analysis active.'}
+      </div>
+      <div style="color:#bfffe6;line-height:1.55;">
+        ${actions.map(a => '• ' + a).join('<br>')}
+      </div>
+      <div style="margin-top:10px;color:#ffc400;">
+        Owner: ${data.bnca?.owner || 'Node Lead'} · ${data.bnca?.timeline || 'Today'}
+      </div>
+    `;
   }
 
   async function run(){
-    const input = getInput();
-    if(!input) return;
-
-    const msg = input.value || "Run analysis";
-
-    const out = getOutput();
-    out.innerHTML = "Running AI analysis...";
+    hideUnavailable();
+    const out = findOutputBox();
+    out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node',{
+      const res = await fetch('/api/hc/node', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           node: nodeName,
-          message: msg
+          message: getPrompt()
         })
       });
 
       const data = await res.json();
-
-      const actions = (data.bnca?.actions || []).slice(0,3);
-
-      out.innerHTML = `
-        <b style="color:#00ffc6;">AI ANALYSIS</b><br><br>
-        <div style="color:#fff;margin-bottom:6px;">
-          ${data.bnca?.priority || data.finding}
-        </div>
-        <div>
-          ${actions.map(a => "• " + a).join("<br>")}
-        </div>
-        <div style="margin-top:8px;color:#ffc400;">
-          Owner: ${data.bnca?.owner || 'Node Lead'} · ${data.bnca?.timeline || 'Today'}
-        </div>
-      `;
-
+      render(out, data);
+      hideUnavailable();
     }catch(e){
-      out.innerHTML = "AI error";
+      out.innerHTML = '<span style="color:#ff4d6d;">AI connection issue. Backend node endpoint available from command center.</span>';
     }
   }
 
-  document.addEventListener('click', e=>{
-    if(e.target && e.target.innerText && e.target.innerText.includes('ASK')){
+  document.addEventListener('click', function(e){
+    const txt = (e.target && (e.target.innerText || e.target.textContent || '')).trim();
+    if(/ASK|RUN BNCA|ANALYZE/i.test(txt)){
       e.preventDefault();
       run();
     }
   });
 
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hideUnavailable);
+  else hideUnavailable();
 })();
 </script>
 
