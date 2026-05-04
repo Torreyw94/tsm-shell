@@ -377,50 +377,50 @@ BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247
 </script>
 
 
-<script id="tsm-hc-native-strategist-binding">
+
+
+
+<script>
 (function(){
-  if (window.__HC_BIND__) return;
-  window.__HC_BIND__ = true;
+  if (window.__HC_SAFE_BIND__) return;
+  window.__HC_SAFE_BIND__ = true;
 
   const NODES = ['operations','medical','pharmacy','insurance','financial','legal','vendors','compliance','billing','taxprep','grants'];
 
-  function findPanel(){
+  function findStrategistPanel(){
     return [...document.querySelectorAll('*')]
       .find(el => (el.innerText || '').includes('Healthcare Strategist'));
   }
 
-  function render(data){
-    const panel = findPanel();
-    if (!panel || !data) return;
+  function inject(data){
+    const panel = findStrategistPanel();
+    if (!panel || !data || !data.bnca) return;
 
-    const actions = (data.bnca?.actions || [])
-      .map(a => "<li>"+a+"</li>").join("");
+    const actions = (data.bnca.actions || []).map(a => `<li>${a}</li>`).join('');
+    const nodes = (data.topNodes || []).slice(0,4).map(n => `
+      <div style="border:1px solid rgba(0,213,255,.3);padding:6px;margin:4px 0;">
+        <b style="color:#00d5ff;">${n.title}</b><br>${n.bnca.priority}
+      </div>
+    `).join('');
 
-    const nodes = (data.topNodes || [])
-      .slice(0,4)
-      .map(n => `
-        <div style="border:1px solid rgba(0,213,255,.3);padding:8px;margin-bottom:6px;">
-          <b style="color:#00d5ff;">${n.title}</b><br>
-          ${n.bnca?.priority || ''}
-        </div>
-      `).join("");
+    const target = panel.querySelector('.bnca-output') || panel;
 
-    panel.innerHTML = `
-      <div style="color:#c060ff;font-size:12px;">Healthcare Strategist</div>
+    target.innerHTML = `
+      <div style="margin-bottom:8px;color:#c060ff;">Healthcare Strategist</div>
 
-      <div style="display:flex;gap:6px;margin:10px 0;">
-        <div><b style="color:#00d5ff;">${data.metrics?.avgHealth}</b><br><span>HEALTH</span></div>
-        <div><b style="color:#00ffc6;">${data.metrics?.openItems}</b><br><span>OPEN</span></div>
-        <div><b style="color:#ff4d6d;">${data.metrics?.urgentItems}</b><br><span>URGENT</span></div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        <div><b style="color:#00d5ff;">${data.metrics.avgHealth}</b></div>
+        <div><b style="color:#00ffc6;">${data.metrics.openItems}</b></div>
+        <div><b style="color:#ff4d6d;">${data.metrics.urgentItems}</b></div>
       </div>
 
-      <div style="margin:10px 0;color:#fff;">
-        ${data.bnca?.priority || ''}
+      <div style="color:#fff;margin-bottom:10px;">
+        ${data.bnca.priority}
       </div>
 
-      <ol>${actions}</ol>
+      <ol style="font-size:11px;">${actions}</ol>
 
-      <div>${nodes}</div>
+      <div style="margin-top:10px;">${nodes}</div>
     `;
   }
 
@@ -432,14 +432,16 @@ BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247
         body:JSON.stringify({
           profile:'General Healthcare',
           nodes:NODES,
-          question:'Synthesize nodes into BNCA'
+          question:'BNCA'
         })
       });
-      render(await res.json());
+
+      const data = await res.json();
+      inject(data);
     }catch(e){}
   }
 
-  load();
+  document.addEventListener('DOMContentLoaded', load);
   setInterval(load,15000);
 })();
 </script>
