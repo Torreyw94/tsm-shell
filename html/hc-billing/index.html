@@ -149,6 +149,7 @@ main {
 </style>
 
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head><body>
 
 
@@ -199,6 +200,9 @@ main {
 
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 (function(){
   function switchTab(id,btn){
     document.querySelectorAll('[id^="tab-"]').forEach(function(el){
@@ -343,7 +347,7 @@ main {
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({

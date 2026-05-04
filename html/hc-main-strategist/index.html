@@ -43,6 +43,7 @@ pre{white-space:pre-wrap;background:#061018;border:1px solid #123050;border-radi
 button{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 14px;font:900 11px monospace}
 </style>
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head>
 <body>
 <header>
@@ -61,6 +62,9 @@ button{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 
 <button onclick="location.href='/html/honor-portal/index.html?v=hc-main'">OPEN EXECUTIVE PORTAL</button>
 </div>
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 async function loadHC(){
  try{
   const data=await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());

@@ -94,6 +94,7 @@ tr:hover td{background:#0f1f0f}
 [id^="tab-"]{display:none}
 </style>
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head><body>
 <div class="hdr"><div class="hdr-left"><span style="font-size:22px">&#127973;</span><div><div class="hdr-title">HC MEDICAL COMMAND</div><div class="hdr-sub">Clinical Ops &middot; Revenue Cycle &middot; CPT Audit &middot; Prior Auth</div></div></div><div class="node-pill">NODE ACTIVE</div></div>
 <nav class="nav">
@@ -150,6 +151,9 @@ tr:hover td{background:#0f1f0f}
 
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 (function(){
   function switchTab(id,btn){
     document.querySelectorAll('[id^="tab-"]').forEach(function(el){
@@ -294,7 +298,7 @@ tr:hover td{background:#0f1f0f}
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({

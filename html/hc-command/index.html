@@ -22,6 +22,9 @@ async function safeFetch(url, options={}) {
 <html lang="en">
 <head>
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 (function(){
   if(window.location.protocol==='view-source:'){window.location.href='about:blank';return;}
   document.addEventListener('contextmenu',e=>e.preventDefault());
@@ -1091,6 +1094,9 @@ main {
   }
 </style>
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 function switchTab(name, el) {
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
@@ -1104,6 +1110,7 @@ function switchTab(name, el) {
 
 <script src='/js/tsm-bridge.js'></script>
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head>
 <body>
 
@@ -1953,6 +1960,9 @@ function switchTab(name, el) {
 </button>
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 <<<<<<< HEAD
 const GROQ_API_KEY_VAR = 'tsm_fin_groq_key';
 =======
@@ -2230,6 +2240,9 @@ function calcTB(){
 function runTBAI(){var dr=0,cr=0;document.querySelectorAll('.tb-dr').forEach(function(i){dr+=parseFloat(i.value)||0;});document.querySelectorAll('.tb-cr').forEach(function(i){cr+=parseFloat(i.value)||0;});ledgerAsk('Trial balance analysis: Total Debits $'+dr+', Total Credits $'+cr+'. '+(Math.abs(dr-cr)<1?'Balanced.':'OUT OF BALANCE by $'+Math.abs(dr-cr)+'.')+' Explain causes and next steps for month-end close.');}
 </script>
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 window.safeAnalyze = async function(input, targetId="output"){
   const el = document.getElementById(targetId) || document.querySelector("#output") || document.querySelector(".output");
   if(!el) return;
@@ -2270,6 +2283,9 @@ window.safeAnalyze = async function(input, targetId="output"){
 
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 (function () {
 
   // ── SINGLE TAB ENGINE ──────────────────────────────────────

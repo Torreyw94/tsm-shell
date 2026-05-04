@@ -798,6 +798,7 @@ input[type="number"]::-webkit-inner-spin-button{opacity:.5}
 @keyframes ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(2);opacity:0}}
 </style>
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head>
 <body>
 <div class="watermark">TSM</div>
@@ -1164,6 +1165,9 @@ input[type="number"]::-webkit-inner-spin-button{opacity:.5}
 </footer>
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 // ============================
 // CONSTANTS & STATE
 // ============================
@@ -1692,6 +1696,9 @@ text = file_path.read_text(encoding='utf-8', errors='ignore')
 
 patch = f"""
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 window.TSM_HUB_AI = async function(message, targetId) {{
   const el = targetId
     ? document.getElementById(targetId)
@@ -1816,7 +1823,7 @@ if 'window.TSM_HUB_AI' not in text:
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -1925,7 +1932,7 @@ if 'window.TSM_HUB_AI' not in text:
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -2034,7 +2041,7 @@ if 'window.TSM_HUB_AI' not in text:
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -2163,7 +2170,7 @@ boot().catch(err => {
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({

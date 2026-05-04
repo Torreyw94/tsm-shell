@@ -206,6 +206,7 @@ main {
   .scroll-box::-webkit-scrollbar-thumb { background: var(--border2); }
 </style>
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head>
 <body>
 
@@ -677,6 +678,9 @@ main {
 </div><!-- /main -->
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 const tabs = document.querySelectorAll('.tab');
 tabs.forEach(t => {
   t.addEventListener('click', () => {
@@ -881,7 +885,7 @@ buildNodeCards();
     out.innerHTML = '<span style="color:#00ffc6;">TSM Neural processing...</span>';
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await runHCNodeAI, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({

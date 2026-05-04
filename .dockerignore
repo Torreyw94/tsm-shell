@@ -1,7 +1,6 @@
 # flyctl launch added from .gitignore
 **/backups
 **/*.sh
-**/erver.js
 **/.env
 
 **/.env
@@ -9,7 +8,6 @@
 # flyctl launch added from tsm-shell/.gitignore
 tsm-shell/**/backups
 tsm-shell/**/*.sh
-tsm-shell/**/erver.js
 tsm-shell/**/.env
 
 tsm-shell/**/.env

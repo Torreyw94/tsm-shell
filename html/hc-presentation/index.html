@@ -212,6 +212,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .tt-btn-g:hover{border-color:var(--text-dim);color:var(--text)}
 .tt-counter{margin-left:auto;font-size:11px;color:var(--text-muted)}
 </style>
+<script src="/static/js/hc-ai-client.js"></script>
 </head>
 <body>
 
@@ -430,6 +431,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div class="slide-num" id="slidenum">1 / 5</div>
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 const BASE='https://tsm-shell.fly.dev';
 const slides=document.querySelectorAll('.slide');
 const navEl=document.getElementById('nav');

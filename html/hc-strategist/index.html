@@ -116,6 +116,7 @@ tr:hover td{background:#0f1f0f}
 }
 </style>
 <script src="/html/shared/tsm-zero-trust.js"></script>
+<script src="/static/js/hc-ai-client.js"></script>
 </head>
 <body>
 <div class="hdr">
@@ -344,6 +345,9 @@ RUN ENTERPRISE BNCA</button>
 </div>
 
 <script>
+if(window.__HC_LOCK__) return;
+window.__HC_LOCK__ = true;
+
 const API = {
   ask: '/api/hc/ask',
   reports: '/api/hc/reports',
