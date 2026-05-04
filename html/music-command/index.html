@@ -5606,166 +5606,83 @@ function tsmAssistantUpdate(action, payload) {
 
 </script>
 
+
+
+
 <script id="tsm-zay-producer-mode">
 (function(){
-  if(window.__tsmZayProducerMode) return;
-  window.__tsmZayProducerMode = true;
+  if(window.__zayClean) return;
+  window.__zayClean = true;
 
-  let producerStep = 0;
+  let step = 0;
 
   const steps = [
-    {
-      title:"1 · Capture Raw Idea",
-      msg:"ZAY Producer Mode: paste your raw idea, hook, or verse. Do not polish yet — I need the real emotion first.",
-      action:"Paste 4–12 lines into Draft + Analysis."
-    },
-    {
-      title:"2 · Build Hook",
-      msg:"Now we find the hook. The hook should be the line people remember after one listen.",
-      action:"Click GENERATE HOOK or RUN AGENT PASS."
-    },
-    {
-      title:"3 · Shape Verse",
-      msg:"Verse time. Keep the story moving. Each bar should either reveal pain, flex, conflict, or motion.",
-      action:"Choose the strongest option, then refine the verse around it."
-    },
-    {
-      title:"4 · Add Bridge",
-      msg:"The bridge is the emotional turn. Shift the energy before the final hook.",
-      action:"Click BUILD BRIDGE or ask ZAY for a turning point."
-    },
-    {
-      title:"5 · Place Ad-libs",
-      msg:"Ad-libs should respond to impact lines. Don’t crowd every bar — place them like performance accents.",
-      action:"Click PLACE AD-LIBS."
-    },
-    {
-      title:"6 · Lock Session",
-      msg:"Now lock the best version. Save it to Song Bank so Artist DNA learns the sound.",
-      action:"Click SAVE TO BANK or export the final version."
-    }
+    "Paste your raw idea (hook or verse).",
+    "Generate a strong hook.",
+    "Shape your verse.",
+    "Add a bridge (emotional turn).",
+    "Place ad-libs.",
+    "Save your best version."
   ];
 
-  function box(){
-    return document.querySelector('#tsm-assistant-box') ||
-           document.querySelector('.tsm-assistant') ||
-           document.querySelector('[class*="assistant"]');
-  }
-
-  function say(text){
+  function say(msg){
     if(window.showAssistant){
-      try{ window.showAssistant(text); }catch(e){}
+      try { window.showAssistant(msg); } catch(e){}
     }
-    const b = box();
-    if(b) b.innerHTML = text;
-    console.log("ZAY Producer:", text);
+    console.log("ZAY:", msg);
   }
 
-  function renderProducerPanel(){
-    let panel = document.getElementById("zayProducerPanel");
-    if(!panel){
-      panel = document.createElement("div");
-      panel.id = "zayProducerPanel";
-      panel.style.cssText = `
-        position:fixed;
-        right:340px;
-        bottom:78px;
-        width:330px;
-        z-index:10000;
-        background:#0b0618;
-        border:1px solid #a855f7;
-        border-radius:14px;
-        box-shadow:0 0 35px rgba(168,85,247,.25);
-        color:#f5e8ff;
-        font-family:monospace;
-        padding:14px;
-      `;
-      document.body.appendChild(panel);
-    }
-
-    const s = steps[producerStep];
-
-    panel.innerHTML = `
-      <div style="color:#a855f7;font-weight:900;margin-bottom:8px">🎛️ ZAY PRODUCER MODE</div>
-      <div style="color:#00f59f;font-weight:900;margin-bottom:8px">${s.title}</div>
-      <div style="font-size:12px;line-height:1.55;margin-bottom:10px">${s.msg}</div>
-      <div style="font-size:11px;color:#ffc857;margin-bottom:12px">Next: ${s.action}</div>
-      <button onclick="window.zayProducerPrev()" style="background:transparent;color:#a855f7;border:1px solid #a855f7;border-radius:8px;padding:7px 10px">← Back</button>
-      <button onclick="window.zayProducerNext()" style="background:#00f59f;color:#001018;border:0;border-radius:8px;padding:7px 10px;font-weight:900">Next Step →</button>
-      <button onclick="window.zayProducerAuto()" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:7px 10px">Auto Coach</button>
-    `;
-
-    say(`${s.title}: ${s.msg}`);
+  function next(){
+    step = Math.min(step + 1, steps.length - 1);
+    say(steps[step]);
   }
 
-  window.zayProducerNext = function(){
-    producerStep = Math.min(producerStep + 1, steps.length - 1);
-    renderProducerPanel();
-  };
+  function start(){
+    step = 0;
+    say("Producer Mode: " + steps[0]);
+  }
 
-  window.zayProducerPrev = function(){
-    producerStep = Math.max(producerStep - 1, 0);
-    renderProducerPanel();
-  };
+  function addBtn(){
+    if(document.getElementById("zayBtn")) return;
 
-  window.zayProducerAuto = function(){
-    let i = producerStep;
-    const timer = setInterval(()=>{
-      producerStep = i;
-      renderProducerPanel();
-      i++;
-      if(i >= steps.length) clearInterval(timer);
-    }, 3800);
-  };
+    const b = document.createElement("button");
+    b.id = "zayBtn";
+    b.innerText = "🎛️ Producer";
+    b.onclick = start;
 
-  window.startZayProducerMode = function(){
-    producerStep = 0;
-    renderProducerPanel();
-  };
-
-  window.handleAssistantUpdate = function(action, payload){
-    const messages = {
-      draft_empty:"Paste a draft or drop an idea to begin.",
-      draft_paste:"Draft received. ZAY recommends building the hook next.",
-      options_ready:"Options are ready. Pick the one with the strongest hook identity.",
-      options_shown:"Compare hook strength, cadence, and DNA match.",
-      options_html:"Options rendered. Choose the direction that feels most repeatable.",
-      analysis_complete:"Analysis complete. Next move: refine, add bridge, then place ad-libs.",
-      error:"Something failed. Adjust the input and run again."
-    };
-    if(messages[action]) say(messages[action]);
-  };
-
-  function addButton(){
-    if(document.getElementById("zayProducerBtn")) return;
-    const btn = document.createElement("button");
-    btn.id = "zayProducerBtn";
-    btn.innerText = "🎛️ Producer Mode";
-    btn.onclick = window.startZayProducerMode;
-    btn.style.cssText = `
+    b.style.cssText = `
       position:fixed;
-      right:24px;
-      bottom:24px;
-      z-index:10001;
+      bottom:20px;
+      right:20px;
+      z-index:9999;
       background:#a855f7;
-      color:white;
+      color:#fff;
       border:0;
+      padding:10px 14px;
       border-radius:999px;
-      padding:12px 16px;
       font-weight:900;
-      box-shadow:0 0 25px rgba(168,85,247,.45);
       cursor:pointer;
     `;
-    document.body.appendChild(btn);
+
+    document.body.appendChild(b);
   }
+
+  document.addEventListener("click", function(e){
+    const t = (e.target.innerText || "").toLowerCase();
+
+    if(t.includes("run") || t.includes("generate")){
+      next();
+    }
+  });
 
   if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", addButton);
-  }else{
-    addButton();
+    document.addEventListener("DOMContentLoaded", addBtn);
+  } else {
+    addBtn();
   }
 
-  console.log("✅ ZAY Producer Mode active");
+  console.log("✅ CLEAN Producer Mode loaded");
+
 })();
 </script>
 
