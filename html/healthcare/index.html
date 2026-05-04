@@ -1032,23 +1032,48 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 
+
+
 <script id="tsm-hc-auto-node-ai">
 (function(){
-  if(window.__TSM_AUTO_NODE_AI__) return;
-  window.__TSM_AUTO_NODE_AI__ = true;
+  if(window.__TSM_AUTO_NODE_AI_V2__) return;
+  window.__TSM_AUTO_NODE_AI_V2__ = true;
 
   const NODES = [
-    'operations','medical','pharmacy','insurance',
-    'financial','legal','vendors','compliance',
-    'billing','taxprep','grants'
+    'operations','medical','pharmacy','insurance','financial',
+    'legal','vendors','compliance','billing','taxprep','grants'
   ];
 
-  function findCard(node){
-    const rx=new RegExp(node,'i');
-    const els=[...document.querySelectorAll('div,section,article')];
-    return els.find(el=>{
-      const t=(el.innerText||'').slice(0,200);
-      return rx.test(t) && /LIVE|PORT|AI unavailable|COMMAND/i.test(t);
+  function nodeLabel(node){
+    return node === 'taxprep' ? 'TAX PREP' : node.toUpperCase();
+  }
+
+  function findNodeCard(node){
+    const label = nodeLabel(node);
+    const candidates = [...document.querySelectorAll('div,section,article')];
+
+    // Prefer smallest card-like container that contains the node heading
+    return candidates
+      .filter(el => {
+        const txt = (el.innerText || '').trim();
+        return txt.includes(label) &&
+               /LIVE|PORT|AI unavailable|INTEL|OPEN/i.test(txt) &&
+               txt.length < 1600;
+      })
+      .sort((a,b) => (a.innerText || '').length - (b.innerText || '').length)[0];
+  }
+
+  function removeUnavailable(card){
+    [...card.childNodes].forEach(n => {
+      if(n.nodeType === 3 && /AI unavailable/i.test(n.textContent || '')){
+        n.textContent = '';
+      }
+    });
+
+    [...card.querySelectorAll('*')].forEach(el => {
+      if((el.innerText || '').trim() === 'AI unavailable'){
+        el.style.display = 'none';
+      }
     });
   }
 
@@ -1059,45 +1084,55 @@ document.addEventListener('DOMContentLoaded', function(){
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           node,
-          message:'Run real-time analysis for '+node
+          message:'Run live healthcare node analysis for '+node
         })
       });
 
       const data = await res.json();
-
-      const card = findCard(node);
+      const card = findNodeCard(node);
       if(!card) return;
 
-      let box = card.querySelector('.tsm-ai-output');
+      removeUnavailable(card);
+
+      let box = card.querySelector('.tsm-ai-output-v2');
       if(!box){
         box = document.createElement('div');
-        box.className = 'tsm-ai-output';
-        box.style.cssText = "margin-top:8px;padding:6px;border-top:1px solid rgba(0,213,255,.2);font-size:10px;color:#9fffdc;";
+        box.className = 'tsm-ai-output-v2';
+        box.style.cssText = `
+          margin-top:8px;
+          padding:7px;
+          border-top:1px solid rgba(0,213,255,.25);
+          color:#9fffdc;
+          font-size:10px;
+          line-height:1.45;
+          white-space:normal;
+        `;
         card.appendChild(box);
       }
 
       box.innerHTML = `
-        <b>AI ANALYSIS</b><br>
-        ${data.bnca?.priority || 'Analysis unavailable'}
+        <b style="color:#00ffc6;">AI ANALYSIS</b><br>
+        ${data.bnca?.priority || data.finding || 'Node analysis active.'}
       `;
-
     }catch(e){
-      console.warn('Node AI failed', node);
+      console.warn('node AI failed', node, e);
     }
   }
 
   async function run(){
-    for(const n of NODES){
-      loadNode(n);
-      await new Promise(r=>setTimeout(r,150));
+    for(const node of NODES){
+      await loadNode(node);
+      await new Promise(r => setTimeout(r,120));
     }
   }
 
-  if(document.readyState==='loading'){
+  if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', run);
   } else {
     run();
   }
+
+  setTimeout(run, 2500);
 })();
 </script>
 
