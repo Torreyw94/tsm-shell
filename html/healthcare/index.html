@@ -845,7 +845,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       <div id="hcDocBox">
         <header>
           <div>
-            <h3>DOC ANALYSIS · HEALTHCARE</h3>
+            <a href="/html/healthcare/poc-html/index.html" style="text-decoration:none;"><h3>DOC ANALYSIS · HEALTHCARE</h3></a>
             <div style="color:#5b83a7;font-size:11px;margin-top:4px;">Paste policy, claim notes, denial text, audit notes, vendor issue, or operations report.</div>
           </div>
           <button class="ghost" id="hcDocClose">CLOSE</button>
@@ -896,14 +896,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     css();
     modal();
 
-    [...document.querySelectorAll('button,a,div,span')]
-      .filter(el => /DOC ANALYSIS/i.test(el.innerText || el.textContent || ''))
-      .forEach(el => {
-        el.style.cursor='pointer';
-        el.addEventListener('click', function(ev){
-          ev.preventDefault();
-          document.getElementById('hcDocModal').style.display='flex';
-        });
+    
       });
   }
 
@@ -977,7 +970,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     bar.innerHTML=`
       <div>
         <div class="title">DOCUMENT INTAKE → HC NODE POPULATION</div>
-        <div class="sub">Upload TXT/CSV/JSON/MD or paste document text through DOC ANALYSIS. Signals populate node cards and strategist context.</div>
+        <a href="/html/healthcare/poc-html/index.html" style="text-decoration:none;"><div class="sub">Upload TXT/CSV/JSON/MD or paste document text through DOC ANALYSIS. Signals populate node cards and strategist context.</div></a>
       </div>
       <input id="hcDocFile" type="file" accept=".txt,.csv,.json,.md,.log,.html,.xml,.pdf,.doc,.docx">
       <button id="hcDocPopulate">ANALYZE + POPULATE NODES</button>
@@ -1050,7 +1043,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       box.style.cssText='margin-top:10px;border-top:1px solid rgba(255,255,255,.12);padding-top:8px;color:#9fffdc;font-size:10px;line-height:1.45;';
       panel.appendChild(box);
     }
-    box.innerHTML=`<b style="color:#ffc400;">DOC ANALYSIS ACTIVE</b><br>Risk: ${analysis.riskLevel}<br>${analysis.bnca?.priority || ''}`;
+    box.innerHTML=`<a href="/html/healthcare/poc-html/index.html" style="text-decoration:none;"><b style="color:#ffc400;">DOC ANALYSIS ACTIVE</b></a><br>Risk: ${analysis.riskLevel}<br>${analysis.bnca?.priority || ''}`;
   }
 
   async function analyzeAndPopulate(text){
@@ -1082,6 +1075,20 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', mount);
   else mount();
 })();
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('*').forEach(el=>{
+    if((el.innerText||'').trim()==='DOC ANALYSIS'){
+      el.style.cursor='pointer';
+      el.onclick = () => {
+        window.location.href = '/html/healthcare/poc-html/index.html';
+      };
+    }
+  });
+});
 </script>
 
 </body>
