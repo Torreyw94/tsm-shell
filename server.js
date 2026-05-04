@@ -142,7 +142,17 @@ async function tsmAIJSON(prompt, fallback){
     if(!process.env.GROQ_API_KEY) throw new Error("GROQ_API_KEY missing");
     const text = await musicAI(prompt, 'json');
     try { return JSON.parse(text.replace(/```json|```/g,'').trim()); }
-    catch(e) { return {...fallback, narrative: text}; }
+    catch(e) {
+      // Try harder — extract JSON block, strip newlines inside strings
+      try {
+        const start = text.indexOf('{'); const end = text.lastIndexOf('}');
+        if (start !== -1 && end > start) {
+          const block = text.slice(start, end+1).split("\n").join(" ").replace(/\s+/g, " ");
+          return JSON.parse(block);
+        }
+      } catch(_) {}
+      return {...fallback, narrative: text};
+    }
   } catch(e) {
     return {...fallback, ai_status:'fallback_no_mock_data_key_or_route_needed'};
   }
@@ -432,8 +442,9 @@ app.post("/api/music/revision/run", async (req, res) => {
     const lyrics = body.lyrics || body.draft || body.input || body.text || body.prompt || "";
     const { agent="ZAY", edit="improve overall quality", protect="nothing" } = body;
     if (!lyrics) return res.status(400).json({ ok: false, error: "Missing lyrics" });
-    // ⚠️ removed invalid top-level await fetch
-const gd = await gr.json();
+    const _prompt = 'You are ' + agent + ', a music revision agent. Edit: ' + edit + '. Protect: ' + protect + '. Lyrics: ' + lyrics + '. Return ONLY the revised lyrics, no explanation.';
+    const gr = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Authorization':'Bearer '+process.env.GROQ_API_KEY,'Content-Type':'application/json'}, body:JSON.stringify({model:process.env.TSM_MODEL||'llama-3.1-8b-instant',messages:[{role:'user',content:_prompt}],max_tokens:900,temperature:0.7}) });
+    const gd = await gr.json();
     const revised = (gd.choices?.[0]?.message?.content || lyrics).replace(/```/g,'').trim();
     res.json({ ok: true, revised, decision: 'Applied: ' + edit, cadence: 80, emotion: 80 });
   } catch(e) {
@@ -454,8 +465,9 @@ app.post('/api/music/guidance', express.json(), async (req, res) => {
 
 app.post('/api/music/structure', express.json(), async (req, res) => {
   const { lyrics, mood, bpm, key, context } = req.body || {};
-  // ⚠️ removed invalid top-level await fetch
-const sgData = await sgFetch.json();
+  const _sgPrompt = 'Analyze and suggest song structure. Mood: ' + (mood||'neutral') + '. BPM: ' + (bpm||120) + '. Key: ' + (key||'C') + '. Context: ' + (context||'') + '. Lyrics: ' + (lyrics||'') + '. Return ONLY valid JSON: {"structure":"verse-chorus-verse-chorus-bridge-chorus","sections":[],"suggestions":[]}';
+  const sgFetch = await fetch('https://api.groq.com/openai/v1/chat/completions', { method:'POST', headers:{'Authorization':'Bearer '+process.env.GROQ_API_KEY,'Content-Type':'application/json'}, body:JSON.stringify({model:process.env.TSM_MODEL||'llama-3.1-8b-instant',messages:[{role:'user',content:_sgPrompt}],max_tokens:900,temperature:0.7}) });
+  const sgData = await sgFetch.json();
   const result = JSON.parse((sgData.choices?.[0]?.message?.content || '{}').replace(/```json|```/g,'').trim());
   res.json({ ok: true, ...result });
 });
@@ -497,8 +509,12 @@ const MUSIC_MEMORY = global.__TSM_MUSIC_MEMORY__ = global.__TSM_MUSIC_MEMORY__ |
 async function musicAI(prompt, mode){
   try{
     if(!process.env.GROQ_API_KEY) throw new Error("missing key");
-    // ⚠️ removed invalid top-level await fetch
-if(!r.ok) throw new Error("AI unavailable");
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 })
+    });
+    if(!r.ok) throw new Error("AI unavailable");
     const data = await r.json();
     return data?.choices?.[0]?.message?.content || "";
   }catch(e){
@@ -527,15 +543,32 @@ app.post('/api/music/dna/save',(req,res)=>{
   res.json({ok:true,dna:MUSIC_MEMORY.dna});
 });
 app.post("/api/music/agent-pass", async (req,res) => {
-  const prompt = req.body?.prompt || req.body?.message || req.body?.input || "";
+  const systemPrompt = req.body?.systemPrompt || req.body?.system || `You are a professional rap/songwriting agent. Always respond with ONLY valid JSON, no prose, no markdown fences. Return exactly this shape:
+{"options":[{"label":"Option 1: <name>","text":"<rewritten lyrics>","hook_score":85,"cadence_score":82,"notes":"<1 line>"},{"label":"Option 2: <name>","text":"<rewritten lyrics>","hook_score":80,"cadence_score":88,"notes":"<1 line>"},{"label":"Option 3: <name>","text":"<rewritten lyrics>","hook_score":90,"cadence_score":79,"notes":"<1 line>"}],"hook":"<best hook line>","bridge":"<bridge suggestion>","adlibs":["yeah","uh","let's go"]}`;
+  const userPrompt   = req.body?.userPrompt   || req.body?.prompt || req.body?.message || req.body?.input || "";
+  const messages = [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }];
   try {
-    // ⚠️ removed invalid top-level await fetch
-const d = await r.json();
-    const text = (d.choices?.[0]?.message?.content||"").replace(/```json|```/g,"").trim();
-    const parsed = JSON.parse(text);
-    return res.json({ok:true, ...parsed, output: parsed.options?.[0]?.text || ""});
+    if (!process.env.GROQ_API_KEY) throw new Error("Missing GROQ_API_KEY");
+    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + process.env.GROQ_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages, max_tokens: 1200, temperature: 0.4 })
+    });
+    if (!r.ok) throw new Error("Groq HTTP " + r.status);
+    const d = await r.json();
+    const raw = d.choices?.[0]?.message?.content || "";
+    const text = raw.replace(/```json|```/g, "").trim();
+    let parsed;
+    try {
+      const match = text.match(/\{[\s\S]*\}/);
+      parsed = JSON.parse(match ? match[0] : text);
+    } catch(_) {
+      parsed = { options: [{ text: raw, score: 80 }], hook: "", bridge: "", adlibs: [] };
+    }
+    return res.json({ ok: true, ...parsed, output: parsed.options?.[0]?.text || raw });
   } catch(e) {
-    return res.json({ok:true, output:prompt, options:[{label:"Option 1",text:prompt},{label:"Option 2",text:prompt},{label:"Option 3",text:prompt}]});
+    console.error("[agent-pass] error:", e.message);
+    return res.status(500).json({ ok: false, error: e.message });
   }
 });
 app.post('/api/music/song', async (req,res)=>{
@@ -568,9 +601,12 @@ const MUSIC_STATE = global.__TSM_MUSIC_STATE__ = global.__TSM_MUSIC_STATE__ || {
 async function tsmMusicResponse(prompt, mode){
   try{
     if(!process.env.GROQ_API_KEY) throw new Error("missing key");
-
-    // ⚠️ removed invalid top-level await fetch
-if(!r.ok) throw new Error("AI unavailable");
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 })
+    });
+    if(!r.ok) throw new Error("AI unavailable");
     const data = await r.json();
     return data?.choices?.[0]?.message?.content || "";
   }catch(e){
@@ -859,8 +895,8 @@ Return ONLY valid JSON, no markdown, no explanation:
 }`;
 
   try {
-    // ⚠️ removed invalid top-level await fetch
-const d = await r.json();
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const d = await r.json();
     console.log('[COACH GROQ]', JSON.stringify(d).slice(0,500));
     const text = d.choices?.[0]?.message?.content || '{}';
     let parsed = {};
@@ -908,8 +944,9 @@ app['post']('/api/construction/query', async (req, res) => {
   const personas = {'construction-command':'Construction Command Center specialist','construction-strategist':'Construction Strategist for planning','construction-pro':'Construction Pro for on-site execution','compliance':'Construction Compliance officer','financial':'Construction Financial analyst','legal':'Construction Legal counsel','zero-trust':'Construction Zero-Trust security architect','construct-presentation':'Construction Presentation specialist'};
   const persona = personas[node] || 'Construction intelligence agent';
   const prompt = 'You are ' + agent + ', a ' + persona + ' in the TSM Construction Suite. Action: ' + action + '. Stakeholder: ' + stakeholder + '. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","agent":"' + agent + '","node":"' + node + '","response":"...","key_findings":[],"recommendations":[],"risk_level":"MEDIUM","next_steps":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -922,8 +959,9 @@ app['post']('/api/financial/query', async (req, res) => {
   const { action='', agent='FINOPS', payload={} } = req.body;
   const { context='', stakeholder='CFO', node='', priority='NORMAL' } = payload;
   const prompt = 'You are ' + agent + ', a FinOps intelligence agent for the ' + (node||'financial') + ' module. Action: ' + action + '. Stakeholder: ' + stakeholder + '. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","agent":"' + agent + '","node":"' + node + '","response":"...","metrics":{},"recommendations":[],"risk_level":"MEDIUM","next_steps":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -933,8 +971,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/report', async (req, res) => {
   const { type='summary', context='', period='current', node='' } = req.body;
   const prompt = 'You are a FinOps reporting agent. Generate a ' + type + ' report for ' + (node||'organization') + ' covering ' + period + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"type":"' + type + '","period":"' + period + '","summary":"...","revenue":0,"expenses":0,"net":0,"variance_pct":0,"alerts":[],"recommendations":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -944,8 +983,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/actions', async (req, res) => {
   const { context='', priority='NORMAL', module='' } = req.body;
   const prompt = 'You are a FinOps action agent for the ' + (module||'finance') + ' module. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"module":"' + module + '","actions":[],"quick_wins":[],"risk_flags":[],"next_review":"weekly"}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -955,8 +995,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/upload-doc', async (req, res) => {
   const { filename='', content='', type='financial' } = req.body;
   const prompt = 'Analyze this ' + type + ' document: ' + filename + '. Content: ' + content.slice(0,2000) + '. Return ONLY valid JSON: {"ok":true,"filename":"' + filename + '","type":"' + type + '","summary":"...","key_figures":{},"flags":[],"action_items":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -966,8 +1007,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/run-doc', async (req, res) => {
   const { doc='', action='analyze', context='' } = req.body;
   const prompt = 'Run action: ' + action + ' on document: ' + doc + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"doc":"' + doc + '","action":"' + action + '","result":"...","extracted":{},"next_steps":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -988,7 +1030,7 @@ function safeParseGroq(text, fallback = {}) {
       const start = text.indexOf('{');
       const end = text.lastIndexOf('}');
       if (start !== -1 && end !== -1 && end > start) {
-        const block = text.slice(start, end + 1);
+      const block = text.slice(start, end + 1).split("\n").join(" ").replace(/\s+/g, " ");
         // replace literal newlines with \n so JSON.parse accepts them
         const safe = block.replace(/\r?\n/g, '\\n').replace(/\t/g, '\\t');
         return JSON.parse(safe);
@@ -1001,8 +1043,12 @@ function safeParseGroq(text, fallback = {}) {
 // groqFetch — wraps Groq API call with rate limit detection
 async function groqFetch(prompt, maxTokens = 900) {
   const model = process.env.TSM_MODEL || 'llama-3.1-8b-instant';
-  // ⚠️ removed invalid top-level await fetch
-const raw = await r.json();
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 })
+    });
+  const raw = await r.json();
   if (raw.error?.code === 'rate_limit_exceeded') {
     const msg = raw.error.message || '';
     const match = msg.match(/try again in ([\d\.]+[smh])/i);
@@ -1021,8 +1067,9 @@ app['post']('/api/music/revision/select', (req, res) => { const { revision_id=''
 app['post']('/api/music/revision/pick-rerun', async (req, res) => {
   const { lyrics='', agent='ZAY', style='' } = req.body;
   const prompt = 'You are ' + agent + ', a music revision agent. Re-run revision on these lyrics with style: ' + style + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agent":"' + agent + '","revised":"...","cadence":80,"emotion":80,"structure":80,"imagery":80,"decision":"Improved"}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1032,8 +1079,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/revision/generate', async (req, res) => {
   const { lyrics='', style='', mood='', genre='' } = req.body;
   const prompt = 'You are a music AI. Generate a revision of these lyrics. Style: ' + style + '. Mood: ' + mood + '. Genre: ' + genre + '. Original: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"revised":"...","changes":[],"score":80,"emotion":80,"structure":80}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1043,8 +1091,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/agent/run', async (req, res) => {
   const { agent='RIYA', task='', lyrics='', context='' } = req.body;
   const prompt = 'You are ' + agent + ', a professional music AI agent. Task: ' + task + '. Context: ' + context + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agent":"' + agent + '","output":"...","score_delta":5,"decision":"Approved","ad_libs":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1054,8 +1103,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/agent/chain', async (req, res) => {
   const { agents=['RIYA','ZAY'], lyrics='', task='', rounds=1 } = req.body;
   const prompt = 'You are a music agent chain coordinator running agents: ' + agents.join(', ') + '. Task: ' + task + '. Rounds: ' + rounds + '. Input lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agents":' + JSON.stringify(agents) + ',"rounds_completed":' + rounds + ',"final_lyrics":"...","chain_log":[],"final_score":85}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1065,8 +1115,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['get']('/api/music/engine', async (req, res) => {
   const { action='', lyrics='', config='' } = req.query;
   const prompt = 'You are the TSM Music Engine. Action: ' + action + '. Config: ' + JSON.stringify(config) + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","result":"...","metrics":{"energy":80,"flow":80,"impact":80},"suggestions":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1077,8 +1128,9 @@ app['get']('/api/music/evolution', async (req, res) => {
   const { lyrics='', generations=1, target='' } = req.query;
   if (!lyrics) return res.json({ ok:true, generations:1, evolved:'Provide lyrics to evolve', evolution_log:['Ready'], improvement_pct:0 });
   const prompt = 'Return ONLY a raw JSON object, no explanation, no markdown. Evolve these lyrics over ' + generations + ' generation(s). JSON format: {"ok":true,"generations":' + generations + ',"evolved":"improved lyrics here","evolution_log":["change 1","change 2"],"improvement_pct":15}. Lyrics to evolve: ' + lyrics;
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1092,8 +1144,9 @@ app['post']('/api/music/export', (req, res) => {
 app['post']('/api/music/hooks/generate10', async (req, res) => {
   const { theme='', genre='', mood='' } = req.body;
   const prompt = 'Generate 10 unique song hooks. Theme: ' + theme + '. Genre: ' + genre + '. Mood: ' + mood + '. Return ONLY valid JSON: {"ok":true,"hooks":["hook1","hook2","hook3","hook4","hook5","hook6","hook7","hook8","hook9","hook10"]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1114,8 +1167,9 @@ app['post']('/api/music/session/save', (req, res) => {
 app['post']('/api/music/song/learn', async (req, res) => {
   const { lyrics='', feedback='', style='' } = req.body;
   const prompt = 'You are a music learning AI. Learn from this song feedback. Lyrics: ' + lyrics + '. Feedback: ' + feedback + '. Style: ' + style + '. Return ONLY valid JSON: {"ok":true,"learned":true,"patterns":[],"style_profile":{},"next_suggestions":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1125,8 +1179,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/dna/learn', async (req, res) => {
   const { lyrics='', artist='', style='', feedback='' } = req.body;
   const prompt = 'You are the TSM Music DNA learning engine. Analyze and learn from: artist=' + artist + ' style=' + style + ' feedback=' + feedback + ' lyrics=' + lyrics + '. Return ONLY valid JSON: {"ok":true,"dna_updated":true,"artist":"' + artist + '","learned_patterns":[],"style_vector":{},"confidence":0.85}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1146,8 +1201,9 @@ app.post('/api/music/llm', async (req, res) => {
   try {
     const { system = '', user = '' } = req.body;
     if (!user) return res.status(400).json({ ok: false, error: 'Missing user prompt' });
-    // ⚠️ removed invalid top-level await fetch
-const d = await r.json();
+    const _llmBody = JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: (system ? system + '\n\n' : '') + user }], max_tokens: 1000, temperature: 0.7 });
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: _llmBody });
+    const d = await r.json();
     const text = d.choices?.[0]?.message?.content || '';
     if (!text) {
       console.error('[LLM] Empty:', JSON.stringify(d).slice(0,200));
@@ -1178,11 +1234,28 @@ app.post("/api/music/export/save", async (req, res) => {
 });
 app.use('/exports', require('express').static(require('path').join(__dirname, 'exports')));
 app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
+
+app.post("/api/music/coach", async (req, res) => {
+  const { action = "", draft = "", output = "", dna = {} } = req.body || {};
+  const prompt = `You are TSM Music Coach — a sharp, street-smart A&R advisor. In 1-2 sentences max, give specific actionable feedback based on what just happened. Be direct, no fluff.
+Action: ${action}
+Draft excerpt: ${draft.slice(0,200)}
+Output excerpt: ${output.slice(0,200)}
+Artist DNA: ${JSON.stringify(dna).slice(0,100)}
+Respond with ONLY the coaching message, no labels, no JSON.`;
+  try {
+    const msg = await musicAI(prompt, 'coach');
+    res.json({ ok: true, msg: msg.trim() });
+  } catch(e) {
+    res.json({ ok: true, msg: "Keep pushing — review your options and pick the strongest direction." });
+  }
+});
+
 app.use((req, res) => res.status(404).send('<pre>404 Not found: ' + req.path + '</pre>'));app.post('/api/music/agent-pass', async (req,res) => {
   const prompt = req.body?.prompt || req.body?.message || req.body?.input || '';
   try {
-    // ⚠️ removed invalid top-level await fetch
-const d = await r.json();
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const d = await r.json();
     const text = (d.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(text);
     return res.json({ok:true, ...parsed, output: parsed.options?.[0]?.text || ''});
@@ -1421,8 +1494,8 @@ Return ONLY valid JSON, no markdown, no explanation:
 }`;
 
   try {
-    // ⚠️ removed invalid top-level await fetch
-const d = await r.json();
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const d = await r.json();
     console.log('[COACH GROQ]', JSON.stringify(d).slice(0,500));
     const text = d.choices?.[0]?.message?.content || '{}';
     let parsed = {};
@@ -1470,8 +1543,9 @@ app['post']('/api/construction/query', async (req, res) => {
   const personas = {'construction-command':'Construction Command Center specialist','construction-strategist':'Construction Strategist for planning','construction-pro':'Construction Pro for on-site execution','compliance':'Construction Compliance officer','financial':'Construction Financial analyst','legal':'Construction Legal counsel','zero-trust':'Construction Zero-Trust security architect','construct-presentation':'Construction Presentation specialist'};
   const persona = personas[node] || 'Construction intelligence agent';
   const prompt = 'You are ' + agent + ', a ' + persona + ' in the TSM Construction Suite. Action: ' + action + '. Stakeholder: ' + stakeholder + '. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","agent":"' + agent + '","node":"' + node + '","response":"...","key_findings":[],"recommendations":[],"risk_level":"MEDIUM","next_steps":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1484,8 +1558,9 @@ app['post']('/api/financial/query', async (req, res) => {
   const { action='', agent='FINOPS', payload={} } = req.body;
   const { context='', stakeholder='CFO', node='', priority='NORMAL' } = payload;
   const prompt = 'You are ' + agent + ', a FinOps intelligence agent for the ' + (node||'financial') + ' module. Action: ' + action + '. Stakeholder: ' + stakeholder + '. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","agent":"' + agent + '","node":"' + node + '","response":"...","metrics":{},"recommendations":[],"risk_level":"MEDIUM","next_steps":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1495,8 +1570,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/report', async (req, res) => {
   const { type='summary', context='', period='current', node='' } = req.body;
   const prompt = 'You are a FinOps reporting agent. Generate a ' + type + ' report for ' + (node||'organization') + ' covering ' + period + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"type":"' + type + '","period":"' + period + '","summary":"...","revenue":0,"expenses":0,"net":0,"variance_pct":0,"alerts":[],"recommendations":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1506,8 +1582,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/actions', async (req, res) => {
   const { context='', priority='NORMAL', module='' } = req.body;
   const prompt = 'You are a FinOps action agent for the ' + (module||'finance') + ' module. Priority: ' + priority + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"module":"' + module + '","actions":[],"quick_wins":[],"risk_flags":[],"next_review":"weekly"}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1517,8 +1594,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/upload-doc', async (req, res) => {
   const { filename='', content='', type='financial' } = req.body;
   const prompt = 'Analyze this ' + type + ' document: ' + filename + '. Content: ' + content.slice(0,2000) + '. Return ONLY valid JSON: {"ok":true,"filename":"' + filename + '","type":"' + type + '","summary":"...","key_figures":{},"flags":[],"action_items":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1528,8 +1606,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/finops/run-doc', async (req, res) => {
   const { doc='', action='analyze', context='' } = req.body;
   const prompt = 'Run action: ' + action + ' on document: ' + doc + '. Context: ' + context + '. Return ONLY valid JSON: {"ok":true,"doc":"' + doc + '","action":"' + action + '","result":"...","extracted":{},"next_steps":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1563,8 +1642,12 @@ function safeParseGroq(text, fallback = {}) {
 // groqFetch — wraps Groq API call with rate limit detection
 async function groqFetch(prompt, maxTokens = 900) {
   const model = process.env.TSM_MODEL || 'llama-3.1-8b-instant';
-  // ⚠️ removed invalid top-level await fetch
-const raw = await r.json();
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 })
+    });
+  const raw = await r.json();
   if (raw.error?.code === 'rate_limit_exceeded') {
     const msg = raw.error.message || '';
     const match = msg.match(/try again in ([\d\.]+[smh])/i);
@@ -1583,8 +1666,9 @@ app['post']('/api/music/revision/select', (req, res) => { const { revision_id=''
 app['post']('/api/music/revision/pick-rerun', async (req, res) => {
   const { lyrics='', agent='ZAY', style='' } = req.body;
   const prompt = 'You are ' + agent + ', a music revision agent. Re-run revision on these lyrics with style: ' + style + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agent":"' + agent + '","revised":"...","cadence":80,"emotion":80,"structure":80,"imagery":80,"decision":"Improved"}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1594,8 +1678,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/revision/generate', async (req, res) => {
   const { lyrics='', style='', mood='', genre='' } = req.body;
   const prompt = 'You are a music AI. Generate a revision of these lyrics. Style: ' + style + '. Mood: ' + mood + '. Genre: ' + genre + '. Original: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"revised":"...","changes":[],"score":80,"emotion":80,"structure":80}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1605,8 +1690,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/agent/run', async (req, res) => {
   const { agent='RIYA', task='', lyrics='', context='' } = req.body;
   const prompt = 'You are ' + agent + ', a professional music AI agent. Task: ' + task + '. Context: ' + context + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agent":"' + agent + '","output":"...","score_delta":5,"decision":"Approved","ad_libs":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1616,8 +1702,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/agent/chain', async (req, res) => {
   const { agents=['RIYA','ZAY'], lyrics='', task='', rounds=1 } = req.body;
   const prompt = 'You are a music agent chain coordinator running agents: ' + agents.join(', ') + '. Task: ' + task + '. Rounds: ' + rounds + '. Input lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"agents":' + JSON.stringify(agents) + ',"rounds_completed":' + rounds + ',"final_lyrics":"...","chain_log":[],"final_score":85}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1627,8 +1714,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['get']('/api/music/engine', async (req, res) => {
   const { action='', lyrics='', config='' } = req.query;
   const prompt = 'You are the TSM Music Engine. Action: ' + action + '. Config: ' + JSON.stringify(config) + '. Lyrics: ' + lyrics + '. Return ONLY valid JSON: {"ok":true,"action":"' + action + '","result":"...","metrics":{"energy":80,"flow":80,"impact":80},"suggestions":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1639,8 +1727,9 @@ app['get']('/api/music/evolution', async (req, res) => {
   const { lyrics='', generations=1, target='' } = req.query;
   if (!lyrics) return res.json({ ok:true, generations:1, evolved:'Provide lyrics to evolve', evolution_log:['Ready'], improvement_pct:0 });
   const prompt = 'Return ONLY a raw JSON object, no explanation, no markdown. Evolve these lyrics over ' + generations + ' generation(s). JSON format: {"ok":true,"generations":' + generations + ',"evolved":"improved lyrics here","evolution_log":["change 1","change 2"],"improvement_pct":15}. Lyrics to evolve: ' + lyrics;
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1654,8 +1743,9 @@ app['post']('/api/music/export', (req, res) => {
 app['post']('/api/music/hooks/generate10', async (req, res) => {
   const { theme='', genre='', mood='' } = req.body;
   const prompt = 'Generate 10 unique song hooks. Theme: ' + theme + '. Genre: ' + genre + '. Mood: ' + mood + '. Return ONLY valid JSON: {"ok":true,"hooks":["hook1","hook2","hook3","hook4","hook5","hook6","hook7","hook8","hook9","hook10"]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1676,8 +1766,9 @@ app['post']('/api/music/session/save', (req, res) => {
 app['post']('/api/music/song/learn', async (req, res) => {
   const { lyrics='', feedback='', style='' } = req.body;
   const prompt = 'You are a music learning AI. Learn from this song feedback. Lyrics: ' + lyrics + '. Feedback: ' + feedback + '. Style: ' + style + '. Return ONLY valid JSON: {"ok":true,"learned":true,"patterns":[],"style_profile":{},"next_suggestions":[]}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1687,8 +1778,9 @@ const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || 
 app['post']('/api/music/dna/learn', async (req, res) => {
   const { lyrics='', artist='', style='', feedback='' } = req.body;
   const prompt = 'You are the TSM Music DNA learning engine. Analyze and learn from: artist=' + artist + ' style=' + style + ' feedback=' + feedback + ' lyrics=' + lyrics + '. Return ONLY valid JSON: {"ok":true,"dna_updated":true,"artist":"' + artist + '","learned_patterns":[],"style_vector":{},"confidence":0.85}';
-  try { // ⚠️ removed invalid top-level await fetch
-const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
+  try {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: prompt }], max_tokens: 900, temperature: 0.7 }) });
+    const raw = await r.json(); const text = (raw.choices?.[0]?.message?.content || '').replace(/```json|```/g,'').trim(); return res.json(safeParseGroq(text, {ok:false})); } catch(e) {
     if (e.message?.startsWith('RATE_LIMITED:')) {
       return res.status(429).json({ ok:false, error:'rate_limited', retry_after: e.message.split(':')[1], message:'AI quota reached. Try again in ' + e.message.split(':')[1] });
     }
@@ -1708,8 +1800,9 @@ app.post('/api/music/llm', async (req, res) => {
   try {
     const { system = '', user = '' } = req.body;
     if (!user) return res.status(400).json({ ok: false, error: 'Missing user prompt' });
-    // ⚠️ removed invalid top-level await fetch
-const d = await r.json();
+    const _llmBody = JSON.stringify({ model: process.env.TSM_MODEL || 'llama-3.1-8b-instant', messages: [{ role: 'user', content: (system ? system + '\n\n' : '') + user }], max_tokens: 1000, temperature: 0.7 });
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' }, body: _llmBody });
+    const d = await r.json();
     const text = d.choices?.[0]?.message?.content || '';
     if (!text) {
       console.error('[LLM] Empty:', JSON.stringify(d).slice(0,200));
@@ -1740,4 +1833,21 @@ app.post("/api/music/export/save", async (req, res) => {
 });
 app.use('/exports', require('express').static(require('path').join(__dirname, 'exports')));
 app.use('/api', (req, res) => res.status(404).json({ ok:false, error:'API route not found', path:req.path }));
+
+app.post("/api/music/coach", async (req, res) => {
+  const { action = "", draft = "", output = "", dna = {} } = req.body || {};
+  const prompt = `You are TSM Music Coach — a sharp, street-smart A&R advisor. In 1-2 sentences max, give specific actionable feedback based on what just happened. Be direct, no fluff.
+Action: ${action}
+Draft excerpt: ${draft.slice(0,200)}
+Output excerpt: ${output.slice(0,200)}
+Artist DNA: ${JSON.stringify(dna).slice(0,100)}
+Respond with ONLY the coaching message, no labels, no JSON.`;
+  try {
+    const msg = await musicAI(prompt, 'coach');
+    res.json({ ok: true, msg: msg.trim() });
+  } catch(e) {
+    res.json({ ok: true, msg: "Keep pushing — review your options and pick the strongest direction." });
+  }
+});
+
 app.use((req, res) => res.status(404).send('<pre>404 Not found: ' + req.path + '</pre>'));
