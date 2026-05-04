@@ -14,6 +14,7 @@ app.post('/api/music/agent-pass', express.json({limit:'1mb'}), async (req, res) 
   const body = req.body || {};
   const agent = String(body.agent || 'ZAY').toUpperCase();
   const step = body.step || 'Draft';
+  const wantsFullPass = /full producer|producer mode|adlib|ad-libs|bridge/i.test(String(step + ' ' + (body.message || '')));
   const draft = body.draft || body.message || body.prompt || '';
 
   const system = `You are ${agent}, elite rap producer coach inside Music Command Center.
@@ -34,7 +35,7 @@ Current workflow step: ${step}
 Style:
 Sharp. Direct. Studio producer energy. No fluff. No essays.
 
-Output format:
+Output format if wantsFullPass is false:
 HOOK OPTION 1:
 ...
 
@@ -42,11 +43,40 @@ HOOK OPTION 2:
 ...
 
 PRODUCER NOTE:
+...
+
+If this request asks for a full producer pass, adlibs, or bridge, return EXACTLY these sections:
+HOOK:
+...
+
+ADLIBS:
+...
+
+BRIDGE:
+...
+
+PRODUCER NOTE:
 ...`;
 
-  const user = draft || 'Create a hook with pressure and comeback energy.';
+  const user = (wantsFullPass ? 'FULL PRODUCER PASS REQUIRED. Return HOOK, ADLIBS, BRIDGE, PRODUCER NOTE. Use this draft:\n' : '') + (draft || 'Create a hook with pressure and comeback energy.');
 
   function zayFallback(){
+    if (wantsFullPass) return `HOOK:
+Grindin' through the struggle, still fresh when I move,
+No fakin' in my circle, real ones know the truth.
+
+ADLIBS:
+(yeah) (real one) (talk to 'em) (no fake)
+(grind mode) (fresh) (muscle up) (take this)
+
+BRIDGE:
+They seen the hustle, but they don't know the nights,
+Missed sleep, missed peace, still chasing the light.
+If real is what you feel, then I carry that proof,
+No mask, no act, just the field and the truth.
+
+PRODUCER NOTE:
+Keep the hook chant-ready and let the adlibs answer the lead vocal. Drop drums out for the bridge, then bring the 808 back heavy for the final hook.`;
     return `HOOK OPTION 1:
 Pressure on my chest, still I rise with the flame,
 They counted me out, now they screaming my name.
