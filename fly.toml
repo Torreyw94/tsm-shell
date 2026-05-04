@@ -1,11 +1,7 @@
-# fly.toml — TSM Shell deployment config
-# Deploy with: fly deploy
-
-app = "tsm-shell"          # change to your actual fly app name
-primary_region = "dfw"     # Dallas — closest to Phoenix AZ
+app = "tsm-shell"
+primary_region = "dfw"
 
 [build]
-  # No Dockerfile needed — Fly detects Node automatically via package.json
 
 [env]
   NODE_ENV = "production"
@@ -16,12 +12,19 @@ primary_region = "dfw"     # Dallas — closest to Phoenix AZ
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
 
   [http_service.concurrency]
     type = "requests"
     soft_limit = 100
     hard_limit = 200
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "15s"
+    method = "GET"
+    timeout = "5s"
+    path = "/api/status"
 
 [[vm]]
   memory = "256mb"

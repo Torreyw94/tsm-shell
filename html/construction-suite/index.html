@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Construction Suite – TSM</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0a0a;color:#e0e0e0;font-family:monospace;padding:2rem}
+  h1{color:#f59e0b;letter-spacing:.2em;font-size:1.4rem;margin-bottom:.5rem}
+  p{color:#888;font-size:.85rem;margin-bottom:2rem}
+  .nodes{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+  .node{background:#111;border:1px solid #f59e0b33;border-radius:6px;padding:1rem;cursor:pointer;min-width:160px;transition:border-color .2s}
+  .node:hover{border-color:#f59e0b}
+  .node h3{color:#f59e0b;font-size:.8rem;letter-spacing:.1em;margin-bottom:.3rem}
+  .node p{color:#aaa;font-size:.75rem;margin:0}
+  textarea{width:100%;background:#111;border:1px solid #333;color:#e0e0e0;padding:1rem;border-radius:6px;font-family:monospace;font-size:.85rem;resize:vertical}
+  button{margin-top:1rem;background:#f59e0b;color:#000;border:none;padding:.6rem 1.5rem;border-radius:4px;cursor:pointer;font-weight:bold;letter-spacing:.1em}
+  #output{margin-top:1.5rem;background:#111;border:1px solid #222;border-radius:6px;padding:1rem;min-height:100px;font-size:.85rem;white-space:pre-wrap;color:#a3e635}
+</style>
+</head>
+<body>
+<h1>CONSTRUCTION SUITE</h1>
+<p>Job costing · Subcontractor management · Lien & compliance · Project close</p>
+<div class="nodes" id="nodeGrid"></div>
+<textarea id="query" rows="4" placeholder="Ask construction AI..."></textarea>
+<button onclick="ask()">RUN ANALYSIS</button>
+<div id="output">Ready.</div>
+<script>
+const nodes = ['job-costing','subcontractors','lien','compliance','project-close','vendors','payroll','equipment','permits','insurance'];
+let activeNode = 'general';
+const grid = document.getElementById('nodeGrid');
+nodes.forEach(n => {
+  const d = document.createElement('div');
+  d.className = 'node';
+  d.innerHTML = `<h3>${n.toUpperCase()}</h3><p>Click to activate</p>`;
+  d.onclick = () => { activeNode = n; document.querySelectorAll('.node').forEach(x=>x.style.borderColor='#f59e0b33'); d.style.borderColor='#f59e0b'; };
+  grid.appendChild(d);
+});
+async function ask() {
+  const query = document.getElementById('query').value.trim();
+  if (!query) return;
+  document.getElementById('output').textContent = 'Analyzing...';
+  try {
+    const r = await fetch('/api/construction/ask', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({query, nodeKey: activeNode})
+    });
+    const d = await r.json();
+    document.getElementById('output').textContent = d.content || d.error || 'No response';
+  } catch(e) { document.getElementById('output').textContent = 'Error: '+e.message; }
+}
+</script>
+</body>
+</html>

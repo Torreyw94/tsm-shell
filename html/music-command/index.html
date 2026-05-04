@@ -5629,22 +5629,15 @@ function tsmAssistantUpdate(action, payload) {
     const draft = draftEl && draftEl.value.trim() ? draftEl.value.trim().slice(0,300) : null;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/music/agent-pass", {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514",
-          max_tokens:1000,
-          system:`You are ZAY, elite rap producer coach in Music Command Center.
-Current step: "${step}".${draft ? ` Draft: "${draft}"` : ''}
-Full workflow: DNA → Draft → Run Agent Pass → Pick Option → Revise → Ad-libs → Bridge → Bank → Export.
-Recommend 🎛️ Producer Mode (dock button) when starting fresh or stuck — it walks through 6 steps.
-Sharp, direct, 2-4 sentences. Real producer energy. No fluff.`,
-          messages:[{role:"user", content:q}]
+          query: `You are ZAY, elite rap producer coach in Music Command Center. Current step: "${step}".${draft ? ` Draft: "${draft}"` : ''} Full workflow: DNA → Draft → Run Agent Pass → Pick Option → Revise → Ad-libs → Bridge → Bank → Export. Recommend Producer Mode when starting fresh or stuck. Sharp, direct, 2-4 sentences. Real producer energy. No fluff. User: ${q}`
         })
       });
       const data = await res.json();
-      const text = data.content?.map(b=>b.text||'').join('') || 'No response.';
+      const text = data.content || data.reply || 'No response.';
       resp.innerHTML = '<span style="color:#00f59f;font-weight:900">ZAY:</span> ' + text;
     } catch(e) {
       resp.innerHTML = '<span style="color:#ff4444">Error: ' + e.message + '</span>';

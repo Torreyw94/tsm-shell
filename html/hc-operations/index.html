@@ -666,7 +666,7 @@ main {
   <div class="bnca-box" style="margin-bottom:14px">
     <div class="bnca-header">GROQ API KEY</div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="password" id="groq-key" placeholder="gsk_..." style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:11px;padding:8px 10px;outline:none"/>
+      <input type="password" id="groq-key" placeholder="Routed through TSM server — no key required" disabled style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:11px;padding:8px 10px;outline:none"/>
       <button class="btn" id="all-btn" onclick="generateAllBNCA()">GENERATE ALL NODES</button>
       <span style="font-size:9px;color:var(--text3);letter-spacing:1px">MEMORY ONLY</span>
     </div>
@@ -732,22 +732,15 @@ function buildNodeCards() {
 }
 
 async function generateNodeBNCA(nodeId) {
-  const key = document.getElementById('groq-key').value.trim();
   const n = NODES.find(x => x.id === nodeId);
   const btn = document.getElementById('btn-' + nodeId);
   const statusEl = document.getElementById('status-' + nodeId);
   const outEl = document.getElementById('out-' + nodeId);
-
-  if (!key) { statusEl.textContent = 'NO API KEY — enter Groq key above'; return; }
   btn.disabled = true;
   statusEl.textContent = '⠋ GENERATING BNCA...';
   outEl.style.display = 'block';
   outEl.textContent = '';
-
-  const systemPrompt = `You are TSM Neural Core, an AI operations analyst. You generate Best Next Course of Action (BNCA) memos for individual HC node strategists. Be direct, specific, and actionable. Use numbered items. Address the strategist by their title.`;
-
-  const userPrompt = `Generate a BNCA memo for the following node. Address it to: ${n.strategist}.
-
+  const userPrompt = `Generate a BNCA memo for HC operations node. Address it to: ${n.strategist}.
 NODE: ${n.name}
 STATUS: ${STATUS_LABEL[n.status]}
 STAFF COVERAGE: ${n.coverage > 0 ? n.coverage + '%' : 'OFFLINE'}
@@ -758,26 +751,17 @@ ACTIVE ALERTS: ${n.alerts}
 STAFFING DETAIL: ${n.staff}
 VENDOR STATUS: ${n.vendors}
 OPERATIONAL NOTES: ${n.notes}
-NETWORK CONTEXT: Node is part of an 11-node HC network. Good nodes available for overflow routing: Northside (4 slots), Eastview (6 slots), Central Hub (7 slots), Riverside (3 slots). Critical issues elsewhere: Southside zero BH staff, Valley offline.
-
-Write a concise BNCA memo with: (1) a 1-sentence status summary, (2) 4-6 numbered priority actions for this node's strategist, (3) any network-level coordination needed. Keep total length under 250 words.`;
-
+NETWORK CONTEXT: 11-node HC network. Overflow: Northside 4 slots, Eastview 6, Central Hub 7, Riverside 3. Critical: Southside zero BH staff, Valley offline.
+Write BNCA: (1) 1-sentence status summary, (2) 4-6 numbered priority actions, (3) network coordination needed. Under 250 words.`;
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('/api/hc/query', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 400,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ]
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: userPrompt, nodeKey: nodeId })
     });
     const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-    outEl.textContent = data.choices?.[0]?.message?.content || 'No response.';
+    if (!data.ok) throw new Error(data.error || 'Server error');
+    outEl.textContent = data.content || data.reply || 'No response.';
     statusEl.textContent = '✓ BNCA COMPLETE — ' + new Date().toLocaleTimeString();
   } catch(e) {
     outEl.textContent = 'Error: ' + e.message;
@@ -786,15 +770,14 @@ Write a concise BNCA memo with: (1) a 1-sentence status summary, (2) 4-6 numbere
     btn.disabled = false;
   }
 }
-
 async function generateAllBNCA() {
-  const key = document.getElementById('groq-key').value.trim();
-  if (!key) { alert('Enter your Groq API key first.'); return; }
   document.getElementById('all-btn').disabled = true;
   for (const n of NODES) {
     await generateNodeBNCA(n.id);
     await new Promise(r => setTimeout(r, 400));
   }
+  document.getElementById('all-btn').disabled = false;
+}
   document.getElementById('all-btn').disabled = false;
 }
 

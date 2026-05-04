@@ -1596,17 +1596,15 @@ async function askAi(){
   if(!prompt) return;
   byId('aiResult').innerHTML = `<div class="loading"><div class="thinking"><span></span><span></span><span></span></div> <span>Analyzing tax data...</span></div>`;
   try {
-    const data = await getJson(`${API}/ai/tax-analysis`, {
+    const res = await fetch('/api/taxprep/v1', {
       method: 'POST',
-      body: JSON.stringify({provider_id: currentProviderId, message: prompt})
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'analyze', entity: currentProviderId||'HonorHealth', context: prompt, fiscal_year: new Date().getFullYear()})
     });
-    const lines = [];
-    if(data.report_title) lines.push(`[ ${data.report_title} ]`);
-    if(data.fallback_reason) lines.push(`⚡ Fallback: ${data.fallback_reason}`);
-    if(Array.isArray(data.feed)) lines.push(...data.feed);
-    else lines.push(JSON.stringify(data, null, 2));
-    byId('aiResult').textContent = lines.join('\n\n');
-    byId('aiModelBadge').textContent = data.fallback_reason ? 'GROQ FALLBACK' : 'TSM NEURAL';
+    const data = await res.json();
+    const text = data.content || data.reply || JSON.stringify(data, null, 2);
+    byId('aiResult').textContent = text;
+    byId('aiModelBadge').textContent = 'TSM NEURAL';
   } catch(e){
     byId('aiResult').textContent = `AI Error: ${e.message}`;
   }
