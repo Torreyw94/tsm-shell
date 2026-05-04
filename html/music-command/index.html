@@ -4204,144 +4204,7 @@ CRITICAL OUTPUT RULES:
 
 <script id="tsm-proactive-music-assistant">
 (function(){
-  if(window.__tsmProactiveMusicAssistant) return;
-  window.__tsmProactiveMusicAssistant = true;
-
-  function assistantBox(){
-    return document.querySelector('#tsm-assistant-box')
-      || document.querySelector('.tsm-assistant')
-      || document.querySelector('[class*="assistant"]');
-  }
-
-  function say(msg){
-    if(typeof window.showAssistant === "function"){
-      try { window.showAssistant(msg); return; } catch(e){}
-    }
-    const box = assistantBox();
-    if(box) box.innerHTML = msg;
-    console.log("TSM Assistant:", msg);
-  }
-
-  function draftText(){
-    const ids = ['draft-input','draft','lyrics','song-draft','rev-current'];
-    for(const id of ids){
-      const el = document.getElementById(id);
-      if(el && typeof el.value === "string") return el.value.trim();
-    }
-    const ta = document.querySelector('textarea');
-    return ta ? ta.value.trim() : '';
-  }
-
-  function currentStep(){
-    const active = document.querySelector('.step.active,.active[data-step],[class*="active"]');
-    return active ? active.textContent.trim().slice(0,80) : '';
-  }
-
-  let lastMsg = '';
-  let idleTimer = null;
-
-  function push(msg){
-    if(!msg || msg === lastMsg) return;
-    lastMsg = msg;
-    say(msg);
-  }
-
-  function evaluate(){
-    const text = draftText();
-    const words = text.split(/\s+/).filter(Boolean).length;
-
-    if(words === 0){
-      push("Start by pasting a hook, verse, or rough idea. I’ll help shape it into structure, hook, bridge, and ad-libs.");
-      return;
-    }
-
-    if(words < 12){
-      push("Good seed. Add 2–4 more lines so I can read cadence, emotion, and hook direction.");
-      return;
-    }
-
-    if(words >= 12 && words < 45){
-      push("Nice. Click RUN AGENT PASS or GENERATE HOOK. I’ll return 3 usable directions, not placeholder text.");
-      return;
-    }
-
-    if(/hook/i.test(text) && !/bridge/i.test(text)){
-      push("You have hook energy. Next move: build a bridge so the song has a turning point before the final hook.");
-      return;
-    }
-
-    if(/bridge/i.test(text) && !/ad[- ]?lib/i.test(text)){
-      push("Bridge is present. Next move: place ad-libs after impact lines so the performance feels alive.");
-      return;
-    }
-
-    push("Draft has enough material. Run the agent pass, pick the strongest option, then refine once before saving to Song Bank.");
-  }
-
-  function attach(){
-    const inputs = document.querySelectorAll('textarea,input[type="text"]');
-    inputs.forEach(el=>{
-      if(el.__tsmAssistantBound) return;
-      el.__tsmAssistantBound = true;
-
-      el.addEventListener('focus', ()=>{
-        push("I’m watching this section. Paste real lyrics or a rough idea, then I’ll guide your next best move.");
-      });
-
-      el.addEventListener('input', ()=>{
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(evaluate, 650);
-      });
-    });
-
-    document.addEventListener('click', (e)=>{
-      const txt = (e.target?.innerText || e.target?.value || '').toLowerCase();
-
-      if(txt.includes('run agent') || txt.includes('analyze')){
-        push("Running the agent pass. After it returns, compare the 3 options by hook strength, cadence, and DNA match.");
-      }
-
-      if(txt.includes('iterate')){
-        push("Iteration mode: keep the best lines, change only what improves cadence, emotion, or hook clarity.");
-      }
-
-      if(txt.includes('save') || txt.includes('bank')){
-        push("Saved. This now becomes part of the artist DNA so future outputs can match the style better.");
-      }
-
-      if(txt.includes('ad-lib') || txt.includes('adlib')){
-        push("Ad-lib mode: place short responses after emotional or high-impact lines. Don’t overfill every bar.");
-      }
-
-      if(txt.includes('bridge')){
-        push("Bridge mode: shift the emotion. The bridge should reveal the turn before the final hook.");
-      }
-    }, true);
-  }
-
-  function start(){
-    attach();
-    evaluate();
-
-    setInterval(()=>{
-      attach();
-      const text = draftText();
-      if(!text) return;
-      const visibleOptions = document.body.innerText.includes('Option 1') && document.body.innerText.includes('Option 2');
-      if(visibleOptions){
-        push("Options are ready. Pick the one with the strongest hook identity, then refine instead of starting over.");
-      }
-    }, 5000);
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', start);
-  } else {
-    start();
-  }
-
-  console.log("✅ TSM proactive music assistant active");
-})();
+  if(
 </script>
 
 
@@ -5609,60 +5472,64 @@ function tsmAssistantUpdate(action, payload) {
 
 
 
-<script id="tsm-zay-producer-mode">
+
+
+
+<script id="tsm-clean-core">
 (function(){
-  if(window.__zayClean) return;
-  window.__zayClean = true;
+
+  if(window.__tsmCleanCore) return;
+  window.__tsmCleanCore = true;
+
+  function say(msg){
+    console.log("TSM:", msg);
+    const box = document.querySelector('#tsm-assistant-box') 
+      || document.querySelector('.tsm-assistant');
+    if(box) box.innerHTML = msg;
+  }
 
   let step = 0;
-
-  const steps = [
-    "Paste your raw idea (hook or verse).",
-    "Generate a strong hook.",
-    "Shape your verse.",
-    "Add a bridge (emotional turn).",
-    "Place ad-libs.",
+  const flow = [
+    "Paste your idea (hook or verse).",
+    "Now generate a strong hook.",
+    "Refine your verse.",
+    "Add a bridge.",
+    "Insert ad-libs.",
     "Save your best version."
   ];
 
-  function say(msg){
-    if(window.showAssistant){
-      try { window.showAssistant(msg); } catch(e){}
-    }
-    console.log("ZAY:", msg);
-  }
-
   function next(){
-    step = Math.min(step + 1, steps.length - 1);
-    say(steps[step]);
+    step = Math.min(step + 1, flow.length - 1);
+    say(flow[step]);
   }
 
   function start(){
     step = 0;
-    say("Producer Mode: " + steps[0]);
+    say("🎛️ Producer Mode: " + flow[0]);
   }
 
   function addBtn(){
-    if(document.getElementById("zayBtn")) return;
+    if(document.getElementById("tsm-producer-btn")) return;
 
     const b = document.createElement("button");
-    b.id = "zayBtn";
-    b.innerText = "🎛️ Producer";
-    b.onclick = start;
+    b.id = "tsm-producer-btn";
+    b.innerText = "⚡ Producer";
 
     b.style.cssText = `
       position:fixed;
       bottom:20px;
       right:20px;
       z-index:9999;
-      background:#a855f7;
+      background:#8b5cf6;
       color:#fff;
       border:0;
       padding:10px 14px;
       border-radius:999px;
-      font-weight:900;
+      font-weight:800;
       cursor:pointer;
     `;
+
+    b.onclick = start;
 
     document.body.appendChild(b);
   }
@@ -5681,7 +5548,7 @@ function tsmAssistantUpdate(action, payload) {
     addBtn();
   }
 
-  console.log("✅ CLEAN Producer Mode loaded");
+  console.log("✅ CLEAN CORE ACTIVE");
 
 })();
 </script>
