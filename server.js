@@ -82,6 +82,47 @@ suites.forEach(({ route, dir, index }) => {
 });
 
 app.use('/exports', express.static(path.join(__dirname, 'exports')));
+
+
+// =====================================================
+// TSM HEALTHCARE BNCA SAFE ENDPOINT
+// =====================================================
+app.post('/api/hc/bnca', express.json(), async (req, res) => {
+  const body = req.body || {};
+  const profile = body.profile || 'HonorHealth';
+  const nodes = Array.isArray(body.nodes) ? body.nodes : [];
+  const question = body.question || body.message || 'Return healthcare BNCA.';
+
+  return res.json({
+    ok: true,
+    profile,
+    mode: 'healthcare_bnca',
+    question,
+    bnca: {
+      priority: 'Rebalance intake and prior authorization workload before end of day.',
+      why: 'Staffing pressure, intake backlog, prior auth delays, vendor pressure, and compliance drift are converging.',
+      actions: [
+        'Move one coordinator to intake until pending queue drops below 25.',
+        'Escalate prior-auth blocked appointments by value and age.',
+        'Audit documentation gaps before billing handoff.',
+        'Send vendor SLA exceptions to compliance/legal review.'
+      ],
+      risk: 'Delayed care, claim leakage, vendor disputes, and audit exposure.',
+      owner: 'Office Manager',
+      timeline: 'Today'
+    },
+    metrics: {
+      staffingCoverage: 84,
+      intakePending: 47,
+      criticalItems: 12,
+      throughputScore: 78,
+      vendorAlerts: 2
+    },
+    nodes,
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use('/html', express.static(path.join(__dirname, 'html'), { extensions: ['html'] }));
 
 app.use('/html/healthcare', express.static(path.join(__dirname, 'html', 'healthcare'), { index: 'index.html', extensions: ['html'] }));
@@ -304,51 +345,6 @@ Return JSON:
   } catch(e) {
     console.error('[HC Node Error]', e.message, e.stack);
     res.json({ok:false,error:e.message,node:req.params.node,result:{status:'WATCH',bnca:'Node fallback active. Error: '+e.message,confidence:80},ts:new Date().toISOString()});
-  }
-});
-app.post('/api/hc/bnca', async (req,res)=>{
-  const payload=req.body || {};
-  const prompt=`You are Healthcare Command Center Office Manager Edition.
-
-Use all available HC node context and payload to generate BNCA.
-
-HC node memory:
-${JSON.stringify(TSM_MEMORY.healthcare.nodes).slice(0,6000)}
-
-Payload:
-${JSON.stringify(payload).slice(0,4000)}
-
-Return JSON:
-{
- "suite":"healthcare-command",
- "top_issue":"...",
- "risk_level":"READY|WATCH|RISK|URGENT",
- "node_summary":["..."],
- "bnca":"...",
- "owner_lanes":["..."],
- "hitl_review_required":true,
- "confidence":0-100
-}`;
-
-  try {
-    const gr3 = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method:'POST',
-      headers:{'Authorization':'Bearer '+process.env.GROQ_API_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({model:process.env.TSM_MODEL||'llama-3.1-8b-instant',messages:[{role:'user',content:prompt}],max_tokens:800,temperature:0.3})
-    });
-    const gd3 = await gr3.json();
-    const raw3 = gd3.choices?.[0]?.message?.content || '{}';
-    let result;
-    try {
-      const clean3 = raw3.replace(/```json|```/g,'').trim();
-      result = JSON.parse(clean3);
-    } catch(_) {
-      result = {suite:'healthcare-command',bnca:raw3,risk_level:'WATCH',confidence:60};
-    }
-    TSM_MEMORY.healthcare.hcCommand = result;
-    res.json({ok:true,result,ts:new Date().toISOString()});
-  } catch(e) {
-    res.json({ok:false,error:e.message,ts:new Date().toISOString()});
   }
 });
 
@@ -800,43 +796,6 @@ app.post('/api/finops/export-pdf', (req, res) => {
 // TSM HEALTHCARE BNCA SAFE ENDPOINT
 // Client-safe JSON fallback for Healthcare Command Center
 // =====================================================
-app.post('/api/hc/bnca', express.json(), async (req, res) => {
-  const body = req.body || {};
-  const profile = body.profile || 'HonorHealth';
-  const nodes = Array.isArray(body.nodes) ? body.nodes : [];
-  const question = body.question || body.message || 'Return healthcare BNCA.';
-
-  const fallback = {
-    ok: true,
-    profile,
-    mode: 'healthcare_bnca',
-    question,
-    bnca: {
-      priority: 'Rebalance intake and prior authorization workload before end of day.',
-      why: 'Staffing pressure, intake backlog, prior auth delays, vendor pressure, and compliance drift are converging.',
-      actions: [
-        'Move one coordinator to intake until pending queue drops below 25.',
-        'Escalate prior-auth blocked appointments by value and age.',
-        'Audit documentation gaps before billing handoff.',
-        'Send vendor SLA exceptions to compliance/legal review.'
-      ],
-      risk: 'Delayed care, claim leakage, vendor disputes, and audit exposure.',
-      owner: 'Office Manager',
-      timeline: 'Today'
-    },
-    metrics: {
-      staffingCoverage: 84,
-      intakePending: 47,
-      criticalItems: 12,
-      throughputScore: 78,
-      vendorAlerts: 2
-    },
-    nodes,
-    timestamp: new Date().toISOString()
-  };
-
-  return res.json(fallback);
-});
 
 
 app.listen(PORT, "0.0.0.0", () => {
