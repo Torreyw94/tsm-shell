@@ -1172,7 +1172,7 @@ nav { flex-shrink: 0; }
 <style id="tsm-hide-floaters">
 #tsm-action-fab { display:none !important; }
 #tsm-action-popup { display:none !important; }
-#tsm-smart-assistant { display:none !important; }
+#tsm-smart-assistant { display:none !important; /* kept hidden - replaced by dock */ }
 #tsm-coach-fab { display:none !important; }
 #zayProducerBtn { display:none !important; }
 #zayProducerPanel { display:none !important; }
@@ -4798,10 +4798,9 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
 </script>
 <style id="tsm-assistant-styles">
 #tsm-smart-assistant {
-  position: fixed; bottom: 90px; right: 24px; z-index: 9997;
-  width: 320px; background: rgba(10,5,30,0.97);
-  border: 1px solid rgba(124,58,237,0.5); border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6); font-size: 13px;
+  display:none;
+  width: 100%; background: rgba(10,5,30,0.97);
+  border-top: 1px solid rgba(124,58,237,0.5); font-size: 13px;
   transition: all .3s;
 }
 #tsm-assistant-header {
@@ -4820,6 +4819,22 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
   font-size: 11px; font-weight: 700;
 }
 </style>
+
+<div id="tsm-tool-dock" style="display:flex;flex-direction:row;align-items:center;background:#08010f;border-top:1px solid #2a1a4a;border-bottom:1px solid #2a1a4a;min-height:52px;padding:0 10px;gap:8px">
+  <span style="color:#a855f7;font-weight:900;font-size:11px;font-family:monospace;white-space:nowrap">🎤 ZAY</span>
+  <input id="tsm-dock-input" type="text" placeholder="Ask anything — next step, improve a line, rate my draft..."
+    style="flex:1;background:#1a0933;border:1px solid #a855f7;border-radius:6px;padding:6px 10px;color:#f5e8ff;font-size:11px;font-family:monospace;min-width:0"
+    onkeydown="if(event.key==='Enter') window.tsmDockSend()"
+  />
+  <button onclick="window.tsmDockSend()" style="background:#a855f7;color:white;border:0;border-radius:6px;padding:6px 12px;font-weight:900;cursor:pointer;font-size:12px">→</button>
+  <button onclick="window.tsmDockQuick('What should I do next?')" style="background:#1a0933;color:#00f59f;border:1px solid #00f59f;border-radius:6px;padding:5px 8px;font-size:10px;cursor:pointer;white-space:nowrap">Next?</button>
+  <button onclick="window.tsmDockQuick('Rate my current draft')" style="background:#1a0933;color:#ffc857;border:1px solid #ffc857;border-radius:6px;padding:5px 8px;font-size:10px;cursor:pointer;white-space:nowrap">Rate</button>
+  <button onclick="window.tsmToggleAssistant()" style="background:#1a0933;color:#00e0ff;border:1px solid #00e0ff;border-radius:6px;padding:5px 8px;font-size:10px;cursor:pointer;white-space:nowrap">🧠 Coach</button>
+  <button onclick="window.startZayProducerMode()" style="background:#a855f7;color:white;border:0;border-radius:6px;padding:5px 10px;font-weight:900;cursor:pointer;font-size:11px;white-space:nowrap">🎛️ Producer</button>
+  <button onclick="document.getElementById('tsm-action-popup') && document.getElementById('tsm-action-popup').classList.toggle('open')" style="background:linear-gradient(135deg,#7c3aed,#14f195);color:white;border:0;border-radius:6px;padding:5px 10px;font-weight:900;cursor:pointer;font-size:11px;white-space:nowrap">⚡ Actions</button>
+</div>
+<div id="tsm-dock-response" style="display:none;background:#08010f;border-bottom:1px solid #2a1a4a;padding:10px 16px;font-family:monospace;font-size:12px;color:#ccc;line-height:1.6;max-height:120px;overflow-y:auto"></div>
+<div id="tsm-producer-inline" style="display:none;background:#0b0618;border-bottom:1px solid #a855f7;padding:10px 16px;font-family:monospace;color:#f5e8ff;align-items:center;gap:12px"></div>
 
 <div id="tsm-smart-assistant">
   <div id="tsm-assistant-header">
@@ -5658,6 +5673,13 @@ Sharp, direct, 2-4 sentences. Real producer energy. No fluff.`,
 
   console.log('✅ TSM Dock active');
 })();
+</script>
+<script id="tsm-toggle-fix">
+window.tsmToggleAssistant = function(){
+  const el = document.getElementById('tsm-smart-assistant');
+  if(!el) return;
+  el.style.display = el.style.display === 'none' || !el.style.display ? 'block' : 'none';
+};
 </script>
 </body>
 </html>
