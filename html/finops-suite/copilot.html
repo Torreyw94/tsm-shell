@@ -29,12 +29,22 @@ button.primary,a.primary{background:#00f59f;color:#001018;border-color:#00f59f}
 <div class="sub">One client-facing workspace: AP · AR · Bank Rec · Month-End · 1099 · Compliance · Zero Trust · Strategist BNCA</div>
 </header>
 
+<nav style="background:#061018;border-bottom:1px solid #00f59f;padding:10px 34px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+  <span style="color:#00f59f;font-weight:900;font-size:11px;margin-right:8px">CONNECTED APPS:</span>
+  <a href="/html/finops-suite/financial-command/index.html" target="_blank" style="background:#07111b;color:#00e0ff;border:1px solid #00e0ff;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:11px;font-weight:900">💼 Financial Command</a>
+  <a href="/html/finops-suite/financial/index.html" target="_blank" style="background:#07111b;color:#00e0ff;border:1px solid #00e0ff;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:11px;font-weight:900">📊 Financial Intel</a>
+  <a href="/html/finops-suite/compliance.html" target="_blank" style="background:#07111b;color:#ffc857;border:1px solid #ffc857;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:11px;font-weight:900">🛡 Compliance Shield</a>
+  <a href="/html/finops-suite/zero-trust.html" target="_blank" style="background:#07111b;color:#ff6b9d;border:1px solid #ff6b9d;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:11px;font-weight:900">🔒 Zero Trust</a>
+  <a href="/html/finops-suite/tax.html" target="_blank" style="background:#07111b;color:#a855f7;border:1px solid #a855f7;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:11px;font-weight:900">🧾 Tax Prep</a>
+  <a href="/html/finops-suite/finops-main-strategist/index.html" target="_blank" style="background:#00f59f;color:#001018;border:0;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:11px;font-weight:900">⚡ Main Strategist</a>
+</nav>
+
 <main class="wrap">
 <section class="grid">
-  <div class="card"><h3>Daily Workload</h3><div class="big">6 lanes</div><p>AP, AR, rec, tax, audit, close.</p></div>
-  <div class="card"><h3>Risk Focus</h3><div class="big">$18.4K</div><p>AR / timing exposure.</p></div>
-  <div class="card"><h3>Close Readiness</h3><div class="big">84%</div><p>Month-end prep score.</p></div>
-  <div class="card"><h3>System Price</h3><div class="big">$1,750/mo</div><p>Staff accountant copilot layer.</p></div>
+  <div class="card"><h3>Active Workflows</h3><div class="big">6 lanes</div><p>AP · AR · Bank Rec · Month-End · 1099 · Compliance</p></div>
+  <div class="card"><h3>AR Risk Exposure</h3><div class="big">$18.4K</div><p>Flagged timing gaps requiring action.</p></div>
+  <div class="card"><h3>Close Readiness</h3><div class="big">84%</div><p>Month-end prep score — 3 items pending.</p></div>
+  <div class="card"><h3>Connected Nodes</h3><div class="big">6 apps</div><p>Financial · Compliance · Zero Trust · Tax · Strategist</p></div>
 </section>
 
 <section class="card">
@@ -53,9 +63,12 @@ button.primary,a.primary{background:#00f59f;color:#001018;border-color:#00f59f}
 <textarea id="context" placeholder="Optional: paste invoice notes, AR aging, reconciliation issue, tax deadline, audit finding, or month-end blocker..."></textarea>
 <br><br>
 <button class="primary" onclick="runCopilot()">RUN STAFF ACCOUNTANT COPILOT</button>
-<button onclick="openDocs()">OPEN DOC SHOWCASE</button>
-<button onclick="openCommand()">OPEN FINANCIAL COMMAND</button>
-<button onclick="openStrategist()">OPEN FINOPS STRATEGIST</button>
+<button onclick="window.open('/html/finops-suite/financial-command/index.html','_blank')">FINANCIAL COMMAND ↗</button>
+<button onclick="window.open('/html/finops-suite/financial/index.html','_blank')">FINANCIAL INTEL ↗</button>
+<button onclick="window.open('/html/finops-suite/finops-main-strategist/index.html','_blank')">MAIN STRATEGIST ↗</button>
+<button onclick="window.open('/html/finops-suite/compliance.html','_blank')">COMPLIANCE SHIELD ↗</button>
+<button onclick="window.open('/html/finops-suite/zero-trust.html','_blank')">ZERO TRUST ↗</button>
+<button onclick="window.open('/html/finops-suite/tax.html','_blank')">TAX PREP ↗</button>
 </section>
 
 <section class="card">
