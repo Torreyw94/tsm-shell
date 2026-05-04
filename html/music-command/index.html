@@ -1169,6 +1169,15 @@ nav { flex-shrink: 0; }
 .tsm-workflow { margin-bottom: 12px; }
 </style>
 
+<style id="tsm-hide-floaters">
+#tsm-action-fab { display:none !important; }
+#tsm-action-popup { display:none !important; }
+#tsm-smart-assistant { display:none !important; }
+#tsm-coach-fab { display:none !important; }
+#zayProducerBtn { display:none !important; }
+#zayProducerPanel { display:none !important; }
+#tsm-chat-widget { display:none !important; }
+</style>
 </head>
 <body>
 
@@ -5562,18 +5571,65 @@ function tsmAssistantUpdate(action, payload) {
 
 
 
+
+
 <script id="tsm-dock-controller">
 (function(){
-  window.tsmDockSend = async function(){
+  if(window.__tsmDockActive) return;
+  window.__tsmDockActive = true;
+
+  // Producer Mode inline panel (appears above dock)
+  let producerStep = 0;
+  const steps = [
+    { title:"1 · Capture Raw Idea", msg:"Paste your raw idea, hook, or verse. Do not polish yet — capture the real emotion first.", action:"Paste 4-12 lines into Draft + Analysis." },
+    { title:"2 · Build Hook", msg:"Find the hook — the line people remember after one listen.", action:"Click RUN AGENT PASS to get 3 options." },
+    { title:"3 · Shape Verse", msg:"Each bar should reveal pain, flex, conflict, or motion. Keep the story moving.", action:"Pick the strongest option, refine around it." },
+    { title:"4 · Add Bridge", msg:"The bridge is the emotional turn. Shift energy before the final hook.", action:"Use Build Bridge in the ⚡ Actions menu." },
+    { title:"5 · Place Ad-libs", msg:"Ad-libs respond to impact lines. Place them like performance accents, not on every bar.", action:"Use Place Ad-libs in the ⚡ Actions menu." },
+    { title:"6 · Lock Session", msg:"Save the best version to Song Bank so Artist DNA learns your sound.", action:"Click Save to Bank then Export." }
+  ];
+
+  window.startZayProducerMode = function(){
+    producerStep = 0;
+    renderProducerPanel();
+  };
+
+  window.zayProducerNext = function(){ producerStep = Math.min(producerStep+1, steps.length-1); renderProducerPanel(); };
+  window.zayProducerPrev = function(){ producerStep = Math.max(producerStep-1, 0); renderProducerPanel(); };
+  window.zayProducerClose = function(){ const p = document.getElementById('tsm-producer-inline'); if(p) p.style.display='none'; };
+
+  function renderProducerPanel(){
+    let panel = document.getElementById('tsm-producer-inline');
+    if(!panel){
+      panel = document.createElement('div');
+      panel.id = 'tsm-producer-inline';
+      const dock = document.getElementById('tsm-tool-dock');
+      if(dock) dock.parentNode.insertBefore(panel, dock);
+    }
+    panel.style.cssText = 'background:#0b0618;border-top:1px solid #a855f7;border-bottom:1px solid #a855f7;padding:12px 16px;font-family:monospace;color:#f5e8ff;display:flex;align-items:center;gap:16px';
+    const s = steps[producerStep];
+    panel.innerHTML = `
+      <span style="color:#a855f7;font-weight:900;white-space:nowrap">🎛️ ${s.title}</span>
+      <span style="font-size:11px;color:#ccc;flex:1">${s.msg} <span style="color:#ffc857">→ ${s.action}</span></span>
+      <button onclick="window.zayProducerPrev()" style="background:transparent;color:#a855f7;border:1px solid #a855f7;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px">←</button>
+      <button onclick="window.zayProducerNext()" style="background:#a855f7;color:white;border:0;border-radius:6px;padding:4px 10px;font-weight:900;cursor:pointer;font-size:11px">→</button>
+      <button onclick="window.zayProducerClose()" style="background:transparent;color:#666;border:0;cursor:pointer;font-size:14px">✕</button>
+    `;
+  }
+
+  // ZAY AI chat
+  window.tsmDockQuick = function(q){ window.tsmDockSend(q); };
+  window.tsmDockSend = async function(override){
     const input = document.getElementById('tsm-dock-input');
     const resp = document.getElementById('tsm-dock-response');
-    const q = input ? input.value.trim() : '';
+    const q = override || (input ? input.value.trim() : '');
     if(!q) return;
-    input.value = '';
+    if(input && !override) input.value = '';
     resp.style.display = 'block';
-    resp.innerHTML = '<span style="color:#a855f7">ZAY is thinking...</span>';
+    resp.innerHTML = '<span style="color:#a855f7">ZAY thinking...</span>';
 
-    const step = (document.querySelector('.step-label, [class*="step-title"], #tsm-step-indicator') || {textContent:''}).textContent.trim();
+    const stepEl = document.querySelector('.step-pill.active, [class*="step"][class*="active"], #tsm-step-indicator');
+    const step = stepEl ? stepEl.textContent.trim() : 'unknown';
     const draftEl = document.getElementById('draft-input');
     const draft = draftEl && draftEl.value.trim() ? draftEl.value.trim().slice(0,300) : null;
 
@@ -5584,11 +5640,11 @@ function tsmAssistantUpdate(action, payload) {
         body: JSON.stringify({
           model:"claude-sonnet-4-20250514",
           max_tokens:1000,
-          system:`You are ZAY, an elite rap producer coach inside Music Command Center.
-Current step: "${step}".${draft ? ` Draft excerpt: "${draft}"` : ''}
-Workflow: DNA → Draft → Agent Pass → Pick Option → Revise → Ad-libs → Bridge → Bank → Export.
-PRODUCER MODE: Recommend 🎛️ Producer Mode button (in the bar below Evolution Timeline) when user is starting fresh or stuck.
-Be sharp, direct, 2-4 sentences max. Real producer energy.`,
+          system:`You are ZAY, elite rap producer coach in Music Command Center.
+Current step: "${step}".${draft ? ` Draft: "${draft}"` : ''}
+Full workflow: DNA → Draft → Run Agent Pass → Pick Option → Revise → Ad-libs → Bridge → Bank → Export.
+Recommend 🎛️ Producer Mode (dock button) when starting fresh or stuck — it walks through 6 steps.
+Sharp, direct, 2-4 sentences. Real producer energy. No fluff.`,
           messages:[{role:"user", content:q}]
         })
       });
@@ -5600,15 +5656,8 @@ Be sharp, direct, 2-4 sentences max. Real producer energy.`,
     }
   };
 
-  // Hide old floating chat widget if it exists
-  const old = document.getElementById('tsm-chat-widget');
-  if(old) old.style.display = 'none';
-  const oldBtn = document.getElementById('zayProducerBtn');
-  if(oldBtn) oldBtn.style.display = 'none';
-  const oldPanel = document.getElementById('zayProducerPanel');
-  if(oldPanel) oldPanel.style.display = 'none';
+  console.log('✅ TSM Dock active');
 })();
 </script>
-
 </body>
 </html>
