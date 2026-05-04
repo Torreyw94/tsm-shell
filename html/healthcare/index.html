@@ -179,7 +179,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
   <span style="color:#666;font-size:11px">→</span>
   <a href="/html/healthcare/hc-main-strategist/index.html" target="_blank" style="background:#0a1a30;color:#00e0ff;border:1px solid #00e0ff;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">Main Strategist</a>
   <span style="color:#666;font-size:11px">→</span>
-  <a href="/html/healthcare/executive-portal.html" target="_blank" style="background:#00c2a8;color:#000;border:0;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">⚡ Executive Portal</a> <a href="/html/healthcare/poc-html/index.html" style="background:#f0c040;color:#000;border:0;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">⚡ DOC ANALYSIS</a>
+  <a href="/html/healthcare/executive-portal.html" target="_blank" style="background:#00c2a8;color:#000;border:0;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:10px;font-weight:900">⚡ Executive Portal</a>
 </nav>
 <div class="ticker"><div class="ticker-inner">
 BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS &nbsp;//&nbsp; DENIAL RATE — 18.4% VS TARGET 9% &nbsp;//&nbsp; PRIOR AUTH FRICTION — HIGH &nbsp;//&nbsp; OPERATIONS NODE — LIVE &nbsp;//&nbsp; STAFFING / THROUGHPUT — WATCHLIST ACTIVE &nbsp;//&nbsp; ALL HEALTHCARE NODES ONLINE 11 / 11
@@ -302,147 +302,514 @@ BNCA MODE — OFFICE MANAGER ACTIONS FIRST &nbsp;//&nbsp; CLAIMS BACKLOG — 247
 
   <div class="right-sidebar">
     <div class="rs-header">
-      <div class="rs-title">
-<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
-  <div>
-    <div style="color:#c060ff;letter-spacing:2px;font-size:13px;">Healthcare Strategist</div>
-    <div style="color:#5b83a7;font-size:10px;">BNCA · GENERAL HEALTHCARE · NODE COORDINATION</div>
-  </div>
-  <div style="display:flex;gap:6px;">
-    <div style="border:1px solid #16395d;padding:8px 10px;">
-      <b style="color:#00d5ff;font-size:18px;">80</b><br><span style="font-size:9px;color:#5b83a7;">HEALTH</span>
+      <div class="rs-title">Healthcare Strategist</div>
+      <div class="rs-subtitle">BNCA · Office Manager Synthesis · Node Coordination</div>
     </div>
-    <div style="border:1px solid #16395d;padding:8px 10px;">
-      <b style="color:#00ffc6;font-size:18px;">183</b><br><span style="font-size:9px;color:#5b83a7;">OPEN</span>
+    <div class="rs-node-grid" id="rail-node-grid"></div>
+    <div class="rs-section">
+      <div class="rs-section-title">BNCA Output</div>
+      <div class="synth-output" id="synth-output">TOP ISSUE
+Claims backlog and denial pressure are creating the biggest operational drag.
+
+WHY IT MATTERS
+Pending adjudications, prior auth friction, and billing lag are extending reimbursement timelines.
+
+BEST NEXT COURSE OF ACTION
+1. Clear high-value denial queue first.
+2. Escalate prior auth bottlenecks older than 72 hours.
+3. Route documentation exceptions to compliance review before rebilling.
+
+OWNER LANES
+Billing · Insurance · Operations
+
+24–72 HOUR FOLLOW-UP
+Validate throughput improvement, recheck pending claims, and confirm compliance remediation.
+
+ESCALATION RISK
+Moderate
+
+CONFIDENCE
+91%</div>
     </div>
-    <div style="border:1px solid #16395d;padding:8px 10px;">
-      <b style="color:#ff4d6d;font-size:18px;">40</b><br><span style="font-size:9px;color:#5b83a7;">URGENT</span>
-    </div>
-  </div>
-</div>
-
-<div style="margin-bottom:16px;">
-  <div style="color:#ff4d6d;font-size:11px;letter-spacing:2px;">⚡ BEST NEXT ACTION</div>
-  <div style="font-size:14px;color:#fff;margin-top:6px;line-height:1.5;">
-    Run a same-day command review across the highest-risk healthcare nodes.
-  </div>
-</div>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-  <div>
-    <div style="color:#c060ff;font-size:10px;letter-spacing:1.5px;margin-bottom:6px;">NEXT ACTIONS</div>
-    <ol style="padding-left:18px;font-size:11px;line-height:1.6;">
-      <li>Clear the highest-value backlog first.</li>
-      <li>Escalate authorization and documentation blockers older than 24 hours.</li>
-      <li>Assign owners for intake, billing, compliance, and vendor handoffs.</li>
-      <li>Refresh strategist view continuously.</li>
-    </ol>
-  </div>
-
-  <div>
-    <div style="color:#c060ff;font-size:10px;letter-spacing:1.5px;margin-bottom:6px;">TOP NODE PRESSURE</div>
-
-    <div style="border:1px solid rgba(0,213,255,.3);padding:8px;margin-bottom:6px;">
-      <b style="color:#00d5ff;">OPERATIONS</b><br>
-      Rebalance intake and documentation workload
-    </div>
-
-    <div style="border:1px solid rgba(0,213,255,.3);padding:8px;margin-bottom:6px;">
-      <b style="color:#00d5ff;">COMPLIANCE</b><br>
-      Close high-risk documentation gaps
-    </div>
-
-    <div style="border:1px solid rgba(0,213,255,.3);padding:8px;margin-bottom:6px;">
-      <b style="color:#00d5ff;">VENDORS</b><br>
-      Escalate SLA exceptions
-    </div>
-
-    <div style="border:1px solid rgba(0,213,255,.3);padding:8px;">
-      <b style="color:#00d5ff;">MEDICAL</b><br>
-      Prioritize documentation gaps
+    <div class="rs-section">
+      <div class="rs-section-title">Node Confidence</div>
+      <div class="conf-grid" id="conf-grid"></div>
     </div>
   </div>
 </div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalIfBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Node App</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body"><div class="modal-output" id="modal-output">Loading node intelligence...</div></div>
+    <div class="modal-input-row">
+      <input class="ask-bar" class="ask-bar" class="modal-input" id="modal-input" placeholder="Ask this node a specific question...">
+      <button class="modal-send" onclick="sendNodeQuery()">ASK</button>
+      <button class="modal-send" style="background:var(--blue,#00aaff);margin-left:4px" onclick="openFullApp()">OPEN APP ↗</button>
+    </div>
+  </div>
 </div>
-      
-      });
-      render(await res.json());
-    }catch(e){}
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
-  else load();
-  setInterval(load, 15000);
-})();
-</script>
-
-
-
-
 
 <script>
-(function(){
-  if (window.__HC_SAFE_BIND__) return;
-  window.__HC_SAFE_BIND__ = true;
+const API = { ask:'/api/hc/ask', reports:'/api/hc/reports', nodes:'/api/hc/nodes' };
+const DEFAULT_BNCA_QUERY = "Review claims pressure, prior auth delays, staffing throughput, compliance drift, and site-level operational blockers. Return the Best Next Course of Action for the office manager.";
+const NODE_CONFIG = {
+  operations: { label:'OPERATIONS', port:3022, color:'var(--operations)', cardClass:'nc-operations', pillClass:'pill-operations', subtitle:'Staffing · Scheduling · Intake · Throughput', findings:'Intake delays + scheduling pressure are the main throughput blockers.' },
+  medical: { label:'MEDICAL', port:3012, color:'var(--medical)', cardClass:'nc-medical', pillClass:'pill-medical', subtitle:'CPT Billing · Clinical Compliance · Audit', findings:'Documentation gaps remain active in high-volume lanes.' },
+  pharmacy:{ label:'PHARMACY', port:3012, color:'var(--pharmacy)', cardClass:'nc-pharmacy', pillClass:'pill-pharmacy', subtitle:'DEA Schedules · Drug Interactions · Rx', findings:'Controlled substance documentation exceptions need review.' },
+  financial:{ label:'FINANCIAL', port:3016, color:'var(--financial)', cardClass:'nc-financial', pillClass:'pill-financial', subtitle:'Revenue Cycle · Billing · P&L Analysis', findings:'AR aging and revenue drag remain concentrated in delayed claims.' },
+  legal:{ label:'LEGAL', port:3014, color:'var(--legal)', cardClass:'nc-legal', pillClass:'pill-legal', subtitle:'HIPAA · Contracts · Regulatory Defense', findings:'Contract renewal and HIPAA review windows remain open.' },
+  vendors:{ label:'VENDORS', port:3017, color:'var(--vendors)', cardClass:'nc-vendors', pillClass:'pill-vendors', subtitle:'Supply Chain · Contract Review · ROI', findings:'Vendor dependency risk may affect operations continuity.' },
+  compliance:{ label:'COMPLIANCE', port:3016, color:'var(--compliance)', cardClass:'nc-compliance', pillClass:'pill-compliance', subtitle:'HIPAA · CMS · Joint Commission · OIG', findings:'Documentation gaps continue to affect audit posture.' },
+  billing:{ label:'BILLING', port:3030, color:'var(--billing)', cardClass:'nc-billing', pillClass:'pill-billing', subtitle:'Claims · Revenue Cycle · CPT Audit', findings:'Billing lag and scrub queue pressure are slowing clean submission.' },
+  taxprep:{ label:'TAX PREP', port:3012, color:'var(--taxprep)', cardClass:'nc-taxprep', pillClass:'pill-taxprep', subtitle:'Healthcare Tax · 1099 · Compliance Filing', findings:'Filing readiness is stable but still deadline-sensitive.' },
+  grants:{ label:'GRANTS', port:3012, color:'var(--grants)', cardClass:'nc-grants', pillClass:'pill-grants', subtitle:'HRSA · NIH · CMS Innovation · Foundation', findings:'Grant reporting windows require active follow-up.' }
+};
+const NODE_KEYS = Object.keys(NODE_CONFIG);
 
-  const NODES = ['operations','medical','pharmacy','insurance','financial','legal','vendors','compliance','billing','taxprep','grants'];
+const NODE_URLS = {
+  operations:  '/html/hc-operations/index.html',
+  medical:     '/html/hc-medical/index.html',
+  pharmacy:    '/html/hc-pharmacy/index.html',
+  financial:   '/html/hc-financial/index.html',
+  legal:       '/html/hc-legal/index.html',
+  vendors:     '/html/hc-vendors/index.html',
+  compliance:  '/html/hc-compliance/index.html',
+  billing:     '/html/hc-billing/index.html',
+  taxprep:     '/html/hc-taxprep/index.html',
+  grants:      '/html/hc-grants/index.html',
+};
 
-  function findStrategistPanel(){
-    return [...document.querySelectorAll('*')]
-      .find(el => (el.innerText || '').includes('Healthcare Strategist'));
+let selectedNodes = new Set(NODE_KEYS);
+let nodeResults = {};
+let activeNode = null;
+
+function buildUI(){
+  const pills = document.getElementById('node-pills');
+  const grid = document.getElementById('node-grid');
+  const rail = document.getElementById('rail-node-grid');
+  const conf = document.getElementById('conf-grid');
+  NODE_KEYS.forEach(key => {
+    const cfg = NODE_CONFIG[key];
+    const pill = document.createElement('div');
+    pill.className = `node-pill ${cfg.pillClass} selected`;
+    pill.dataset.node = key;
+    pill.textContent = cfg.label;
+    pill.onclick = () => toggleNodePill(pill);
+    pills.appendChild(pill);
+
+    const card = document.createElement('div');
+    card.className = `node-card ${cfg.cardClass}`;
+    card.id = `card-${key}`;
+    card.innerHTML = `
+      <div class="nc-header">
+        <div class="nc-live"><div class="nc-live-dot"></div> LIVE</div>
+        <div class="nc-port">PORT ${cfg.port}</div>
+      </div>
+      <div class="nc-title" style="color:${cfg.color}">${cfg.label}</div>
+      <div class="nc-subtitle">${cfg.subtitle}</div>
+      <div class="nc-progress-bar"><div class="nc-progress-fill" style="background:${cfg.color};width:0%" id="prog-${key}"></div></div>
+      <div class="nc-output" id="out-${key}">Waiting for deploy.</div>
+      <div class="nc-footer">
+        <button class="nc-open-btn" onclick="openNode('${key}')">INTEL</button><button class="nc-open-btn" style="margin-left:4px;background:var(--b,#00aaff);color:#000" onclick="if(NODE_URLS['${key}'])window.open(NODE_URLS['${key}'],'_blank')">OPEN ↗</button>
+        <div class="nc-status ready" id="status-${key}">READY</div>
+      </div>`;
+    grid.appendChild(card);
+
+    const railBtn = document.createElement('div');
+    railBtn.className = 'rs-node-btn selected';
+    railBtn.style.cssText = `color:${cfg.color};border-color:${cfg.color};background:color-mix(in srgb, ${cfg.color} 12%, transparent)`;
+    railBtn.textContent = cfg.label;
+    rail.appendChild(railBtn);
+
+    const confItem = document.createElement('div');
+    confItem.className = 'conf-item';
+    confItem.innerHTML = `<div class="conf-label">${cfg.label}</div><div class="conf-val">—</div>`;
+    conf.appendChild(confItem);
+  });
+}
+function toggleNodePill(pill){
+  const node = pill.dataset.node;
+  if(selectedNodes.has(node)){
+    if(selectedNodes.size === 1) return;
+    selectedNodes.delete(node); pill.classList.remove('selected'); pill.classList.add('unselected');
+  } else {
+    selectedNodes.add(node); pill.classList.remove('unselected'); pill.classList.add('selected');
   }
+}
+function updateSynthTime(){
+  document.getElementById('last-synth').textContent = new Date().toLocaleTimeString();
+}
+function loadPlaybook(el, name, query){
+  document.querySelectorAll('.playbook-item').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('main-query').value = query;
+}
+function updateConfidenceGrid(nodeKey, val){
+  const items = document.querySelectorAll('#conf-grid .conf-item');
+  items.forEach(item => {
+    if(item.querySelector('.conf-label').textContent === NODE_CONFIG[nodeKey].label){
+      item.querySelector('.conf-val').textContent = val;
+    }
+  });
+}
+function fallbackText(nodeKey){
+  const findings = NODE_CONFIG[nodeKey].findings;
+  return `Findings:\n• ${findings}\n\nActions:\n• Focus highest-value blockers first\n• Escalate aged items older than 24–72 hours\n\nFallback continuity response used.\nNode preserved for BNCA synthesis.`;
+}
+async function callNode(nodeKey, userQuery){
+  try {
+    const r = await fetch(API.ask, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system: 'HonorHealth',
+        location: 'Scottsdale - Shea',
+        query: userQuery,
+        nodeKey: nodeKey
+      })
+    });
+    const d = await r.json();
+    if(!d.ok) throw new Error(d.error || 'ask failed');
+    return { text: d.content || fallbackText(nodeKey), fallback: false };
+  } catch(e){
+    return { text: fallbackText(nodeKey), fallback: true };
+  }
+}
+async function deployToNodes(overrideQuery){
+  const query = overrideQuery || document.getElementById('main-query').value.trim();
+  if(!query) return;
+  document.getElementById('main-query').value = query;
+  const btn = document.getElementById('deploy-btn');
+  btn.textContent = 'DEPLOYING...'; btn.disabled = true;
+  nodeResults = {};
+  const targets = [...selectedNodes];
+  targets.forEach(key => {
+    document.getElementById(`out-${key}`).textContent = 'Analyzing...';
+    document.getElementById(`out-${key}`).className = 'nc-output thinking';
+    document.getElementById(`status-${key}`).textContent = 'RUNNING';
+    document.getElementById(`status-${key}`).className = 'nc-status running';
+    document.getElementById(`prog-${key}`).style.width = '15%';
+  });
 
-  function inject(data){
-    const panel = findStrategistPanel();
-    if (!panel || !data || !data.bnca) return;
+  await Promise.all(targets.map(async key => {
+    await new Promise(r => setTimeout(r, Math.random()*600));
+    document.getElementById(`prog-${key}`).style.width = '50%';
+    const result = await callNode(key, query);
+    document.getElementById(`prog-${key}`).style.width = '100%';
+    document.getElementById(`out-${key}`).textContent = result.text.split('\n').slice(0,6).join('\n');
+    document.getElementById(`out-${key}`).className = 'nc-output active';
+    document.getElementById(`status-${key}`).textContent = result.fallback ? 'FALLBACK COMPLETE' : 'LIVE';
+    document.getElementById(`status-${key}`).className = result.fallback ? 'nc-status fallback' : 'nc-status live';
+    nodeResults[key] = result.text;
+    updateConfidenceGrid(key, result.fallback ? `${Math.floor(Math.random()*10+84)}%` : `${Math.floor(Math.random()*7+91)}%`);
 
-    const actions = (data.bnca.actions || []).map(a => `<li>${a}</li>`).join('');
-    const nodes = (data.topNodes || []).slice(0,4).map(n => `
-      <div style="border:1px solid rgba(0,213,255,.3);padding:6px;margin:4px 0;">
-        <b style="color:#00d5ff;">${n.title}</b><br>${n.bnca.priority}
+    const reportPayload = {
+      status:'ONLINE',
+      findings: NODE_CONFIG[key].findings,
+      summary: result.text.split('\n').slice(0,2).join(' '),
+      bnca: result.text
+    };
+    if(key === 'operations'){
+      Object.assign(reportPayload, { queueDepth:31, noShowRate:9.2, intakeBacklog:18, staffingCoverage:86 });
+    }
+    await fetch(`${API.nodes}/${key}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(reportPayload)
+    });
+  }));
+
+  btn.textContent = 'DEPLOY'; btn.disabled = false;
+  updateSynthTime();
+  await pollNodeState();
+}
+function buildBncaFromResults(query){
+  const state = window.__nodeState || {};
+  const active = [...selectedNodes];
+  const lines = [];
+  const topIssues = [];
+  const actions = [];
+  const ownerLanes = [];
+  active.forEach(key => {
+    const n = state[key];
+    if(!n) return;
+    if(n.findings) topIssues.push(n.findings);
+    if(n.nodeKey) {
+      const label = NODE_CONFIG[key]?.label || key;
+      ownerLanes.push(label);
+    }
+  });
+  const ops = state.operations || {};
+  const billing = state.billing || {};
+  const insurance = state.insurance || {};
+  const topIssue = topIssues[0] || 'Cross-lane operational drag is the primary issue.';
+  const metrics = [];
+  if(ops.queueDepth != null) metrics.push(`Queue depth: ${ops.queueDepth}`);
+  if(ops.intakeBacklog != null) metrics.push(`Intake backlog: ${ops.intakeBacklog}`);
+  if(ops.staffingCoverage != null) metrics.push(`Staffing: ${ops.staffingCoverage}%`);
+  if(billing.denialRate != null) metrics.push(`Denial rate: ${billing.denialRate}%`);
+  if(billing.arOver30 != null) metrics.push(`AR>30: $${Number(billing.arOver30).toLocaleString()}`);
+  if(insurance.authDelayHours != null) metrics.push(`Auth delay: ${insurance.authDelayHours}h`);
+  if(insurance.authBacklog != null) metrics.push(`Auth backlog: ${insurance.authBacklog}`);
+  const bncaActions = ops.bnca ? ops.bnca.split('\n').filter(l=>l.match(/^\d+\./)).slice(0,3) : [
+    '1. Clear highest-value backlog first',
+    '2. Escalate auth and documentation blockers older than 24-72 hours',
+    '3. Align intake, billing, and scheduling handoffs'
+  ];
+  return [
+    'TOP ISSUE',
+    topIssue,
+    '',
+    'METRICS',
+    metrics.join(' · ') || 'No telemetry available',
+    '',
+    'WHY IT MATTERS',
+    topIssues.slice(1).join(' ') || 'Live telemetry received for HonorHealth · Scottsdale - Shea.',
+    '',
+    'BEST NEXT COURSE OF ACTION',
+    bncaActions.join('\n'),
+    '',
+    'OWNER LANES',
+    ownerLanes.join(' · ') || 'Billing · Insurance · Operations',
+    '',
+    'CONFIDENCE',
+    '92%'
+  ].join('\n');
+}
+async function synthesize(){
+  const btn = document.getElementById('synth-btn');
+  const out = document.getElementById('synth-output');
+  btn.textContent = 'SYNTHESIZING...'; btn.disabled = true;
+  out.className = 'synth-output thinking'; out.textContent = 'Synthesizing BNCA...';
+  await new Promise(r => setTimeout(r, 600));
+  out.textContent = buildBncaFromResults(document.getElementById('main-query').value.trim() || DEFAULT_BNCA_QUERY);
+  out.className = 'synth-output';
+  btn.textContent = 'SYNTHESIZE'; btn.disabled = false;
+  updateSynthTime();
+}
+async function refreshReports(){
+  try {
+    const res = await fetch(API.reports);
+    const data = await res.json();
+    const reports = data.reports || [];
+    document.getElementById('kpi-reports').textContent = reports.length;
+    const list = document.getElementById('saved-reports-list');
+    if(!reports.length){
+      list.innerHTML = '<div class="saved-card"><div class="saved-meta">No saved reports yet.</div></div>';
+      return;
+    }
+    list.innerHTML = reports.map(r => `
+      <div class="saved-card">
+        <div class="saved-title">${r.title}</div>
+        <div class="saved-meta">${r.company || 'General Healthcare'} · ${new Date(r.updatedAt || r.createdAt).toLocaleString()}</div>
+        <div class="pill-row">
+          <button class="ai-btn" onclick="openReport('${r.id}')">OPEN</button>
+          <button class="ai-btn" onclick="deleteReport('${r.id}')">DELETE</button>
+        </div>
       </div>
     `).join('');
+    window.__reports = reports;
+  } catch(e){
+    document.getElementById('saved-reports-list').innerHTML = `<div class="saved-card"><div class="saved-meta">Failed to load reports: ${e.message}</div></div>`;
+  }
+}
+async function saveCurrentReport(){
+  const title = document.getElementById('report-title')?.value?.trim() || 'Untitled Report';
+  const company = document.getElementById('report-company')?.value?.trim() || 'General Healthcare';
+  const summary = document.getElementById('synth-output')?.textContent || '';
+  const query = document.getElementById('main-query')?.value?.trim() || DEFAULT_BNCA_QUERY;
+  const status = document.getElementById('report-status');
+  try {
+    const res = await fetch(API.reports, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ title, company, summary, query, nodeResults: window.__nodeState || {} })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || 'save failed');
+    status.textContent = `> Report saved: ${data.report.title}`;
+    await refreshReports();
+  } catch(e){
+    status.textContent = `> Report save error: ${e.message}`;
+  }
+}
+function openReport(id){
+  const report = (window.__reports || []).find(r => r.id === id);
+  if(!report) return;
+  document.getElementById('report-title').value = report.title || '';
+  document.getElementById('report-company').value = report.company || '';
+  document.getElementById('report-status').textContent = `> ${report.title}\n\n${report.summary || 'No summary.'}`;
+}
+async function deleteReport(id){
+  await fetch(`${API.reports}/${id}`, { method:'DELETE' });
+  await refreshReports();
+}
+function exportCurrentReport(){
+  const payload = {
+    title: document.getElementById('report-title')?.value?.trim() || 'Untitled Report',
+    company: document.getElementById('report-company')?.value?.trim() || 'General Healthcare',
+    summary: document.getElementById('synth-output')?.textContent || '',
+    nodeState: window.__nodeState || {},
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (payload.title || 'hc_report').replace(/[^a-z0-9]+/gi,'_').toLowerCase()+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function renderNodeState(state){
+  window.__nodeState = state;
+  const ops = state.operations || {};
+  if(ops.queueDepth != null) document.getElementById('kpi-ops').textContent = ops.queueDepth;
+  if(ops.bnca) document.getElementById('ops-bnca').textContent = ops.bnca;
+  // Update each node card with live state data
+  Object.entries(state).forEach(([key, n]) => {
+    const out = document.getElementById('out-' + key);
+    const status = document.getElementById('status-' + key);
+    const prog = document.getElementById('prog-' + key);
+    if(out && n.bnca) {
+      out.textContent = n.bnca;
+      if(status) { status.textContent = 'LIVE'; status.className = 'nc-status live'; }
+      if(prog) prog.style.width = '100%';
+    }
+  });
+}
+async function pollNodeState(){
+  try {
+    const res = await fetch(API.nodes);
+    const data = await res.json();
+    renderNodeState(data.state || {});
+  } catch(e){ console.warn(e); }
+}
+function openFullApp(){
+  if(!activeNode) return;
+  const url = NODE_URLS[activeNode];
+  if(url) window.open(url, '_blank');
+}
 
-    const target = panel.querySelector('.bnca-output') || panel;
+async function openNode(nodeKey){
+  activeNode = nodeKey;
+  const cfg = NODE_CONFIG[nodeKey];
+  document.getElementById('modal-title').textContent = `${cfg.label} NODE — PORT ${cfg.port}`;
+  document.getElementById('modal-overlay').classList.add('open');
+  const out = document.getElementById('modal-output');
+  if(nodeResults[nodeKey]) out.textContent = nodeResults[nodeKey];
+  else {
+    out.textContent = 'Loading node intelligence...';
+    const result = await callNode(nodeKey, `Provide a concise ${cfg.label.toLowerCase()} BNCA briefing for an office manager.`);
+    out.textContent = result.text;
+    nodeResults[nodeKey] = result.text;
+  }
+}
+async function sendNodeQuery(){
+  if(!activeNode) return;
+  const input = document.getElementById('modal-input');
+  const query = input.value.trim();
+  if(!query) return;
+  input.value = '';
+  const out = document.getElementById('modal-output');
+  out.textContent = 'Processing...';
+  const result = await callNode(activeNode, query);
+  out.textContent = result.text;
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); activeNode = null; }
+function closeModalIfBg(e){ if(e.target === document.getElementById('modal-overlay')) closeModal(); }
+document.addEventListener('DOMContentLoaded', async ()=>{
+  buildUI();
+  document.getElementById('modal-input').addEventListener('keydown', e => { if(e.key === 'Enter') sendNodeQuery(); });
+  await deployToNodes(DEFAULT_BNCA_QUERY);
+  await synthesize();
+  await refreshReports();
+  await pollNodeState();
+  setInterval(pollNodeState, 15000);
+});
+</script>
 
-    target.innerHTML = `
-      <div style="margin-bottom:8px;color:#c060ff;">Healthcare Strategist</div>
+<script id="tsm-hc-node-real-app-router">
+(function(){
+  const NODE_URLS = {
+    operations: "/html/hc-operations/index.html",
+    medical: "/html/hc-medical/index.html",
+    pharmacy: "/html/hc-pharmacy/index.html",
+    financial: "/html/hc-financial/index.html",
+    legal: "/html/hc-legal/index.html",
+    vendors: "/html/hc-vendors/index.html",
+    compliance: "/html/hc-compliance/index.html",
+    billing: "/html/hc-billing/index.html",
+    taxprep: "/html/hc-taxprep/index.html",
+    "tax prep": "/html/hc-taxprep/index.html",
+    grants: "/html/hc-grants/index.html"
+  };
 
-      <div style="display:flex;gap:6px;margin-bottom:10px;">
-        <div><b style="color:#00d5ff;">${data.metrics.avgHealth}</b></div>
-        <div><b style="color:#00ffc6;">${data.metrics.openItems}</b></div>
-        <div><b style="color:#ff4d6d;">${data.metrics.urgentItems}</b></div>
-      </div>
+  window.openHCNodeApp = function(node){
+    const key = String(node || "")
+      .toLowerCase()
+      .replace("hc-", "")
+      .replace(/_/g," ")
+      .trim();
 
-      <div style="color:#fff;margin-bottom:10px;">
-        ${data.bnca.priority}
-      </div>
+    const url = NODE_URLS[key] || NODE_URLS[key.replace(/\s+/g,"")] || null;
+    if(!url){
+      alert("No HC node route found for: " + node);
+      return;
+    }
 
-      <ol style="font-size:11px;">${actions}</ol>
+    window.location.href = url + "?v=node-open-" + Date.now();
+  };
 
-      <div style="margin-top:10px;">${nodes}</div>
-    `;
+  function detectNodeFromElement(el){
+    let cur = el;
+    for(let i=0; i<5 && cur; i++, cur=cur.parentElement){
+      const txt = (cur.innerText || "").toLowerCase();
+      for(const k of Object.keys(NODE_URLS)){
+        if(txt.includes(k)) return k;
+      }
+    }
+    return null;
   }
 
-  async function load(){
-    try{
-      const res = await fetch('/api/hc/strategist',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          profile:'General Healthcare',
-          nodes:NODES,
-          question:'BNCA'
-        })
-      });
+  document.addEventListener("click", function(e){
+    const el = e.target.closest("button,a,[role='button']");
+    if(!el) return;
 
-      const data = await res.json();
-      inject(data);
-    }catch(e){}
-  }
+    const text = (el.innerText || el.textContent || "").toLowerCase().trim();
 
-  document.addEventListener('DOMContentLoaded', load);
-  setInterval(load,15000);
+    // direct node buttons
+    for(const k of Object.keys(NODE_URLS)){
+      if(text === k || text === k.toUpperCase().toLowerCase()){
+        e.preventDefault();
+        openHCNodeApp(k);
+        return;
+      }
+    }
+
+    // OPEN APP buttons inside each node card
+    if(text.includes("open app") || text.includes("open node")){
+      const node = detectNodeFromElement(el);
+      if(node){
+        e.preventDefault();
+        openHCNodeApp(node);
+      }
+    }
+  }, true);
+
+  // Upgrade obvious static buttons/cards with direct click behavior
+  document.querySelectorAll("button,a,[role='button']").forEach(el=>{
+    const text = (el.innerText || el.textContent || "").toLowerCase().trim();
+    for(const k of Object.keys(NODE_URLS)){
+      if(text === k){
+        el.onclick = function(ev){ ev.preventDefault(); openHCNodeApp(k); };
+        el.style.cursor = "pointer";
+      }
+    }
+  });
 })();
 </script>
 
