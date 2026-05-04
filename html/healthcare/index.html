@@ -912,5 +912,177 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 })();
 </script>
 
+
+<script id="tsm-hc-front-doc-upload">
+(function(){
+  if(window.__TSM_HC_FRONT_DOC_UPLOAD__) return;
+  window.__TSM_HC_FRONT_DOC_UPLOAD__ = true;
+
+  const NODES = ['operations','medical','pharmacy','insurance','financial','legal','vendors','compliance','billing','taxprep','grants'];
+  let lastDoc = '';
+
+  function addStyles(){
+    if(document.getElementById('hc-front-doc-css')) return;
+    const st=document.createElement('style');
+    st.id='hc-front-doc-css';
+    st.textContent=`
+      #hcFrontDocUpload{
+        margin:10px 12px 10px 196px;
+        border:1px solid rgba(0,213,255,.28);
+        background:#07111e;
+        padding:10px 12px;
+        color:#d6ecff;
+        font-family:ui-monospace,Menlo,monospace;
+        display:grid;
+        grid-template-columns:1fr auto auto;
+        gap:8px;
+        align-items:center;
+      }
+      #hcFrontDocUpload .title{color:#ffc400;letter-spacing:2px;font-size:11px}
+      #hcFrontDocUpload .sub{color:#5b83a7;font-size:10px;margin-top:3px}
+      #hcFrontDocUpload input{color:#d6ecff;font-size:11px}
+      #hcFrontDocUpload button{
+        background:#00d5ff;color:#001;border:0;padding:8px 12px;
+        font-weight:900;cursor:pointer;font-size:11px;
+      }
+      #hcFrontDocUpload button.secondary{
+        background:transparent;color:#00d5ff;border:1px solid #16395d;
+      }
+      #hcFrontDocStatus{
+        grid-column:1/-1;
+        border-top:1px solid rgba(65,164,255,.18);
+        padding-top:8px;
+        color:#9fd8ff;
+        font-size:11px;
+        white-space:pre-wrap;
+      }
+      .hc-doc-node-signal{
+        margin-top:8px;
+        padding:7px;
+        border-top:1px solid rgba(0,213,255,.18);
+        color:#9fffdc;
+        font-size:10px;
+        line-height:1.45;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  function mount(){
+    if(document.getElementById('hcFrontDocUpload')) return;
+    addStyles();
+
+    const bar=document.createElement('div');
+    bar.id='hcFrontDocUpload';
+    bar.innerHTML=`
+      <div>
+        <div class="title">DOCUMENT INTAKE → HC NODE POPULATION</div>
+        <div class="sub">Upload TXT/CSV/JSON/MD or paste document text through DOC ANALYSIS. Signals populate node cards and strategist context.</div>
+      </div>
+      <input id="hcDocFile" type="file" accept=".txt,.csv,.json,.md,.log,.html,.xml,.pdf,.doc,.docx">
+      <button id="hcDocPopulate">ANALYZE + POPULATE NODES</button>
+      <button class="secondary" id="hcDocSamplePopulate">SAMPLE</button>
+      <div id="hcFrontDocStatus">Waiting for document upload...</div>
+    `;
+
+    const anchor=document.querySelector('.kpi-strip,.metrics,.ticker,.topbar,header,nav') || document.body.firstElementChild;
+    if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(bar, anchor.nextSibling);
+    else document.body.prepend(bar);
+
+    document.getElementById('hcDocSamplePopulate').onclick=()=>{
+      lastDoc='Prior authorization backlog increased. Denials are rising due to missing documentation. Intake queue is behind. Vendor SLA response is late. Staffing coverage is below target. Billing handoff has coding gaps.';
+      analyzeAndPopulate(lastDoc);
+    };
+
+    document.getElementById('hcDocFile').onchange=async(e)=>{
+      const file=e.target.files && e.target.files[0];
+      if(!file) return;
+      const status=document.getElementById('hcFrontDocStatus');
+      status.textContent='Reading '+file.name+'...';
+
+      if(/\.(pdf|doc|docx)$/i.test(file.name)){
+        status.textContent='For this quick frontpage uploader, paste/export document text as TXT/CSV/JSON/MD. PDF/DOCX parsing is not enabled in-browser yet.';
+        return;
+      }
+
+      lastDoc=await file.text();
+      analyzeAndPopulate(lastDoc);
+    };
+
+    document.getElementById('hcDocPopulate').onclick=()=>{
+      if(lastDoc) analyzeAndPopulate(lastDoc);
+      else document.getElementById('hcFrontDocStatus').textContent='Upload a text-based document first, or use SAMPLE.';
+    };
+  }
+
+  function findNodeCard(node){
+    const rx = new RegExp('\\b'+node.replace('-', '[- ]')+'\\b','i');
+    const candidates=[...document.querySelectorAll('section,article,.card,.node-card,.module,div')];
+    return candidates.find(el=>{
+      const t=(el.innerText||'').slice(0,250);
+      return rx.test(t) && /AI unavailable|LIVE|PORT|COMMAND|Scheduling|Billing|HIPAA|Claims|Vendor|Tax|Grants/i.test(t);
+    });
+  }
+
+  function applyNodeSignals(analysis){
+    NODES.forEach(node=>{
+      const card=findNodeCard(node);
+      if(!card) return;
+      let box=card.querySelector('.hc-doc-node-signal');
+      if(!box){
+        box=document.createElement('div');
+        box.className='hc-doc-node-signal';
+        card.appendChild(box);
+      }
+      const sig=(analysis.signals||[]).slice(0,2).join(' · ');
+      box.innerHTML=`<b>DOC SIGNAL:</b> ${sig || 'General review'}<br><b>BNCA:</b> ${analysis.bnca?.priority || 'Route document findings.'}`;
+    });
+  }
+
+  function applyStrategistDocContext(analysis){
+    const panel=[...document.querySelectorAll('aside,section,div')]
+      .find(el=>/Healthcare Strategist|BNCA OUTPUT|BEST NEXT COURSE/i.test(el.innerText||''));
+    if(!panel) return;
+    let box=document.getElementById('hcDocStrategistSignal');
+    if(!box){
+      box=document.createElement('div');
+      box.id='hcDocStrategistSignal';
+      box.style.cssText='margin-top:10px;border-top:1px solid rgba(255,255,255,.12);padding-top:8px;color:#9fffdc;font-size:10px;line-height:1.45;';
+      panel.appendChild(box);
+    }
+    box.innerHTML=`<b style="color:#ffc400;">DOC ANALYSIS ACTIVE</b><br>Risk: ${analysis.riskLevel}<br>${analysis.bnca?.priority || ''}`;
+  }
+
+  async function analyzeAndPopulate(text){
+    const status=document.getElementById('hcFrontDocStatus');
+    status.textContent='Analyzing document and populating HC nodes...';
+    try{
+      const r=await fetch('/api/hc/doc-analysis',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text, populateNodes:true})
+      });
+      const d=await r.json();
+
+      applyNodeSignals(d);
+      applyStrategistDocContext(d);
+
+      status.textContent =
+        'DOCUMENT ANALYZED\\n' +
+        'Risk: '+d.riskLevel+'\\n' +
+        'Signals: '+(d.signals||[]).join(' | ')+'\\n' +
+        'BNCA: '+(d.bnca?.priority || '');
+
+      window.__HC_LAST_DOC_ANALYSIS__ = d;
+    }catch(e){
+      status.textContent='Document analysis failed: '+e.message;
+    }
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', mount);
+  else mount();
+})();
+</script>
+
 </body>
 </html>
