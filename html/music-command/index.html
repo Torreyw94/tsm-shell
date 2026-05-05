@@ -2385,14 +2385,14 @@ window.MusicSuite = {
     }).then(r=>r.json());
   },
   async strategy(prompt){
-    return fetch('/api/music/strategy',{
+    return fetch('/api/music/agent-pass',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({prompt})
     }).then(r=>r.json());
   },
   async saveSong(payload){
-    return fetch('/api/music/song',{
+    return fetch('/api/music/agent-pass',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload||{})
@@ -2400,13 +2400,7 @@ window.MusicSuite = {
   }
 };
 
-async function musicSuiteBoot(){
-  const data = await musicSafeFetch('/api/music/state');
-
-  if(!data.ok){
-    console.warn('Music backend fallback');
-    return;
-  }
+async 
 
   console.log('Music Suite State Ready', data);
 }
@@ -2451,7 +2445,7 @@ window.addEventListener('load', musicSuiteBoot);
     if(window.__musicStateLoading) return window.__musicLastState || null;
     window.__musicStateLoading = true;
 
-    const data = await window.musicSafeFetch('/api/music/state');
+    const data = await window.musicSafeFetch('/api/music/agent-pass');
 
     window.__musicStateLoading = false;
 
@@ -2490,7 +2484,7 @@ window.addEventListener('load', musicSuiteBoot);
   };
 
   window.musicStrategy = async function(prompt){
-    return window.musicSafeFetch('/api/music/strategy', {
+    return window.musicSafeFetch('/api/music/agent-pass', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({ prompt: prompt || 'Build music strategy' })
@@ -2516,31 +2510,31 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicPlatform = {
     dnaSave(payload){
-      return musicSafeFetch('/api/music/dna/save', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload||{})
       });
     },
     learnSong(payload){
-      return musicSafeFetch('/api/music/song/learn', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload||{})
       });
     },
     runAgent(payload){
-      return musicSafeFetch('/api/music/agent/run', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload||{})
       });
     },
     activity(){
-      return musicSafeFetch('/api/music/activity');
+      return musicSafeFetch('/api/music/agent-pass');
     },
     platform(){
-      return musicSafeFetch('/api/music/platform');
+      return musicSafeFetch('/api/music/agent-pass');
     }
   };
 
@@ -2595,28 +2589,28 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicEngine = {
     runAgent(payload){
-      return musicSafeFetch('/api/music/agent/run', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     runChain(payload){
-      return musicSafeFetch('/api/music/agent/chain', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     learnDNA(payload){
-      return musicSafeFetch('/api/music/dna/learn', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     state(){
-      return musicSafeFetch('/api/music/engine');
+      return musicSafeFetch('/api/music/agent-pass');
     }
   };
 
@@ -2665,21 +2659,21 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicRevision = {
     generate(payload){
-      return musicSafeFetch('/api/music/revision/generate', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     select(payload){
-      return musicSafeFetch('/api/music/revision/select', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     state(){
-      return musicSafeFetch('/api/music/revision/state');
+      return musicSafeFetch('/api/music/agent-pass');
     }
   };
 
@@ -2756,14 +2750,14 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicProduct = {
     pickRerun(payload){
-      return musicSafeFetch('/api/music/revision/pick-rerun', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     dashboard(){
-      return musicSafeFetch('/api/music/dashboard-sync');
+      return musicSafeFetch('/api/music/agent-pass');
     }
   };
 
@@ -2980,7 +2974,7 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicCommerce = {
     saveSession(payload){
-      return musicSafeFetch('/api/music/session/save', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
@@ -2994,14 +2988,14 @@ window.addEventListener('load', musicSuiteBoot);
       });
     },
     exportText(payload){
-      return musicSafeFetch('/api/music/export', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload || {})
       });
     },
     monetization(){
-      return musicSafeFetch('/api/music/monetization/state');
+      return musicSafeFetch('/api/music/agent-pass');
     }
   };
 
@@ -3131,17 +3125,17 @@ window.addEventListener('load', musicSuiteBoot);
 
   window.musicBilling = {
     state(){
-      return musicSafeFetch('/api/music/billing/state');
+      return musicSafeFetch('/api/music/agent-pass');
     },
     upgradeIntent(tier, reason){
-      return musicSafeFetch('/api/music/billing/upgrade-intent', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ tier, reason })
       });
     },
     setTierDev(tier){
-      return musicSafeFetch('/api/music/billing/set-tier-dev', {
+      return musicSafeFetch('/api/music/agent-pass', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ tier })
@@ -3507,7 +3501,7 @@ window.addEventListener('load', musicSuiteBoot);
       document.getElementById('coach-body').innerHTML =
         '<div class="coach-loading">🏗️ Step 3/4 — Building Structure & Bridge...</div>';
 
-      const structRes = await fetch('/api/music/structure', {
+      const structRes = await fetch('/api/music/agent-pass', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ lyrics, mood: 'confident', bpm: 90, context: 'hip-hop anthem' })
       });
@@ -3517,7 +3511,7 @@ window.addEventListener('load', musicSuiteBoot);
       document.getElementById('coach-body').innerHTML =
         '<div class="coach-loading">🎙️ Step 4/4 — Adding Ad-libs...</div>';
 
-      const adlibRes = await fetch('/api/music/agent/run', {
+      const adlibRes = await fetch('/api/music/agent-pass', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ agent: 'ZAY', task: 'add signature ad-libs at impact points', lyrics })
       });
@@ -3986,7 +3980,7 @@ function makeBar(tabKey){
     var out = aiDiv.querySelector(".tsm-ai-out");
     out.innerHTML="<span style='opacity:.5'>Loading coaching...</span>";
     askBtn.disabled=true; askBtn.textContent="...";
-    fetch("/api/music/coach",{
+    fetch("/api/music/agent-pass",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({tab:tabKey,lyrics:getLyrics()})
@@ -4080,7 +4074,7 @@ document.addEventListener("click", function(e) {
   out.innerHTML = "<span style='opacity:.5'>Loading coaching...</span>";
   btn.disabled = true;
   btn.textContent = "...";
-  fetch("/api/music/coach", {
+  fetch("/api/music/agent-pass", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({tab: tabKey, lyrics: getLyrics()})
@@ -4568,7 +4562,7 @@ window.exportCurrentMusicSession = async function() {
     revOut ? '\n=== REVISION ===\n' + revOut : ''
   ].filter(Boolean).join('\n') || 'No content to export yet.';
   const filename = 'TSM_Song_' + new Date().toISOString().slice(0,10) + '_' + Date.now() + '.txt';
-  const resp = await fetch('/api/music/export/save', {
+  const resp = await fetch('/api/music/agent-pass', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ content, filename })
@@ -4932,7 +4926,7 @@ window.callGroq = async function(systemPrompt, userPrompt, loadingId, callback) 
     
     let url, body;
     if (isRevision) {
-      url = '/api/music/revision/generate';
+      url = '/api/music/agent-pass';
       const current = document.getElementById('rev-current')?.value || userPrompt;
       const style = document.getElementById('rev-format')?.value || '';
       const mood = document.getElementById('rev-options-text')?.value || '';
@@ -4980,7 +4974,7 @@ window.runRevision = async function() {
   const loading = document.getElementById('rev-loading');
   if (loading) loading.classList.add('show');
   
-  const resp = await fetch('/api/music/revision/run', {
+  const resp = await fetch('/api/music/agent-pass', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ lyrics: current, edit, protect, options, agent })
@@ -5468,7 +5462,7 @@ function tsmAssistantUpdate(action, payload) {
   const output = document.getElementById('draft-output')?.innerText?.slice(0,300) || '';
   const dna    = window.STATE?.dna || {};
 
-  fetch('/api/music/coach', {
+  fetch('/api/music/agent-pass', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ action: stateId, draft, output, dna })
@@ -5802,16 +5796,7 @@ window.tsmToggleAssistant = function(){
     out.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
-  async function runProducerPass(){
-    const out = ensureOutputBox();
-    const draft = getDraftText() || "Grindin' n Slavin' while Misbavin'! Feelin' so Fresh n So Clean even Missed on Shavin'! Some look at the Hustle! n Cant Stand the Struggle, Those Real in the Field see A Time for Muscle! I Plan for Greatest! Rule 1: No Fakeness! Real is What You FEEL! That's Pill! So Take This!";
-
-    out.innerHTML = '<div style="color:#00ffc6;font-weight:900;">ZAY is building hook, adlibs, bridge, and producer notes...</div>';
-
-    try{
-      const res = await fetch('/api/music/agent-pass', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
+  async ,
         body:JSON.stringify({
           agent:'ZAY',
           step:'Full Producer Pass',
