@@ -698,7 +698,7 @@ main {
         </div>
         <div class="howto-item">
           <div class="howto-q" onclick="toggleHowto(this)">What AI model powers this platform? <span>▼</span></div>
-          <div class="howto-a">TSM Financial Intelligence Pro is powered by Groq's llama-3.3-70b-versatile model via the TSM Financial Processor spoke. The system uses a specialized financial system prompt calibrated for CFO-level analysis, audit work, and regulatory compliance.</div>
+          <div class="howto-a">TSM Financial Intelligence Pro is powered by TSM Neural Core's llama-3.3-70b-versatile model via the TSM Financial Processor spoke. The system uses a specialized financial system prompt calibrated for CFO-level analysis, audit work, and regulatory compliance.</div>
         </div>
         <div class="howto-item">
           <div class="howto-q" onclick="toggleHowto(this)">How do I run an Audit Engine scan? <span>▼</span></div>
@@ -740,7 +740,7 @@ main {
 
 <script>
 // ── PROXY CONFIG — key lives on the server, never in the browser ──
-// The spoke-factory proxy at /api/chat handles auth with GROQ_API_KEY
+// The spoke-factory proxy at /api/chat handles auth with TSM NEURAL CORE_API_KEY
 const SPOKE_URL = '/api/chat';   // same origin → nginx proxies to port 3016
 
 const conversations = { dashboard:[], reports:[], audit:[], invoices:[], health:[], howto:[] };
@@ -757,7 +757,7 @@ function switchTab(name) {
 }
 
 // ── SPOKE PROXY CALL (key lives on server) ────────────────────
-async function callGroq(messages, onChunk) {
+async function callTSM Neural Core(messages, onChunk) {
   // Strip the system message — the spoke injects its own SYSTEM_PROMPT
   const history = messages.filter(m => m.role !== 'system');
   const lastUser = [...history].reverse().find(m => m.role === 'user');
@@ -846,7 +846,7 @@ async function sendTabMessage(tab) {
     // Push a placeholder so render shows streaming text
     convo.push({ role: 'assistant', content: '' });
     const lastIdx = convo.length - 1;
-    const full = await callGroq(apiMsgs, text => {
+    const full = await callTSM Neural Core(apiMsgs, text => {
       convo[lastIdx].content = text;
       renderMessages(`${tab}-messages`, convo, null);
     });
@@ -881,7 +881,7 @@ async function sendDashMessage() {
   try {
     convo.push({ role: 'assistant', content: '' });
     const lastIdx = convo.length - 1;
-    await callGroq(apiMsgs, text => {
+    await callTSM Neural Core(apiMsgs, text => {
       convo[lastIdx].content = text;
       renderMessages('dash-messages', convo, null);
     });
@@ -935,7 +935,7 @@ async function runAutoQuery(tab, prompt) {
   try {
     convo.push({ role: 'assistant', content: '' });
     const lastIdx = convo.length - 1;
-    await callGroq(apiMsgs, text => {
+    await callTSM Neural Core(apiMsgs, text => {
       convo[lastIdx].content = text;
       renderMessages(`${tab}-messages`, convo, null);
     });
@@ -966,7 +966,7 @@ async function viewReport(context) {
 
   const prompt = `Provide a detailed AI analysis of this report: ${context}. Include key findings, risk factors, recommendations, and compliance implications.`;
   try {
-    await callGroq([{ role: 'user', content: prompt }], text => {
+    await callTSM Neural Core([{ role: 'user', content: prompt }], text => {
       contentEl.innerHTML = `<div class="msg ai"><div class="msg-label">⚡ FINANCIAL AI</div><div class="msg-bubble">${escHtml(text)}</div></div>`;
       contentEl.scrollTop = contentEl.scrollHeight;
     });

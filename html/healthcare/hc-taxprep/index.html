@@ -1072,7 +1072,7 @@ input[type="number"]::-webkit-inner-spin-button{opacity:.5}
         <div class="sec-hdr">
           <div>
             <div class="sec-title">AI Tax Analysis</div>
-            <div class="sec-sub">TSM Neural Core → Groq Fallback</div>
+            <div class="sec-sub">TSM Neural Core → TSM Neural Core Fallback</div>
           </div>
           <span class="badge b" id="aiModelBadge">LLAMA3-70B</span>
         </div>
@@ -1300,9 +1300,9 @@ async function loadHealth(){
     byId('nodeStatus').className = 'pill live';
     byId('dbStatus').textContent = h.db === 'up' ? 'DB ONLINE' : 'DB DOWN';
     byId('dbStatus').className = `pill ${h.db==='up'?'live':'err'}`;
-    byId('aiStatus').textContent = h.groq_configured ? 'AI CONFIGURED' : 'AI FALLBACK';
-    byId('aiStatus').className = `pill ${h.groq_configured?'live':'warn'}`;
-    if(h.groq_configured) byId('aiModelBadge').textContent = 'LLAMA3-70B · ACTIVE';
+    byId('aiStatus').textContent = h.tsm-neural-core_configured ? 'AI CONFIGURED' : 'AI FALLBACK';
+    byId('aiStatus').className = `pill ${h.tsm-neural-core_configured?'live':'warn'}`;
+    if(h.tsm-neural-core_configured) byId('aiModelBadge').textContent = 'LLAMA3-70B · ACTIVE';
   } catch {
     byId('dbStatus').textContent = 'DB UNKNOWN';
     byId('dbStatus').className = 'pill warn';
@@ -1602,7 +1602,7 @@ async function askAi(){
     if(Array.isArray(data.feed)) lines.push(...data.feed);
     else lines.push(JSON.stringify(data, null, 2));
     byId('aiResult').textContent = lines.join('\n\n');
-    byId('aiModelBadge').textContent = data.fallback_reason ? 'GROQ FALLBACK' : 'TSM NEURAL';
+    byId('aiModelBadge').textContent = data.fallback_reason ? 'TSM NEURAL CORE FALLBACK' : 'TSM NEURAL';
   } catch(e){
     byId('aiResult').textContent = `AI Error: ${e.message}`;
   }

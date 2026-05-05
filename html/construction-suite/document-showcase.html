@@ -585,7 +585,7 @@
     <div class="ai-bar-icon">🏗</div>
     <div class="ai-bar-label">
       <strong>AI Document Assistant</strong>
-      <span>Groq-powered · Ask about any document, contract clause, or compliance requirement</span>
+      <span>TSM Neural Core-powered · Ask about any document, contract clause, or compliance requirement</span>
     </div>
     <input class="ai-bar-input" id="aiBarInput" placeholder="e.g. Summarize the GC contract payment terms…"/>
     <button class="ai-bar-btn" id="aiBarBtn">Ask AI</button>
@@ -597,7 +597,7 @@
       <span class="ai-qchip" onclick="barChip(this)">What's in the MEP drawings?</span>
     </div>
     <div class="ai-result-box" id="aiResultBox">
-      <div class="ai-result-label">Groq · Construction AI</div>
+      <div class="ai-result-label">TSM Neural Core · Construction AI</div>
       <div id="aiResultText"></div>
     </div>
   </div>
@@ -967,7 +967,7 @@
     <div class="ai-avatar">🏗</div>
     <div>
       <div class="ai-drawer-title">Document AI</div>
-      <div class="ai-drawer-sub">Powered by Groq · Llama 3</div>
+      <div class="ai-drawer-sub">Powered by TSM Neural Core · Llama 3</div>
     </div>
     <button class="ai-close" id="aiClose">✕</button>
   </div>
@@ -1000,7 +1000,7 @@
     });
   });
 
-  // ── GROQ AI BAR ──
+  // ── TSM NEURAL CORE AI BAR ──
   const DOC_SYSTEM = `You are a construction document specialist embedded in a project Document Hub.
 You have knowledge of construction contracts, building permits, OSHA safety requirements, MEP systems, structural drawings, budget reports, and change orders.
 Answer questions about construction documents clearly and concisely. Use bullet points when listing items. Be direct and practical.`;
@@ -1042,7 +1042,7 @@ Answer questions about construction documents clearly and concisely. Use bullet 
     barBtn.textContent = 'Ask AI';
   }
 
-  // ── GROQ CHAT DRAWER ──
+  // ── TSM NEURAL CORE CHAT DRAWER ──
   const fab    = document.getElementById('aiFab');
   const drawer = document.getElementById('aiDrawer');
   const close  = document.getElementById('aiClose');

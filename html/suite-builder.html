@@ -223,9 +223,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 </div>
 
 <script>
-const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
+const TSM NEURAL CORE_URL='https://api.tsm-neural-core.com/openai/v1/chat/completions';
 const MODEL='llama-3.3-70b-versatile';
-let GROQ_KEY='';
+let TSM NEURAL CORE_KEY='';
 let generatedPlaybooks={};
 
 const APP_CTX={
@@ -236,7 +236,7 @@ const APP_CTX={
   "financial-command.tsmatter.com":"Financial Command — enterprise financial intelligence. Revenue cycle, billing, compliance, P&L analysis, vendor risk, cash flow. Multi-node with Sovereign Strategist. Replaces multiple analyst tools costing $400/hr.",
   "banner-health.tsmatter.com":"Banner Health Enterprise — white-labeled AI for Arizona's largest non-profit hospital system (30+ hospitals, 6 states). Configured for their payer mix, clinical workflows, compliance. Enterprise-grade, 2-week deployment.",
   "honorhealth.tsmatter.com":"HonorHealth Enterprise — white-labeled AI for Arizona's 2nd largest hospital system. Monitors HRSA grant compliance ($50M exposure), payer contracts, clinical operations, regulatory requirements.",
-  "hotelops.tsmatter.com":"HotelOps Pro — full-spectrum hospitality neural core. IoT gateway (68 sensors, 4 HVAC alerts), Groq AI inference, OCR engine (127 docs, 0.4s avg), revenue forecasting. Current: 84% occupancy, $1,847 weekly margin, 92% weekend forecast, $2,240 Groq Pivot recommendation.",
+  "hotelops.tsmatter.com":"HotelOps Pro — full-spectrum hospitality neural core. IoT gateway (68 sensors, 4 HVAC alerts), TSM Neural Core AI inference, OCR engine (127 docs, 0.4s avg), revenue forecasting. Current: 84% occupancy, $1,847 weekly margin, 92% weekend forecast, $2,240 TSM Neural Core Pivot recommendation.",
   "schools-command.tsmatter.com":"Schools Command — education intelligence for district administrators. NOFO pipeline, McKinney-Vento, IDEA tracking, Single Audit prep, Title I. Live: 2,847 students, $3.4M grant funds, 96% compliance, 4 active flags, IDEA NV-01 $50K risk, McKinney-Vento dispute at AMS Las Vegas STEM.",
   "pc-command.tsmatter.com":"P&C Enterprise Command — for commercial insurance agents. Auto coverage analyzer, AZ liability gap analysis, SR-22 tracking, E&O/Prof, commercial lines. AZ minimum $25K/$50K BI leaves $225K+ exposure gap. Teen driver $355K gap scenario.",
   "docpro.tsmatter.com":"DocPro — AI Document Intelligence. Forensic-grade analysis of SEC filings, legal contracts, compliance reports, M&A documents, tax returns, and 46+ document types across 9 sectors. Attorney-level precision in seconds. Purpose-built for BPO, legal, financial printing, and compliance teams.",
@@ -269,14 +269,14 @@ function allApps(){return SECTORS.flatMap(s=>s.apps);}
 function findApp(url){return allApps().find(a=>a.url===url)||{name:url,url};}
 function setStatus(t){document.getElementById('status-text').textContent=t;}
 
-async function callGroq(messages,onToken){
-  if(!GROQ_KEY){
-    const k=prompt('Enter Groq API key to enable AI generation:\n(Get one free at console.groq.com)');
+async function callTSM Neural Core(messages,onToken){
+  if(!TSM NEURAL CORE_KEY){
+    const k=prompt('Enter TSM Neural Core API key to enable AI generation:\n(Get one free at console.tsm-neural-core.com)');
     if(!k)return null;
-    GROQ_KEY=k.trim();
+    TSM NEURAL CORE_KEY=k.trim();
   }
   try{
-    if(!res.ok){if(res.status===401){GROQ_KEY='';throw new Error('Invalid API key');}throw new Error('API '+res.status);}
+    if(!res.ok){if(res.status===401){TSM NEURAL CORE_KEY='';throw new Error('Invalid API key');}throw new Error('API '+res.status);}
     const reader=res.body.getReader();const decoder=new TextDecoder();let full='';
     while(true){
       const{done,value}=await reader.read();if(done)break;
@@ -298,7 +298,7 @@ async function generatePlaybook(url,audience,context,narrativeEl,tpEl,promptsEl)
   narrativeEl.className='aiout loading';narrativeEl.textContent='Generating...';
   tpEl.innerHTML='';promptsEl.innerHTML='';
 
-  const result=await callGroq([
+  const result=await callTSM Neural Core([
     {role:'system',content:'You are TSM Matter\'s chief sales strategist. Create sharp, specific, conversion-focused demo playbooks. Never be generic. Every word should earn its place.'},
     {role:'user',content:`Create a demo playbook for:\nAPP: ${app.name}\nURL: ${url}\nCONTEXT: ${ctx}${extra}\nAUDIENCE: ${audience}\n\nReturn EXACTLY this structure:\n\nNARRATIVE:\n[2-3 sentences. Lead with the pain this audience feels daily, then show what this platform does about it. Be specific, not generic.]\n\nTALKING POINTS:\n• [Specific point with a number or data]\n• [What to point to on screen and what to say]\n• [The moment that creates urgency]\n\nPROMPT 1 | [LABEL]:\n[Exact AI prompt to paste into app chat that produces a stunning relevant response]\n\nPROMPT 2 | [LABEL]:\n[Second high-impact prompt]\n\nPROMPT 3 | [LABEL]:\n[Closing prompt showing ROI or next steps]`}
   ],(partial)=>{
@@ -408,7 +408,7 @@ async function generateCoachScript(){
   const apps=Array.from(selected).map(url=>findApp(url).name);
   const outEl=document.getElementById('coach-output');
   outEl.style.display='block';outEl.className='aiout loading';outEl.textContent='Generating your coaching script...';
-  await callGroq([
+  await callTSM Neural Core([
     {role:'system',content:'You are TSM Matter\'s master sales coach. Write tight, tactical, conversion-focused demo scripts with no filler.'},
     {role:'user',content:`Full presentation coaching script for "${name}" to a ${audience}.\nApps in order: ${apps.join(' → ')}\n\nProvide:\n1. 60-second opening hook — establish pain and urgency immediately\n2. One transition sentence between each app that builds momentum\n3. The single most powerful thing to say or show in each app\n4. Top 3 objections this audience will raise and exactly how to handle each\n5. Closing statement that drives a specific next-steps commitment\n\nBe tactical, specific, direct. Every line earns its place.`}
   ],(partial)=>{outEl.className='aiout';outEl.textContent=partial;});

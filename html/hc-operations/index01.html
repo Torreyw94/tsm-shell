@@ -662,16 +662,16 @@ main {
   <div class="sec-head">TSM NEURAL CORE · OPS BNCA <span class="sec-head-tag">AI POWERED</span></div>
 
   <div class="bnca-box" style="margin-bottom:10px">
-    <div class="bnca-header">GROQ API KEY</div>
+    <div class="bnca-header">TSM NEURAL CORE API KEY</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <input type="password" id="groq-key" placeholder="gsk_..." style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:11px;padding:8px 10px;outline:none"/>
+      <input type="password" id="tsm-neural-core-key" placeholder="gsk_..." style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:11px;padding:8px 10px;outline:none"/>
       <span style="font-size:9px;color:var(--text3);letter-spacing:1px">STORED IN MEMORY ONLY</span>
     </div>
   </div>
 
   <div class="bnca-box">
     <div class="bnca-header">BEST NEXT COURSE OF ACTION — LIVE OPS STATE</div>
-    <div class="bnca-desc">Groq · llama-3.3-70b-versatile generates a prioritized action plan based on live node status, staffing gaps, intake queue, vendor alerts, and scheduling backlog.</div>
+    <div class="bnca-desc">TSM Neural Core · llama-3.3-70b-versatile generates a prioritized action plan based on live node status, staffing gaps, intake queue, vendor alerts, and scheduling backlog.</div>
     <div class="bnca-output" id="bnca-out"></div>
     <div style="display:flex;gap:10px;align-items:center">
       <button class="btn" id="bnca-btn" onclick="generateBNCA()">GENERATE BNCA</button>
@@ -722,16 +722,16 @@ NODE STATUS:
 
 KEY RISKS: Patient safety at Southside (BH gap + critical intake), Valley node offline cascading backlog, supply shortage affecting PPE compliance.`;
 
-async function callGroq(userMsg, statusEl, outEl, btnEl) {
-  const key = document.getElementById('groq-key').value.trim();
-  if (!key) { statusEl.textContent = 'NO API KEY'; outEl.textContent = 'Enter your Groq API key above.'; outEl.classList.add('visible'); return; }
+async function callTSM Neural Core(userMsg, statusEl, outEl, btnEl) {
+  const key = document.getElementById('tsm-neural-core-key').value.trim();
+  if (!key) { statusEl.textContent = 'NO API KEY'; outEl.textContent = 'Enter your TSM Neural Core API key above.'; outEl.classList.add('visible'); return; }
   btnEl.disabled = true;
   statusEl.textContent = '⠋ GENERATING...';
   outEl.textContent = '';
   outEl.classList.add('visible');
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
       body: JSON.stringify({
@@ -757,7 +757,7 @@ async function callGroq(userMsg, statusEl, outEl, btnEl) {
 }
 
 function generateBNCA() {
-  callGroq(
+  callTSM Neural Core(
     'Given the current operational state, generate a concise prioritized Best Next Course of Action (BNCA). List the top 5-7 actions in order of urgency. Be specific — name nodes, roles, vendors, and patient IDs where relevant. Use plain text with numbered items.',
     document.getElementById('bnca-status'),
     document.getElementById('bnca-out'),
@@ -769,7 +769,7 @@ function sendQuery() {
   const q = document.getElementById('query-input').value.trim();
   if (!q) return;
   const btn = document.querySelector('#panel-ai .btn-outline');
-  callGroq(q,
+  callTSM Neural Core(q,
     document.getElementById('query-status'),
     document.getElementById('query-out'),
     btn

@@ -1893,7 +1893,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
 <script>
-async function safeNeuralFetch(payload, route = 'https://strategist.tsmatter.com/api/groq/chat') {
+async function safeNeuralFetch(payload, route = 'https://strategist.tsmatter.com/api/tsm-neural-core/chat') {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)

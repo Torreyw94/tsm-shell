@@ -32,7 +32,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .hdr-right{display:flex;align-items:center;gap:10px}
 .hdr-badge{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border:1px solid}
 .hdr-badge.live{color:var(--green);border-color:var(--green);background:var(--green2)}
-.hdr-badge.groq{color:var(--amber);border-color:var(--amber);background:var(--amber2)}
+.hdr-badge.tsm-neural-core{color:var(--amber);border-color:var(--amber);background:var(--amber2)}
 .node-count{font-size:9px;color:var(--muted)}
 
 /* MAIN */
@@ -70,12 +70,12 @@ textarea::placeholder{color:var(--faint)}
 .btn-sample{color:var(--cyan);border-color:var(--cyan);background:var(--cyan2)}
 .btn-sample:hover{background:rgba(0,229,255,0.2)}
 .process-info{font-size:9px;color:var(--faint);letter-spacing:1px}
-.groq-key-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-.groq-key-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint);white-space:nowrap}
-.groq-key-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:6px 10px;outline:none}
-.groq-key-input:focus{border-color:var(--amber)}
-.groq-status-dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex-shrink:0}
-.groq-status-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
+.tsm-neural-core-key-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.tsm-neural-core-key-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.tsm-neural-core-key-input{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:6px 10px;outline:none}
+.tsm-neural-core-key-input:focus{border-color:var(--amber)}
+.tsm-neural-core-status-dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex-shrink:0}
+.tsm-neural-core-status-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
 
 /* NEURAL FLOW */
 .neural-flow{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;padding:16px 0;border:1px solid var(--border);background:var(--bg2);overflow-x:auto}
@@ -185,11 +185,11 @@ textarea::placeholder{color:var(--faint)}
     </div>
     <div>
       <div class="hdr-title">HC BNCA · Neural PoC</div>
-      <div class="hdr-sub">4-App Document Processing Demo · Groq Neural Bridge</div>
+      <div class="hdr-sub">4-App Document Processing Demo · TSM Neural Core Neural Bridge</div>
     </div>
   </div>
   <div class="hdr-right">
-    <div class="hdr-badge groq">⚡ Groq Engine</div>
+    <div class="hdr-badge tsm-neural-core">⚡ TSM Neural Core Engine</div>
     <div class="hdr-badge live">11/11 Nodes</div>
     <div class="node-count" id="hdr-clock">--:--:--</div>
   </div>
@@ -223,10 +223,10 @@ Example: Claim #HC-2024-8821 denied. CPT 99213. Reason: Medical necessity not es
       <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
       <div class="process-info" id="process-info">Enter a document to begin neural processing</div>
     </div>
-    <div class="groq-key-row">
-      <div class="groq-status-dot" id="groq-dot"></div>
-      <div class="groq-key-label">Groq Key</div>
-      <input class="groq-key-input" id="groq-key" type="password" placeholder="gsk_..." oninput="onKeyInput(this.value)">
+    <div class="tsm-neural-core-key-row">
+      <div class="tsm-neural-core-status-dot" id="tsm-neural-core-dot"></div>
+      <div class="tsm-neural-core-key-label">TSM Neural Core Key</div>
+      <input class="tsm-neural-core-key-input" id="tsm-neural-core-key" type="password" placeholder="gsk_..." oninput="onKeyInput(this.value)">
       <button class="btn btn-ghost" style="font-size:8px;padding:5px 10px" onclick="testKey()">Test</button>
       <span id="key-status" style="font-size:9px;color:var(--faint)"></span>
     </div>
@@ -389,7 +389,7 @@ Example: Claim #HC-2024-8821 denied. CPT 99213. Reason: Medical necessity not es
   <span style="color:var(--border2)">·</span>
   <span id="doc-status-txt">No document loaded</span>
   <span style="color:var(--border2)">·</span>
-  <span id="groq-model-txt" style="color:var(--amber)">groq: not connected</span>
+  <span id="tsm-neural-core-model-txt" style="color:var(--amber)">tsm-neural-core: not connected</span>
   <div class="status-bar-right">
     <span id="global-progress"></span>
     <button class="btn" style="font-size:8px;padding:4px 12px;color:var(--amber);border-color:var(--amber);background:var(--amber2)" onclick="fireAll()">⚡ Fire All</button>
@@ -401,18 +401,18 @@ Example: Claim #HC-2024-8821 denied. CPT 99213. Reason: Medical necessity not es
 document.head.appendChild(Object.assign(document.createElement('style'),{textContent:'body{padding-bottom:70px!important}'}));
 
 // ── STATE ──
-let GROQ_KEY = sessionStorage.getItem('groq_key') || '';
-let GROQ_MODEL = sessionStorage.getItem('groq_model') || 'llama-3.3-70b-versatile';
+let TSM NEURAL CORE_KEY = sessionStorage.getItem('tsm-neural-core_key') || '';
+let TSM NEURAL CORE_MODEL = sessionStorage.getItem('tsm-neural-core_model') || 'llama-3.3-70b-versatile';
 let docText = '';
 let activeApps = 0;
 let completedApps = 0;
 
 // ── RESTORE KEY ──
-if(GROQ_KEY){
-  document.getElementById('groq-key').value = GROQ_KEY;
-  document.getElementById('groq-dot').classList.add('ok');
-  document.getElementById('groq-model-txt').textContent = 'groq: ' + GROQ_MODEL;
-  document.getElementById('groq-model-txt').style.color = 'var(--green)';
+if(TSM NEURAL CORE_KEY){
+  document.getElementById('tsm-neural-core-key').value = TSM NEURAL CORE_KEY;
+  document.getElementById('tsm-neural-core-dot').classList.add('ok');
+  document.getElementById('tsm-neural-core-model-txt').textContent = 'tsm-neural-core: ' + TSM NEURAL CORE_MODEL;
+  document.getElementById('tsm-neural-core-model-txt').style.color = 'var(--green)';
 }
 
 // ── CLOCK ──
@@ -429,7 +429,7 @@ document.getElementById('doc-text').addEventListener('input', function(){
 
 function updateDocStatus(){
   const hasDoc = docText.length > 20;
-  document.getElementById('fire-btn').disabled = !hasDoc || !GROQ_KEY;
+  document.getElementById('fire-btn').disabled = !hasDoc || !TSM NEURAL CORE_KEY;
   document.getElementById('doc-status-txt').textContent = hasDoc
     ? docText.length + ' chars loaded'
     : 'No document loaded';
@@ -556,27 +556,27 @@ function clearAll(){
 
 // ── KEY ──
 function onKeyInput(v){
-  GROQ_KEY = v.trim();
-  sessionStorage.setItem('groq_key', GROQ_KEY);
-  document.getElementById('groq-dot').className = GROQ_KEY.startsWith('gsk_') ? 'groq-status-dot ok' : 'groq-status-dot';
-  document.getElementById('fire-btn').disabled = !GROQ_KEY || docText.length < 20;
+  TSM NEURAL CORE_KEY = v.trim();
+  sessionStorage.setItem('tsm-neural-core_key', TSM NEURAL CORE_KEY);
+  document.getElementById('tsm-neural-core-dot').className = TSM NEURAL CORE_KEY.startsWith('gsk_') ? 'tsm-neural-core-status-dot ok' : 'tsm-neural-core-status-dot';
+  document.getElementById('fire-btn').disabled = !TSM NEURAL CORE_KEY || docText.length < 20;
 }
 
 async function testKey(){
-  const key = document.getElementById('groq-key').value.trim();
+  const key = document.getElementById('tsm-neural-core-key').value.trim();
   document.getElementById('key-status').textContent = 'testing...';
   document.getElementById('key-status').style.color = 'var(--amber)';
   try {
-    const r = await fetch('https://api.groq.com/openai/v1/models', {headers:{'Authorization':'Bearer '+key}});
+    const r = await fetch('https://api.tsm-neural-core.com/openai/v1/models', {headers:{'Authorization':'Bearer '+key}});
     const d = await r.json();
     if(d.data){
-      GROQ_KEY = key;
-      sessionStorage.setItem('groq_key', key);
-      document.getElementById('groq-dot').classList.add('ok');
+      TSM NEURAL CORE_KEY = key;
+      sessionStorage.setItem('tsm-neural-core_key', key);
+      document.getElementById('tsm-neural-core-dot').classList.add('ok');
       document.getElementById('key-status').textContent = '✓ connected';
       document.getElementById('key-status').style.color = 'var(--green)';
-      document.getElementById('groq-model-txt').textContent = 'groq: ' + GROQ_MODEL;
-      document.getElementById('groq-model-txt').style.color = 'var(--green)';
+      document.getElementById('tsm-neural-core-model-txt').textContent = 'tsm-neural-core: ' + TSM NEURAL CORE_MODEL;
+      document.getElementById('tsm-neural-core-model-txt').style.color = 'var(--green)';
       document.getElementById('fire-btn').disabled = docText.length < 20;
     } else {
       document.getElementById('key-status').textContent = '✗ ' + (d.error?.message||'invalid');
@@ -588,22 +588,22 @@ async function testKey(){
   }
 }
 
-// ── GROQ STREAM ──
-async function groqStream(systemPrompt, userPrompt, onChunk, onDone, onError, maxTokens=700){
-  if(!GROQ_KEY){ onError('No Groq key configured.'); return; }
+// ── TSM NEURAL CORE STREAM ──
+async function tsm-neural-coreStream(systemPrompt, userPrompt, onChunk, onDone, onError, maxTokens=700){
+  if(!TSM NEURAL CORE_KEY){ onError('No TSM Neural Core key configured.'); return; }
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions',{ 
+    const res = await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions',{ 
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TSM NEURAL CORE_KEY},
       body:JSON.stringify({
-        model:GROQ_MODEL, stream:true, max_tokens:maxTokens,
+        model:TSM NEURAL CORE_MODEL, stream:true, max_tokens:maxTokens,
         messages:[
           {role:'system',content:systemPrompt},
           {role:'user',content:userPrompt}
         ]
       })
     });
-    if(!res.ok){const e=await res.json();onError(e.error?.message||'Groq error '+res.status);return;}
+    if(!res.ok){const e=await res.json();onError(e.error?.message||'TSM Neural Core error '+res.status);return;}
     const reader=res.body.getReader();
     const dec=new TextDecoder();
     let buf='', total=0;
@@ -749,7 +749,7 @@ ${doc}`
 
 // ── FIRE ALL ──
 async function fireAll(){
-  if(!GROQ_KEY){alert('Enter your Groq API key first.');return;}
+  if(!TSM NEURAL CORE_KEY){alert('Enter your TSM Neural Core API key first.');return;}
   if(!docText){alert('Load or paste a document first.');return;}
 
   clearAll();
@@ -788,7 +788,7 @@ async function runApp(num, prompt){
   const badgeEl = document.getElementById('badge'+num);
   const tokEl = document.getElementById('tok'+num);
 
-  idleEl.innerHTML = `<div class="loading-row"><div class="spin"></div>Groq neural link active...</div>`;
+  idleEl.innerHTML = `<div class="loading-row"><div class="spin"></div>TSM Neural Core neural link active...</div>`;
 
   badgeEl.textContent = 'PROCESSING';
   activeApps++;
@@ -797,7 +797,7 @@ async function runApp(num, prompt){
   let text = '';
   let finalToks = 0;
 
-  await groqStream(
+  await tsm-neural-coreStream(
     prompt.system,
     prompt.user(docText.slice(0, 3000)),
     (chunk)=>{

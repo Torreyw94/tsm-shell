@@ -165,7 +165,7 @@ main {
 
     <section id="tab-ai">
       <div class="card">
-        <div class="section-title"><span>AI TAX ANALYSIS</span><span class="small">TSM NEURAL CORE → GROQ FALLBACK</span></div>
+        <div class="section-title"><span>AI TAX ANALYSIS</span><span class="small">TSM NEURAL CORE → TSM NEURAL CORE FALLBACK</span></div>
         <div class="stack">
           <div class="row">
             <input id="aiInput" class="input" value="Analyze top tax exposure, missing revenue, deduction quality, and 30-day mitigation plan." />
@@ -273,9 +273,9 @@ async function loadHealth(){
     const health = await getJson('/health');
     setText('nodeStatus', health.status);
     setText('dbStatus', health.db === 'up' ? 'DB ONLINE' : 'DB DOWN');
-    setText('aiStatus', health.groq_configured ? 'AI CONFIGURED' : 'AI FALLBACK');
+    setText('aiStatus', health.tsm-neural-core_configured ? 'AI CONFIGURED' : 'AI FALLBACK');
     byId('dbStatus').className = `pill ${health.db === 'up' ? 'live' : 'warn'}`;
-    byId('aiStatus').className = `pill ${health.groq_configured ? 'live' : 'warn'}`;
+    byId('aiStatus').className = `pill ${health.tsm-neural-core_configured ? 'live' : 'warn'}`;
   } catch {
     setText('dbStatus', 'DB UNKNOWN');
     setText('aiStatus', 'AI UNKNOWN');

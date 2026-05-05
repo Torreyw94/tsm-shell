@@ -1955,7 +1955,7 @@ if(typeof safeFetch === 'undefined'){
 </button>
 
 <script>
-const GROQ_API_KEY_VAR = 'tsm_fin_groq_key';
+const TSM NEURAL CORE_API_KEY_VAR = 'tsm_fin_tsm-neural-core_key';
 
 const SYS = `You are TSM Financial Intelligence Pro — the AI engine of the TSM Desert Financial Credit Union Financial Platform. You specialize in:
 - Financial statement analysis: P&L, balance sheet, cash flow, ratio analysis (liquidity, leverage, profitability, efficiency)
@@ -1995,14 +1995,14 @@ function setPreset(el, prompt) {
 }
 
 async function getKey() {
-  let key = sessionStorage.getItem(GROQ_API_KEY_VAR);
+  let key = sessionStorage.getItem(TSM NEURAL CORE_API_KEY_VAR);
   if (key) return key;
   try {
     const r = await safeFetch('/api/config');
     if (!r.ok) throw new Error('Config ' + r.status);
-    key = j.groqApiKey || j.GROQ_API_KEY || j.groq_api_key;
+    key = j.tsm-neural-coreApiKey || j.TSM NEURAL CORE_API_KEY || j.tsm-neural-core_api_key;
     if (!key) throw new Error('Key not found');
-    sessionStorage.setItem(GROQ_API_KEY_VAR, key);
+    sessionStorage.setItem(TSM NEURAL CORE_API_KEY_VAR, key);
     return key;
   } catch(e) { throw e; }
 }
@@ -2232,7 +2232,7 @@ function runTBAI(){var dr=0,cr=0;document.querySelectorAll('.tb-dr').forEach(fun
 </script>
 <div style="position:fixed;top:10px;right:10px;z-index:9999"><a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a></div>
 <script>
-async function safeNeuralFetch(payload, route = 'https://strategist.tsmatter.com/api/groq/chat') {
+async function safeNeuralFetch(payload, route = 'https://strategist.tsmatter.com/api/tsm-neural-core/chat') {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)

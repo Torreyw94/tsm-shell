@@ -1964,7 +1964,7 @@ if(window.__HC_LOCK__) return;
 window.__HC_LOCK__ = true;
 
 <<<<<<< HEAD
-const GROQ_API_KEY_VAR = 'tsm_fin_groq_key';
+const TSM NEURAL CORE_API_KEY_VAR = 'tsm_fin_tsm-neural-core_key';
 =======
 const API='/api/hc/query';
 const SYS=`You are the TSM HotelOps Neural Processor, an elite hospitality intelligence system managing hotels, Airbnbs, and motels. You analyze operations, financials, IoT systems, concierge workflows, compliance, and guest experience. Be concise, professional, and actionable. Never reference underlying AI models or vendors. 2-4 sentences max.`;
@@ -1996,14 +1996,14 @@ function setPreset(el, prompt) {
 }
 
 async function getKey() {
-  let key = sessionStorage.getItem(GROQ_API_KEY_VAR);
+  let key = sessionStorage.getItem(TSM NEURAL CORE_API_KEY_VAR);
   if (key) return key;
   try {
     const r = await safeFetch('/api/config');
     if (!r.ok) throw new Error('Config ' + r.status);
-    key = j.groqApiKey || j.GROQ_API_KEY || j.groq_api_key;
+    key = j.tsm-neural-coreApiKey || j.TSM NEURAL CORE_API_KEY || j.tsm-neural-core_api_key;
     if (!key) throw new Error('Key not found');
-    sessionStorage.setItem(GROQ_API_KEY_VAR, key);
+    sessionStorage.setItem(TSM NEURAL CORE_API_KEY_VAR, key);
     return key;
   } catch(e) { throw e; }
 }
@@ -2034,7 +2034,7 @@ async function runAnalysis() {
     });
 
     if (!res.ok) {
-      throw new Error(e?.error?.message || 'Groq error ' + res.status);
+      throw new Error(e?.error?.message || 'TSM Neural Core error ' + res.status);
     }
 
     
@@ -2332,7 +2332,7 @@ window.__HC_LOCK__ = true;
 
   function loadPreset(prompt) { loadAI(prompt); }
 
-  // ── GROQ via /api/groq server proxy (no key in browser) ────
+  // ── TSM NEURAL CORE via /api/tsm-neural-core server proxy (no key in browser) ────
   window.Q = async function(prompt, btnId, resId) {
     if (!prompt || !prompt.trim()) return;
     var btn = document.getElementById(btnId);
@@ -2342,7 +2342,7 @@ window.__HC_LOCK__ = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
     if (res.classList) res.classList.add('show');
     try {
-      var r = await fetch('/api/groq', {
+      var r = await fetch('/api/tsm-neural-core', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: prompt })

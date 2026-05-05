@@ -1,6 +1,6 @@
 /**
  * TSM AI Client — drop into any TSMatter app's static folder
- * Talks to TSM-AI-3200 via Groq llama-3.3-70b-versatile
+ * Talks to TSM-AI-3200 via TSM Neural Core llama-3.3-70b-versatile
  *
  * Usage (3 lines in any HTML page):
  *   <input id="ai-input" placeholder="Ask anything..." />

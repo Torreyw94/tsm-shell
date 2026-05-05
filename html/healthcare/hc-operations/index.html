@@ -660,12 +660,12 @@ main {
 
 <!-- ═══════════════ AI COMMAND ═══════════════ -->
 <div class="panel" id="panel-ai">
-  <div class="sec-head">TSM NEURAL CORE · PER-NODE BNCA <span class="sec-head-tag">GROQ · LLAMA-3.3-70B-VERSATILE</span></div>
+  <div class="sec-head">TSM NEURAL CORE · PER-NODE BNCA <span class="sec-head-tag">TSM NEURAL CORE · LLAMA-3.3-70B-VERSATILE</span></div>
 
   <div class="bnca-box" style="margin-bottom:14px">
-    <div class="bnca-header">GROQ API KEY</div>
+    <div class="bnca-header">TSM NEURAL CORE API KEY</div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="password" id="groq-key" placeholder="gsk_..." style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:11px;padding:8px 10px;outline:none"/>
+      <input type="password" id="tsm-neural-core-key" placeholder="gsk_..." style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:11px;padding:8px 10px;outline:none"/>
       <button class="btn" id="all-btn" onclick="generateAllBNCA()">GENERATE ALL NODES</button>
       <span style="font-size:9px;color:var(--text3);letter-spacing:1px">MEMORY ONLY</span>
     </div>
@@ -728,13 +728,13 @@ function buildNodeCards() {
 }
 
 async function generateNodeBNCA(nodeId) {
-  const key = document.getElementById('groq-key').value.trim();
+  const key = document.getElementById('tsm-neural-core-key').value.trim();
   const n = NODES.find(x => x.id === nodeId);
   const btn = document.getElementById('btn-' + nodeId);
   const statusEl = document.getElementById('status-' + nodeId);
   const outEl = document.getElementById('out-' + nodeId);
 
-  if (!key) { statusEl.textContent = 'NO API KEY — enter Groq key above'; return; }
+  if (!key) { statusEl.textContent = 'NO API KEY — enter TSM Neural Core key above'; return; }
   btn.disabled = true;
   statusEl.textContent = '⠋ GENERATING BNCA...';
   outEl.style.display = 'block';
@@ -759,7 +759,7 @@ NETWORK CONTEXT: Node is part of an 11-node HC network. Good nodes available for
 Write a concise BNCA memo with: (1) a 1-sentence status summary, (2) 4-6 numbered priority actions for this node's strategist, (3) any network-level coordination needed. Keep total length under 250 words.`;
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
       body: JSON.stringify({
@@ -784,8 +784,8 @@ Write a concise BNCA memo with: (1) a 1-sentence status summary, (2) 4-6 numbere
 }
 
 async function generateAllBNCA() {
-  const key = document.getElementById('groq-key').value.trim();
-  if (!key) { alert('Enter your Groq API key first.'); return; }
+  const key = document.getElementById('tsm-neural-core-key').value.trim();
+  if (!key) { alert('Enter your TSM Neural Core API key first.'); return; }
   document.getElementById('all-btn').disabled = true;
   for (const n of NODES) {
     await generateNodeBNCA(n.id);

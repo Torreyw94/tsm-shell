@@ -304,7 +304,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const GROQ_PROXY  = '/api/groq';   // server-side proxy — no key in browser
+const TSM NEURAL CORE_PROXY  = '/api/tsm-neural-core';   // server-side proxy — no key in browser
 const PING_API    = '/api/ping';
 const DEPLOY_API  = '/api/suite';
 const MODEL       = 'llama-3.3-70b-versatile';
@@ -320,7 +320,7 @@ const APP_CTX = {
   "financial-command.tsmatter.com":"Financial Command — enterprise financial intelligence. Revenue cycle, billing, compliance. Replaces analyst tools costing $400/hr.",
   "banner-health.tsmatter.com":"Banner Health Enterprise — white-labeled AI for Arizona's largest non-profit hospital system (30+ hospitals, 6 states).",
   "honorhealth.tsmatter.com":"HonorHealth Enterprise — white-labeled AI for Arizona's 2nd largest hospital system. HRSA grant compliance ($50M exposure).",
-  "hotelops.tsmatter.com":"HotelOps Pro — 68 sensors, 4 HVAC alerts, Groq AI inference, 84% occupancy, $1,847 weekly margin.",
+  "hotelops.tsmatter.com":"HotelOps Pro — 68 sensors, 4 HVAC alerts, TSM Neural Core AI inference, 84% occupancy, $1,847 weekly margin.",
   "schools-command.tsmatter.com":"Schools Command — 2,847 students, $3.4M grant funds, 96% compliance, IDEA NV-01 $50K risk.",
   "pc-command.tsmatter.com":"P&C Enterprise Command — AZ liability gap analysis, SR-22 tracking. AZ minimum leaves $225K+ exposure gap.",
   "docpro.tsmatter.com":"DocPro — AI Document Intelligence. 46+ document types, attorney-level precision in seconds.",
@@ -498,10 +498,10 @@ async function pingAll() {
   setStatus(`${liveCount} live · ${selected.size} selected`);
 }
 
-// ── GROQ STREAMING (via server proxy) ────────────────────────────────────────
-async function callGroq(messages, onToken) {
+// ── TSM NEURAL CORE STREAMING (via server proxy) ────────────────────────────────────────
+async function callTSM Neural Core(messages, onToken) {
   try {
-    const res = await fetch(GROQ_PROXY, {
+    const res = await fetch(TSM NEURAL CORE_PROXY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages, model: MODEL, max_tokens: 1200, stream: true }),
@@ -532,7 +532,7 @@ async function callGroq(messages, onToken) {
     }
     return full;
   } catch (e) {
-    console.error('[callGroq]', e.message);
+    console.error('[callTSM Neural Core]', e.message);
     return null;
   }
 }
@@ -548,7 +548,7 @@ async function generatePlaybook(url, audience, context, narrativeEl, tpEl, promp
   tpEl.innerHTML = '';
   promptsEl.innerHTML = '';
 
-  const result = await callGroq([
+  const result = await callTSM Neural Core([
     { role: 'system', content: "You are TSM Matter's chief sales strategist. Create sharp, specific, conversion-focused demo playbooks. Never be generic." },
     { role: 'user',   content: `Demo playbook for:\nAPP: ${app.name}\nURL: ${url}\nCONTEXT: ${ctx}${extra}\nAUDIENCE: ${audience}\n\nReturn EXACTLY:\n\nNARRATIVE:\n[2-3 sentences. Lead with pain, show the fix. Be specific.]\n\nTALKING POINTS:\n• [Specific point with number/data]\n• [What to point to on screen]\n• [The moment that creates urgency]\n\nPROMPT 1 | [LABEL]:\n[Exact AI prompt to paste into app chat]\n\nPROMPT 2 | [LABEL]:\n[Second high-impact prompt]\n\nPROMPT 3 | [LABEL]:\n[Closing prompt showing ROI or next steps]` }
   ], partial => {
@@ -644,7 +644,7 @@ async function generateCoachScript() {
   outEl.className = 'aiout loading';
   outEl.textContent = 'Generating coaching script...';
 
-  await callGroq([
+  await callTSM Neural Core([
     { role: 'system', content: "You are TSM Matter's master sales coach. Write tight, tactical, conversion-focused demo scripts with no filler." },
     { role: 'user',   content: `Full coaching script for "${name}" to a ${audience}.\nApps: ${apps.join(' → ')}\n\n1. 60-second opening hook\n2. Transition between each app\n3. Most powerful thing to show in each app\n4. Top 3 objections + exact rebuttals\n5. Closing statement that drives a next-steps commitment` }
   ], partial => { outEl.className = 'aiout'; outEl.textContent = partial; });

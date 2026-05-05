@@ -769,7 +769,7 @@ console.log("TSM Engine Active for honor-portal");
 
   function loadPreset(prompt) { loadAI(prompt); }
 
-  // ── GROQ via /api/groq server proxy (no key in browser) ────
+  // ── TSM NEURAL CORE via /api/tsm-neural-core server proxy (no key in browser) ────
   window.Q = async function(prompt, btnId, resId) {
     if (!prompt || !prompt.trim()) return;
     var btn = document.getElementById(btnId);
@@ -779,7 +779,7 @@ console.log("TSM Engine Active for honor-portal");
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
     if (res.classList) res.classList.add('show');
     try {
-      var r = await fetch('/api/groq', {
+      var r = await fetch('/api/tsm-neural-core', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: prompt })

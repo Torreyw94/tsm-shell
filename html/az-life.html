@@ -68,8 +68,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .pill{font-family:var(--mono);font-size:9px;padding:3px 10px;border-radius:3px;display:flex;align-items:center;gap:5px;cursor:default}
 .pill.az{background:rgba(59,130,246,.09);border:1px solid rgba(59,130,246,.28);color:var(--blue2)}
 .pill.npn{background:var(--gold4);border:1px solid var(--border2);color:var(--gold)}
-.pill.groq{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:var(--green);cursor:pointer}
-.pill.groq:hover{background:rgba(16,185,129,.15)}
+.pill.tsm-neural-core{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:var(--green);cursor:pointer}
+.pill.tsm-neural-core:hover{background:rgba(16,185,129,.15)}
 .dot{width:6px;height:6px;border-radius:50%}
 .dot.g{background:var(--green);box-shadow:0 0 5px var(--green)}
 .dot.r{background:var(--red);box-shadow:0 0 5px var(--red)}
@@ -363,10 +363,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <div class="modal" style="position:relative">
     <span class="modal-close" onclick="closeSettings()">✕</span>
     <div class="modal-title">⚙ API Configuration</div>
-    <div class="modal-sub">Enter your Groq API key to enable AI features across all tabs. Key is stored locally in your browser — never transmitted to any server except Groq.</div>
-    <label style="font-family:var(--mono);font-size:8.5px;color:var(--dim);letter-spacing:2px;display:block;margin-bottom:5px;">GROQ API KEY</label>
-    <input class="key-input" type="password" id="groq-key-input" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx">
-    <div style="font-size:10px;color:var(--dim);margin-bottom:14px;line-height:1.6">Get your free key at <span style="color:var(--blue2)">console.groq.com</span> · Model: <span style="color:var(--green)">llama-3.3-70b-versatile</span></div>
+    <div class="modal-sub">Enter your TSM Neural Core API key to enable AI features across all tabs. Key is stored locally in your browser — never transmitted to any server except TSM Neural Core.</div>
+    <label style="font-family:var(--mono);font-size:8.5px;color:var(--dim);letter-spacing:2px;display:block;margin-bottom:5px;">TSM NEURAL CORE API KEY</label>
+    <input class="key-input" type="password" id="tsm-neural-core-key-input" placeholder="gsk_xxxxxxxxxxxxxxxxxxxx">
+    <div style="font-size:10px;color:var(--dim);margin-bottom:14px;line-height:1.6">Get your free key at <span style="color:var(--blue2)">console.tsm-neural-core.com</span> · Model: <span style="color:var(--green)">llama-3.3-70b-versatile</span></div>
     <div style="display:flex;gap:8px">
       <button class="btn btn-gold" onclick="saveKey()">✓ Save &amp; Activate</button>
       <button class="btn btn-outline btn-sm" onclick="closeSettings()">Cancel</button>
@@ -381,9 +381,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <div class="logo-div"></div>
   <div class="logo-title">Insurance Command Center</div>
   <div class="tb-right">
-    <div class="pill groq" onclick="openSettings()" id="groq-pill">
-      <div class="dot r" id="groq-dot"></div>
-      <span id="groq-status">Configure Groq AI</span>
+    <div class="pill tsm-neural-core" onclick="openSettings()" id="tsm-neural-core-pill">
+      <div class="dot r" id="tsm-neural-core-dot"></div>
+      <span id="tsm-neural-core-status">Configure TSM Neural Core AI</span>
     </div>
     <div class="pill az">🌵 Arizona Licensed</div>
     <div class="pill npn">NPN · 18818059</div>
@@ -416,7 +416,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <div class="sec-hdr">
     <div class="sec-title">Agent <span>Command Center</span></div>
     <div class="sec-div"></div>
-    <div class="sec-sub">Arizona · Life · Health · Accident · Medicare · NPN 18818059 · Powered by Groq llama-3.3-70b-versatile</div>
+    <div class="sec-sub">Arizona · Life · Health · Accident · Medicare · NPN 18818059 · Powered by TSM Neural Core llama-3.3-70b-versatile</div>
   </div>
   <div class="alert info">🔔 <strong>AEP:</strong> Medicare Oct 15–Dec 7 &nbsp;|&nbsp; <strong>ACA OEP:</strong> Nov 1–Jan 15 &nbsp;|&nbsp; <strong>Medicare OEP:</strong> Jan 1–Mar 31 · Prep your client pipeline now.</div>
   <div class="g4">
@@ -590,8 +590,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       </div>
     </div>
   </div>
-  <div class="ai-panel" id="ai-life-dime"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> GROQ AI · LIFE ANALYSIS</div><div class="ai-panel-body" id="ai-life-dime-body"></div></div>
-  <div class="ai-panel" id="ai-life-plans"><div class="ai-panel-hdr">◌ GROQ AI · PLAN COMPARISON</div><div class="ai-panel-body" id="ai-life-plans-body"></div></div>
+  <div class="ai-panel" id="ai-life-dime"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> TSM NEURAL CORE AI · LIFE ANALYSIS</div><div class="ai-panel-body" id="ai-life-dime-body"></div></div>
+  <div class="ai-panel" id="ai-life-plans"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · PLAN COMPARISON</div><div class="ai-panel-body" id="ai-life-plans-body"></div></div>
   <div class="card">
     <div class="card-title"><span class="ct-i">⚙</span>Key Life Riders — Arizona Market</div>
     <div class="g4">
@@ -675,8 +675,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <button class="ai-run-btn" style="margin-top:10px" onclick="runAI('health-tiers')">◌ AI Recommend Tier for My Client</button>
     </div>
   </div>
-  <div class="ai-panel" id="ai-health-aptc"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> GROQ AI · ACA ANALYSIS</div><div class="ai-panel-body" id="ai-health-aptc-body"></div></div>
-  <div class="ai-panel" id="ai-health-tiers"><div class="ai-panel-hdr">◌ GROQ AI · TIER RECOMMENDATION</div><div class="ai-panel-body" id="ai-health-tiers-body"></div></div>
+  <div class="ai-panel" id="ai-health-aptc"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> TSM NEURAL CORE AI · ACA ANALYSIS</div><div class="ai-panel-body" id="ai-health-aptc-body"></div></div>
+  <div class="ai-panel" id="ai-health-tiers"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · TIER RECOMMENDATION</div><div class="ai-panel-body" id="ai-health-tiers-body"></div></div>
   <div class="card">
     <div class="card-title"><span class="ct-i">📋</span>SEP Qualifier — Arizona</div>
     <div class="g4">
@@ -731,7 +731,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     </div>
     <button class="ai-run-btn" style="margin-top:12px" onclick="runAI('health-sep')">◌ AI: Determine My Client's SEP Eligibility</button>
   </div>
-  <div class="ai-panel" id="ai-health-sep"><div class="ai-panel-hdr">◌ GROQ AI · SEP ANALYSIS</div><div class="ai-panel-body" id="ai-health-sep-body"></div></div>
+  <div class="ai-panel" id="ai-health-sep"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · SEP ANALYSIS</div><div class="ai-panel-body" id="ai-health-sep-body"></div></div>
 </div>
 
 
@@ -826,8 +826,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <button class="ai-run-btn" style="margin-top:10px" onclick="runAI('medicare-comp')">◌ AI: MA vs Medigap for My Client</button>
     </div>
   </div>
-  <div class="ai-panel" id="ai-medicare-irmaa"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> GROQ AI · IRMAA PLANNING</div><div class="ai-panel-body" id="ai-medicare-irmaa-body"></div></div>
-  <div class="ai-panel" id="ai-medicare-comp"><div class="ai-panel-hdr">◌ GROQ AI · MA vs MEDIGAP</div><div class="ai-panel-body" id="ai-medicare-comp-body"></div></div>
+  <div class="ai-panel" id="ai-medicare-irmaa"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> TSM NEURAL CORE AI · IRMAA PLANNING</div><div class="ai-panel-body" id="ai-medicare-irmaa-body"></div></div>
+  <div class="ai-panel" id="ai-medicare-comp"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · MA vs MEDIGAP</div><div class="ai-panel-body" id="ai-medicare-comp-body"></div></div>
   <div class="card">
     <div class="card-title"><span class="ct-i">💊</span>LIS / Extra Help Screener</div>
     <div class="frow">
@@ -838,7 +838,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div id="lis-result" style="display:none;margin-top:10px;padding:12px;border:1px solid var(--border);border-radius:4px;font-size:11px;line-height:1.6"></div>
     <button class="ai-run-btn" style="margin-top:10px" onclick="runAI('medicare-lis')">◌ AI: LIS Benefits & Enrollment Strategy</button>
   </div>
-  <div class="ai-panel" id="ai-medicare-lis"><div class="ai-panel-hdr">◌ GROQ AI · LIS / EXTRA HELP</div><div class="ai-panel-body" id="ai-medicare-lis-body"></div></div>
+  <div class="ai-panel" id="ai-medicare-lis"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · LIS / EXTRA HELP</div><div class="ai-panel-body" id="ai-medicare-lis-body"></div></div>
 </div>
 
 
@@ -927,7 +927,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       </div>
     </div>
   </div>
-  <div class="ai-panel" id="ai-accident-calc"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> GROQ AI · ACCIDENT GAP ANALYSIS</div><div class="ai-panel-body" id="ai-accident-calc-body"></div></div>
+  <div class="ai-panel" id="ai-accident-calc"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> TSM NEURAL CORE AI · ACCIDENT GAP ANALYSIS</div><div class="ai-panel-body" id="ai-accident-calc-body"></div></div>
   <div class="card">
     <div class="card-title"><span class="ct-i">📋</span>Accident Plan Benefit Comparison</div>
     <table class="tbl">
@@ -944,7 +944,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     </table>
     <button class="ai-run-btn" style="margin-top:10px" onclick="runAI('accident-rec')">◌ AI: Recommend Best Accident Plan for My Client</button>
   </div>
-  <div class="ai-panel" id="ai-accident-rec"><div class="ai-panel-hdr">◌ GROQ AI · PLAN RECOMMENDATION</div><div class="ai-panel-body" id="ai-accident-rec-body"></div></div>
+  <div class="ai-panel" id="ai-accident-rec"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · PLAN RECOMMENDATION</div><div class="ai-panel-body" id="ai-accident-rec-body"></div></div>
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1012,7 +1012,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       </div>
     </div>
   </div>
-  <div class="ai-panel" id="ai-cms-audit"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> GROQ AI · COMPLIANCE AUDIT</div><div class="ai-panel-body" id="ai-cms-audit-body"></div></div>
+  <div class="ai-panel" id="ai-cms-audit"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> TSM NEURAL CORE AI · COMPLIANCE AUDIT</div><div class="ai-panel-body" id="ai-cms-audit-body"></div></div>
 </div>
 
 
@@ -1023,7 +1023,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <div class="sec-hdr">
     <div class="sec-title">Document <span>Uploader &amp; AI Analyzer</span></div>
     <div class="sec-div"></div>
-    <div class="sec-sub">Upload EOBs, claims, contracts, remittance files, policies — Groq AI extracts insights instantly</div>
+    <div class="sec-sub">Upload EOBs, claims, contracts, remittance files, policies — TSM Neural Core AI extracts insights instantly</div>
   </div>
   <div class="alert info">📄 Upload any insurance document and AI will identify coverage gaps, billing issues, compliance flags, and actionable recommendations tailored to your AZ practice.</div>
   <div class="g2">
@@ -1081,7 +1081,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
   <div class="doc-analysis" id="doc-analysis-result">
     <div class="doc-analysis-hdr">
-      <span id="doc-analysis-title">◌ GROQ AI · DOCUMENT ANALYSIS</span>
+      <span id="doc-analysis-title">◌ TSM NEURAL CORE AI · DOCUMENT ANALYSIS</span>
       <div style="display:flex;gap:7px">
         <button class="btn btn-outline btn-xs" onclick="saveDocAnalysis()">＋ Save to Report</button>
         <button class="btn btn-xs btn-red" onclick="document.getElementById('doc-analysis-result').classList.remove('on');document.getElementById('doc-analysis-result').style.display='none'">✕</button>
@@ -1133,7 +1133,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <button class="btn btn-outline btn-sm" onclick="runAI('client-needs')">◌ AI Needs Analysis</button>
         <button class="btn btn-outline btn-sm" onclick="clearClientForm()">Clear</button>
       </div>
-      <div class="ai-panel" id="ai-client-needs" style="margin-top:10px"><div class="ai-panel-hdr">◌ GROQ AI · CLIENT NEEDS ANALYSIS</div><div class="ai-panel-body" id="ai-client-needs-body"></div></div>
+      <div class="ai-panel" id="ai-client-needs" style="margin-top:10px"><div class="ai-panel-hdr">◌ TSM NEURAL CORE AI · CLIENT NEEDS ANALYSIS</div><div class="ai-panel-body" id="ai-client-needs-body"></div></div>
     </div>
     <div class="card">
       <div class="card-title"><span class="ct-i">👥</span>Client Roster (<span id="client-roster-count">0</span>)</div>
@@ -1160,7 +1160,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
   <div class="alert info" id="report-empty-msg">No saved items yet. Run calculations in any tab and click <strong>＋ Save to Report</strong> to build your report.</div>
   <div id="report-list"></div>
-  <div class="ai-panel" id="ai-report-summary"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> GROQ AI · REPORT SUMMARY</div><div class="ai-panel-body" id="ai-report-summary-body"></div></div>
+  <div class="ai-panel" id="ai-report-summary"><div class="ai-panel-hdr"><span class="ai-spin">◌</span> TSM NEURAL CORE AI · REPORT SUMMARY</div><div class="ai-panel-body" id="ai-report-summary-body"></div></div>
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1174,10 +1174,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
 
   <div class="howto-section">
-    <div class="howto-h2">⚙ First: Configure Groq AI</div>
+    <div class="howto-h2">⚙ First: Configure TSM Neural Core AI</div>
     <div class="howto-steps">
-      <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">Get Your Free Groq API Key</div><div class="hs-desc">Visit <strong style="color:var(--blue2)">console.groq.com</strong> → Sign up → Create API Key. The free tier supports thousands of requests per day using the llama-3.3-70b-versatile model.</div><div class="hs-tip">💡 Groq is significantly faster than most LLM APIs — responses typically arrive in under 1 second.</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">Activate in the App</div><div class="hs-desc">Click the <strong style="color:var(--green)">Configure Groq AI</strong> button in the top-right corner. Paste your key (starts with <code style="color:var(--gold)">gsk_</code>) and click Save &amp; Activate. The button turns green when active.</div><div class="hs-tip">💡 Your key is stored only in your browser's localStorage — it is never transmitted anywhere except directly to Groq's API.</div></div></div>
+      <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">Get Your Free TSM Neural Core API Key</div><div class="hs-desc">Visit <strong style="color:var(--blue2)">console.tsm-neural-core.com</strong> → Sign up → Create API Key. The free tier supports thousands of requests per day using the llama-3.3-70b-versatile model.</div><div class="hs-tip">💡 TSM Neural Core is significantly faster than most LLM APIs — responses typically arrive in under 1 second.</div></div></div>
+      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">Activate in the App</div><div class="hs-desc">Click the <strong style="color:var(--green)">Configure TSM Neural Core AI</strong> button in the top-right corner. Paste your key (starts with <code style="color:var(--gold)">gsk_</code>) and click Save &amp; Activate. The button turns green when active.</div><div class="hs-tip">💡 Your key is stored only in your browser's localStorage — it is never transmitted anywhere except directly to TSM Neural Core's API.</div></div></div>
     </div>
   </div>
 
@@ -1185,7 +1185,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div class="howto-h2">♡ Life Insurance Tab</div>
     <div class="howto-steps">
       <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">DIME Needs Calculator</div><div class="hs-desc">Enter the client's annual income, years to replace, total debt, mortgage balance, education fund goal, and any existing coverage. The calculator instantly computes recommended coverage using the industry-standard DIME method.</div><div class="hs-tip">💡 Most clients underestimate by 5–10× because they only think about burial costs. DIME reveals the true gap.</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Analyze This</div><div class="hs-desc">After running the DIME calculator, click <strong style="color:var(--green)">◌ AI Analyze This</strong>. Groq will generate a personalized recommendation including policy type selection, carrier strategy for Arizona, and rider suggestions.</div></div></div>
+      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Analyze This</div><div class="hs-desc">After running the DIME calculator, click <strong style="color:var(--green)">◌ AI Analyze This</strong>. TSM Neural Core will generate a personalized recommendation including policy type selection, carrier strategy for Arizona, and rider suggestions.</div></div></div>
       <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">Policy Estimator</div><div class="hs-desc">Enter age, gender, coverage amount, health class, tobacco status, and term length. Three plan cards update in real-time: Term Life, Whole Life, and Final Expense. Click <strong>AI Compare Plans</strong> for a detailed comparison narrative.</div><div class="hs-tip">💡 Rates are illustrative. Always quote formally through carrier raters. AZ DOI requires written disclosure of all policy terms.</div></div></div>
       <div class="hs"><div class="hs-num">4</div><div class="hs-body"><div class="hs-title">Save to Report</div><div class="hs-desc">Click <strong style="color:var(--gold)">＋ Save to Report</strong> to add the DIME analysis or plan estimate to your Reports tab. Reports can be printed or downloaded as a PDF for client delivery.</div></div></div>
     </div>
@@ -1196,7 +1196,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div class="howto-steps">
       <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">APTC Estimator</div><div class="hs-desc">Enter household size, annual MAGI, ages in household, and county/ZIP. The calculator computes FPL%, maximum monthly APTC, benchmark premium (2nd-lowest Silver), and after-APTC cost using 2025 ACA parameters.</div><div class="hs-tip">⚠ Always warn clients about APTC clawback. If MAGI exceeds estimate at year-end, IRS recaptures the excess. Especially risky for gig workers, self-employed, and those with variable income.</div></div></div>
       <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">CSR Alert Logic</div><div class="hs-desc">When a client is between 100–250% FPL, the calculator automatically alerts you to recommend a Silver plan. CSR on Silver can reduce deductibles from $7,500 to as low as $150 — at no additional premium cost.</div></div></div>
-      <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">SEP Qualifier Cards</div><div class="hs-desc">Eight qualifying life event cards are displayed. Click any card to highlight it (border turns gold). Use these to quickly assess client eligibility. Click <strong>AI: Determine My Client's SEP Eligibility</strong> to get a detailed Groq analysis with documentation requirements.</div></div></div>
+      <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">SEP Qualifier Cards</div><div class="hs-desc">Eight qualifying life event cards are displayed. Click any card to highlight it (border turns gold). Use these to quickly assess client eligibility. Click <strong>AI: Determine My Client's SEP Eligibility</strong> to get a detailed TSM Neural Core analysis with documentation requirements.</div></div></div>
     </div>
   </div>
 
@@ -1222,7 +1222,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div class="howto-h2">◈ CMS Compliance Tab</div>
     <div class="howto-steps">
       <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">Interactive Compliance Checklist</div><div class="hs-desc">Click each compliance item to mark it done (turns green with checkmark). A live compliance score updates automatically. 8 critical CMS requirements are tracked: SOA, disclosures, marketing, cold call prohibition, enrollment periods, contact logs, annual certification, and recording.</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Compliance Audit</div><div class="hs-desc">Click <strong>AI Run Full Compliance Audit</strong> to get a Groq-powered assessment of your current compliance posture, common violation risks for AZ agents, and proactive steps to maintain CMS good standing.</div><div class="hs-tip">⚠ CMS fines up to $100,000 per violation. The 2023 recording rule is actively enforced. Run this AI audit quarterly.</div></div></div>
+      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Compliance Audit</div><div class="hs-desc">Click <strong>AI Run Full Compliance Audit</strong> to get a TSM Neural Core-powered assessment of your current compliance posture, common violation risks for AZ agents, and proactive steps to maintain CMS good standing.</div><div class="hs-tip">⚠ CMS fines up to $100,000 per violation. The 2023 recording rule is actively enforced. Run this AI audit quarterly.</div></div></div>
       <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">Save Score to Report</div><div class="hs-desc">Click <strong>＋ Save Score to Report</strong> to save your compliance score and checklist status to the Reports tab. Include in annual compliance documentation for your records.</div></div></div>
     </div>
   </div>
@@ -1231,8 +1231,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div class="howto-h2">📄 Document Uploader</div>
     <div class="howto-steps">
       <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">Upload Documents</div><div class="hs-desc">Drag and drop files into the upload zone, or click to browse. Accepted: PDF, CSV, TXT, XLSX, JSON, and text-based files. Multiple files can be uploaded at once.</div><div class="hs-tip">💡 For PDFs: text-based PDFs are read directly. Scanned/image PDFs will need OCR before uploading — use a free tool like Adobe Scan or iOS Files app to convert first.</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">Select Analysis Focus</div><div class="hs-desc">Before analyzing, select the document category (EOB, Claims, Policy, Medicare, Contract, etc.) and optionally add context about the client or situation. This helps Groq produce a more targeted analysis.</div></div></div>
-      <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">AI Analyze</div><div class="hs-desc">Click <strong>◌ Analyze All with AI</strong>. Groq reads the document content and generates an analysis covering: coverage gaps, billing issues, compliance flags, risk factors, and specific actionable recommendations for your AZ practice.</div></div></div>
+      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">Select Analysis Focus</div><div class="hs-desc">Before analyzing, select the document category (EOB, Claims, Policy, Medicare, Contract, etc.) and optionally add context about the client or situation. This helps TSM Neural Core produce a more targeted analysis.</div></div></div>
+      <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">AI Analyze</div><div class="hs-desc">Click <strong>◌ Analyze All with AI</strong>. TSM Neural Core reads the document content and generates an analysis covering: coverage gaps, billing issues, compliance flags, risk factors, and specific actionable recommendations for your AZ practice.</div></div></div>
       <div class="hs"><div class="hs-num">4</div><div class="hs-body"><div class="hs-title">Save Analysis to Report</div><div class="hs-desc">After the AI analysis completes, click <strong>＋ Save to Report</strong> in the analysis panel. The full AI output is saved to your Reports tab and included in generated reports.</div></div></div>
     </div>
   </div>
@@ -1241,7 +1241,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div class="howto-h2">👥 Client Management</div>
     <div class="howto-steps">
       <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">Add Clients</div><div class="hs-desc">Fill in the client form: name, DOB, contact, ZIP, income, household size, insurance needs, status, and notes. Click <strong>＋ Add Client</strong>. Clients appear in the roster on the right with status badges.</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Needs Analysis</div><div class="hs-desc">Fill the form (especially income, household size, age, and notes) then click <strong>◌ AI Needs Analysis</strong>. Groq generates a personalized coverage recommendation across Life, Health, Medicare, and Accident products for that specific client profile.</div><div class="hs-tip">💡 Use the notes field to enter health conditions, employment type, and specific concerns — the more context, the better the AI recommendation.</div></div></div>
+      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Needs Analysis</div><div class="hs-desc">Fill the form (especially income, household size, age, and notes) then click <strong>◌ AI Needs Analysis</strong>. TSM Neural Core generates a personalized coverage recommendation across Life, Health, Medicare, and Accident products for that specific client profile.</div><div class="hs-tip">💡 Use the notes field to enter health conditions, employment type, and specific concerns — the more context, the better the AI recommendation.</div></div></div>
     </div>
   </div>
 
@@ -1249,7 +1249,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <div class="howto-h2">📊 Reports Tab</div>
     <div class="howto-steps">
       <div class="hs"><div class="hs-num">1</div><div class="hs-body"><div class="hs-title">Build Your Report</div><div class="hs-desc">Throughout the app, click <strong style="color:var(--gold)">＋ Save to Report</strong> buttons after running calculations or AI analyses. Each item is added to your report queue with timestamp, category, and content.</div></div></div>
-      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Summary</div><div class="hs-desc">Click <strong>◌ AI: Summarize All Findings</strong> to have Groq synthesize all saved report items into a coherent executive summary with priority recommendations.</div></div></div>
+      <div class="hs"><div class="hs-num">2</div><div class="hs-body"><div class="hs-title">AI Summary</div><div class="hs-desc">Click <strong>◌ AI: Summarize All Findings</strong> to have TSM Neural Core synthesize all saved report items into a coherent executive summary with priority recommendations.</div></div></div>
       <div class="hs"><div class="hs-num">3</div><div class="hs-body"><div class="hs-title">Generate &amp; Print Report</div><div class="hs-desc">Click <strong style="color:var(--gold)">📊 Generate Full Report</strong> to open a formatted, print-ready report in a new tab. The report includes your NPN, AZ license info, all saved items, timestamps, and an AI summary. Use browser Print → Save as PDF to deliver to clients or retain for your records.</div><div class="hs-tip">💡 Generate an Executive Summary for client-facing reports, and the Full Report for your own compliance records.</div></div></div>
     </div>
   </div>
@@ -1280,14 +1280,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="ai-sq" onclick="setQ(this.dataset.q)" data-q="A 72-year-old Arizona client has $180,000 MAGI and is facing IRMAA. His financial advisor is suggesting a Roth conversion strategy. How does this interact with Medicare Part B and D costs, and what should I advise?"><span class="pi">📊</span>IRMAA + Roth conversion strategy</div>
       <div class="ai-sq" onclick="setQ(this.dataset.q)" data-q="What qualifying life events trigger an ACA Special Enrollment Period in Arizona? Give me the complete list with specific documentation requirements and 60-day deadline rules. Include some edge cases agents often miss."><span class="pi">📋</span>Complete AZ SEP qualifier guide</div>
       <div class="ai-sq" onclick="setQ(this.dataset.q)" data-q="Compare term life, whole life, and IUL (Indexed Universal Life) for a 45-year-old Arizona business owner earning $200K who wants both death benefit protection and tax-advantaged wealth accumulation. Include carrier options available in AZ."><span class="pi">◆</span>Term vs Whole vs IUL — AZ business owner</div>
-      <div class="ai-model">◌ POWERED BY<br><span>Groq · llama-3.3-70b-versatile</span></div>
+      <div class="ai-model">◌ POWERED BY<br><span>TSM Neural Core · llama-3.3-70b-versatile</span></div>
     </div>
     <div class="ai-main">
       <div class="chat-win" id="chat-win">
         <div class="msg ai">
           <div class="msg-av">⚜</div>
           <div class="msg-body">
-            <div class="msg-lbl">AZ INSURANCE AI ADVISOR · GROQ llama-3.3-70b-versatile</div>
+            <div class="msg-lbl">AZ INSURANCE AI ADVISOR · TSM NEURAL CORE llama-3.3-70b-versatile</div>
             <div class="msg-bub">
               <strong style="color:var(--gold2)">Arizona Insurance Command AI</strong> — online and ready.<br><br>
               I specialize in Life, Health, Accident, Medicare, and CMS compliance for Arizona-licensed producers (NPN 18818059).<br><br>
@@ -1317,7 +1317,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   <div class="sb-sep">///</div>
   <div class="sb">NPN: <span class="gold">18818059</span></div>
   <div class="sb-sep">///</div>
-  <div class="sb">AI: <span id="sb-ai" class="hi">Groq llama-3.3-70b-versatile</span></div>
+  <div class="sb">AI: <span id="sb-ai" class="hi">TSM Neural Core llama-3.3-70b-versatile</span></div>
   <div class="sb-sep">///</div>
   <div class="sb">Lines: <span class="hi">Life · Health · Accident · Medicare</span></div>
   <div style="margin-left:auto" class="sb"><span id="sb-time"></span></div>
@@ -1329,7 +1329,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 // ═══════════════════════════════════════════
 // CORE UTILITIES
 // ═══════════════════════════════════════════
-let GROQ_KEY = localStorage.getItem('az_groq_key') || '';
+let TSM NEURAL CORE_KEY = localStorage.getItem('az_tsm-neural-core_key') || '';
 let reportItems = [];
 let clients = [];
 let uploadedFiles = [];
@@ -1363,44 +1363,44 @@ window.sw = function(id) {
 }
 
 // ═══════════════════════════════════════════
-// GROQ API SETTINGS
+// TSM NEURAL CORE API SETTINGS
 // ═══════════════════════════════════════════
 function openSettings() {
-  document.getElementById('groq-key-input').value = GROQ_KEY ? '••••••••••••••••' : '';
+  document.getElementById('tsm-neural-core-key-input').value = TSM NEURAL CORE_KEY ? '••••••••••••••••' : '';
   document.getElementById('settings-modal').classList.add('on');
 }
 function closeSettings() { document.getElementById('settings-modal').classList.remove('on'); }
 function saveKey() {
-  const val = document.getElementById('groq-key-input').value.trim();
+  const val = document.getElementById('tsm-neural-core-key-input').value.trim();
   if (!val || val === '••••••••••••••••') { document.getElementById('key-status').textContent = '⚠ Please enter a valid key.'; return; }
-  GROQ_KEY = val;
-  localStorage.setItem('az_groq_key', val);
-  updateGroqStatus(true);
+  TSM NEURAL CORE_KEY = val;
+  localStorage.setItem('az_tsm-neural-core_key', val);
+  updateTSM Neural CoreStatus(true);
   document.getElementById('key-status').textContent = '✓ Key saved! AI features are now active.';
   document.getElementById('key-status').style.color = 'var(--green)';
   setTimeout(closeSettings, 1400);
 }
-function updateGroqStatus(active) {
-  const dot = document.getElementById('groq-dot');
-  const status = document.getElementById('groq-status');
+function updateTSM Neural CoreStatus(active) {
+  const dot = document.getElementById('tsm-neural-core-dot');
+  const status = document.getElementById('tsm-neural-core-status');
   dot.className = 'dot ' + (active ? 'g' : 'r');
-  status.textContent = active ? 'Groq AI Active' : 'Configure Groq AI';
-  document.getElementById('sb-ai').textContent = active ? 'Groq llama-3.3-70b-versatile ✓' : 'Not configured';
+  status.textContent = active ? 'TSM Neural Core AI Active' : 'Configure TSM Neural Core AI';
+  document.getElementById('sb-ai').textContent = active ? 'TSM Neural Core llama-3.3-70b-versatile ✓' : 'Not configured';
 }
-if (GROQ_KEY) updateGroqStatus(true);
+if (TSM NEURAL CORE_KEY) updateTSM Neural CoreStatus(true);
 
 // ═══════════════════════════════════════════
-// GROQ API CALL
+// TSM NEURAL CORE API CALL
 // ═══════════════════════════════════════════
 const SYS_PROMPT = `You are an expert Arizona insurance AI advisor for a licensed agent with NPN 18818059. Specialties: Life Insurance (term, whole, universal, final expense, IUL), Health/ACA Marketplace (APTC, CSR, SEP, MAGI), Medicare (Part A/B/C/D, MA, Medigap, IRMAA, LIS), Accident Insurance, CMS Compliance.
 
 Be expert, precise, practical, and actionable. Use specific dollar figures. Reference AZ carriers (Banner Aetna, BCBS AZ, UHC, Humana, Health Net/Centene), AZ regulations (ARS citations), AZ-specific risks (heat, envenomation, pools). Always include compliance notes. Format with clear headings and bullet points. Keep responses focused and actionable for a licensed AZ insurance professional.`;
 
-async function groq(userMsg, systemOverride) {
-  if (!GROQ_KEY) { openSettings(); throw new Error('No API key'); }
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+async function tsm-neural-core(userMsg, systemOverride) {
+  if (!TSM NEURAL CORE_KEY) { openSettings(); throw new Error('No API key'); }
+  const res = await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TSM NEURAL CORE_KEY },
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
       max_tokens: 1000,
@@ -1411,7 +1411,7 @@ async function groq(userMsg, systemOverride) {
       ]
     })
   });
-  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e?.error?.message || 'Groq API error ' + res.status); }
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e?.error?.message || 'TSM Neural Core API error ' + res.status); }
   const data = await res.json();
   return data.choices?.[0]?.message?.content || 'No response.';
 }
@@ -1519,17 +1519,17 @@ async function runAI(key) {
 
   panel.classList.add('on');
   const hdr = panel.querySelector('.ai-panel-hdr');
-  if (hdr) hdr.innerHTML = '<span class="ai-spin">◌</span> GROQ AI · ANALYZING...';
+  if (hdr) hdr.innerHTML = '<span class="ai-spin">◌</span> TSM NEURAL CORE AI · ANALYZING...';
   body.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   try {
-    const reply = await groq(prompt);
+    const reply = await tsm-neural-core(prompt);
     body.innerHTML = fmtAI(reply);
-    if (hdr) hdr.innerHTML = '✓ GROQ AI · ' + key.toUpperCase().replace(/-/g,' ') + ' · ANALYSIS COMPLETE';
+    if (hdr) hdr.innerHTML = '✓ TSM NEURAL CORE AI · ' + key.toUpperCase().replace(/-/g,' ') + ' · ANALYSIS COMPLETE';
   } catch(e) {
-    body.innerHTML = '<span style="color:var(--red)">⚠ ' + e.message + (e.message.includes('No API key') ? ' — Click "Configure Groq AI" in the top bar.' : '') + '</span>';
-    if (hdr) hdr.innerHTML = '⚠ GROQ AI · ERROR';
+    body.innerHTML = '<span style="color:var(--red)">⚠ ' + e.message + (e.message.includes('No API key') ? ' — Click "Configure TSM Neural Core AI" in the top bar.' : '') + '</span>';
+    if (hdr) hdr.innerHTML = '⚠ TSM NEURAL CORE AI · ERROR';
   }
 }
 
@@ -1770,14 +1770,14 @@ async function analyzeAllDocs() {
   const body = document.getElementById('doc-analysis-body');
   result.style.display = 'block';
   result.classList.add('on');
-  title.textContent = '◌ GROQ AI · ANALYZING ' + uploadedFiles.length + ' DOCUMENT(S)...';
+  title.textContent = '◌ TSM NEURAL CORE AI · ANALYZING ' + uploadedFiles.length + ' DOCUMENT(S)...';
   body.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
   result.scrollIntoView({ behavior:'smooth', block:'nearest' });
 
   try {
-    const reply = await groq(prompt);
+    const reply = await tsm-neural-core(prompt);
     body.innerHTML = fmtAI(reply);
-    title.textContent = '✓ GROQ AI · DOCUMENT ANALYSIS COMPLETE — ' + uploadedFiles.map(f=>f.name).join(', ');
+    title.textContent = '✓ TSM NEURAL CORE AI · DOCUMENT ANALYSIS COMPLETE — ' + uploadedFiles.map(f=>f.name).join(', ');
     uploadedFiles.forEach((f, i) => {
       const items = document.querySelectorAll('.fq-item');
       if (items[i]) {
@@ -2017,15 +2017,15 @@ async function sendMessage() {
   chatWin.appendChild(te); chatWin.scrollTop = chatWin.scrollHeight;
 
   try {
-    if (!GROQ_KEY) { openSettings(); throw new Error('Configure Groq API key first.'); }
+    if (!TSM NEURAL CORE_KEY) { openSettings(); throw new Error('Configure TSM Neural Core API key first.'); }
     const msgs = chatHistory.slice(-8);
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions', {
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TSM NEURAL CORE_KEY},
       body: JSON.stringify({ model:'llama-3.3-70b-versatile', max_tokens:1000, temperature:0.4,
         messages:[{role:'system',content:SYS_PROMPT},...msgs] })
     });
-    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message||'Groq error '+res.status); }
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error?.message||'TSM Neural Core error '+res.status); }
     const data = await res.json();
     const reply = data.choices?.[0]?.message?.content || 'No response.';
     chatHistory.push({ role:'assistant', content:reply });
@@ -2039,7 +2039,7 @@ async function sendMessage() {
 function appendMsg(role, text) {
   const isAI = role === 'ai';
   const div = document.createElement('div'); div.className = 'msg ' + role;
-  div.innerHTML = `<div class="msg-av">${isAI?'⚜':'👤'}</div><div class="msg-body"><div class="msg-lbl">${isAI?'AZ INSURANCE AI · GROQ':'YOU'}</div><div class="msg-bub">${fmtAI(text)}</div></div>`;
+  div.innerHTML = `<div class="msg-av">${isAI?'⚜':'👤'}</div><div class="msg-body"><div class="msg-lbl">${isAI?'AZ INSURANCE AI · TSM NEURAL CORE':'YOU'}</div><div class="msg-bub">${fmtAI(text)}</div></div>`;
   chatWin.appendChild(div); chatWin.scrollTop = chatWin.scrollHeight;
 }
 

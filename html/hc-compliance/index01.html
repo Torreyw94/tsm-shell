@@ -125,9 +125,9 @@ tr:hover td{background:#0f1f0f}
 </div>
 
 <script>
-// ── GROQ API KEY — replace with your real key ──
-var GROQ_KEY = 'YOUR_GROQ_API_KEY_HERE';
-var GROQ_MODEL = 'llama-3.1-8b-instant';
+// ── TSM NEURAL CORE API KEY — replace with your real key ──
+var TSM NEURAL CORE_KEY = 'YOUR_TSM NEURAL CORE_API_KEY_HERE';
+var TSM NEURAL CORE_MODEL = 'llama-3.1-8b-instant';
 
 function loadAI(prompt){
   var aiBtn=null;
@@ -149,10 +149,10 @@ async function Q(prompt,btnId,resId){
   btn.disabled=true;
   res.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
   try{
-    var r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    var r=await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-      body:JSON.stringify({model:GROQ_MODEL,messages:[{role:'user',content:prompt}],max_tokens:1024,temperature:0.4})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TSM NEURAL CORE_KEY},
+      body:JSON.stringify({model:TSM NEURAL CORE_MODEL,messages:[{role:'user',content:prompt}],max_tokens:1024,temperature:0.4})
     });
     if(!r.ok){var e=await r.text();throw new Error('HTTP '+r.status+': '+e);}
     var d=await r.json();

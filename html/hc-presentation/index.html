@@ -259,7 +259,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="pc-desc">Dee delegates directly from the BNCA console. Tasks hit the HC Strategist queue with owner lane, timestamp, and status — visible system-wide.</div>
     </div>
     <div class="prob-card p4">
-      <div class="pc-label">Groq AI · live insight</div>
+      <div class="pc-label">TSM Neural Core AI · live insight</div>
       <div class="pc-val">llama-3.3-70b</div>
       <div class="pc-desc">Every task pull returns a real-time AI recommendation. Not static logic — live inference on the current queue state.</div>
     </div>
@@ -288,7 +288,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="arch-num">03</div>
       <div class="arch-icon">◎</div>
       <div class="arch-name">Main Strategist</div>
-      <div class="arch-route">/api/hc/ask<br/>Groq · llama-3.3-70b<br/>deep analysis engine</div>
+      <div class="arch-route">/api/hc/ask<br/>TSM Neural Core · llama-3.3-70b<br/>deep analysis engine</div>
       <div class="arch-arrow">→</div>
     </div>
     <div class="arch-node hub">
@@ -306,7 +306,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <span style="color:var(--text-muted)">→ DEE loads BNCA →</span>
     <strong>Task delegated</strong>
     <span style="color:var(--text-muted)">→</span>
-    <strong>Groq insight delivered</strong>
+    <strong>TSM Neural Core insight delivered</strong>
   </div>
 </div>
 
@@ -332,7 +332,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="fconn" id="fc3"></div>
     <div class="fstep"><div class="fnode" id="fn4">5</div><div class="flabel" id="fl4">Task delegated</div></div>
     <div class="fconn" id="fc4"></div>
-    <div class="fstep"><div class="fnode" id="fn5">6</div><div class="flabel" id="fl5">Groq delivers insight</div></div>
+    <div class="fstep"><div class="fnode" id="fn5">6</div><div class="flabel" id="fl5">TSM Neural Core delivers insight</div></div>
   </div>
 
   <!-- 4 panels -->
@@ -349,7 +349,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     </div>
     <div class="sim-panel" id="p-ms" style="order:3">
       <div class="panel-header"><div class="pdot" id="pd-ms"></div><span class="panel-name">Main Strategist</span></div>
-      <div class="panel-route">POST /api/hc/ask · Groq</div>
+      <div class="panel-route">POST /api/hc/ask · TSM Neural Core</div>
       <div class="panel-out" id="po-ms"><span style="color:var(--text-muted)">Waiting...</span></div>
     </div>
     <div class="sim-panel" id="p-hcs" style="order:2">
@@ -531,7 +531,7 @@ async function runSim(){
 
   // Step 3 – Main Strategist
   await delay(500);fstep(2,'go');spanel('ms','firing');
-  slog('Main Strategist: POST /api/hc/ask · Groq firing...');
+  slog('Main Strategist: POST /api/hc/ask · TSM Neural Core firing...');
   try{
     const r=await fetch(BASE+'/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'Scottsdale-Shea: denial 12.4%, auth delay 56h, queue 31, $229,850 at risk. Highest-priority action?',system:'HonorHealth',location:'Scottsdale - Shea'})});
     const d=await r.json();
@@ -589,9 +589,9 @@ async function runSim(){
   }
   document.getElementById('fc4').className='fconn done';
 
-  // Step 6 – Groq task insight
+  // Step 6 – TSM Neural Core task insight
   await delay(600);fstep(5,'go');spanel('hcs','firing');
-  slog('Fetching Groq AI insight · GET /api/hc/tasks...');
+  slog('Fetching TSM Neural Core AI insight · GET /api/hc/tasks...');
   try{
     const r=await fetch(BASE+'/api/hc/tasks?office=Scottsdale%20-%20Shea');
     const d=await r.json();
@@ -599,11 +599,11 @@ async function runSim(){
     const tc=(d?.tasks||[]).length;
     fstep(5,'done');spanel('hcs','active');
     if(ins){
-      sout('hcs',`<div class="pv">Groq AI · ${tc} task(s) in queue</div><div class="pg">${ins.slice(0,220)}${ins.length>220?'...':''}</div>`);
-      slog('Groq insight delivered ✓','lok');
+      sout('hcs',`<div class="pv">TSM Neural Core AI · ${tc} task(s) in queue</div><div class="pg">${ins.slice(0,220)}${ins.length>220?'...':''}</div>`);
+      slog('TSM Neural Core insight delivered ✓','lok');
     }else{
       sout('hcs',`<div class="pv">${tc} task(s) in queue · ID ${tid}</div>
-        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">Groq key active on server</div>`);
+        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">TSM Neural Core key active on server</div>`);
       slog('Task queue synced','lok');
     }
   }catch{
