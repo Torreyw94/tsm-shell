@@ -1,3 +1,58 @@
+
+// 🔥 HARD BLOCK all legacy music endpoints (fetch + XHR)
+(function(){
+  if(window.__TSM_MUSIC_LEGACY_BLOCK__) return;
+  window.__TSM_MUSIC_LEGACY_BLOCK__ = true;
+
+  const isLegacyMusic = function(url){
+    return typeof url === "string" &&
+      url.includes("/api/music/") &&
+      !url.includes("/api/music/agent-pass");
+  };
+
+  // --- Block fetch ---
+  const origFetch = window.fetch;
+  window.fetch = function(url, opts){
+    const u = typeof url === "string" ? url : (url && url.url) || "";
+    if(isLegacyMusic(u)){
+      console.warn("⛔ Blocked legacy fetch:", u);
+      return Promise.resolve(new Response(JSON.stringify({ ok:true, blocked:true, endpoint:u }), {
+        status:200,
+        headers:{ "Content-Type":"application/json" }
+      }));
+    }
+    return origFetch.apply(this, arguments);
+  };
+
+  // --- Block XHR ---
+  const origOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url){
+    this.__tsmBlockedMusic = false;
+    if(isLegacyMusic(url)){
+      console.warn("⛔ Blocked legacy XHR:", url);
+      this.__tsmBlockedMusic = true;
+      this.__tsmBlockedUrl = url;
+    }
+    return origOpen.apply(this, arguments);
+  };
+
+  const origSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.send = function(){
+    if(this.__tsmBlockedMusic){
+      try{
+        Object.defineProperty(this, "readyState", { value:4 });
+        Object.defineProperty(this, "status", { value:200 });
+        Object.defineProperty(this, "responseText", { value:JSON.stringify({ok:true,blocked:true,endpoint:this.__tsmBlockedUrl}) });
+        Object.defineProperty(this, "response", { value:JSON.stringify({ok:true,blocked:true,endpoint:this.__tsmBlockedUrl}) });
+      }catch(e){}
+      if(typeof this.onreadystatechange === "function") this.onreadystatechange();
+      if(typeof this.onload === "function") this.onload();
+      return;
+    }
+    return origSend.apply(this, arguments);
+  };
+})();
+
 (function(){
   if(window.__TSM_FORCE_AGENT_PASS__) return;
   window.__TSM_FORCE_AGENT_PASS__ = true;
