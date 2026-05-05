@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ZY Music Command Center</title>
+
+<style>
+body {
+  margin:0;
+  background:#0b0f14;
+  color:#eaffff;
+  font-family:Inter, system-ui;
+}
+.wrap{
+  max-width:900px;
+  margin:40px auto;
+  padding:20px;
+}
+textarea{
+  width:100%;
+  height:140px;
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
+  padding:12px;
+  border-radius:8px;
+}
+button{
+  margin-top:12px;
+  background:#00ffc6;
+  color:#000;
+  border:none;
+  padding:10px 14px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+}
+.output{
+  margin-top:20px;
+  padding:16px;
+  border:1px solid rgba(0,255,198,.2);
+  border-radius:10px;
+  background:rgba(255,255,255,.03);
+}
+.section{
+  margin-top:14px;
+}
+.title{
+  font-weight:800;
+  color:#00ffc6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+  <h2>🎛 ZAY Producer Engine</h2>
+
+  <textarea id="draft" placeholder="Paste your lyrics..."></textarea>
+
+  <button onclick="run()">Full Producer Pass</button>
+
+  <div id="out" class="output"></div>
+</div>
+
+<script>
+async function run(){
+  const draft = document.getElementById('draft').value;
+
+  const res = await fetch('/api/music/agent-pass',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      agent:'ZAY',
+      step:'Full Producer Pass',
+      draft,
+      message:'Return HOOK, ADLIBS, BRIDGE, PRODUCER NOTE.'
+    })
+  });
+
+  const data = await res.json();
+  const txt = data.reply || data.content || '';
+
+  const out = document.getElementById('out');
+
+  function block(title, content){
+    return `
+      <div class="section">
+        <div class="title">${title}</div>
+        <div>${content}</div>
+      </div>
+    `;
+  }
+
+  out.innerHTML =
+    block("HOOK", txt.split("ADLIBS")[0]) +
+    block("ADLIBS", txt.split("ADLIBS:")[1]?.split("BRIDGE")[0] || "") +
+    block("BRIDGE", txt.split("BRIDGE:")[1]?.split("PRODUCER NOTE")[0] || "") +
+    block("PRODUCER NOTE", txt.split("PRODUCER NOTE:")[1] || "");
+}
+</script>
+
+</body>
+</html>
