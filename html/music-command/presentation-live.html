@@ -517,7 +517,7 @@ async function runDemo(){
     return;
   }
 
-  const res = await fetch('/api/music/revision/run?demo_token=' + token,{
+  const res = await fetch('https://tsm-shell.fly.dev/api/music/revision/run?demo_token=' + token,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({draft:text, request:"generate 3 options"})

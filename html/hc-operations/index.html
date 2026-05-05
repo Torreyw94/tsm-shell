@@ -754,7 +754,7 @@ OPERATIONAL NOTES: ${n.notes}
 NETWORK CONTEXT: 11-node HC network. Overflow: Northside 4 slots, Eastview 6, Central Hub 7, Riverside 3. Critical: Southside zero BH staff, Valley offline.
 Write BNCA: (1) 1-sentence status summary, (2) 4-6 numbered priority actions, (3) network coordination needed. Under 250 words.`;
   try {
-    const res = await fetch('/api/hc/query', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/hc/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: userPrompt, nodeKey: nodeId })

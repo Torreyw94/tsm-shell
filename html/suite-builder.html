@@ -486,7 +486,7 @@ window.safeAnalyze = async function(input, targetId="analysis_output.log"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("/api/strategist/query", {
+    const res = await fetch("https://tsm-shell.fly.dev/api/strategist/query", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})

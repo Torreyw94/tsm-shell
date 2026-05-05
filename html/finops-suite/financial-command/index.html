@@ -455,7 +455,7 @@ function loadPreviews() {
 }
 
 function pingNode(id) {
-  fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'user',content:'ping'}]})})
+  fetch('https://tsm-shell.fly.dev/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'user',content:'ping'}]})})
     .catch(() => { const d=document.getElementById('dot-'+id); const s=document.getElementById('status-'+id); if(d)d.style.background='#ef4444'; if(s)s.textContent='OFFLINE'; });
 }
 
@@ -467,7 +467,7 @@ async function queryNode(id, query) {
   body.innerHTML = '<span class="cursor-blink">▌</span>';
   statusEl.textContent = 'PROCESSING';
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages: [
@@ -1170,7 +1170,7 @@ function runSafeAnalysis() {
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('/api/chat', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/chat', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -1254,7 +1254,7 @@ function runSafeAnalysis() {
     body.innerHTML = '<span class="cursor-blink">▌</span>';
     statusEl.textContent = 'PROCESSING';
     try{
-      var r = await fetch('/api/chat', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/chat', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -1321,7 +1321,7 @@ function runSafeAnalysis() {
 
 Be direct, specific, dollar-focused.';
     try{
-      var r = await fetch('/api/chat', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/chat', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({app:'financial-command', messages:[{role:'user',content:context}]})
@@ -1360,7 +1360,7 @@ Be direct, specific, dollar-focused.';
     if(!out) return;
     out.innerHTML = '<span class="spin">⟳</span> Analyzing document...';
     try{
-      var r = await fetch('/api/chat',{
+      var r = await fetch('https://tsm-shell.fly.dev/api/chat',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({app:'financial-command',messages:[{role:'user',content:prompt}]})

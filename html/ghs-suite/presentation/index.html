@@ -504,7 +504,7 @@ async function runSim(){
   await delay(500);fstep(1,'go');spanel('hcs','firing');
   slog('GHS Strategist: GET /api/hc/nodes...');
   try{
-    const r=await fetch(BASE+'/api/hc/nodes');
+    const r=await fetch(BASE+'https://tsm-shell.fly.dev/api/hc/nodes');
     const d=await r.json();
     const rar=d?.officeRankings?.[0]?.revenueAtRisk||d?.revenueAtRisk||229850;
     const rec=d?.officeRankings?.[0]?.recoverable72h||d?.recoverable72h||78149;
@@ -529,7 +529,7 @@ async function runSim(){
   await delay(500);fstep(2,'go');spanel('ms','firing');
   slog('Main Strategist: POST /api/hc/ask · TSM Neural Core firing...');
   try{
-    const r=await fetch(BASE+'/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'General Health System: denial 12.4%, auth delay 56h, queue 31, $229,850 at risk. Highest-priority action?',system:'General Health System',location:'General Health System'})});
+    const r=await fetch(BASE+'https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'General Health System: denial 12.4%, auth delay 56h, queue 31, $229,850 at risk. Highest-priority action?',system:'General Health System',location:'General Health System'})});
     const d=await r.json();
     const txt=d?.answer||d?.response||d?.result||'Clear Insurance auth backlog immediately — highest-value revenue concentration.';
     fstep(2,'done');spanel('ms','active');
@@ -834,7 +834,7 @@ Revenue risk, auth friction, compliance exposure, and office-level operational p
   };
 
   try{
-    await fetch('/api/main-strategist/hc-report',{
+    await fetch('https://tsm-shell.fly.dev/api/main-strategist/hc-report',{
       method:'POST',
       headers:{'content-type':'application/json'},
       body:JSON.stringify(payload)

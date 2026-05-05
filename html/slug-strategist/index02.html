@@ -230,7 +230,7 @@ main {
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('/api/strategist/query', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/strategist/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

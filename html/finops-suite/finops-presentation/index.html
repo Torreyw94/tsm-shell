@@ -147,7 +147,7 @@ VALUE:
 $5K–$7K/month manual workload replaced by $1,750/month system.`);
 
   try{
-    await fetch('/api/finops/report',{
+    await fetch('https://tsm-shell.fly.dev/api/finops/report',{
       method:'POST',
       headers:{'content-type':'application/json'},
       body:JSON.stringify({

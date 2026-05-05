@@ -2303,7 +2303,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch('/api/financial/query', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/financial/query', {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})
@@ -2413,7 +2413,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('/api/financial/query', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/financial/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({

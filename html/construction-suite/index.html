@@ -39,7 +39,7 @@ async function ask() {
   if (!query) return;
   document.getElementById('output').textContent = 'Analyzing...';
   try {
-    const r = await fetch('/api/construction/ask', {
+    const r = await fetch('https://tsm-shell.fly.dev/api/construction/ask', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({query, nodeKey: activeNode})
     });

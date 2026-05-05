@@ -544,7 +544,7 @@ function runFinopsAction(type){
 
   async function load(){
     try{
-      const res = await fetch('/api/finops/actions',{cache:'no-store'});
+      const res = await fetch('https://tsm-shell.fly.dev/api/finops/actions',{cache:'no-store'});
       const data = await res.json();
 
       if(!data.actions || data.actions.length === 0){

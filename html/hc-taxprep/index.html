@@ -1596,7 +1596,7 @@ async function askAi(){
   if(!prompt) return;
   byId('aiResult').innerHTML = `<div class="loading"><div class="thinking"><span></span><span></span><span></span></div> <span>Analyzing tax data...</span></div>`;
   try {
-    const res = await fetch('/api/taxprep/v1', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/taxprep/v1', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({action:'analyze', entity: currentProviderId||'HonorHealth', context: prompt, fiscal_year: new Date().getFullYear()})

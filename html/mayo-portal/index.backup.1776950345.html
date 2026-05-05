@@ -1553,7 +1553,7 @@ html, body {
     target.style.cssText = 'display:block!important;visibility:visible!important;opacity:1!important';
     target.innerHTML = '<div style="color:#9fdcc9;padding:10px">Loading...</div>';
     try {
-      const res = await fetch('/api/strategist/hc/dee-action', {
+      const res = await fetch('https://tsm-shell.fly.dev/api/strategist/hc/dee-action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

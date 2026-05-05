@@ -504,7 +504,7 @@ async function runSim(){
   await delay(500);fstep(1,'go');spanel('hcs','firing');
   slog('Slug Strategist: GET /api/hc/nodes...');
   try{
-    const r=await fetch(BASE+'/api/hc/nodes');
+    const r=await fetch(BASE+'https://tsm-shell.fly.dev/api/hc/nodes');
     const d=await r.json();
     const rar=d?.officeRankings?.[0]?.revenueAtRisk||d?.revenueAtRisk||229850;
     const rec=d?.officeRankings?.[0]?.recoverable72h||d?.recoverable72h||78149;
@@ -529,7 +529,7 @@ async function runSim(){
   await delay(500);fstep(2,'go');spanel('ms','firing');
   slog('Main Strategist: POST /api/hc/ask · TSM Neural Core firing...');
   try{
-    const r=await fetch(BASE+'/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'Client Name: denial 12.4%, auth delay 56h, queue 31, $229,850 at risk. Highest-priority action?',system:'Client Name',location:'Client Name'})});
+    const r=await fetch(BASE+'https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:'Client Name: denial 12.4%, auth delay 56h, queue 31, $229,850 at risk. Highest-priority action?',system:'Client Name',location:'Client Name'})});
     const d=await r.json();
     const txt=d?.answer||d?.response||d?.result||'Clear Insurance auth backlog immediately — highest-value revenue concentration.';
     fstep(2,'done');spanel('ms','active');

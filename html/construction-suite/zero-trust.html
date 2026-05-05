@@ -926,7 +926,7 @@ function addMsg(role,text){
 
 async function callAI(systemPrompt, userMessage, onChunk, onDone) {
   try {
-    var res = await fetch('/api/ai/query', {
+    var res = await fetch('https://tsm-shell.fly.dev/api/ai/query', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ question: userMessage, context: systemPrompt, app: 'enterprise', maxTokens: 1024 })
@@ -1059,7 +1059,7 @@ async function tsmAsk() {
   msgs.scrollTop = msgs.scrollHeight;
 
   try {
-    var res = await fetch('/api/ai/query', {
+    var res = await fetch('https://tsm-shell.fly.dev/api/ai/query', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ question: q, app: 'enterprise', maxTokens: 1024 })
@@ -1090,7 +1090,7 @@ async function tsmAsk() {
 if (typeof callAI === 'undefined') {
   window.callAI = async function(systemPrompt, userMessage, onChunk, onDone) {
     try {
-      var res = await fetch('/api/ai/query', {
+      var res = await fetch('https://tsm-shell.fly.dev/api/ai/query', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ question: userMessage, context: systemPrompt, app: 'enterprise', maxTokens: 1024 })

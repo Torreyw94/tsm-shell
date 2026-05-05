@@ -1113,7 +1113,7 @@ Escalation Queue ✓</div>
   // ── Intake feed poller ────────────────────────────────────────
   async function pollIntake() {
     try {
-      const r = await fetch('/api/intake/pending');
+      const r = await fetch('https://tsm-shell.fly.dev/api/intake/pending');
     const d = await r.json();
       const d = await r.json();
       const feed = document.getElementById('intakeFeed');
@@ -1135,7 +1135,7 @@ Escalation Queue ✓</div>
     document.getElementById('severityText').textContent = 'Loading: ' + name + '...';
     const dir = document.getElementById('directive');
     try {
-      const r = await fetch('/api/intake/content/' + id);
+      const r = await fetch('https://tsm-shell.fly.dev/api/intake/content/' + id);
     const d = await r.json();
       const d = await r.json();
       const txt = (d.text || '').trim();
@@ -1410,7 +1410,7 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('/api/strategist/query', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/strategist/query', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -1500,7 +1500,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("/api/strategist/query", {
+    const res = await fetch("https://tsm-shell.fly.dev/api/strategist/query", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),

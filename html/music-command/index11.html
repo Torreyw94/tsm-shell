@@ -247,7 +247,7 @@ async function runAnalysis(){
     // ── Call backend agent chain ─────────────────────────────────────────────
   let data;
   try{
-    const r = await fetch('/api/music/revision/run',{
+    const r = await fetch('https://tsm-shell.fly.dev/api/music/revision/run',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({lyrics:draft, draft, request:'guided creation app'})
@@ -726,7 +726,7 @@ I'm building an empire nobody chose to see`;
     var g = guidanceText[step] || guidanceText[1];
     box.innerHTML = "<div style='padding:4px 0'><div style='font-weight:700;font-size:12px;color:var(--blue);margin-bottom:8px'>"+g.title+"</div><div style='font-size:11px;line-height:1.5;color:var(--muted)'>"+g.text+"</div></div><div id='ai-live-tip' style='margin-top:8px;font-size:11px;color:var(--muted);font-style:italic'>🤖 ZAY is thinking...</div>";
     var lyrics = (document.getElementById('lyricInput')||{}).value||'';
-    fetch('/api/music/guidance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:lyrics,step:step,dna:window.__dna||{}})}).then(function(r){return r.json()}).then(function(d){
+    fetch('https://tsm-shell.fly.dev/api/music/guidance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:lyrics,step:step,dna:window.__dna||{}})}).then(function(r){return r.json()}).then(function(d){
       var el=document.getElementById('ai-live-tip');
       if(el&&d.tip) el.innerHTML="<div style='padding:8px 10px;background:rgba(57,217,138,.08);border:1px solid rgba(57,217,138,.25);border-radius:6px;color:var(--green)'><b>🤖 ZAY:</b> "+d.tip+"<br><span style='color:var(--muted)'>→ "+d.action+"</span></div>";
     }).catch(function(){var el=document.getElementById('ai-live-tip');if(el)el.innerHTML='';});
@@ -798,7 +798,7 @@ I'm building an empire nobody chose to see`;
     if(btn){btn.disabled=true;btn.textContent="RIYA is working...";}
     try{
       var note=(document.getElementById('refineNote')||{}).value||'improve the lyrics';
-      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'RIYA',lyrics:source,draft:source,request:note})});
+      var resp=await fetch('https://tsm-shell.fly.dev/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'RIYA',lyrics:source,draft:source,request:note})});
       var data=await resp.json();
       var raw=data.output||data.revised||'';
       var refined='';
@@ -841,16 +841,16 @@ I'm building an empire nobody chose to see`;
     var btn=document.getElementById("lockBtn");
     if(btn){btn.disabled=true;btn.textContent="DJ is working...";}
     try{
-      var resp=await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'DJ',lyrics:source,draft:source,request:'Extract the single most powerful hook — the 1-2 lines most likely to be remembered'})});
+      var resp=await fetch('https://tsm-shell.fly.dev/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agent:'DJ',lyrics:source,draft:source,request:'Extract the single most powerful hook — the 1-2 lines most likely to be remembered'})});
       var data=await resp.json();
       var rawHook=data.output||'';
       var hook=(typeof rawHook==='string'?rawHook:Array.isArray(rawHook)?rawHook.join('\n'):JSON.stringify(rawHook).replace(/[\[\]"]/g,'').replace(/,/g,'\n')).trim();
       window.__lockedHook=hook; 
       // Get full song structure
-      fetch('/api/music/structure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:window.__refinedVersion||window.__pickedVersion,context:window.__zayContext||{}})}).then(function(r){return r.json()}).then(function(d){
+      fetch('https://tsm-shell.fly.dev/api/music/structure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:window.__refinedVersion||window.__pickedVersion,context:window.__zayContext||{}})}).then(function(r){return r.json()}).then(function(d){
         window.__songStructure=d;
         // Save to DNA
-        fetch('/api/music/dna/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({songTitle:'Song '+runCount,dna_update:d.dna_update,scores:window.__lastScores||{},lyrics:window.__refinedVersion||''})}).then(function(r){return r.json()}).then(function(dna){
+        fetch('https://tsm-shell.fly.dev/api/music/dna/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({songTitle:'Song '+runCount,dna_update:d.dna_update,scores:window.__lastScores||{},lyrics:window.__refinedVersion||''})}).then(function(r){return r.json()}).then(function(dna){
           window.__artistDNA=dna;
           // Update DNA tab
           var el=document.getElementById('dna-learned-list');
@@ -1064,7 +1064,7 @@ I'm building an empire nobody chose to see`;
     if(out){ out.style.display='block'; out.innerHTML='<div style="color:var(--muted);font-size:12px">Running ZAY → RIYA → DJ chain...</div>'; }
 
     try{
-      const r = await fetch('/api/music/revision/run',{
+      const r = await fetch('https://tsm-shell.fly.dev/api/music/revision/run',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({lyrics:draft, draft, request:'revision mode'})
@@ -1137,7 +1137,7 @@ function zayShow(question, options, tip) {
       __zayStep++;
       if(__zayStep < __zayQuestions.length) {
         zayShow(__zayQuestions[__zayStep].q, __zayQuestions[__zayStep].opts, '');
-        fetch('/api/music/guidance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:(document.getElementById('lyricInput')||{}).value||'',step:1,dna:window.__dna||{},context:__zayContext})}).then(function(r){return r.json()}).then(function(d){document.getElementById('zayTip').textContent = d.tip ? '💡 '+d.tip : '';}).catch(function(){});
+        fetch('https://tsm-shell.fly.dev/api/music/guidance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:(document.getElementById('lyricInput')||{}).value||'',step:1,dna:window.__dna||{},context:__zayContext})}).then(function(r){return r.json()}).then(function(d){document.getElementById('zayTip').textContent = d.tip ? '💡 '+d.tip : '';}).catch(function(){});
       } else {
         zayShow(
           '<b style="color:var(--green)">Got it!</b> ZAY will write a <b>'+(__zayContext.type||'song')+'</b> with <b>'+(__zayContext.mood||'your')+'</b> energy using <b>'+(__zayContext.approach||'your flow')+'</b>. Hit Run Now!',
@@ -1351,7 +1351,7 @@ window.addEventListener('load', function(){
       if(!window.__songStructure) {
         var lyrics = window.__refinedVersion||window.__pickedVersion||'';
         if(lyrics) {
-          fetch('/api/music/structure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:lyrics,context:window.__zayContext||{}})})
+          fetch('https://tsm-shell.fly.dev/api/music/structure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lyrics:lyrics,context:window.__zayContext||{}})})
           .then(function(r){return r.json()})
           .then(function(d){ window.__songStructure=d; renderSongStructure(); })
           .catch(function(){});

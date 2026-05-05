@@ -738,7 +738,7 @@ async function callClaude(userMsg, outEl, thinkEl, errEl){
   },1800) : null;
 
   try{
-    const resp = await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'Banner Health',location:'Banner Health'})})
+    const resp = await fetch('https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'Banner Health',location:'Banner Health'})})
     });
     const data = await resp.json();
     if(thinkInterval) clearInterval(thinkInterval);
@@ -842,7 +842,7 @@ function clearOut(){
 (async()=>{
   setTimeout(async()=>{
     try{
-      const resp = await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'Banner Health',location:'Banner Health'})}), $48K at risk, clean claim rate 94.2% vs 97% target, 231 denied claims, Mesa 22.1% denial CRITICAL, CLM-0334 48hr deadline. Score the overall revenue cycle health.'}]
+      const resp = await fetch('https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'Banner Health',location:'Banner Health'})}), $48K at risk, clean claim rate 94.2% vs 97% target, 231 denied claims, Mesa 22.1% denial CRITICAL, CLM-0334 48hr deadline. Score the overall revenue cycle health.'}]
         })
       });
       const data = await resp.json();

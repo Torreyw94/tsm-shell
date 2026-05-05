@@ -610,7 +610,7 @@ Node Coverage:
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────
 // Direct Anthropic API — no /api/v1/bridge dependency (that 404s on healthcare.tsmatter.com)
-const ANTHROPIC_API = '/api/hc/ask';
+const ANTHROPIC_API = 'https://tsm-shell.fly.dev/api/hc/ask';
 const MODEL = 'tsm-neural-sonnet-4-20250514';
 
 const NODE_CONFIG = {
@@ -841,7 +841,7 @@ window.safeAnalyze = async function(input, targetId="output"){
   el.innerHTML = "⚡ Running analysis...";
 
   try {
-    const res = await fetch("/api/hc/query", {
+    const res = await fetch("https://tsm-shell.fly.dev/api/hc/query", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:"user",content:input}]})

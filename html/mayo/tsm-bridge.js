@@ -6,7 +6,7 @@ async function callAI(userPrompt) {
     Provide highly technical, CPT/HIPAA-aware audit syntheses. No conversational filler.`;
 
     try {
-        const res = await fetch("/api/v1/bridge", {
+        const res = await fetch("https://tsm-shell.fly.dev/api/v1/bridge", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

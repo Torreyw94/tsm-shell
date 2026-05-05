@@ -350,7 +350,7 @@ async function loadMesh() {
   pill.textContent = 'CHECKING...';
   pill.className = 'mesh-pill checking';
   try {
-    const r = await fetch('/api/finops/mesh-health');
+    const r = await fetch('https://tsm-shell.fly.dev/api/finops/mesh-health');
     const d = await r.json();
     pill.textContent = 'MESH ' + d.score;
     pill.className = 'mesh-pill ' + (d.online === d.total ? 'online' : '');

@@ -361,7 +361,7 @@ function createOutreach(){
 }
 
 async function pushToStrategist(){
-  await fetch('/api/main-strategist/hc-report',{
+  await fetch('https://tsm-shell.fly.dev/api/main-strategist/hc-report',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({

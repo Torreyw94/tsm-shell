@@ -153,7 +153,7 @@ function clean(x){return String(x||'').replace(/\\n/g,'\n')}
 
 async function loadHC(){
   try{
-    const data = await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
+    const data = await fetch('https://tsm-shell.fly.dev/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
     const relay=data.relay||{}, nodes=relay.nodes||{}, report=data.report||{};
     const keys=Object.keys(nodes);
     const doc=nodes['ghs-document-pipeline'];
@@ -386,7 +386,7 @@ setInterval(refreshAll,4000);
     loadedOnce = true;
 
     try{
-      const res = await fetch("/api/main-strategist/hc-report",{cache:"no-store"});
+      const res = await fetch("https://tsm-shell.fly.dev/api/main-strategist/hc-report",{cache:"no-store"});
       const data = await res.json();
       render(data.report || fallback());
     }catch(e){

@@ -86,7 +86,7 @@
   async function run(){
     const out = document.getElementById("finDocOutput");
     out.textContent = "Running selected document through FinOps nodes...";
-    const res = await fetch("/api/finops/run-doc",{
+    const res = await fetch("https://tsm-shell.fly.dev/api/finops/run-doc",{
       method:"POST",
       headers:{"content-type":"application/json"},
       body:JSON.stringify({type:selected})
@@ -100,7 +100,7 @@
     const out = document.getElementById("finDocOutput");
     out.textContent = "Running all 8 accounting documents through FinOps suite...";
     for(const d of DOCS){
-      await fetch("/api/finops/run-doc",{
+      await fetch("https://tsm-shell.fly.dev/api/finops/run-doc",{
         method:"POST",
         headers:{"content-type":"application/json"},
         body:JSON.stringify({type:d[0]})

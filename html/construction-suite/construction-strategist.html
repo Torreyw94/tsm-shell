@@ -963,7 +963,7 @@ Keep answers concise, practical, and actionable. Use bullet points for lists. Wh
     showTyping();
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: history, system: SYSTEM })

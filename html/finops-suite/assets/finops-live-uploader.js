@@ -120,7 +120,7 @@ Ready. Ask: “Do you have one reconciliation, AP aging, or variance file we can
     const fd = new FormData();
     fd.append("file", file);
 
-    const res = await fetch("/api/finops/upload-doc", {method:"POST", body:fd});
+    const res = await fetch("https://tsm-shell.fly.dev/api/finops/upload-doc", {method:"POST", body:fd});
     const data = await res.json();
 
     if(data.report){

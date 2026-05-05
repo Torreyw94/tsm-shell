@@ -779,7 +779,7 @@ console.log("TSM Engine Active for honor-portal");
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">&#x27F3;</span> TSM Neural processing...';
     if (res.classList) res.classList.add('show');
     try {
-      var r = await fetch('/api/tsm-neural-core', {
+      var r = await fetch('https://tsm-shell.fly.dev/api/tsm-neural-core', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: prompt })

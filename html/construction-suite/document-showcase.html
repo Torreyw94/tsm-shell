@@ -1023,7 +1023,7 @@ Answer questions about construction documents clearly and concisely. Use bullet 
     resultTxt.innerHTML = '<span style="color:var(--mist)">Thinking…</span>';
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1080,7 +1080,7 @@ Answer questions about construction documents clearly and concisely. Use bullet 
     history.push({ role:'user', content: text });
     showTyping();
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ messages: history, system: DOC_SYSTEM })
       });

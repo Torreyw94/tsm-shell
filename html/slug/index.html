@@ -336,7 +336,7 @@ CONFIDENCE
 </div>
 
 <script>
-const API = { ask:'/api/hc/ask', reports:'/api/hc/reports', nodes:'/api/hc/nodes' };
+const API = { ask:'https://tsm-shell.fly.dev/api/hc/ask', reports:'https://tsm-shell.fly.dev/api/hc/reports', nodes:'https://tsm-shell.fly.dev/api/hc/nodes' };
 const DEFAULT_BNCA_QUERY = "Review claims pressure, prior auth delays, staffing throughput, compliance drift, and site-level operational blockers. Return the Best Next Course of Action for the office manager.";
 const NODE_CONFIG = {
   operations: { label:'OPERATIONS', port:3022, color:'var(--operations)', cardClass:'nc-operations', pillClass:'pill-operations', subtitle:'Staffing · Scheduling · Intake · Throughput', findings:'Intake delays + scheduling pressure are the main throughput blockers.' },

@@ -343,7 +343,7 @@ function esc(v){
 function money(n){ return '$' + Number(n || 0).toLocaleString(); }
 
 async function loadBase(){
-  const res = await fetch('/api/honor/dee/dashboard', {
+  const res = await fetch('https://tsm-shell.fly.dev/api/honor/dee/dashboard', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
@@ -363,7 +363,7 @@ function modePrompt(){
 }
 
 async function loadAction(){
-  const res = await fetch('/api/strategist/hc/dee-action', {
+  const res = await fetch('https://tsm-shell.fly.dev/api/strategist/hc/dee-action', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
@@ -537,7 +537,7 @@ async function delegateToOM(){
     const ownerLane = ((STATE.action && STATE.action.layer2 && STATE.action.layer2.ownerLanes) || ['Operations','Billing','Insurance']).join('/');
     const action = (STATE.action && STATE.action.actionBoard && STATE.action.actionBoard.topPriorityNow) || 'Execute BNCA';
 
-    const res = await fetch('/api/hc/delegate', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/hc/delegate', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -575,7 +575,7 @@ function renderTasks(tasks){
 
 async function loadTasks(){
   try{
-    const res = await fetch('/api/hc/tasks');
+    const res = await fetch('https://tsm-shell.fly.dev/api/hc/tasks');
     const data = await res.json();
     renderTasks((data && data.tasks) || []);
   }catch(e){

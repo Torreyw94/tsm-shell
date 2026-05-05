@@ -263,7 +263,7 @@ function readFileText(file){
       // Send to tsm-core for extraction
       const fd = new FormData();
       fd.append('doc', file);
-      fetch('/api/finops/upload-doc', {method:'POST', body:fd})
+      fetch('https://tsm-shell.fly.dev/api/finops/upload-doc', {method:'POST', body:fd})
         .then(r=>r.json())
         .then(d=>resolve(d.text||d.summary||d.report?.summary||'[PDF processed — no text extracted]'))
         .catch(()=>resolve('[PDF uploaded — text extraction unavailable]'));
@@ -271,7 +271,7 @@ function readFileText(file){
       // Excel/Word — send to tsm-core, fallback to filename-based analysis
       const fd = new FormData();
       fd.append('doc', file);
-      fetch('/api/finops/upload-doc', {method:'POST', body:fd})
+      fetch('https://tsm-shell.fly.dev/api/finops/upload-doc', {method:'POST', body:fd})
         .then(r=>r.json())
         .then(d=>resolve(d.text||d.summary||d.report?.summary||`[${ext.toUpperCase()} file processed]`))
         .catch(()=>resolve(`[${ext.toUpperCase()} file — ${(file.size/1024).toFixed(1)}KB — ready for analysis]`));

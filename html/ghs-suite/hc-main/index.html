@@ -62,7 +62,7 @@ button{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 
 <script>
 async function loadHC(){
  try{
-  const data=await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
+  const data=await fetch('https://tsm-shell.fly.dev/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
   const relay=data.relay||{}, nodes=relay.nodes||{}, report=data.report||{};
   const doc=nodes['ghs-document-pipeline'];
   const keys=Object.keys(nodes);
@@ -230,7 +230,7 @@ loadHC(); setInterval(loadHC,3000);
     loadedOnce = true;
 
     try{
-      const res = await fetch("/api/main-strategist/hc-report",{cache:"no-store"});
+      const res = await fetch("https://tsm-shell.fly.dev/api/main-strategist/hc-report",{cache:"no-store"});
       const data = await res.json();
       render(data.report || fallback());
     }catch(e){

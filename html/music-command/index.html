@@ -1679,7 +1679,7 @@ async function callClaude(systemPrompt, userPrompt, loadingId, callback) {
   if (loading) { loading.classList.add('show'); loading.innerHTML = `<div><div style="text-align:center;margin-bottom:8px;color:var(--text2);font-family:var(--font-mono);font-size:12px;">Agent pass running...</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div>`; }
 
   try {
-    const resp = await fetch('/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: input || document.getElementById('draft-input')?.value || ''})});
+    const resp = await fetch('https://tsm-shell.fly.dev/api/music/agent-pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt: input || document.getElementById('draft-input')?.value || ''})});
     const data = await resp.json();
     const text = data.content?.map(b => b.text || '').join('') || '';
     if (loading) loading.classList.remove('show');
@@ -2076,21 +2076,21 @@ window.MusicSuite = {
     return musicSafeFetch;
   },
   async agentPass(payload){
-    return fetch('/api/music/agent-pass',{
+    return fetch('https://tsm-shell.fly.dev/api/music/agent-pass',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload||{})
     }).then(r=>r.json());
   },
   async strategy(prompt){
-    return fetch('/api/music/strategy',{
+    return fetch('https://tsm-shell.fly.dev/api/music/strategy',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({prompt})
     }).then(r=>r.json());
   },
   async saveSong(payload){
-    return fetch('/api/music/song',{
+    return fetch('https://tsm-shell.fly.dev/api/music/song',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload||{})
@@ -3131,7 +3131,7 @@ window.addEventListener('load', musicSuiteBoot);
 
     const { lyrics, dna, tab } = getContext();
     try {
-      const res = await fetch('/api/music/coach', {
+      const res = await fetch('https://tsm-shell.fly.dev/api/music/coach', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ tab, lyrics, dna, request })

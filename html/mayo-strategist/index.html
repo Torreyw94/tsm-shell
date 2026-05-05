@@ -343,9 +343,9 @@ RUN ENTERPRISE BNCA</button>
 
 <script>
 const API = {
-  ask: '/api/hc/ask',
-  reports: '/api/hc/reports',
-  nodes: '/api/hc/nodes'
+  ask: 'https://tsm-shell.fly.dev/api/hc/ask',
+  reports: 'https://tsm-shell.fly.dev/api/hc/reports',
+  nodes: 'https://tsm-shell.fly.dev/api/hc/nodes'
 };
 
 const NODE_KEYS = ['operations','medical','pharmacy','insurance','financial','legal','vendors','compliance','billing','taxprep','grants'];
@@ -585,7 +585,7 @@ async function runEnterpriseBnca() {
   out.innerHTML = '⏳ Running enterprise BNCA...';
 
   try {
-    const res = await fetch('/api/hc/layer2', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/hc/layer2', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ system, location })
@@ -642,7 +642,7 @@ async function generateLeadershipBrief() {
   out.innerHTML = '⏳ Generating leadership brief...';
 
   try {
-    const res = await fetch('/api/hc/brief', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/hc/brief', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ system, location, audience, format, question })
@@ -708,7 +708,7 @@ function stopAutoSync() {
 }
 
 function autoRunLayer2(system, location) {
-  fetch('/api/hc/layer2', {
+  fetch('https://tsm-shell.fly.dev/api/hc/layer2', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ system, location })

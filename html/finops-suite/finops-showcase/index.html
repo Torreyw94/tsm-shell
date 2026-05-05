@@ -248,7 +248,7 @@ async function processDoc(){
         content=await new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.slice(0,3000));r.onerror=rej;r.readAsText(selectedFile);});
       } else {
         const fd=new FormData();fd.append('doc',selectedFile);
-        try{const r=await fetch('/api/finops/upload-doc',{method:'POST',body:fd});const d=await r.json();content=d.text||d.summary||`[${ext.toUpperCase()} processed]`;}
+        try{const r=await fetch('https://tsm-shell.fly.dev/api/finops/upload-doc',{method:'POST',body:fd});const d=await r.json();content=d.text||d.summary||`[${ext.toUpperCase()} processed]`;}
         catch{content=`[${ext.toUpperCase()} file · ${(selectedFile.size/1024).toFixed(1)}KB]`;}
       }
     }catch{content=null;}

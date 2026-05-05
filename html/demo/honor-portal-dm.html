@@ -813,7 +813,7 @@ async function callClaude(userMsg, outEl, thinkEl, thinkTxtEl, errEl){
   const ticker=thinkTxtEl?setInterval(()=>{thinkTxtEl.textContent=msgs[ti++%msgs.length]},1600):null;
 
   try{
-    const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})
+    const resp=await fetch('https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})
     });
     const data=await resp.json();
     if(ticker) clearInterval(ticker);
@@ -882,7 +882,7 @@ async function runQuickPack(type){
   out.classList.add('show');
   document.getElementById('sb-status').textContent='◈ SYNTHESIZING...';
   try{
-    const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})});
+    const resp=await fetch('https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})});
     const data=await resp.json();
     if(data.content){out.textContent=data.content;out.classList.add('fi');}
     document.getElementById('sb-status').textContent='READY';
@@ -970,7 +970,7 @@ async function sendChat(preset){
   msgs.appendChild(loader);
   msgs.scrollTop=msgs.scrollHeight;
   try{
-    const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})});
+    const resp=await fetch('https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})});
     const data=await resp.json();
     loader.className='cm ca';
     loader.textContent=data.content||'Error';
@@ -985,7 +985,7 @@ async function sendChat(preset){
 (async()=>{
   setTimeout(async()=>{
     try{
-      const resp=await fetch('/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})});
+      const resp=await fetch('https://tsm-shell.fly.dev/api/hc/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:typeof userMsg!=='undefined'?userMsg:typeof msg!=='undefined'?msg:'',system:'HonorHealth',location:'Scottsdale - Shea'})})});
       const data=await resp.json();
       if(data.content){
         const parsed=JSON.parse(data.content.replace(/```json|```/g,'').trim());

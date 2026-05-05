@@ -359,7 +359,7 @@ CONFIDENCE
 </div>
 
 <script>
-const API = { ask:'/api/hc/ask', reports:'/api/hc/reports', nodes:'/api/hc/nodes' };
+const API = { ask:'https://tsm-shell.fly.dev/api/hc/ask', reports:'https://tsm-shell.fly.dev/api/hc/reports', nodes:'https://tsm-shell.fly.dev/api/hc/nodes' };
 const DEFAULT_BNCA_QUERY = "Review claims pressure, prior auth delays, staffing throughput, compliance drift, and site-level operational blockers. Return the Best Next Course of Action for the office manager.";
 const NODE_CONFIG = {
   operations: { label:'OPERATIONS', port:3022, color:'var(--operations)', cardClass:'nc-operations', pillClass:'pill-operations', subtitle:'Staffing · Scheduling · Intake · Throughput', findings:'Intake delays + scheduling pressure are the main throughput blockers.' },
@@ -985,7 +985,7 @@ document.addEventListener('DOMContentLoaded', function(){
     status.textContent='Analyzing document → populating nodes → refreshing strategist...';
 
     try{
-      const ares=await fetch('/api/hc/doc-analysis',{
+      const ares=await fetch('https://tsm-shell.fly.dev/api/hc/doc-analysis',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({text:lastDocText,populateNodes:true})
@@ -994,7 +994,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
       populateNodes(analysis);
 
-      const sres=await fetch('/api/hc/strategist',{
+      const sres=await fetch('https://tsm-shell.fly.dev/api/hc/strategist',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -1114,7 +1114,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!card) return;
 
     try{
-      const res = await fetch('/api/hc/node', {
+      const res = await fetch('https://tsm-shell.fly.dev/api/hc/node', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -1503,7 +1503,7 @@ async function hcNodeAsk(nodeKey, query) {
   } catch(e) {
     // Fallback to /api/hc/ask
     try {
-      const r = await fetch('/api/hc/ask', {
+      const r = await fetch('https://tsm-shell.fly.dev/api/hc/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ system: 'HonorHealth', location: 'Scottsdale - Shea', query, nodeKey })

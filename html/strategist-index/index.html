@@ -2118,7 +2118,7 @@ Your role is to provide strategic, board-level counsel that draws connections AC
     const typingId = addTypingIndicator();
 
     try {
-      const response = await fetch('/api/hc/ask', {
+      const response = await fetch('https://tsm-shell.fly.dev/api/hc/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

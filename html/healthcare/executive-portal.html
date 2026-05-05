@@ -885,7 +885,7 @@
     statusBadge.className = 'panel-badge watch';
 
     try {
-      const res = await fetch('/api/hc/cfo-report');
+      const res = await fetch('https://tsm-shell.fly.dev/api/hc/cfo-report');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       reportData = data.report || data;

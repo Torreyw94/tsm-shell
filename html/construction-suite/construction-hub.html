@@ -1287,7 +1287,7 @@ async function runDemo(key) {
 
   // Try live API first
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1457,7 +1457,7 @@ async function widgetAsk() {
   think.style.display = 'block';
   msgs.scrollTop = msgs.scrollHeight;
   try {
-    const res = await fetch('/api/construction/query', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/construction/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: q, app: 'construction-suite', maxTokens: 600 })

@@ -650,7 +650,7 @@ async function checkBridge() {
   const banner = document.getElementById('bridgeBanner');
   const txt = document.getElementById('bridgeBannerText');
   try {
-    const res = await fetch('/api/financial/query'.replace('/v1/chat', '/health'), {
+    const res = await fetch('https://tsm-shell.fly.dev/api/financial/query'.replace('/v1/chat', '/health'), {
       method: 'GET', signal: AbortSignal.timeout(4000)
     });
     if (res.ok) {
@@ -702,7 +702,7 @@ async function callAI(systemPrompt, userMessage, onChunk, onDone) {
     return;
   }
   try {
-    const res = await fetch('/api/financial/query', {
+    const res = await fetch('https://tsm-shell.fly.dev/api/financial/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -680,7 +680,7 @@ async function runSim(){
   await delay(400);fstep(3,'go');spanel('bnca','firing');
   slog('Insurance Strategist: synthesizing 3 node findings into BNCA...');
   try {
-    const r = await fetch(BASE+'/api/hc/ask',{
+    const r = await fetch(BASE+'https://tsm-shell.fly.dev/api/hc/ask',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
