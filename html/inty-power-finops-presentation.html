@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TSM FinOps · Inty Power Staff Accountant</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020a06;
+  --bg2: #040f0a;
+  --bg3: #061408;
+  --border: #0d2b14;
+  --green: #00f59f;
+  --green2: #00c87a;
+  --solar: #f5a800;
+  --solar2: #ffd060;
+  --blue: #00e0ff;
+  --text: #d0ffe8;
+  --dim: #3a7a50;
+  --dim2: #1a4a28;
+  --red: #ff4455;
+  --white: #f0fff8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; background:var(--bg); color:var(--text); font-family:'Space Grotesk', sans-serif; overflow:hidden; }
+
+/* SLIDE ENGINE */
+.slide { position:absolute; inset:0; display:none; flex-direction:column; opacity:0; transition:opacity .4s; }
+.slide.active { display:flex; opacity:1; }
+
+/* PROGRESS */
+#progress-bar {
+  position:fixed; top:0; left:0; height:3px;
+  background:linear-gradient(90deg, var(--green), var(--solar));
+  transition:width .4s; z-index:999;
+}
+
+/* NAV */
+#nav {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  display:flex; gap:10px; align-items:center; z-index:999;
+  background:rgba(4,15,10,.95); border:1px solid var(--border);
+  padding:8px 18px; border-radius:40px; backdrop-filter:blur(12px);
+}
+.nav-dot { width:7px; height:7px; border-radius:50%; background:var(--dim2); cursor:pointer; transition:all .3s; }
+.nav-dot.active { background:var(--green); transform:scale(1.4); }
+#nav-prev, #nav-next {
+  background:none; border:1px solid var(--border); color:var(--dim);
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px;
+  padding:5px 12px; border-radius:20px; cursor:pointer; transition:all .2s;
+}
+#nav-prev:hover, #nav-next:hover { border-color:var(--green); color:var(--green); }
+#slide-counter { font-size:10px; color:var(--dim); letter-spacing:2px; min-width:48px; text-align:center; font-family:'DM Mono',monospace; }
+
+/* TIMER */
+#timer {
+  position:fixed; top:16px; right:20px; z-index:999;
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:3px; color:var(--dim);
+}
+#timer.warn { color:var(--solar); }
+#timer.urgent { color:var(--red); animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* CORNER BRAND */
+#brand {
+  position:fixed; top:16px; left:20px; z-index:999;
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:4px;
+  color:var(--green); opacity:.6;
+}
+
+/* ANIMATIONS */
+.slide.active .fu { animation:fadeUp .45s ease forwards; }
+.fu { opacity:0; transform:translateY(18px); }
+.d1{animation-delay:.05s} .d2{animation-delay:.15s} .d3{animation-delay:.25s}
+.d4{animation-delay:.35s} .d5{animation-delay:.45s} .d6{animation-delay:.55s}
+@keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+/* ═══ SLIDE 1: TITLE ═══ */
+#s1 {
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(0,245,159,.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(245,168,0,.06) 0%, transparent 50%),
+    var(--bg);
+  justify-content:center; padding:72px 80px;
+}
+.s1-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:5px; color:var(--green); margin-bottom:28px; }
+.s1-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(56px,7vw,96px); line-height:.95; color:var(--white); margin-bottom:8px; }
+.s1-title .solar { color:var(--solar); }
+.s1-title .green { color:var(--green); }
+.s1-role { font-size:14px; color:var(--dim); letter-spacing:3px; margin-bottom:48px; font-family:'DM Mono',monospace; }
+.s1-pills { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:60px; }
+.s1-pill {
+  padding:8px 18px; border:1px solid var(--border);
+  font-size:11px; letter-spacing:2px; color:var(--dim);
+  font-family:'DM Mono',monospace;
+}
+.s1-pill.active { border-color:var(--green); color:var(--green); background:rgba(0,245,159,.05); }
+.s1-right {
+  position:absolute; right:80px; top:50%; transform:translateY(-50%);
+  text-align:right;
+}
+.s1-solar-icon { font-size:80px; opacity:.15; margin-bottom:16px; }
+.s1-company { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:6px; color:var(--solar); }
+.s1-company-sub { font-size:10px; letter-spacing:4px; color:var(--dim); margin-top:4px; font-family:'DM Mono',monospace; }
+
+/* ═══ SLIDE 2: ABOUT THE ROLE ═══ */
+#s2 { padding:60px 80px; justify-content:center; }
+.slide-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:5px; color:var(--green); margin-bottom:16px; }
+.slide-h { font-family:'Bebas Neue',sans-serif; font-size:clamp(36px,4.5vw,60px); color:var(--white); margin-bottom:40px; line-height:1; }
+.role-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.role-left { display:flex; flex-direction:column; gap:16px; }
+.role-card {
+  border:1px solid var(--border); padding:20px 22px; background:var(--bg2);
+  border-left:3px solid var(--green);
+}
+.role-card-label { font-size:9px; letter-spacing:3px; color:var(--green); margin-bottom:8px; font-family:'DM Mono',monospace; }
+.role-card-title { font-size:15px; font-weight:600; color:var(--white); margin-bottom:6px; }
+.role-card-desc { font-size:12px; color:var(--dim); line-height:1.7; }
+.role-right { border:1px solid var(--border); padding:28px; background:var(--bg2); }
+.role-right-title { font-size:10px; letter-spacing:3px; color:var(--solar); margin-bottom:20px; font-family:'DM Mono',monospace; }
+.role-item { display:flex; gap:14px; margin-bottom:16px; align-items:flex-start; }
+.role-item-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; margin-top:6px; }
+.role-item-text { font-size:12px; color:var(--dim); line-height:1.7; }
+.role-item-text strong { color:var(--text); }
+
+/* ═══ SLIDE 3: INTY PAIN POINTS ═══ */
+#s3 { padding:60px 80px; justify-content:center; }
+.pain-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:32px; }
+.pain-card {
+  border:1px solid var(--border); padding:24px 20px; background:var(--bg2);
+  position:relative; overflow:hidden;
+}
+.pain-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--solar); }
+.pain-num { font-family:'Bebas Neue',sans-serif; font-size:52px; color:var(--solar); opacity:.2; line-height:1; }
+.pain-stat { font-size:22px; font-weight:600; color:var(--solar); margin-bottom:6px; }
+.pain-title { font-size:12px; font-weight:600; color:var(--white); margin-bottom:8px; letter-spacing:1px; }
+.pain-desc { font-size:11px; color:var(--dim); line-height:1.7; }
+.pain-bottom { margin-top:32px; padding:20px 24px; border:1px solid var(--border); background:var(--bg2); font-size:12px; color:var(--dim); line-height:1.8; }
+.pain-bottom strong { color:var(--text); }
+
+/* ═══ SLIDE 4: TSM FINOPS SOLUTION ═══ */
+#s4 { padding:60px 80px; justify-content:center; }
+.sol-layout { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start; }
+.sol-list { display:flex; flex-direction:column; gap:14px; }
+.sol-item {
+  display:flex; gap:16px; padding:18px 20px;
+  border:1px solid var(--border); background:var(--bg2); align-items:flex-start;
+  transition:border-color .2s; cursor:default;
+}
+.sol-item:hover { border-color:var(--green); }
+.sol-item-icon { font-size:18px; flex-shrink:0; }
+.sol-item-name { font-size:12px; font-weight:600; color:var(--green); letter-spacing:1px; margin-bottom:4px; }
+.sol-item-desc { font-size:11px; color:var(--dim); line-height:1.6; }
+.sol-item-tag { font-size:9px; letter-spacing:2px; color:var(--solar); margin-top:6px; font-family:'DM Mono',monospace; }
+.sol-right { display:flex; flex-direction:column; gap:14px; }
+.sol-metric {
+  border:1px solid var(--border); padding:20px; background:var(--bg2);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.sol-metric-label { font-size:10px; letter-spacing:2px; color:var(--dim); font-family:'DM Mono',monospace; }
+.sol-metric-val { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--green); }
+.sol-cta {
+  display:flex; flex-direction:column; gap:10px; margin-top:4px;
+}
+.sol-btn {
+  display:block; padding:14px 20px; text-decoration:none;
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px;
+  text-align:center; transition:all .2s;
+}
+.sol-btn.primary { background:var(--green); color:#000; font-weight:700; }
+.sol-btn.primary:hover { background:var(--green2); }
+.sol-btn.outline { border:1px solid var(--border); color:var(--dim); }
+.sol-btn.outline:hover { border-color:var(--green); color:var(--green); }
+
+/* ═══ SLIDE 5: DAY ONE ═══ */
+#s5 { padding:60px 80px; justify-content:center; }
+.dayone-layout { display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:32px; }
+.dayone-timeline { display:flex; flex-direction:column; gap:0; }
+.tl-item { display:flex; gap:20px; padding-bottom:24px; position:relative; }
+.tl-item:not(:last-child)::after {
+  content:''; position:absolute; left:15px; top:32px; bottom:0;
+  width:1px; background:var(--border);
+}
+.tl-dot {
+  width:32px; height:32px; border-radius:50%; border:1px solid var(--border);
+  background:var(--bg2); display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; flex-shrink:0; color:var(--dim);
+  font-family:'DM Mono',monospace; z-index:1;
+}
+.tl-item.active-tl .tl-dot { border-color:var(--green); color:var(--green); background:rgba(0,245,159,.08); }
+.tl-content { padding-top:4px; }
+.tl-period { font-size:9px; letter-spacing:3px; color:var(--solar); margin-bottom:4px; font-family:'DM Mono',monospace; }
+.tl-title { font-size:13px; font-weight:600; color:var(--white); margin-bottom:4px; }
+.tl-desc { font-size:11px; color:var(--dim); line-height:1.6; }
+.dayone-right { display:flex; flex-direction:column; gap:14px; }
+.value-card {
+  border:1px solid var(--border); padding:20px; background:var(--bg2);
+}
+.value-card-label { font-size:9px; letter-spacing:3px; color:var(--green); margin-bottom:10px; font-family:'DM Mono',monospace; }
+.value-card-content { font-size:12px; color:var(--dim); line-height:1.8; }
+.value-card-content strong { color:var(--text); }
+
+/* ═══ SLIDE 6: LIVE DEMO ═══ */
+#s6 { padding:60px 80px; justify-content:center; }
+.demo-steps { display:flex; flex-direction:column; gap:14px; margin-top:28px; }
+.demo-step {
+  display:flex; gap:20px; padding:18px 22px;
+  border:1px solid var(--border); background:var(--bg2); align-items:flex-start;
+  transition:all .2s; cursor:default;
+}
+.demo-step.hl { border-color:var(--solar); background:rgba(245,168,0,.03); }
+.demo-step-n {
+  font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--border);
+  flex-shrink:0; line-height:1; width:36px;
+}
+.demo-step.hl .demo-step-n { color:var(--solar); }
+.demo-step-body { flex:1; }
+.demo-step-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.demo-step.hl .demo-step-title { color:var(--solar); }
+.demo-step-desc { font-size:11px; color:var(--dim); line-height:1.6; }
+.demo-step-url { font-size:10px; color:var(--blue); letter-spacing:1px; margin-top:6px; text-decoration:none; display:inline-block; font-family:'DM Mono',monospace; }
+.demo-step-url:hover { color:var(--green); }
+.demo-step-time { font-size:9px; color:var(--dim); letter-spacing:2px; flex-shrink:0; font-family:'DM Mono',monospace; margin-top:4px; }
+
+/* ═══ SLIDE 7: CLOSE ═══ */
+#s7 {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(0,245,159,.05) 0%, transparent 60%),
+    var(--bg);
+  justify-content:center; align-items:center; padding:80px; text-align:center;
+}
+.close-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:5px; color:var(--green); margin-bottom:24px; }
+.close-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,6vw,80px); color:var(--white); margin-bottom:12px; line-height:1; }
+.close-title .s { color:var(--solar); }
+.close-sub { font-size:13px; color:var(--dim); margin-bottom:48px; letter-spacing:1px; max-width:500px; line-height:1.7; }
+.close-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:60px; }
+.close-btn {
+  padding:13px 28px; font-family:'DM Mono',monospace; font-size:11px;
+  letter-spacing:2px; text-decoration:none; transition:all .2s;
+}
+.close-btn.g { background:var(--green); color:#000; font-weight:700; }
+.close-btn.g:hover { background:var(--green2); }
+.close-btn.s { background:var(--solar); color:#000; font-weight:700; }
+.close-btn.s:hover { background:var(--solar2); }
+.close-btn.o { border:1px solid var(--border); color:var(--dim); }
+.close-btn.o:hover { border-color:var(--green); color:var(--green); }
+.close-stats { display:flex; gap:40px; justify-content:center; padding-top:40px; border-top:1px solid var(--border); }
+.close-stat { text-align:center; }
+.close-stat-val { font-family:'Bebas Neue',sans-serif; font-size:40px; color:var(--green); }
+.close-stat-label { font-size:9px; color:var(--dim); letter-spacing:3px; font-family:'DM Mono',monospace; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="timer">05:00</div>
+<div id="brand">TSM · FINOPS</div>
+
+<div id="nav">
+  <button id="nav-prev">←</button>
+  <div id="dots"></div>
+  <span id="slide-counter">1 / 7</span>
+  <button id="nav-next">→</button>
+</div>
+
+<!-- S1: TITLE -->
+<div class="slide active" id="s1">
+  <div class="s1-tag fu">STAFF ACCOUNTANT · FINOPS PRESENTATION · 2026</div>
+  <div class="s1-title fu d1">FINOPS<br><span class="solar">INTY</span><br><span class="green">POWER</span></div>
+  <div class="s1-role fu d2">HOW TSM FINOPS TRANSFORMS SOLAR OPERATIONS ACCOUNTING</div>
+  <div class="s1-pills fu d3">
+    <div class="s1-pill active">✓ AP / AR AUTOMATION</div>
+    <div class="s1-pill active">✓ JOB COSTING</div>
+    <div class="s1-pill active">✓ ITC TAX TRACKING</div>
+    <div class="s1-pill active">✓ MONTH-END CLOSE</div>
+    <div class="s1-pill">LIVE DEMO INSIDE</div>
+  </div>
+  <div class="s1-right fu d4">
+    <div class="s1-solar-icon">☀️</div>
+    <div class="s1-company">INTY POWER</div>
+    <div class="s1-company-sub">ARIZONA SOLAR · DIRECT TO CONSUMER</div>
+  </div>
+</div>
+
+<!-- S2: ABOUT THE ROLE -->
+<div class="slide" id="s2">
+  <div class="slide-tag fu">THE OPPORTUNITY</div>
+  <div class="slide-h fu d1">What a Staff Accountant<br>brings to Inty Power.</div>
+  <div class="role-grid">
+    <div class="role-left">
+      <div class="role-card fu d2">
+        <div class="role-card-label">THE COMPANY</div>
+        <div class="role-card-title">Inty Power — Arizona Solar</div>
+        <div class="role-card-desc">Direct-to-consumer residential solar installation. In-house install team, financing offered. 10+ years experience. Growing fast in the AZ market — which means financial complexity is growing too.</div>
+      </div>
+      <div class="role-card fu d3">
+        <div class="role-card-label">THE GAP</div>
+        <div class="role-card-title">Accounting at project scale</div>
+        <div class="role-card-desc">Each solar install is a mini project: equipment cost, labor, permitting, financing terms, ITC credits, warranty obligations. Without a Staff Accountant using the right tools, margin leaks fast.</div>
+      </div>
+      <div class="role-card fu d4" style="border-left-color:var(--solar)">
+        <div class="role-card-label" style="color:var(--solar)">MY VALUE ADD</div>
+        <div class="role-card-title">TSM FinOps — day one</div>
+        <div class="role-card-desc">I bring TSM FinOps — an AI-powered financial operations platform — that handles AP aging, job costing, compliance, and month-end close at the speed Inty Power's growth demands.</div>
+      </div>
+    </div>
+    <div class="role-right fu d3">
+      <div class="role-right-title">STAFF ACCOUNTANT CORE DUTIES AT INTY POWER</div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>Project job costing</strong> — track cost per install: panels, batteries, labor, permits, financing fees</div>
+      </div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>AP management</strong> — vendor payments for equipment suppliers, subcontractors, permitting agencies</div>
+      </div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>AR tracking</strong> — customer payment plans, financing reconciliation, cash application</div>
+      </div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>ITC tax credit tracking</strong> — 30% federal Investment Tax Credit per install, must be documented correctly</div>
+      </div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>Month-end close</strong> — revenue recognition, WIP schedules, deferred revenue on financing</div>
+      </div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>Compliance</strong> — AZ ROC licensing, utility interconnection, APS/SRP incentive reporting</div>
+      </div>
+      <div class="role-item">
+        <div class="role-item-dot"></div>
+        <div class="role-item-text"><strong>Financial reporting</strong> — P&L by project, cash flow, cost variance, margin by install type</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: PAIN POINTS -->
+<div class="slide" id="s3">
+  <div class="slide-tag fu">THE CHALLENGE</div>
+  <div class="slide-h fu d1">Where solar accounting<br>breaks down without the right tools.</div>
+  <div class="pain-grid">
+    <div class="pain-card fu d2">
+      <div class="pain-num">01</div>
+      <div class="pain-stat">Per Install</div>
+      <div class="pain-title">JOB COST COMPLEXITY</div>
+      <div class="pain-desc">Each install has 8–12 cost components: panels, inverters, batteries, racking, labor, permits, HOA fees, utility fees, financing costs. Without AI tracking, margin bleeds silently.</div>
+    </div>
+    <div class="pain-card fu d3">
+      <div class="pain-num">02</div>
+      <div class="pain-stat">30% ITC</div>
+      <div class="pain-title">TAX CREDIT DOCUMENTATION</div>
+      <div class="pain-desc">The federal Investment Tax Credit is 30% of install cost — but only if documented correctly per IRS Rev. Proc. 2007-65. Missed documentation = missed credits = real dollar losses.</div>
+    </div>
+    <div class="pain-card fu d4">
+      <div class="pain-num">03</div>
+      <div class="pain-stat">Multi-Source</div>
+      <div class="pain-title">REVENUE RECOGNITION</div>
+      <div class="pain-desc">Cash sales, financing plans, APS/SRP rebates, SREC income — all recognized differently. Without proper month-end processes, financial statements are unreliable for growth decisions.</div>
+    </div>
+  </div>
+  <div class="pain-bottom fu d5">
+    <strong>The bottom line:</strong> Inty Power's direct-to-consumer model with in-house installation creates high-volume, project-based accounting complexity.
+    A Staff Accountant with <strong>AI-powered FinOps tools</strong> doesn't just keep up — they get ahead of the margin leakage before it happens.
+  </div>
+</div>
+
+<!-- S4: SOLUTION -->
+<div class="slide" id="s4">
+  <div class="slide-tag fu">THE PLATFORM</div>
+  <div class="slide-h fu d1">TSM FinOps — built for<br>exactly this.</div>
+  <div class="sol-layout">
+    <div class="sol-list">
+      <div class="sol-item fu d1">
+        <div class="sol-item-icon">📊</div>
+        <div>
+          <div class="sol-item-name">AP AGING COPILOT</div>
+          <div class="sol-item-desc">AI analyzes outstanding vendor invoices, flags 90+ day items, suggests payment priority based on supplier relationships and cash position.</div>
+          <div class="sol-item-tag">→ INTY USE: PANEL SUPPLIERS · SUBCONTRACTORS · PERMITTING</div>
+        </div>
+      </div>
+      <div class="sol-item fu d2">
+        <div class="sol-item-icon">🔧</div>
+        <div>
+          <div class="sol-item-name">JOB COST INTELLIGENCE</div>
+          <div class="sol-item-desc">Per-project cost tracking with variance alerts. AI flags when an install exceeds budget and identifies which cost component is the culprit.</div>
+          <div class="sol-item-tag">→ INTY USE: COST PER KW · BATTERY MARGIN · LABOR VARIANCE</div>
+        </div>
+      </div>
+      <div class="sol-item fu d3">
+        <div class="sol-item-icon">📄</div>
+        <div>
+          <div class="sol-item-name">DOCUMENT INTELLIGENCE</div>
+          <div class="sol-item-desc">Upload any invoice, contract, permit, or financing agreement. AI extracts key figures, flags compliance issues, and surfaces actionable insights in seconds.</div>
+          <div class="sol-item-tag">→ INTY USE: FINANCING CONTRACTS · ITC DOCS · UTILITY AGREEMENTS</div>
+        </div>
+      </div>
+      <div class="sol-item fu d4">
+        <div class="sol-item-icon">📅</div>
+        <div>
+          <div class="sol-item-name">MONTH-END CLOSE</div>
+          <div class="sol-item-desc">AI-driven close checklist: WIP schedule, revenue recognition, deferred revenue, accruals. Controller-ready output with variance explanations built in.</div>
+          <div class="sol-item-tag">→ INTY USE: REVENUE RECOGNITION · DEFERRED SOLAR INCOME</div>
+        </div>
+      </div>
+    </div>
+    <div class="sol-right">
+      <div class="sol-metric fu d1">
+        <div class="sol-metric-label">AP AGING TRACKED</div>
+        <div class="sol-metric-val">AUTO</div>
+      </div>
+      <div class="sol-metric fu d2">
+        <div class="sol-metric-label">ITC COMPLIANCE FLAGS</div>
+        <div class="sol-metric-val">LIVE</div>
+      </div>
+      <div class="sol-metric fu d3">
+        <div class="sol-metric-label">CLOSE TIME REDUCTION</div>
+        <div class="sol-metric-val">60%</div>
+      </div>
+      <div class="sol-metric fu d4">
+        <div class="sol-metric-label">DOC ANALYSIS TIME</div>
+        <div class="sol-metric-val">&lt;30s</div>
+      </div>
+      <div class="sol-cta fu d5">
+        <a class="sol-btn primary" href="https://tsm-shell.fly.dev/suite/finops" target="_blank">⚡ OPEN FINOPS COPILOT →</a>
+        <a class="sol-btn outline" href="https://tsm-shell.fly.dev/finops-suite/finops-showcase/index.html" target="_blank">📄 OPEN DOC SHOWCASE →</a>
+        <a class="sol-btn outline" href="https://tsm-shell.fly.dev/html/finops-main-strategist/index.html" target="_blank">📊 OPEN MAIN STRATEGIST →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: DAY ONE -->
+<div class="slide" id="s5">
+  <div class="slide-tag fu">30 / 60 / 90 DAY PLAN</div>
+  <div class="slide-h fu d1">Here's what I do<br>day one at Inty Power.</div>
+  <div class="dayone-layout">
+    <div class="dayone-timeline">
+      <div class="tl-item active-tl fu d1">
+        <div class="tl-dot">30</div>
+        <div class="tl-content">
+          <div class="tl-period">DAYS 1–30 · FOUNDATION</div>
+          <div class="tl-title">Audit + Wire Up</div>
+          <div class="tl-desc">Audit current AP/AR state. Map all vendors, subcontractors, financing partners. Wire TSM FinOps to existing data. Identify top 3 margin leaks immediately.</div>
+        </div>
+      </div>
+      <div class="tl-item fu d2">
+        <div class="tl-dot">60</div>
+        <div class="tl-content">
+          <div class="tl-period">DAYS 31–60 · SYSTEMS</div>
+          <div class="tl-title">Job Costing + Close Process</div>
+          <div class="tl-desc">Build per-install job cost templates. Implement WIP schedule. Automate month-end close checklist. Set up ITC documentation workflow per IRS requirements.</div>
+        </div>
+      </div>
+      <div class="tl-item fu d3">
+        <div class="tl-dot">90</div>
+        <div class="tl-content">
+          <div class="tl-period">DAYS 61–90 · INTELLIGENCE</div>
+          <div class="tl-title">AI-Powered Reporting</div>
+          <div class="tl-desc">Deploy TSM FinOps full stack. Real-time P&L by project type. Predictive cash flow. Margin by install team. Executive dashboard ready for growth decisions.</div>
+        </div>
+      </div>
+    </div>
+    <div class="dayone-right">
+      <div class="value-card fu d2">
+        <div class="value-card-label">IMMEDIATE WINS — WEEK 1</div>
+        <div class="value-card-content">
+          <strong>AP aging report</strong> — who owes what, how old, priority order<br>
+          <strong>Outstanding ITC docs</strong> — flag any installs missing credit documentation<br>
+          <strong>Vendor payment schedule</strong> — avoid late fees, protect supplier relationships<br>
+          <strong>Cash position</strong> — actual vs projected for next 30 days
+        </div>
+      </div>
+      <div class="value-card fu d3">
+        <div class="value-card-label">TOOLS I BRING DAY ONE</div>
+        <div class="value-card-content">
+          <strong>TSM FinOps Copilot</strong> — AP/AR, job costing, compliance AI<br>
+          <strong>Doc Showcase</strong> — upload any document, extract key data instantly<br>
+          <strong>Main Strategist</strong> — executive-level financial reporting<br>
+          <strong>Financial Command</strong> — real-time cash flow + variance dashboard
+        </div>
+      </div>
+      <div class="value-card fu d4" style="border:1px solid var(--solar)">
+        <div class="value-card-label" style="color:var(--solar)">THE SOLAR-SPECIFIC EDGE</div>
+        <div class="value-card-content">
+          I understand solar accounting: <strong>ITC credit tracking</strong>, <strong>APS/SRP rebate reconciliation</strong>, <strong>SREC income</strong>, <strong>AZ ROC compliance</strong>, <strong>deferred revenue on financing</strong>, and <strong>project-based revenue recognition</strong>. TSM FinOps is the infrastructure. I'm the operator.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: LIVE DEMO -->
+<div class="slide" id="s6">
+  <div class="slide-tag fu">LIVE DEMO FLOW</div>
+  <div class="slide-h fu d1">Watch TSM FinOps work<br>on a real solar scenario.</div>
+  <div class="demo-steps">
+    <div class="demo-step fu d1">
+      <div class="demo-step-n">1</div>
+      <div class="demo-step-body">
+        <div class="demo-step-title">FinOps Copilot — AP Aging for Solar Vendor</div>
+        <div class="demo-step-desc">Run AP Aging workflow. Context: "$42K outstanding to SunPower distributor, 67 days overdue. 3 installs pending panel delivery." Watch AI generate prioritized action plan with supplier negotiation script.</div>
+        <a class="demo-step-url" href="https://tsm-shell.fly.dev/suite/finops" target="_blank">↗ tsm-shell.fly.dev/suite/finops</a>
+      </div>
+      <div class="demo-step-time">0:00–1:00</div>
+    </div>
+    <div class="demo-step hl fu d2">
+      <div class="demo-step-n">2</div>
+      <div class="demo-step-body">
+        <div class="demo-step-title">Doc Showcase — Upload Solar Financing Contract</div>
+        <div class="demo-step-desc">Upload a solar financing agreement or ITC documentation. AI extracts: loan terms, deferred revenue schedule, ITC eligibility, compliance flags, revenue recognition timeline. This is the POC moment.</div>
+        <a class="demo-step-url" href="https://tsm-shell.fly.dev/finops-suite/finops-showcase/index.html" target="_blank">↗ Doc Showcase — OPEN LIVE</a>
+      </div>
+      <div class="demo-step-time">1:00–2:30</div>
+    </div>
+    <div class="demo-step fu d3">
+      <div class="demo-step-n">3</div>
+      <div class="demo-step-body">
+        <div class="demo-step-title">Main Strategist — Month-End Close for Inty Power</div>
+        <div class="demo-step-desc">Run month-end close workflow. Context: "12 installs completed in April, 4 on financing, 2 APS rebates pending, 1 battery-only install." AI generates WIP schedule, deferred revenue, accruals, and close checklist.</div>
+        <a class="demo-step-url" href="https://tsm-shell.fly.dev/html/finops-main-strategist/index.html" target="_blank">↗ Main Strategist</a>
+      </div>
+      <div class="demo-step-time">2:30–3:30</div>
+    </div>
+    <div class="demo-step hl fu d4">
+      <div class="demo-step-n">4</div>
+      <div class="demo-step-body">
+        <div class="demo-step-title">Financial Command — Project P&L Dashboard</div>
+        <div class="demo-step-desc">Show real-time financial command. Run ITC compliance check. Ask the AI: "What's our margin on a standard 8kW install with battery in Chandler?" Get instant cost breakdown with recommendations.</div>
+        <a class="demo-step-url" href="https://tsm-shell.fly.dev/html/financial-command/index.html" target="_blank">↗ Financial Command</a>
+      </div>
+      <div class="demo-step-time">3:30–4:30</div>
+    </div>
+    <div class="demo-step fu d5">
+      <div class="demo-step-n">5</div>
+      <div class="demo-step-body">
+        <div class="demo-step-title">Close — 30-Day Onboarding Proposal</div>
+        <div class="demo-step-desc">Summarize the 30/60/90 plan. Offer to run a real Inty Power AP aging report in week one. Propose KPIs: close time, margin per install, ITC capture rate.</div>
+      </div>
+      <div class="demo-step-time">4:30–5:00</div>
+    </div>
+  </div>
+</div>
+
+<!-- S7: CLOSE -->
+<div class="slide" id="s7">
+  <div class="close-tag fu">READY TO CONTRIBUTE · DAY ONE</div>
+  <div class="close-title fu d1">LET'S BUILD<br><span class="s">INTY POWER'S</span><br>FINANCIAL EDGE.</div>
+  <div class="close-sub fu d2">Staff Accountant who brings AI-powered FinOps, solar accounting expertise, and a 30/60/90 plan that delivers measurable results from week one.</div>
+  <div class="close-btns fu d3">
+    <a class="close-btn g" href="https://tsm-shell.fly.dev/suite/finops" target="_blank">⚡ FINOPS COPILOT</a>
+    <a class="close-btn s" href="https://tsm-shell.fly.dev/finops-suite/finops-showcase/index.html" target="_blank">📄 DOC SHOWCASE</a>
+    <a class="close-btn o" href="https://tsm-shell.fly.dev/html/finops-main-strategist/index.html" target="_blank">📊 MAIN STRATEGIST</a>
+  </div>
+  <div class="close-stats fu d4">
+    <div class="close-stat">
+      <div class="close-stat-val">30%</div>
+      <div class="close-stat-label">ITC CREDIT TRACKED</div>
+    </div>
+    <div class="close-stat">
+      <div class="close-stat-val">60%</div>
+      <div class="close-stat-label">CLOSE TIME SAVED</div>
+    </div>
+    <div class="close-stat">
+      <div class="close-stat-val">&lt;30s</div>
+      <div class="close-stat-label">DOC ANALYSIS</div>
+    </div>
+    <div class="close-stat">
+      <div class="close-stat-val">DAY 1</div>
+      <div class="close-stat-label">READY TO DEPLOY</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SLIDES = document.querySelectorAll('.slide');
+const TOTAL = SLIDES.length;
+let current = 0;
+let seconds = 300;
+
+const dotsEl = document.getElementById('dots');
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement('div');
+  d.className='nav-dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n){
+  SLIDES[current].classList.remove('active');
+  current=Math.max(0,Math.min(TOTAL-1,n));
+  SLIDES[current].classList.add('active');
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+  document.getElementById('slide-counter').textContent=`${current+1} / ${TOTAL}`;
+  document.getElementById('progress-bar').style.width=`${((current+1)/TOTAL)*100}%`;
+}
+
+document.getElementById('nav-next').onclick=()=>goTo(current+1);
+document.getElementById('nav-prev').onclick=()=>goTo(current-1);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')goTo(current+1);
+  if(e.key==='ArrowLeft')goTo(current-1);
+});
+
+const timerEl=document.getElementById('timer');
+setInterval(()=>{
+  seconds--;
+  const m=Math.floor(seconds/60), s=seconds%60;
+  timerEl.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(seconds<=60)timerEl.className='urgent';
+  else if(seconds<=120)timerEl.className='warn';
+  if(seconds<=0)timerEl.textContent='TIME';
+},1000);
+
+document.getElementById('progress-bar').style.width=`${(1/TOTAL)*100}%`;
+</script>
+</body>
+</html>
