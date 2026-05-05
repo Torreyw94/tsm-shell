@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>TSM Construction Intelligence – Executive Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+body {
+  margin:0;
+  font-family: Inter, sans-serif;
+  background:#05070b;
+  color:#e8fef8;
+}
+.slide {
+  display:none;
+  padding:60px;
+  height:100vh;
+}
+.active { display:block; }
+
+h1 { font-size:48px; color:#00ffc6; }
+h2 { color:#ffc400; }
+p { font-size:18px; max-width:800px; }
+
+.btn {
+  padding:12px 20px;
+  background:#00ffc6;
+  color:#000;
+  border:none;
+  cursor:pointer;
+  margin-top:20px;
+  border-radius:6px;
+  font-weight:600;
+}
+
+.nav {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+}
+
+iframe {
+  width:100%;
+  height:70vh;
+  border:none;
+  margin-top:20px;
+  border-radius:10px;
+  box-shadow:0 0 20px rgba(0,255,200,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<!-- SLIDE 1 -->
+<div class="slide active">
+  <h1>STOP LOSING MONEY ON EVERY JOB SITE</h1>
+  <p>
+  This system analyzes your entire construction operation in real-time and tells your team exactly what to do next.
+  </p>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide">
+  <h2>THE PROBLEM</h2>
+  <p>
+  Most firms react too late — missing compliance risks, cash flow issues, and contract exposure until it's already costing money.
+  </p>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide">
+  <h2>THE SYSTEM</h2>
+  <p>
+  We run multiple specialized AI engines across operations, compliance, finance, and legal — then synthesize them into one decision.
+  </p>
+</div>
+
+<!-- SLIDE 4 (HUB LIVE) -->
+<div class="slide">
+  <h2>LIVE OPERATIONS VIEW</h2>
+  <iframe src="/construction-suite/construction-hub.html"></iframe>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide">
+  <h2>ONE CLICK ANALYSIS</h2>
+  <p>
+  Run OSHA, financial, and legal checks simultaneously with a single action.
+  </p>
+  <button class="btn" onclick="openApp('/construction-suite/construction-pro.html')">
+    Open AuditOps Pro
+  </button>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide">
+  <h2>DEEP INTELLIGENCE</h2>
+  <iframe src="/construction-suite/construction-pro.html"></iframe>
+</div>
+
+<!-- SLIDE 7 -->
+<div class="slide">
+  <h2>DECISION ENGINE</h2>
+  <p>
+  This is where everything becomes actionable — prioritized by dollar impact.
+  </p>
+  <button class="btn" onclick="openApp('/construction-suite/construction-strategist.html')">
+    Open Strategist
+  </button>
+</div>
+
+<!-- SLIDE 8 -->
+<div class="slide">
+  <h2>BNCA OUTPUT</h2>
+  <iframe src="/construction-suite/construction-strategist.html"></iframe>
+</div>
+
+<!-- SLIDE 9 -->
+<div class="slide">
+  <h2>ROI</h2>
+  <p>
+  Typical impact: $400K–$1.5M annually per $25M GC.
+  </p>
+</div>
+
+<!-- SLIDE 10 -->
+<div class="slide">
+  <h1>EXECUTIVE CLOSE</h1>
+  <p>
+  We don’t give your team more data.  
+  We tell them exactly what to fix next.
+  </p>
+</div>
+
+<div class="nav">
+  <button class="btn" onclick="next()">Next</button>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+
+function next(){
+  slides[current].classList.remove('active');
+  current = Math.min(current + 1, slides.length - 1);
+  slides[current].classList.add('active');
+}
+
+function openApp(url){
+  window.open(url, '_blank');
+}
+</script>
+
+</body>
+</html>

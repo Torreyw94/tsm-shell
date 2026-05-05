@@ -203,6 +203,9 @@ app.get(['/music','/suite/music','/html/music-command','/html/music-command/','/
   res.sendFile(path.join(__dirname, 'html', 'music-command', 'index.html'));
 });
 
+
+// Construction Suite static route
+app.use('/construction-suite', express.static(path.join(__dirname, 'html', 'construction-suite')));
 app.use(express.static(path.join(__dirname, 'html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
