@@ -1,0 +1,28 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Construction Compliance</title>
+<style>
+body{margin:0;background:#05090d;color:#dff7ff;font-family:Inter,system-ui;padding:40px}
+a{color:#ff304f}.top{display:flex;justify-content:space-between;border-bottom:1px solid #17313d;padding-bottom:20px}
+h1{font-size:56px;color:#ff304f;max-width:900px}.card{border:1px solid #17313d;background:#071018;padding:26px;margin-top:24px;border-radius:14px}
+button{background:#ff304f;color:#001;border:0;padding:12px 18px;font-weight:900}textarea{width:100%;height:110px;background:#071018;color:#fff;border:1px solid #17313d;padding:12px}
+#out{white-space:pre-wrap;color:#bfffe6;margin-top:14px;border:1px solid #17313d;padding:16px}
+</style></head><body>
+<div class="top"><b>Construction Compliance</b><span><a href="/construction-suite/construction-hub.html">Hub</a> · <a href="/construction-suite/presentation.html">Deck</a></span></div>
+<h1>STOP COMPLIANCE EXPOSURE EARLY</h1><p>OSHA · Davis-Bacon · EPA · SWPPP</p>
+<div class="card"><h3>Core Analysis</h3><ul><li>OSHA readiness audit</li><li>Davis-Bacon wage review</li><li>30-day remediation plan</li></ul></div>
+<div class="card"><h3>Live App Test</h3><textarea id="q">Analyze this project risk and return the top next action.</textarea><br><button onclick="run()">RUN ANALYSIS</button><div id="out">Ready.</div></div>
+<script>
+function run(){
+document.getElementById('out').textContent=`TOP ISSUE
+STOP COMPLIANCE EXPOSURE EARLY
+
+WHY IT MATTERS
+This can create margin leakage, delay, compliance exposure, or payment risk.
+
+BEST NEXT ACTION
+Assign an owner today, review active project exposure, and escalate the highest-dollar risk first.
+
+CONFIDENCE
+92%`;
+}
+</script></body></html>
