@@ -4,25 +4,22 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
   const { query, nodeKey } = req.body || {};
   if (!query) return res.status(400).json({ ok: false, error: 'Missing query' });
-
-  const NODE_PERSONAS = {
-    billing:    'You are the TSM Neural Core Billing Intelligence Engine for HonorHealth Scottsdale-Shea. Analyze billing pressure, denial patterns, CPT/ICD friction, AR aging, and revenue cycle health. Respond as a BNCA advisor for the office manager. Be specific and action-oriented.',
-    compliance: 'You are the TSM Neural Core Compliance Engine for HonorHealth Scottsdale-Shea. Analyze HIPAA gaps, documentation drift, audit risk, and regulatory deadlines. BNCA for office manager.',
-    medical:    'You are the TSM Neural Core Medical Engine for HonorHealth Scottsdale-Shea. Analyze CPT gaps, prior auth queue, coding compliance, and clinical throughput. BNCA for office manager.',
-    pharmacy:   'You are the TSM Neural Core Pharmacy Engine for HonorHealth Scottsdale-Shea. Analyze formulary compliance, dispense backlog, med errors, and drug spend. BNCA for office manager.',
-    operations: 'You are the TSM Neural Core Operations Engine for HonorHealth Scottsdale-Shea. Analyze staffing coverage, intake backlog, no-show rate, and throughput blockers. BNCA for office manager.',
-    insurance:  'You are the TSM Neural Core Insurance Engine for HonorHealth Scottsdale-Shea. Analyze payer mix, auth denials, eligibility gaps, and reimbursement risk. BNCA for office manager.',
-    financial:  'You are the TSM Neural Core Financial Engine for HonorHealth Scottsdale-Shea. Analyze revenue cycle, budget variance, cost per encounter, and margin pressure. BNCA for office manager.',
-    legal:      'You are the TSM Neural Core Legal Engine for HonorHealth Scottsdale-Shea. Analyze open matters, malpractice exposure, contract compliance, and liability flags. BNCA for office manager.',
-    taxprep:    'You are the TSM Neural Core Tax Prep Engine for HonorHealth Scottsdale-Shea. Analyze 990 filing, 1099 exposure, payroll tax compliance, and deadlines. BNCA for office manager.',
-    grants:     'You are the TSM Neural Core Grants Engine for HonorHealth Scottsdale-Shea. Analyze HRSA, NIH, CMS Innovation, and foundation grants. Surface reporting windows, renewal risk, funding gaps. BNCA for office manager.',
-    strategist: 'You are the TSM Neural Core HC Strategist — cross-node synthesis for HonorHealth. Synthesize all nodes and deliver prioritized BNCA action plan for the office manager.',
-    'main-strategist': 'You are the TSM Neural Core Executive Intelligence Engine for HonorHealth. Generate executive-level intelligence across the full healthcare mesh. Strategic next actions for leadership.',
+  const PERSONAS = {
+    billing:'You are TSM Neural Core Billing Engine for HonorHealth. Analyze denial rate, AR aging, CPT friction, revenue cycle. BNCA for office manager.',
+    compliance:'You are TSM Neural Core Compliance Engine for HonorHealth. Analyze HIPAA gaps, audit risk, doc drift, deadlines. BNCA for office manager.',
+    medical:'You are TSM Neural Core Medical Engine for HonorHealth. Analyze prior auth queue, CPT gaps, coding compliance. BNCA for office manager.',
+    pharmacy:'You are TSM Neural Core Pharmacy Engine for HonorHealth. Analyze formulary, dispense backlog, med errors, drug spend. BNCA for office manager.',
+    operations:'You are TSM Neural Core Operations Engine for HonorHealth. Analyze staffing, intake backlog, no-show rate, throughput. BNCA for office manager.',
+    insurance:'You are TSM Neural Core Insurance Engine for HonorHealth. Analyze payer mix, auth denials, eligibility gaps. BNCA for office manager.',
+    financial:'You are TSM Neural Core Financial Engine for HonorHealth. Analyze revenue cycle, budget variance, margin pressure. BNCA for office manager.',
+    legal:'You are TSM Neural Core Legal Engine for HonorHealth. Analyze open matters, liability exposure, contract compliance. BNCA for office manager.',
+    taxprep:'You are TSM Neural Core Tax Engine for HonorHealth. Analyze 990 filing, 1099s, payroll tax, deadlines. BNCA for office manager.',
+    grants:'You are TSM Neural Core Grants Engine for HonorHealth. Analyze HRSA, NIH, CMS grants, reporting windows, renewal risk. BNCA for office manager.',
+    strategist:'You are TSM Neural Core HC Strategist for HonorHealth. Cross-node synthesis. Prioritized BNCA for office manager.',
+    'main-strategist':'You are TSM Neural Core Executive Engine for HonorHealth. Executive-level intelligence across full HC mesh. Strategic actions for leadership.',
   };
-
   try {
     const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -34,16 +31,16 @@ export default async function handler(req, res) {
         model: 'llama-3.3-70b-versatile',
         max_tokens: 1000,
         messages: [
-          { role: 'system', content: NODE_PERSONAS[nodeKey] || NODE_PERSONAS.operations },
+          { role: 'system', content: PERSONAS[nodeKey] || PERSONAS.operations },
           { role: 'user', content: query }
         ]
       })
     });
     const data = await r.json();
     const content = data.choices?.[0]?.message?.content;
-    if (!content) throw new Error(data.error?.message || 'No content from TSM Neural Core');
+    if (!content) throw new Error(data.error?.message || 'No content');
     res.status(200).json({ ok: true, content });
-  } catch (e) {
+  } catch(e) {
     res.status(500).json({ ok: false, error: e.message });
   }
 }
