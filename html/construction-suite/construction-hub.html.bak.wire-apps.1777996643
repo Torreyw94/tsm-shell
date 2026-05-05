@@ -717,8 +717,8 @@ body::before {
   <div class="tb-right">
     <button class="tb-btn primary" onclick="startAutoDemo()">🎬 AUTO DEMO</button>
     <button class="tb-btn amber" onclick="openClosingLock()">🔒 EXECUTIVE CLOSE</button>
-    <a class="tb-btn" href="/html/construction-suite/construction-command.html">COMMAND ↗</a>
-    <a class="tb-btn" href="/html/construction-suite/construction-strategist.html">STRATEGIST ↗</a>
+    <a class="tb-btn" href="/construction-suite/construction-command.html">COMMAND ↗</a>
+    <a class="tb-btn" href="/construction-suite/construction-strategist.html">STRATEGIST ↗</a>
   </div>
 </div>
 
@@ -798,7 +798,7 @@ body::before {
       </p>
       <div class="hero-btns">
         <button class="btn-fill" onclick="startAutoDemo()">🎬 Auto Demo Mode</button>
-        <a class="btn-ghost" href="/html/construction-suite/construction-command.html">Open Command ↗</a>
+        <a class="btn-ghost" href="/construction-suite/construction-command.html">Open Command ↗</a>
         <button class="btn-ghost" onclick="openClosingLock()">Executive Close →</button>
       </div>
     </div>
@@ -825,25 +825,25 @@ body::before {
           <div class="flow-node-num">LAYER 1</div>
           <div class="flow-node-name">OPERATIONS</div>
           <div class="flow-node-desc">Construction Command · AuditOps Pro<br>The frontline — where safety, finance, compliance, and legal pressure live.</div>
-          <a class="flow-node-link" href="/html/construction-suite/construction-command.html">OPEN COMMAND ↗</a>
+          <a class="flow-node-link" href="/construction-suite/construction-command.html">OPEN COMMAND ↗</a>
         </div>
         <div class="flow-node" style="--cc:var(--amber)">
           <div class="flow-node-num">LAYER 2</div>
           <div class="flow-node-name">INTELLIGENCE</div>
           <div class="flow-node-desc">Compliance · Financial · Legal · Tax<br>Specialist nodes analyzing every domain simultaneously with dollar-specific outputs.</div>
-          <a class="flow-node-link" href="/html/construction-suite/construction-pro.html">OPEN AUDITOPS ↗</a>
+          <a class="flow-node-link" href="/construction-suite/construction-pro.html">OPEN AUDITOPS ↗</a>
         </div>
         <div class="flow-node" style="--cc:var(--orange)">
           <div class="flow-node-num">LAYER 3</div>
           <div class="flow-node-name">BNCA ENGINE</div>
           <div class="flow-node-desc">Construction Strategist<br>Reads all node outputs and generates one ranked, dollar-prioritized Best Next Course of Action.</div>
-          <a class="flow-node-link" href="/html/construction-suite/construction-strategist.html">OPEN STRATEGIST ↗</a>
+          <a class="flow-node-link" href="/construction-suite/construction-strategist.html">OPEN STRATEGIST ↗</a>
         </div>
         <div class="flow-node" style="--cc:var(--purple)">
           <div class="flow-node-num">LAYER 4</div>
           <div class="flow-node-name">EXECUTIVE</div>
           <div class="flow-node-desc">Document Showcase · Report Builder<br>Board-ready reporting, combined outputs, and exportable executive summaries.</div>
-          <a class="flow-node-link" href="/html/construction-suite/document-showcase.html">OPEN DOCS ↗</a>
+          <a class="flow-node-link" href="/construction-suite/document-showcase.html">OPEN DOCS ↗</a>
         </div>
       </div>
       <div style="margin-top:1rem;font-family:var(--mono);font-size:.5rem;color:var(--muted);letter-spacing:.08rem;">
@@ -865,7 +865,7 @@ body::before {
     <div class="apps-grid">
 
       <!-- Construction Command -->
-      <a class="app-card" href="/html/construction-suite/construction-command.html" style="--cc:var(--cyan)">
+      <a class="app-card" href="/construction-suite/construction-command.html" style="--cc:var(--cyan)">
         <div class="app-num">01 · COMMAND CENTER</div>
         <div class="app-name">Construction Command</div>
         <div class="app-role">MULTI-NODE INTELLIGENCE HUB</div>
@@ -883,7 +883,7 @@ body::before {
       </a>
 
       <!-- AuditOps Pro -->
-      <a class="app-card" href="/html/construction-suite/construction-pro.html" style="--cc:var(--amber)">
+      <a class="app-card" href="/construction-suite/construction-pro.html" style="--cc:var(--amber)">
         <div class="app-num">02 · INTELLIGENCE CORE</div>
         <div class="app-name">AuditOps · Construction Pro</div>
         <div class="app-role">30 MODULES · 7 DOMAINS</div>
@@ -901,7 +901,7 @@ body::before {
       </a>
 
       <!-- Construction Strategist -->
-      <a class="app-card" href="/html/construction-suite/construction-strategist.html" style="--cc:var(--orange)">
+      <a class="app-card" href="/construction-suite/construction-strategist.html" style="--cc:var(--orange)">
         <div class="app-num">03 · SOVEREIGN CORE</div>
         <div class="app-name">Construction Strategist</div>
         <div class="app-role">EXECUTIVE BNCA SYNTHESIS</div>
@@ -919,7 +919,7 @@ body::before {
       </a>
 
       <!-- Compliance -->
-      <a class="app-card" href="/html/construction-suite/compliance.html" style="--cc:var(--red)">
+      <a class="app-card" href="/construction-suite/compliance.html" style="--cc:var(--red)">
         <div class="app-num">04 · COMPLIANCE SHIELD</div>
         <div class="app-name">Construction Compliance</div>
         <div class="app-role">OSHA · DAVIS-BACON · EPA · SWPPP</div>
@@ -937,7 +937,7 @@ body::before {
       </a>
 
       <!-- Financial -->
-      <a class="app-card" href="/html/construction-suite/financial.html" style="--cc:var(--green)">
+      <a class="app-card" href="/construction-suite/financial.html" style="--cc:var(--green)">
         <div class="app-num">05 · FINANCIAL INTEL</div>
         <div class="app-name">Construction Financial</div>
         <div class="app-role">CASH FLOW · MARGINS · RETAINAGE</div>
@@ -955,7 +955,7 @@ body::before {
       </a>
 
       <!-- Legal -->
-      <a class="app-card" href="/html/construction-suite/legal.html" style="--cc:var(--blue)">
+      <a class="app-card" href="/construction-suite/legal.html" style="--cc:var(--blue)">
         <div class="app-num">06 · LEGAL COMMAND</div>
         <div class="app-name">Construction Legal</div>
         <div class="app-role">LIENS · DISPUTES · BONDS · DEFAULT</div>
@@ -973,7 +973,7 @@ body::before {
       </a>
 
       <!-- AuditOps Tax -->
-      <a class="app-card" href="/html/construction-suite/auditops-tax.html" style="--cc:var(--purple)">
+      <a class="app-card" href="/construction-suite/auditops-tax.html" style="--cc:var(--purple)">
         <div class="app-num">07 · TAX INTELLIGENCE</div>
         <div class="app-name">Construction Tax Prep</div>
         <div class="app-role">§179 · S-CORP · DEPRECIATION · QBI</div>
@@ -991,7 +991,7 @@ body::before {
       </a>
 
       <!-- Document Showcase -->
-      <a class="app-card" href="/html/construction-suite/document-showcase.html" style="--cc:var(--cyan2)">
+      <a class="app-card" href="/construction-suite/document-showcase.html" style="--cc:var(--cyan2)">
         <div class="app-num">08 · DOCUMENT INTELLIGENCE</div>
         <div class="app-name">Document Showcase</div>
         <div class="app-role">DOC ANALYSIS · REPORT BUILDER</div>
@@ -1160,7 +1160,7 @@ body::before {
       </div>
       <div class="close-btns" style="position:relative;z-index:1;">
         <button class="btn-fill" onclick="openClosingLock()">🔒 Get Executive Summary</button>
-        <a class="btn-ghost" href="/html/construction-suite/construction-command.html">Open Command Center ↗</a>
+        <a class="btn-ghost" href="/construction-suite/construction-command.html">Open Command Center ↗</a>
       </div>
       <div class="close-note" style="position:relative;z-index:1;">TSM AMS IMPACT GROUP · CONSTRUCTION INTELLIGENCE SUITE · AI-GENERATED ANALYSIS FOR OPERATIONAL DECISION SUPPORT</div>
     </div>
@@ -1172,15 +1172,15 @@ body::before {
 <div id="suite-strip">
   <div class="ss-label">▸ CONSTRUCTION SUITE</div>
   <div class="ss-apps">
-    <a href="/html/construction-suite/construction-hub.html" class="ss-app current"><span class="ss-dot" style="background:var(--cyan)"></span>HUB</a>
-    <a href="/html/construction-suite/construction-command.html" class="ss-app"><span class="ss-dot" style="background:var(--cyan)"></span>COMMAND</a>
-    <a href="/html/construction-suite/construction-pro.html" class="ss-app"><span class="ss-dot" style="background:var(--amber)"></span>AUDITOPS PRO</a>
-    <a href="/html/construction-suite/construction-strategist.html" class="ss-app"><span class="ss-dot" style="background:var(--orange)"></span>STRATEGIST</a>
-    <a href="/html/construction-suite/compliance.html" class="ss-app"><span class="ss-dot" style="background:var(--red)"></span>COMPLIANCE</a>
-    <a href="/html/construction-suite/financial.html" class="ss-app"><span class="ss-dot" style="background:var(--green)"></span>FINANCIAL</a>
-    <a href="/html/construction-suite/legal.html" class="ss-app"><span class="ss-dot" style="background:var(--blue)"></span>LEGAL</a>
-    <a href="/html/construction-suite/auditops-tax.html" class="ss-app"><span class="ss-dot" style="background:var(--purple)"></span>TAX PREP</a>
-    <a href="/html/construction-suite/document-showcase.html" class="ss-app"><span class="ss-dot" style="background:var(--cyan2)"></span>DOCS</a>
+    <a href="/construction-suite/construction-hub.html" class="ss-app current"><span class="ss-dot" style="background:var(--cyan)"></span>HUB</a>
+    <a href="/construction-suite/construction-command.html" class="ss-app"><span class="ss-dot" style="background:var(--cyan)"></span>COMMAND</a>
+    <a href="/construction-suite/construction-pro.html" class="ss-app"><span class="ss-dot" style="background:var(--amber)"></span>AUDITOPS PRO</a>
+    <a href="/construction-suite/construction-strategist.html" class="ss-app"><span class="ss-dot" style="background:var(--orange)"></span>STRATEGIST</a>
+    <a href="/construction-suite/compliance.html" class="ss-app"><span class="ss-dot" style="background:var(--red)"></span>COMPLIANCE</a>
+    <a href="/construction-suite/financial.html" class="ss-app"><span class="ss-dot" style="background:var(--green)"></span>FINANCIAL</a>
+    <a href="/construction-suite/legal.html" class="ss-app"><span class="ss-dot" style="background:var(--blue)"></span>LEGAL</a>
+    <a href="/construction-suite/auditops-tax.html" class="ss-app"><span class="ss-dot" style="background:var(--purple)"></span>TAX PREP</a>
+    <a href="/construction-suite/document-showcase.html" class="ss-app"><span class="ss-dot" style="background:var(--cyan2)"></span>DOCS</a>
   </div>
   <div class="ss-right">
     <span>$1,750/MO</span>
@@ -1237,7 +1237,7 @@ body::before {
     <div class="cl-btns">
       <button class="cl-btn fill" onclick="startPilot()">START 30-DAY PILOT</button>
       <button class="cl-btn outline" onclick="bookWalkthrough()">BOOK TECHNICAL WALKTHROUGH</button>
-      <a class="cl-btn green" href="/html/construction-suite/construction-strategist.html" target="_blank">OPEN STRATEGIST ↗</a>
+      <a class="cl-btn green" href="/construction-suite/construction-strategist.html" target="_blank">OPEN STRATEGIST ↗</a>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div class="cl-note">NPN · TSM AMS IMPACT GROUP · $1,750/MO · ALL 50 STATES</div>
@@ -1250,7 +1250,7 @@ body::before {
 <div id="closing-rail">
   <button class="cl-btn fill" onclick="startPilot()" style="font-size:.5rem;padding:.5rem 1rem;">START 30-DAY PILOT</button>
   <button class="cl-btn outline" onclick="bookWalkthrough()" style="font-size:.5rem;padding:.5rem 1rem;">BOOK WALKTHROUGH</button>
-  <a class="cl-btn green" href="/html/construction-suite/construction-strategist.html" target="_blank" style="font-size:.5rem;padding:.5rem 1rem;">OPEN STRATEGIST ↗</a>
+  <a class="cl-btn green" href="/construction-suite/construction-strategist.html" target="_blank" style="font-size:.5rem;padding:.5rem 1rem;">OPEN STRATEGIST ↗</a>
 </div>
 
 <script>
@@ -1342,8 +1342,8 @@ function saveReport(key, text) {
   } catch(e) {}
 }
 
-function openStrategist() { window.open('/html/construction-suite/construction-strategist.html', '_blank'); }
-function openCommand() { window.open('/html/construction-suite/construction-command.html', '_blank'); }
+function openStrategist() { window.open('/construction-suite/construction-strategist.html', '_blank'); }
+function openCommand() { window.open('/construction-suite/construction-command.html', '_blank'); }
 
 // ── CLOSING LOCK ────────────────────────────────────────────────
 function openClosingLock() {

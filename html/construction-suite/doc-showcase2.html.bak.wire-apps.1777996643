@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TSM · CONSTRUCTION INTELLIGENCE SHOWCASE</title>
-<script src="/html/shared/tsm-zero-trust.js">
+<script src="/shared/tsm-zero-trust.js">
 const HC_STORAGE_KEY='tsm_hc_reports';
 let lastReport=null;
 
@@ -248,7 +248,7 @@ function pipeAll(){document.querySelectorAll('.pipe-dot').forEach(d=>d.className
 function resetOutput(){document.getElementById('outBody').textContent='> Select a document and press PROCESS to begin.';document.getElementById('outBody').className='out-body';document.getElementById('outStatus').textContent='READY';document.getElementById('pushBtn').classList.remove('visible');document.getElementById('saveBtn')?.classList.remove('visible');lastReport=null;document.querySelectorAll('.kpi-card').forEach(k=>k.classList.remove('visible'));document.querySelectorAll('.pipe-dot').forEach(d=>d.className='pipe-dot');}
 function showKPIs(o){document.getElementById('kv-risk').textContent=o.risk;document.getElementById('kv-flag').textContent=o.flags;document.getElementById('kv-action').textContent=o.actions;document.getElementById('kv-conf').textContent=o.conf;document.querySelectorAll('.kpi-card').forEach(k=>k.classList.add('visible'));}
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
-function pushToStrategist(){location.href='/html/construction-main-strategist/index.html?v=doc-upload-'+Date.now();}
+function pushToStrategist(){location.href='/construction-main-strategist/index.html?v=doc-upload-'+Date.now();}
 
 
 function readFileText(file){
