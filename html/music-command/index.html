@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ZAY Music Command Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#070b10;color:#eaffff;font-family:Inter,system-ui,Arial}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.side{background:#101015;border-right:1px solid #242434;padding:22px}
+.logo{width:38px;height:38px;border-radius:10px;background:#ffd84d;color:#000;display:grid;place-items:center;font-weight:900;margin-bottom:12px}
+h1{font-size:18px;margin:0 0 4px}
+.sub{font-size:11px;color:#7d8794;letter-spacing:1.6px;text-transform:uppercase}
+.nav{margin-top:34px;display:grid;gap:10px}
+.nav button{background:#171720;color:#bfc9d8;border:1px solid #29293a;padding:12px;text-align:left;border-radius:9px;cursor:pointer}
+.nav button.active{border-color:#ffc400;color:#ffc400;background:#241f10}
+.agent{margin-top:34px;border:1px solid #3a275a;background:#171221;border-radius:12px;padding:14px}
+.agent b{color:#fff}
+.agent small{color:#ffc400}
+.main{padding:0 22px 22px}
+.top{height:76px;border-bottom:1px solid #242434;display:flex;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:10px}
+.tabs button{background:#15151f;color:#777;border:0;padding:14px 20px;border-radius:8px;letter-spacing:1px}
+.tabs button.active{background:#2b2210;color:#ffc400;border:1px solid #ffc400}
+.online{border:1px solid #00ffc6;color:#00ffc6;border-radius:999px;padding:10px 18px;font-size:12px}
+.panel{margin-top:22px;border:1px solid #2e1a66;background:#130725;border-radius:14px;overflow:hidden}
+.panelHead{padding:16px;background:#1b0b3c;border-bottom:1px solid #402080;display:flex;justify-content:space-between;align-items:center}
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.step{border:1px solid #4f2c90;color:#a988ff;border-radius:999px;padding:5px 10px;font-size:12px}
+.step.on{border-color:#00ffc6;color:#00ffc6}
+.workspace{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+.card{border:1px solid #20303d;background:#0d1218;border-radius:14px;padding:16px}
+textarea{width:100%;height:190px;background:#121216;color:#fff;border:1px solid #333744;border-radius:10px;padding:14px;font-family:ui-monospace,Menlo,monospace;line-height:1.45;resize:vertical}
+input{width:100%;background:#121216;color:#fff;border:1px solid #333744;border-radius:10px;padding:12px;font-family:inherit;outline:none}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:10px;padding:12px 15px;font-weight:900;cursor:pointer;font-family:inherit;font-size:13px}
+.primary{background:#00ffc6;color:#001}
+.secondary{background:#1b1b25;color:#dce7ff;border:1px solid #33384b}
+.gold{background:#ffc400;color:#111}
+.output{margin-top:18px;border:1px solid rgba(0,255,198,.25);background:rgba(0,255,198,.035);border-radius:14px;padding:16px;min-height:260px;line-height:1.55}
+.outHead{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:10px;margin-bottom:12px}
+.outTitle{color:#00ffc6;font-weight:900;letter-spacing:1px}
+.live{color:#00ffc6;font-size:11px}
+.section{margin:14px 0}
+.sectionTitle{font-weight:900;letter-spacing:1px;margin-bottom:5px;font-size:12px}
+.hook{color:#00ffc6}.adlibs{color:#ff9d00}.bridge{color:#9fe7ff}.note{color:#ffc400}
+.rail h3{font-size:13px;color:#ffc400;letter-spacing:1.5px;margin:0 0 10px}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.kpi div{border:1px solid #263647;background:#101923;border-radius:10px;padding:10px}
+.kpi b{color:#00ffc6;font-size:18px;display:block;margin-bottom:2px}
+.kpi small{font-size:11px;color:#5a7a8a}
+.bankItem{border:1px solid #253449;border-radius:10px;padding:10px;margin-top:8px;font-size:12px;color:#b7d9e8;word-break:break-word}
+.bankTime{color:#3d5470;font-size:10px;margin-bottom:4px}
+.chat{position:fixed;left:270px;right:20px;bottom:12px;display:flex;gap:8px;background:#0a0d14;border:1px solid #4b1f8f;border-radius:10px;padding:8px;z-index:999}
+.chat input{flex:1;margin:0}
+.err{color:#ff5c7a;padding:10px;background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.2);border-radius:8px;font-size:13px}
+
+/* TSM Assistant */
+.assistant{border:1px solid rgba(155,92,255,.35);background:#0f0a1e;border-radius:14px;padding:14px;margin-top:14px}
+.assistant h3{font-size:13px;color:#9b5cff;letter-spacing:1.5px;margin:0 0 10px}
+.guide-step{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;transition:background .15s;border-radius:6px;padding:8px}
+.guide-step:last-child{border-bottom:none}
+.guide-step:hover{background:rgba(155,92,255,.08)}
+.guide-step.done .step-num{background:#00ffc6;color:#001;border-color:#00ffc6}
+.guide-step.active .step-num{background:#9b5cff;color:#fff;border-color:#9b5cff;box-shadow:0 0 10px rgba(155,92,255,.4)}
+.step-num{width:22px;height:22px;border-radius:50%;border:1px solid #3a275a;color:#9b5cff;font-size:10px;font-weight:900;display:grid;place-items:center;flex-shrink:0;margin-top:1px;transition:all .2s}
+.step-body{}
+.step-label{font-size:12px;font-weight:700;color:#c8d7ff;margin-bottom:2px}
+.step-desc{font-size:11px;color:#4a6070;line-height:1.45}
+.step-action{margin-top:6px}
+.step-action button{background:#9b5cff;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.step-action button:hover{background:#b07aff}
+.tsm-bubble{background:#1a0f2e;border:1px solid rgba(155,92,255,.3);border-radius:10px;padding:10px 12px;font-size:12px;color:#c8d7ff;line-height:1.55;margin-top:10px;min-height:36px}
+.tsm-bubble b{color:#9b5cff}
+
+
+@media(max-width:980px){
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .workspace{grid-template-columns:1fr}
+  .chat{left:12px}
+}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <aside class="side">
+    <div class="logo">ZAY</div>
+    <h1>Music Command Center</h1>
+    <div class="sub">Artist DNA · AI Collaboration</div>
+    <div class="nav">
+      <button class="active">📝 Draft + Analysis</button>
+      <button>✂️ Revision Mode</button>
+      <button>✨ Generate</button>
+      <button>📁 Song Bank</button>
+      <button>🧬 Artist DNA</button>
+      <button>🛠 Studio Tools</button>
+    </div>
+    <div class="agent">
+      <b>ZAY</b><br>
+      <small>Cadence · Bounce · Live Feel</small>
+    </div>
+
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div class="tabs">
+        <button class="active">DRAFT + ANALYSIS</button>
+        <button>REVISION MODE</button>
+        <button>GENERATE</button>
+        <button>SONG BANK</button>
+        <button>ARTIST DNA</button>
+      </div>
+      <div class="online">● Agents Online</div>
+    </div>
+
+    <section class="panel">
+      <div class="panelHead">
+        <div>
+          <div class="steps">
+            <span class="step on">1 · DNA</span>
+            <span class="step on">2 · Draft</span>
+            <span class="step">3 · Generate</span>
+            <span class="step">4 · Revise</span>
+            <span class="step">5 · Ad-libs</span>
+            <span class="step">6 · Bank</span>
+            <span class="step">7 · Export</span>
+          </div>
+          <div style="margin-top:12px;color:#c8d7ff;font-size:13px">
+            Paste your lyrics, then run a full producer pass. ZAY returns hook, adlibs, bridge, and producer note.
+          </div>
+        </div>
+        <button class="btn secondary" onclick="loadSample()">Load Sample</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section>
+        <div class="card">
+          <h3 style="color:#00ffc6;margin-top:0;margin-bottom:12px">PASTE YOUR DRAFT</h3>
+          <textarea id="draft" placeholder="Paste your lyrics here..."></textarea>
+          <input id="request" value="Return HOOK, ADLIBS, BRIDGE, PRODUCER NOTE." style="margin-top:10px">
+          <div class="actions">
+            <button class="btn primary" onclick="runProducerPass()">🎛 Full Producer Pass</button>
+            <button class="btn gold" onclick="runHookOnly()">Hook Options</button>
+            <button class="btn secondary" onclick="saveToBank()">💾 Save to Bank</button>
+            <button class="btn secondary" onclick="copyOutput()">Copy</button>
+          </div>
+        </div>
+
+        <div class="output">
+          <div class="outHead">
+            <div class="outTitle">ZAY PRODUCER OUTPUT</div>
+            <div class="live" id="liveStatus">READY</div>
+          </div>
+          <div id="outputBody" style="color:#4a6070">Paste lyrics and run the session.</div>
+        </div>
+      </section>
+
+      <aside class="rail">
+        <div class="card">
+          <h3>SESSION SIGNALS</h3>
+          <div class="kpi">
+            <div><b id="hookScore">--</b><small>Hook Strength</small></div>
+            <div><b id="cadenceScore">--</b><small>Cadence</small></div>
+            <div><b id="structureScore">--</b><small>Structure</small></div>
+            <div><b id="bankCount">0</b><small>Banked</small></div>
+          </div>
+          <div style="font-size:12px;color:#8fa9be">Powered by TSM Neural Core</div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h3>SONG BANK</h3>
+          <div id="bank"></div>
+        </div>
+
+        <!-- TSM Assistant Guide -->
+        <div class="assistant">
+          <h3>🤖 TSM ASSISTANT</h3>
+          <div class="tsm-bubble" id="tsmBubble">Hey! I'm your song-building guide. Start by pasting your draft lyrics, then I'll walk you through each step to create a full track. 🎵</div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:2px" id="guideSteps">
+
+            <div class="guide-step active" id="gs1" onclick="guideGo(1)">
+              <div class="step-num" id="sn1">1</div>
+              <div class="step-body">
+                <div class="step-label">Paste Your Draft</div>
+                <div class="step-desc">Add your raw lyrics to the textarea. Hit "Load Sample" to use the demo track.</div>
+                <div class="step-action"><button onclick="loadSampleGuide()">Load Sample Draft</button></div>
+              </div>
+            </div>
+
+            <div class="guide-step" id="gs2" onclick="guideGo(2)">
+              <div class="step-num" id="sn2">2</div>
+              <div class="step-body">
+                <div class="step-label">Run Full Producer Pass</div>
+                <div class="step-desc">ZAY analyzes your draft and returns Hook, Adlibs, Bridge + Producer Note.</div>
+                <div class="step-action"><button onclick="runProducerPass();advanceGuide(3)">Run Now →</button></div>
+              </div>
+            </div>
+
+            <div class="guide-step" id="gs3" onclick="guideGo(3)">
+              <div class="step-num" id="sn3">3</div>
+              <div class="step-body">
+                <div class="step-label">Explore Hook Options</div>
+                <div class="step-desc">Get 4 distinct hook variations to find the one that hits hardest.</div>
+                <div class="step-action"><button onclick="runHookOnly();advanceGuide(4)">Get Hook Options →</button></div>
+              </div>
+            </div>
+
+            <div class="guide-step" id="gs4" onclick="guideGo(4)">
+              <div class="step-num" id="sn4">4</div>
+              <div class="step-body">
+                <div class="step-label">Revise with ZAY Coach</div>
+                <div class="step-desc">Ask ZAY to improve specific lines, adjust flow, or punch up the energy.</div>
+                <div class="step-action"><button onclick="coachGuide()">Ask ZAY →</button></div>
+              </div>
+            </div>
+
+            <div class="guide-step" id="gs5" onclick="guideGo(5)">
+              <div class="step-num" id="sn5">5</div>
+              <div class="step-body">
+                <div class="step-label">Build Full Song Structure</div>
+                <div class="step-desc">Generate the complete song: Verse 1, Hook, Verse 2, Bridge, Outro.</div>
+                <div class="step-action"><button onclick="buildFullSong()">Build Full Song →</button></div>
+              </div>
+            </div>
+
+            <div class="guide-step" id="gs6" onclick="guideGo(6)">
+              <div class="step-num" id="sn6">6</div>
+              <div class="step-body">
+                <div class="step-label">Save to Song Bank</div>
+                <div class="step-desc">Bank your finished output so nothing gets lost between sessions.</div>
+                <div class="step-action"><button onclick="saveToBank();advanceGuide(7)">Save to Bank →</button></div>
+              </div>
+            </div>
+
+            <div class="guide-step" id="gs7" onclick="guideGo(7)">
+              <div class="step-num" id="sn7">7</div>
+              <div class="step-body">
+                <div class="step-label">Copy & Export</div>
+                <div class="step-desc">Copy the full song to clipboard and take it to your DAW or notes.</div>
+                <div class="step-action"><button onclick="copyOutput()">Copy Full Song →</button></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<div class="chat">
+  <input id="coachInput" placeholder="Ask ZAY — next step, improve a line, rate my draft...">
+  <button class="btn primary" onclick="coach()">➜</button>
+</div>
+
+<script>
+const sample = `Grindin' n Slavin' while Misbavin'!
+Feelin' so Fresh n So Clean even Missed on Shavin'!
+Some look at the Hustle! n Cant Stand the Struggle,
+Those Real in the Field see A Time for Muscle!
+I Plan for Greatest! Rule 1: No Fakeness!
+Real is What You FEEL! That's Pill! So Take This!`;
+
+const TSM_ENDPOINT = 'https://tsm-shell.fly.dev/api/music/agent-pass';
+
+// ── Helpers ──────────────────────────────────────────────────────
+function loadSample() { document.getElementById('draft').value = sample; }
+
+function esc(s) {
+  return String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+
+function extractSection(text, name) {
+  const re = new RegExp(name + '[:\\s]+', 'i');
+  if (!re.test(text)) return null;
+  let after = text.split(re)[1] || '';
+  const stops = ['HOOK','ADLIBS','ADLIB','BRIDGE','PRODUCER NOTE','HOOK OPTION'];
+  for (const stop of stops) {
+    if (stop.toLowerCase() === name.toLowerCase()) continue;
+    const idx = after.search(new RegExp('\\b' + stop + '[:\\s]', 'i'));
+    if (idx > -1) after = after.slice(0, idx);
+  }
+  return after.trim() || null;
+}
+
+function setLoading(msg) {
+  document.getElementById('liveStatus').textContent = '●';
+  document.getElementById('outputBody').innerHTML = `<div style="color:#4a6070;animation:none">${msg}</div>`;
+}
+function showError(msg) {
+  document.getElementById('liveStatus').textContent = 'ERROR';
+  document.getElementById('outputBody').innerHTML = `<div class="err">⚠ ${esc(msg)}</div>`;
+}
+
+function scoreFrom(text) {
+  const words = text.split(/\s+/).length;
+  const hook = extractSection(text, 'HOOK');
+  const sections = ['HOOK','ADLIBS','BRIDGE','PRODUCER NOTE'].filter(s => extractSection(text, s));
+  document.getElementById('hookScore').textContent      = hook ? Math.min(99, 68 + Math.floor(hook.length / 9)) : '--';
+  document.getElementById('cadenceScore').textContent   = Math.min(99, 58 + Math.floor(words / 3));
+  document.getElementById('structureScore').textContent = Math.min(99, sections.length * 23 + 8);
+}
+
+function render(text) {
+  const hook   = extractSection(text, 'HOOK');
+  const adlibs = extractSection(text, 'ADLIBS') || extractSection(text, 'ADLIB');
+  const bridge = extractSection(text, 'BRIDGE');
+  const note   = extractSection(text, 'PRODUCER NOTE');
+
+  let html = '';
+  if (hook)   html += `<div class="section"><div class="sectionTitle hook">🎯 HOOK</div><div>${esc(hook).replace(/\n/g,'<br>')}</div></div>`;
+  if (adlibs) html += `<div class="section"><div class="sectionTitle adlibs">🎤 ADLIBS</div><div>${esc(adlibs).replace(/\n/g,'<br>')}</div></div>`;
+  if (bridge) html += `<div class="section"><div class="sectionTitle bridge">🌉 BRIDGE</div><div>${esc(bridge).replace(/\n/g,'<br>')}</div></div>`;
+  if (note)   html += `<div class="section"><div class="sectionTitle note">📝 PRODUCER NOTE</div><div>${esc(note).replace(/\n/g,'<br>')}</div></div>`;
+  if (!html)  html  = `<div style="white-space:pre-wrap;line-height:1.7">${esc(text)}</div>`;
+
+  document.getElementById('outputBody').innerHTML = html;
+  document.getElementById('liveStatus').textContent = 'DONE';
+  window.__LAST_ZAY__ = text;
+  scoreFrom(text);
+}
+
+// ── TSM Neural Core — server-side proxy, key never touches browser ─
+async function callTSM(step, message) {
+  const draft = document.getElementById('draft').value.trim() || sample;
+  const res = await fetch(TSM_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ agent: 'ZAY', step, draft, message })
+  });
+  if (!res.ok) throw new Error(`TSM Neural Core error ${res.status}`);
+  const data = await res.json();
+  return data.reply || data.content || '';
+}
+
+// ── Actions ───────────────────────────────────────────────────────
+async function runProducerPass() {
+  const req = document.getElementById('request').value.trim() || 'Return HOOK, ADLIBS, BRIDGE, PRODUCER NOTE.';
+  setLoading('ZAY is producing...');
+  try {
+    const reply = await callTSM('Full Producer Pass', req);
+    if (reply) { render(reply); advanceGuide(3); }
+  } catch(e) { showError(e.message); }
+}
+
+async function runHookOnly() {
+  setLoading('ZAY is writing hook options...');
+  try {
+    const reply = await callTSM('Draft', 'Return 4 hook options and producer note only.');
+    if (reply) {
+      document.getElementById('outputBody').innerHTML = `<div style="white-space:pre-wrap;line-height:1.8">${esc(reply)}</div>`;
+      document.getElementById('liveStatus').textContent = 'DONE';
+      window.__LAST_ZAY__ = reply;
+      advanceGuide(4);
+    }
+  } catch(e) { showError(e.message); }
+}
+
+async function coach() {
+  const msg = document.getElementById('coachInput').value.trim();
+  if (!msg) return;
+  setLoading('ZAY is on it...');
+  document.getElementById('coachInput').value = '';
+  try {
+    const reply = await callTSM('Producer Coach', msg);
+    if (reply) {
+      document.getElementById('outputBody').innerHTML = `<div style="white-space:pre-wrap;line-height:1.7">${esc(reply)}</div>`;
+      document.getElementById('liveStatus').textContent = 'DONE';
+      window.__LAST_ZAY__ = reply;
+      if (currentGuideStep <= 4) advanceGuide(5);
+    }
+  } catch(e) { showError(e.message); }
+}
+
+// Pre-load sample so users see content immediately
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('draft').value = sample;
+});
+
+function saveToBank() {
+  const text = window.__LAST_ZAY__ || '';
+  if (!text) return;
+  const bank = document.getElementById('bank');
+  const item = document.createElement('div');
+  item.className = 'bankItem';
+  item.innerHTML = `<div class="bankTime">${new Date().toLocaleTimeString()}</div>${esc(text.slice(0,160))}${text.length > 160 ? '…' : ''}`;
+  bank.prepend(item);
+  document.getElementById('bankCount').textContent = bank.children.length;
+}
+
+function copyOutput() {
+  const text = window.__LAST_ZAY__ || document.getElementById('outputBody').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btns = document.querySelectorAll('.btn.secondary');
+    btns.forEach(b => { if (b.textContent.includes('Copy')) { b.textContent = '✓ Copied'; setTimeout(() => b.textContent = 'Copy', 1500); }});
+  });
+}
+
+document.getElementById('coachInput').addEventListener('keydown', e => { if (e.key === 'Enter') coach(); });
+
+// ── TSM Assistant Guide ───────────────────────────────────────────
+const tsmMessages = {
+  1: "Great! Paste your raw lyrics in the box above — or hit <b>Load Sample Draft</b> to use the demo track. Once your lyrics are in, move to Step 2. 🎤",
+  2: "Now hit <b>Run Full Producer Pass</b>. ZAY will analyze your draft and return a Hook, Adlibs, Bridge, and Producer Note all at once. This is the core of your song. 🎛",
+  3: "Nice output! Now try <b>Hook Options</b> to get 4 variations of your hook. Pick the one that feels most natural when you say it out loud. 🎯",
+  4: "Use the chat bar at the bottom to talk to ZAY directly. Try: <i>\"make the hook harder\"</i>, <i>\"punch up line 2\"</i>, or <i>\"add more energy to the bridge\"</i>. ✏️",
+  5: "Time to build the <b>full song structure</b>. Hit the button and ZAY will arrange everything into Verse 1 → Hook → Verse 2 → Bridge → Outro. 🎼",
+  6: "Your song is built! Hit <b>Save to Bank</b> to store this version. You can bank multiple versions and compare them. 💾",
+  7: "Last step — <b>Copy Full Song</b> and take it to your DAW, voice memo, or notes app. Your track is ready. 🔥"
+};
+
+let currentGuideStep = 1;
+
+function advanceGuide(step) {
+  currentGuideStep = step;
+  // Mark previous steps done
+  for (let i = 1; i < step; i++) {
+    document.getElementById('gs'+i)?.classList.remove('active');
+    document.getElementById('gs'+i)?.classList.add('done');
+    document.getElementById('sn'+i).textContent = '✓';
+  }
+  // Set current active
+  for (let i = step; i <= 7; i++) {
+    document.getElementById('gs'+i)?.classList.remove('done','active');
+  }
+  document.getElementById('gs'+step)?.classList.add('active');
+  document.getElementById('gs'+step)?.scrollIntoView({behavior:'smooth', block:'nearest'});
+  // Update bubble
+  document.getElementById('tsmBubble').innerHTML = tsmMessages[step] || '';
+}
+
+function guideGo(step) {
+  advanceGuide(step);
+}
+
+function loadSampleGuide() {
+  loadSample();
+  advanceGuide(2);
+}
+
+function coachGuide() {
+  document.getElementById('coachInput').focus();
+  document.getElementById('tsmBubble').innerHTML = tsmMessages[4];
+}
+
+// Watch draft textarea — when user types, advance to step 2
+document.getElementById('draft').addEventListener('input', function() {
+  if (this.value.trim().length > 20 && currentGuideStep === 1) advanceGuide(2);
+});
+
+async function buildFullSong() {
+  const draft = document.getElementById('draft').value.trim() || sample;
+  setLoading('ZAY is building your full song structure...');
+  advanceGuide(6);
+  try {
+    const res = await fetch(TSM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        agent: 'ZAY',
+        step: 'Full Song Build',
+        draft,
+        message: `Build a complete song structure using this draft. Return clearly labeled sections:
+
+VERSE 1:
+(use and expand the original draft lines)
+
+HOOK:
+(the catchiest hook, punchy and repeatable)
+
+VERSE 2:
+(new verse that continues the story/energy)
+
+BRIDGE:
+(4-8 lines that shift the emotional register)
+
+ADLIBS:
+(6-8 short adlib call-outs for live energy)
+
+OUTRO:
+(2-4 closing lines that bring it home)
+
+PRODUCER NOTE:
+(overall song rating, strongest section, one thing to tighten)`
+      })
+    });
+    if (!res.ok) throw new Error(`TSM Neural Core error ${res.status}`);
+    const data = await res.json();
+    const text = data.reply || data.content || '';
+    if (text) {
+      // Render full song with all sections
+      const sections = [
+        ['VERSE 1','#a988ff'],
+        ['HOOK','#00ffc6'],
+        ['VERSE 2','#a988ff'],
+        ['BRIDGE','#9fe7ff'],
+        ['ADLIBS','#ff9d00'],
+        ['OUTRO','#c8d7ff'],
+        ['PRODUCER NOTE','#ffc400']
+      ];
+      let html = '';
+      for (const [name, color] of sections) {
+        const content = extractSection(text, name);
+        if (content) html += `<div class="section"><div class="sectionTitle" style="color:${color}">${name}</div><div>${esc(content).replace(/\n/g,'<br>')}</div></div>`;
+      }
+      if (!html) html = `<div style="white-space:pre-wrap;line-height:1.7">${esc(text)}</div>`;
+      document.getElementById('outputBody').innerHTML = html;
+      document.getElementById('liveStatus').textContent = 'DONE';
+      window.__LAST_ZAY__ = text;
+      scoreFrom(text);
+      document.getElementById('tsmBubble').innerHTML = "🔥 Full song is built! Review each section, then <b>Save to Bank</b> to lock it in.";
+    }
+  } catch(e) { showError(e.message); }
+}
+</script>
+</body>
+</html>
