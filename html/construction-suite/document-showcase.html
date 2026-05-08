@@ -985,118 +985,88 @@
 </div>
 
 <script>
-  document.getElementById('fdate').textContent =
-    new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+let currentMode = 'sample';
+let selectedSampleId = null;
+let selectedFile = null;
 
-  function setFilter(el) {
-    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
+const SAMPLES = {
+  'bank-recon': { label: 'Bank Reconciliation', content: 'Q1 variance of $48K detected in project escrow. Unreconciled materials cost from February.', risk: 'MED', flags: '3', actions: '2', conf: '94%' },
+  'ap-aging': { label: 'AP Aging Report', content: '180-day aging summary. Total outstanding: $312,400. Primary friction with MEP subcontractors.', risk: 'HIGH', flags: '12', actions: '5', conf: '89%' },
+  'denial-report': { label: 'Denial Report', content: 'Insurance claim friction. 18.4% denial rate on project liability coverage. Prior auth required.', risk: 'HIGH', flags: '8', actions: '4', conf: '92%' },
+  'gl-extract': { label: 'GL Extract', content: 'General Ledger Q1. Revenue vs Budget variance of -12% in Cost Center 402 (Excavation).', risk: 'LOW', flags: '1', actions: '1', conf: '97%' },
+  'audit-finding': { label: 'Audit Finding', content: 'Compliance gap found in onsite safety protocols (OSHA). 3 open findings requiring remediation.', risk: 'CRIT', flags: '3', actions: '3', conf: '91%' },
+  'variance-report': { label: 'Variance Report', content: 'Labor hours vs estimate. Staffing pressure in specialized masonry. 14% lag in project timeline.', risk: 'MED', flags: '5', actions: '2', conf: '95%' }
+};
+
+window.setMode = function(m) {
+  currentMode = m;
+  document.getElementById('mode-sample').classList.toggle('active', m === 'sample');
+  document.getElementById('mode-actual').classList.toggle('active', m === 'actual');
+  document.getElementById('panel-sample').style.display = m === 'sample' ? 'block' : 'none';
+  document.getElementById('panel-actual').style.display = m === 'actual' ? 'block' : 'none';
+};
+
+window.selectSample = function(el, id) {
+  document.querySelectorAll('.sample-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSampleId = id;
+  document.getElementById('procBtn').disabled = false;
+};
+
+window.setPipe = function(step) {
+  for(let i=0; i<=4; i++) {
+    const dot = document.getElementById('pipe-'+i);
+    dot.classList.remove('active', 'done');
+    if(i < step) dot.classList.add('done');
+    if(i === step) dot.classList.add('active');
   }
+};
 
-  document.getElementById('searchInput').addEventListener('input', function() {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll('.doc-row').forEach(row => {
-      const name = row.querySelector('.doc-name').textContent.toLowerCase();
-      row.style.display = (!q || name.includes(q)) ? '' : 'none';
+window.showKPIs = function(data) {
+  document.getElementById('kpiRow').style.display = 'grid';
+  document.querySelectorAll('.kpi-card').forEach(c => c.classList.add('visible'));
+  document.getElementById('kv-risk').textContent = data.risk;
+  document.getElementById('kv-flag').textContent = data.flags;
+  document.getElementById('kv-action').textContent = data.actions;
+  document.getElementById('kv-conf').textContent = data.conf;
+};
+
+window.processDoc = async function() {
+  const ob = document.getElementById('outBody');
+  const os = document.getElementById('outStatus');
+  const btn = document.getElementById('procBtn');
+  btn.disabled = true;
+  ob.className = 'out-body thinking';
+  
+  setPipe(0); os.textContent = "INGESTING";
+  await new Promise(r => setTimeout(r, 600));
+  
+  setPipe(1); os.textContent = "PARSING";
+  await new Promise(r => setTimeout(r, 800));
+  
+  setPipe(2); os.textContent = "ANALYZING";
+  
+  try {
+    const docData = currentMode === 'sample' ? SAMPLES[selectedSampleId] : { label: selectedFile.name, content: "Actual File" };
+    const res = await fetch("https://tsm-core.fly.dev/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ app: "construction-showcase", messages: [{ role: "user", content: "Analyze: " + docData.content }] })
     });
-  });
-
-  // ── TSM NEURAL CORE AI BAR ──
-  const DOC_SYSTEM = `You are a construction document specialist embedded in a project Document Hub.
-You have knowledge of construction contracts, building permits, OSHA safety requirements, MEP systems, structural drawings, budget reports, and change orders.
-Answer questions about construction documents clearly and concisely. Use bullet points when listing items. Be direct and practical.`;
-
-  const barInput  = document.getElementById('aiBarInput');
-  const barBtn    = document.getElementById('aiBarBtn');
-  const resultBox = document.getElementById('aiResultBox');
-  const resultTxt = document.getElementById('aiResultText');
-
-  function barChip(el) { barInput.value = el.textContent; askBar(); }
-  barBtn.addEventListener('click', askBar);
-  barInput.addEventListener('keydown', e => { if (e.key === 'Enter') askBar(); });
-
-  async function askBar() {
-    const q = barInput.value.trim();
-    if (!q) return;
-    barBtn.disabled = true;
-    barBtn.textContent = '…';
-    resultBox.classList.add('visible');
-    resultTxt.innerHTML = '<span style="color:var(--mist)">Thinking…</span>';
-
-    try {
-      const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: q }],
-          system: DOC_SYSTEM
-        })
-      });
-      const data = await res.json();
-      const reply = data.reply || data.content || data.message || 'No response.';
-      resultTxt.innerHTML = reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-    } catch {
-      resultTxt.innerHTML = '<span style="color:var(--danger)">⚠ Could not reach /api/chat. Check your Fly backend.</span>';
-    }
-
-    barBtn.disabled = false;
-    barBtn.textContent = 'Ask AI';
+    const data = await res.json();
+    
+    setPipe(4);
+    ob.className = 'out-body';
+    ob.innerHTML = `<div style="color:#0f0"><b>${docData.label} Analysis:</b><br><br>${data.reply}</div>`;
+    os.textContent = "COMPLETE";
+    
+    lastReport = { label: docData.label, summary: data.reply, ...docData };
+    showKPIs(docData);
+    document.getElementById('pushBtn').classList.add('visible');
+    document.getElementById('saveBtn').classList.add('visible');
+  } catch(e) {
+    ob.textContent = "> Handshake Error. Check tsm-core status.";
   }
-
-  // ── TSM NEURAL CORE CHAT DRAWER ──
-  const fab    = document.getElementById('aiFab');
-  const drawer = document.getElementById('aiDrawer');
-  const close  = document.getElementById('aiClose');
-  const input  = document.getElementById('aiInput');
-  const send   = document.getElementById('aiSend');
-  const msgs   = document.getElementById('aiMessages');
-
-  let history = [], busy = false;
-
-  fab.addEventListener('click', () => drawer.classList.toggle('open'));
-  close.addEventListener('click', () => drawer.classList.remove('open'));
-  send.addEventListener('click', sendMsg);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendMsg(); } });
-
-  function appendMsg(role, text) {
-    const d = document.createElement('div');
-    d.className = `msg ${role}`;
-    d.innerHTML = `<div class="msg-dot">${role==='ai'?'🏗':'👤'}</div>
-      <div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
-    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function showTyping() {
-    const d = document.createElement('div');
-    d.className='msg ai'; d.id='typing';
-    d.innerHTML=`<div class="msg-dot">🏗</div><div class="msg-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
-    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  async function sendMsg() {
-    const text = input.value.trim();
-    if (!text || busy) return;
-    busy = true; input.value = ''; send.disabled = true;
-    appendMsg('user', text);
-    history.push({ role:'user', content: text });
-    showTyping();
-    try {
-      const res = await fetch('https://tsm-shell.fly.dev/api/chat', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ messages: history, system: DOC_SYSTEM })
-      });
-      const data = await res.json();
-      const reply = data.reply || data.content || data.message || 'No response.';
-      document.getElementById('typing')?.remove();
-      appendMsg('ai', reply);
-      history.push({ role:'assistant', content: reply });
-    } catch {
-      document.getElementById('typing')?.remove();
-      appendMsg('ai','⚠ Backend unreachable. Ensure /api/chat is live on Fly.');
-    }
-    busy = false; send.disabled = false; input.focus();
-  }
-</script>
-<script src="/construction-suite/tsm-app-runtime.js"></script><script src="/construction-suite/assets/construction-platform.js"></script>
-</body>
-</html>
+  btn.disabled = false;
+};
+</script></body></html>
