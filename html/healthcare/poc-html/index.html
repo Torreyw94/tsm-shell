@@ -171,6 +171,7 @@ textarea::placeholder{color:var(--faint)}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--faint)}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -447,15 +448,41 @@ function onDrop(e){
   if(file) readFile(file);
 }
 function onFileSelect(e){ if(e.target.files[0]) readFile(e.target.files[0]); }
-function readFile(file){
-  const reader = new FileReader();
-  reader.onload = ev => {
-    docText = ev.target.result;
-    document.getElementById('doc-text').value = docText;
-    document.getElementById('doc-preview').textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + 'KB)';
-    updateDocStatus();
-  };
-  reader.readAsText(file);
+async function readFile(file){
+  const preview = document.getElementById('doc-preview');
+  preview.textContent = 'Reading ' + file.name + '...';
+  if(file.type === 'application/pdf' || file.name.endsWith('.pdf')){
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const pdf = await pdfjsLib.getDocument({data: ev.target.result}).promise;
+        let text = '';
+        for(let i = 1; i <= pdf.numPages; i++){
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map(s => s.str).join(' ') + '
+';
+        }
+        docText = text.trim();
+        document.getElementById('doc-text').value = docText;
+        preview.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + 'KB, ' + pdf.numPages + ' pages)';
+        updateDocStatus();
+      } catch(err) {
+        preview.textContent = '✗ PDF error: ' + err.message;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      docText = ev.target.result;
+      document.getElementById('doc-text').value = docText;
+      preview.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + 'KB)';
+      updateDocStatus();
+    };
+    reader.readAsText(file);
+  }
 }
 
 // SAMPLE DOCS
