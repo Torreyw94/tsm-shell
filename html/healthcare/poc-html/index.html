@@ -402,7 +402,7 @@ Example: Claim #HC-2024-8821 denied. CPT 99213. Reason: Medical necessity not es
 document.head.appendChild(Object.assign(document.createElement('style'),{textContent:'body{padding-bottom:70px!important}'}));
 
 // STATE
-let GROQ_KEY = sessionStorage.getItem('groq_key') || '';
+let GROQ_KEY = localStorage.getItem('groq_key') || '';
 let GROQ_MODEL = sessionStorage.getItem('groq_model') || 'llama-3.3-70b-versatile';
 let docText = '';
 let activeApps = 0;
@@ -580,7 +580,7 @@ function clearAll(){
 // KEY
 function onKeyInput(v){
   GROQ_KEY = v.trim();
-  sessionStorage.setItem('groq_key', GROQ_KEY);
+  localStorage.setItem('groq_key', GROQ_KEY);
   document.getElementById('tsm-neural-core-dot').className = GROQ_KEY.startsWith('gsk_') ? 'groq-status-dot ok' : 'groq-status-dot';
   document.getElementById('fire-btn').disabled = !GROQ_KEY || docText.length < 20;
 }
@@ -594,7 +594,7 @@ async function testKey(){
     const d = await r.json();
     if(d.data){
       GROQ_KEY = key;
-      sessionStorage.setItem('groq_key', key);
+      localStorage.setItem('groq_key', key);
       document.getElementById('tsm-neural-core-dot').classList.add('ok');
       document.getElementById('key-status').textContent = '✓ connected';
       document.getElementById('key-status').style.color = 'var(--green)';
