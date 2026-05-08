@@ -227,7 +227,6 @@ app.post('/api/extract-pdf', upload.single('pdf'), async (req, res) => {
 });
 
 // PDF TEXT EXTRACTION
-const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 app.post('/api/extract-pdf', upload.single('pdf'), async (req, res) => {
   try {
