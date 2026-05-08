@@ -750,7 +750,7 @@ ${doc}`
 // FIRE ALL
 async function fireAll(){
   if(!GROQ_KEY){alert('Enter your TSM Neural Core API key first.');return;}
-  if(!docText){alert('Load or paste a document first.');return;}
+  if(!docText || docText.trim().length < 20){alert('Load or paste a document first.');return;}
 
   clearAll();
   document.getElementById('doc-text').value = docText;
