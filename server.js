@@ -216,14 +216,24 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 
 app.post('/api/extract-pdf', upload.single('pdf'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ ok: false, error: 'No file uploaded' });
-    const pdfParse = require('pdf-parse').default || require('pdf-parse');
-    const data = await pdfParse(req.file.buffer);
-    const text = data.text.trim();
+    const PDFParser = require('pdf2json');
+    const text = await new Promise((resolve, reject) => {
+      const parser = new PDFParser(null, 1);
+      parser.on('pdfParser_dataReady', data => {
+        const out = data.Pages
+          .map(p => p.Texts.map(t => decodeURIComponent(t.R.map(r => r.T).join(''))).join(' '))
+          .join('\n');
+        resolve(out.trim());
+      });
+      parser.on('pdfParser_dataError', err => reject(err.parserError));
+      parser.parseBuffer(req.file.buffer);
+    });
     if (!text || text.length < 50) {
       return res.json({ ok: false, error: 'PDF appears to be scanned. Paste text manually.' });
     }
-    const wordCount = text.split(' ').filter(Boolean).length;
-    res.json({ ok: true, text, pages: data.numpages, words: wordCount });
+    const words = text.split(' ').filter(Boolean).length;
+    const pages = text.split('\n').length;
+    res.json({ ok: true, text, pages, words });
   } catch(e) {
     res.status(500).json({ ok: false, error: e.message });
   }
