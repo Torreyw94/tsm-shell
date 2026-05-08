@@ -401,17 +401,17 @@ Example: Claim #HC-2024-8821 denied. CPT 99213. Reason: Medical necessity not es
 document.head.appendChild(Object.assign(document.createElement('style'),{textContent:'body{padding-bottom:70px!important}'}));
 
 // ── STATE ──
-let TSM NEURAL CORE_KEY = sessionStorage.getItem('tsm-neural-core_key') || '';
-let TSM NEURAL CORE_MODEL = sessionStorage.getItem('tsm-neural-core_model') || 'llama-3.3-70b-versatile';
+let GROQ_KEY = sessionStorage.getItem('groq_key') || '';
+let GROQ_MODEL = sessionStorage.getItem('groq_model') || 'llama-3.3-70b-versatile';
 let docText = '';
 let activeApps = 0;
 let completedApps = 0;
 
 // ── RESTORE KEY ──
-if(TSM NEURAL CORE_KEY){
-  document.getElementById('tsm-neural-core-key').value = TSM NEURAL CORE_KEY;
+if(GROQ_KEY){
+  document.getElementById('tsm-neural-core-key').value = GROQ_KEY;
   document.getElementById('tsm-neural-core-dot').classList.add('ok');
-  document.getElementById('tsm-neural-core-model-txt').textContent = 'tsm-neural-core: ' + TSM NEURAL CORE_MODEL;
+  document.getElementById('tsm-neural-core-model-txt').textContent = 'tsm-neural-core: ' + GROQ_MODEL;
   document.getElementById('tsm-neural-core-model-txt').style.color = 'var(--green)';
 }
 
@@ -429,7 +429,7 @@ document.getElementById('doc-text').addEventListener('input', function(){
 
 function updateDocStatus(){
   const hasDoc = docText.length > 20;
-  document.getElementById('fire-btn').disabled = !hasDoc || !TSM NEURAL CORE_KEY;
+  document.getElementById('fire-btn').disabled = !hasDoc || !GROQ_KEY;
   document.getElementById('doc-status-txt').textContent = hasDoc
     ? docText.length + ' chars loaded'
     : 'No document loaded';
@@ -556,10 +556,10 @@ function clearAll(){
 
 // ── KEY ──
 function onKeyInput(v){
-  TSM NEURAL CORE_KEY = v.trim();
-  sessionStorage.setItem('tsm-neural-core_key', TSM NEURAL CORE_KEY);
-  document.getElementById('tsm-neural-core-dot').className = TSM NEURAL CORE_KEY.startsWith('gsk_') ? 'tsm-neural-core-status-dot ok' : 'tsm-neural-core-status-dot';
-  document.getElementById('fire-btn').disabled = !TSM NEURAL CORE_KEY || docText.length < 20;
+  GROQ_KEY = v.trim();
+  sessionStorage.setItem('groq_key', GROQ_KEY);
+  document.getElementById('tsm-neural-core-dot').className = GROQ_KEY.startsWith('gsk_') ? 'tsm-neural-core-status-dot ok' : 'tsm-neural-core-status-dot';
+  document.getElementById('fire-btn').disabled = !GROQ_KEY || docText.length < 20;
 }
 
 async function testKey(){
@@ -570,12 +570,12 @@ async function testKey(){
     const r = await fetch('https://api.tsm-neural-core.com/openai/v1/models', {headers:{'Authorization':'Bearer '+key}});
     const d = await r.json();
     if(d.data){
-      TSM NEURAL CORE_KEY = key;
-      sessionStorage.setItem('tsm-neural-core_key', key);
+      GROQ_KEY = key;
+      sessionStorage.setItem('groq_key', key);
       document.getElementById('tsm-neural-core-dot').classList.add('ok');
       document.getElementById('key-status').textContent = '✓ connected';
       document.getElementById('key-status').style.color = 'var(--green)';
-      document.getElementById('tsm-neural-core-model-txt').textContent = 'tsm-neural-core: ' + TSM NEURAL CORE_MODEL;
+      document.getElementById('tsm-neural-core-model-txt').textContent = 'tsm-neural-core: ' + GROQ_MODEL;
       document.getElementById('tsm-neural-core-model-txt').style.color = 'var(--green)';
       document.getElementById('fire-btn').disabled = docText.length < 20;
     } else {
@@ -590,13 +590,13 @@ async function testKey(){
 
 // ── TSM NEURAL CORE STREAM ──
 async function tsm-neural-coreStream(systemPrompt, userPrompt, onChunk, onDone, onError, maxTokens=700){
-  if(!TSM NEURAL CORE_KEY){ onError('No TSM Neural Core key configured.'); return; }
+  if(!GROQ_KEY){ onError('No TSM Neural Core key configured.'); return; }
   try {
     const res = await fetch('https://api.tsm-neural-core.com/openai/v1/chat/completions',{ 
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TSM NEURAL CORE_KEY},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
       body:JSON.stringify({
-        model:TSM NEURAL CORE_MODEL, stream:true, max_tokens:maxTokens,
+        model:GROQ_MODEL, stream:true, max_tokens:maxTokens,
         messages:[
           {role:'system',content:systemPrompt},
           {role:'user',content:userPrompt}
@@ -749,7 +749,7 @@ ${doc}`
 
 // ── FIRE ALL ──
 async function fireAll(){
-  if(!TSM NEURAL CORE_KEY){alert('Enter your TSM Neural Core API key first.');return;}
+  if(!GROQ_KEY){alert('Enter your TSM Neural Core API key first.');return;}
   if(!docText){alert('Load or paste a document first.');return;}
 
   clearAll();
