@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insurance Main Strategist</title>
+<style>
+body{margin:0;background:#0a0b0d;color:#e8ede6;font-family:monospace}
+header{padding:18px;border-bottom:1px solid #1f2535;background:#111318}
+h1{color:#E8C870;letter-spacing:.14em}
+.wrap{padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:#111318;border:1px solid #1f2535;border-radius:14px;padding:16px}
+.val{font-size:28px;color:#E8C870;font-weight:900}
+pre{white-space:pre-wrap;background:#111318;border:1px solid #1f2535;border-radius:14px;padding:16px;line-height:1.5}
+button{background:#C9A84C;color:#0a0b0d;border:0;border-radius:8px;padding:10px 14px;font:900 11px monospace;margin-right:8px}
+button.dark{background:transparent;color:#E8C870;border:1px solid #C9A84C}
+</style>
+</head>
+<body>
+<header>
+<h1>INSURANCE MAIN STRATEGIST</h1>
+<div>Executive insurance view · P&C · DME · Agents · AZ command · revenue/risk BNCA<button onclick="location.href='/html/executive-portal/index.html?v=from-sector'">OPEN UNIFIED EXECUTIVE PORTAL</button></div>
+</header>
+<div class="wrap">
+<div class="grid">
+<div class="card">Exposure Identified<div class="val" id="exposure">$4.2M</div></div>
+<div class="card">Recoverable Premium<div class="val" id="recoverable">$280K–$420K</div></div>
+<div class="card">Priority Lane<div class="val" id="lane">P&C</div></div>
+<div class="card">Report Status<div class="val" id="status">READY</div></div>
+</div>
+<h3>Executive Insurance BNCA</h3>
+<pre id="summary">Waiting for insurance strategist output...</pre>
+<button onclick="location.href='/html/pc-command/index.html?v=ins-main'">OPEN P&C COMMAND</button>
+<button class="dark" onclick="location.href='/html/ins-presentation/index.html?v=ins-main'">OPEN INS PRESENTATION</button>
+</div>
+<script>
+function loadINS(){
+ let data={};
+ try{data=JSON.parse(sessionStorage.getItem('tsm_pc_strategist_output') || localStorage.getItem('tsm_ins_persist') || '{}')}catch(e){}
+ document.getElementById('exposure').textContent=data.exposure||'$4.2M';
+ document.getElementById('recoverable').textContent=data.recoverable||'$280K–$420K';
+ document.getElementById('lane').textContent='P&C / Coverage';
+ document.getElementById('status').textContent=data.summary?'READY':'DEMO READY';
+ document.getElementById('summary').textContent=data.summary||
+`INSURANCE REVENUE + RISK BNCA
+
+1. Prioritize 14 wildfire-zone property accounts.
+2. Close 8 auto liability gaps with umbrella outreach.
+3. Quote cyber for 5 SMB clients with missing coverage.
+4. Convert $4.2M exposure into $280K–$420K recoverable premium opportunity.
+
+BEST NEXT COURSE OF ACTION
+Launch producer outreach campaign, generate coverage review memos, quote umbrella/cyber packages, and document client recommendations for E&O protection.`;
+}
+loadINS(); setInterval(loadINS,3000);
+</script>
+</body>
+</html>

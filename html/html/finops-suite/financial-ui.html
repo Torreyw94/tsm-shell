@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM Financial Operations · Start Here</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060b06;
+  --bg-card:#0c140c;
+  --bg-card-hover:#101a10;
+  --bg-highlight:#0a1a0f;
+  --accent:#00e5a0;
+  --accent-dim:#00b880;
+  --accent-pale:rgba(0,229,160,0.08);
+  --accent-glow:rgba(0,229,160,0.18);
+  --accent-border:rgba(0,229,160,0.35);
+  --text:#dff5e8;
+  --text-dim:#6b9a78;
+  --text-muted:#3d6048;
+  --border:#162416;
+  --border-accent:rgba(0,229,160,0.5);
+  --red:#ff4d4d;
+  --amber:#f5a623;
+  --blue:#4da6ff;
+  --font:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;min-height:100vh;padding-bottom:80px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent-dim);border-radius:2px}
+
+/* HEADER */
+.header{padding:24px 32px 20px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.header-badge{font-size:10px;color:var(--accent);border:1px solid var(--accent-border);padding:3px 10px;letter-spacing:.1em;text-transform:uppercase}
+.header-status{display:flex;align-items:center;gap:16px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+.status-text{font-size:11px;color:var(--text-dim)}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 var(--accent-glow)}50%{opacity:.7;box-shadow:0 0 0 4px transparent}}
+.header-title{font-size:22px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.header-sub{font-size:11px;color:var(--text-dim);letter-spacing:.04em}
+.header-sub span{color:var(--accent);opacity:.7}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:1fr 260px;gap:0;min-height:calc(100vh - 100px)}
+.content{padding:24px 28px;border-right:1px solid var(--border)}
+.sidebar{padding:20px 20px;position:sticky;top:0;height:fit-content;max-height:calc(100vh - 100px);overflow-y:auto}
+
+/* SECTION LABEL */
+.section-label{font-size:10px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* START HERE BLOCK */
+.start-block{border:1px solid var(--accent-border);background:var(--bg-highlight);padding:20px 24px;margin-bottom:24px;position:relative}
+.start-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent)}
+.start-title{font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.start-title-badge{font-size:10px;background:var(--accent);color:var(--bg);padding:2px 8px;letter-spacing:.05em}
+
+/* STEP WIZARD */
+.wizard-steps{display:flex;align-items:center;gap:0;margin-bottom:20px}
+.wstep{display:flex;align-items:center;gap:8px;flex:1}
+.wstep-num{width:24px;height:24px;border:1px solid var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-muted);flex-shrink:0;transition:all .3s}
+.wstep.active .wstep-num{border-color:var(--accent);color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.wstep.done .wstep-num{border-color:var(--accent);background:var(--accent);color:var(--bg)}
+.wstep-label{font-size:11px;color:var(--text-muted);letter-spacing:.04em;white-space:nowrap;transition:all .3s}
+.wstep.active .wstep-label{color:var(--text)}
+.wstep.done .wstep-label{color:var(--accent-dim)}
+.wstep-line{flex:1;height:1px;background:var(--border);margin:0 6px}
+.wstep.done + .wstep-line{background:var(--accent-border)}
+
+/* WIZARD PANEL */
+.wizard-panel{min-height:180px}
+.wp-q{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.wp-sub{font-size:12px;color:var(--text-dim);margin-bottom:16px}
+
+/* WORKFLOW GRID */
+.wf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.wf-card{border:1px solid var(--border);background:var(--bg-card);padding:10px 12px;cursor:pointer;transition:all .2s;position:relative}
+.wf-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--accent);transition:width .2s}
+.wf-card:hover{border-color:var(--accent-border);background:var(--bg-card-hover)}
+.wf-card:hover::before{width:100%}
+.wf-card.sel{border-color:var(--accent);background:var(--accent-pale)}
+.wf-card.sel::before{width:100%}
+.wf-card-tag{font-size:10px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.wf-card.sel .wf-card-tag{color:var(--accent-dim)}
+.wf-card-name{font-size:12px;font-weight:600;color:var(--text)}
+.wf-card.sel .wf-card-name{color:var(--accent)}
+.wf-card-desc{font-size:11px;color:var(--text-dim);margin-top:2px;line-height:1.4}
+
+/* SOURCE GRID */
+.src-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.src-card{border:1px solid var(--border);background:var(--bg-card);padding:14px 16px;cursor:pointer;transition:all .2s;position:relative}
+.src-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--accent);transition:width .2s}
+.src-card:hover{border-color:var(--accent-border);background:var(--bg-card-hover)}
+.src-card:hover::before{width:100%}
+.src-card.sel{border-color:var(--accent);background:var(--accent-pale)}
+.src-card.sel::before{width:100%}
+.src-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.src-card.sel .src-name{color:var(--accent)}
+.src-desc{font-size:11px;color:var(--text-dim);line-height:1.4}
+
+/* SUMMARY */
+.sum-row{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sum-row:last-of-type{border-bottom:none}
+.sum-key{font-size:11px;color:var(--text-muted);width:110px;flex-shrink:0;letter-spacing:.04em;text-transform:uppercase;padding-top:1px}
+.sum-val{font-size:12px;color:var(--text);flex:1;font-weight:500}
+.sum-val.accent{color:var(--accent)}
+
+/* WIZARD FOOTER */
+.wf-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.btn-back{background:none;border:none;color:var(--text-dim);font-family:var(--font);font-size:12px;cursor:pointer;padding:0;letter-spacing:.04em;transition:color .2s}
+.btn-back:hover{color:var(--text)}
+.btn-next{background:none;border:1px solid var(--accent-border);color:var(--accent);font-family:var(--font);font-size:12px;font-weight:600;padding:8px 20px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;opacity:.3;pointer-events:none}
+.btn-next.on{opacity:1;pointer-events:all}
+.btn-next.on:hover{background:var(--accent-pale);box-shadow:0 0 12px var(--accent-glow)}
+.btn-run{width:100%;background:var(--accent);color:var(--bg);font-family:var(--font);font-size:13px;font-weight:700;padding:12px;cursor:pointer;border:none;letter-spacing:.08em;text-transform:uppercase;margin-top:14px;transition:all .2s}
+.btn-run:hover{background:var(--accent-dim);box-shadow:0 0 20px var(--accent-glow)}
+.run-note{font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;line-height:1.5}
+
+/* MODULE GRID */
+.module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.mod-card{border:1px solid var(--border);background:var(--bg-card);padding:16px;transition:all .25s;position:relative;cursor:pointer;overflow:hidden}
+.mod-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(0deg,var(--accent-pale),transparent);transition:height .3s}
+.mod-card:hover{border-color:var(--accent-border);background:var(--bg-card-hover)}
+.mod-card:hover::after{height:40px}
+.mod-num{font-size:10px;color:var(--text-muted);letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.mod-num-n{color:var(--accent-dim)}
+.mod-badge{font-size:10px;color:var(--accent);border:1px solid var(--accent-border);padding:1px 7px;letter-spacing:.05em;margin-left:auto}
+.mod-title{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.mod-subtitle{font-size:11px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.mod-desc{font-size:11px;color:var(--text-dim);line-height:1.5;margin-bottom:12px}
+.mod-metrics{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.metric{font-size:11px;border:1px solid var(--border);padding:3px 8px;color:var(--text-dim)}
+.metric.hot{border-color:rgba(255,77,77,.4);color:var(--red)}
+.metric.warn{border-color:rgba(245,166,35,.4);color:var(--amber)}
+.metric.ok{border-color:var(--accent-border);color:var(--accent)}
+.mod-btn{width:100%;background:none;border:1px solid var(--accent-border);color:var(--accent);font-family:var(--font);font-size:11px;font-weight:600;padding:7px;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;transition:all .2s}
+.mod-btn:hover{background:var(--accent-pale);box-shadow:0 0 8px var(--accent-glow)}
+
+/* 30-SECOND CLOSE */
+.close-block{border:1px solid var(--accent-border);background:var(--bg-highlight);padding:20px 24px;margin-bottom:24px;position:relative}
+.close-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent-dim)}
+.close-title{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.close-text{font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:10px}
+.close-text strong{color:var(--text)}
+.close-final{font-size:12px;color:var(--accent);font-style:italic}
+
+/* TALK TRACK */
+.track-block{border:1px solid var(--border);background:var(--bg-card);padding:20px 24px;margin-bottom:24px}
+.track-title{font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.track-step{margin-bottom:14px;padding-left:20px;position:relative}
+.track-step::before{content:attr(data-n);position:absolute;left:0;top:0;font-size:11px;color:var(--accent);font-weight:700}
+.track-action{font-size:12px;color:var(--text);font-weight:600;margin-bottom:2px}
+.track-say{font-size:12px;color:var(--text-dim);font-style:italic;line-height:1.5}
+.track-say em{color:var(--text);font-style:normal}
+
+/* SIDEBAR */
+.sidebar-title{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.sidebar-sub{font-size:11px;color:var(--text-dim);margin-bottom:16px;line-height:1.4}
+.guide-btn{width:100%;background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--font);font-size:12px;padding:9px 12px;text-align:left;cursor:pointer;transition:all .2s;margin-bottom:4px;letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.guide-btn:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-pale)}
+.guide-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-pale)}
+.guide-chevron{margin-left:auto;font-size:10px;color:var(--text-muted);transition:transform .2s}
+.guide-btn.active .guide-chevron{transform:rotate(90deg);color:var(--accent)}
+.guide-expand{display:none;border:1px solid var(--border);border-top:none;background:var(--bg);padding:10px 12px;margin-bottom:4px}
+.guide-expand.open{display:block}
+.guide-step{font-size:11px;color:var(--text-dim);padding:3px 0;border-bottom:1px solid var(--border);line-height:1.4}
+.guide-step:last-child{border-bottom:none}
+.guide-step span{color:var(--accent-dim)}
+
+.sidebar-divider{height:1px;background:var(--border);margin:16px 0}
+.sidebar-metric{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.sidebar-metric:last-child{border-bottom:none}
+.sm-label{font-size:11px;color:var(--text-muted);letter-spacing:.04em}
+.sm-val{font-size:12px;font-weight:600}
+.sm-val.hot{color:var(--red)}
+.sm-val.warn{color:var(--amber)}
+.sm-val.ok{color:var(--accent)}
+
+/* HOW TO READ */
+.how-block{border:1px solid var(--border);background:var(--bg-card);padding:16px 20px;margin-bottom:24px}
+.how-title{font-size:11px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.how-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.how-row:last-child{border-bottom:none}
+.how-key{font-size:12px;color:var(--accent);font-weight:600;width:180px;flex-shrink:0}
+.how-val{font-size:12px;color:var(--text-dim)}
+
+/* STICKY CTA */
+.cta-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(6,11,6,.96);border-top:1px solid var(--accent-border);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;z-index:100;backdrop-filter:blur(4px)}
+.cta-note{font-size:11px;color:var(--text-muted);letter-spacing:.04em}
+.cta-note strong{color:var(--text)}
+.cta-btns{display:flex;gap:8px}
+.cta-btn{background:none;border:1px solid var(--accent-border);color:var(--accent);font-family:var(--font);font-size:11px;font-weight:600;padding:7px 16px;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;transition:all .2s}
+.cta-btn:hover{background:var(--accent-pale)}
+.cta-btn.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.cta-btn.primary:hover{background:var(--accent-dim);box-shadow:0 0 12px var(--accent-glow)}
+
+/* HOW-TO FLOAT */
+.how-to-btn{position:fixed;right:20px;bottom:70px;z-index:101;background:var(--accent);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:700;padding:10px 16px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;box-shadow:0 0 16px var(--accent-glow)}
+.how-to-btn:hover{background:var(--accent-dim)}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.wizard-panel{animation:fadeIn .25s ease}
+
+/* SCAN LINE EFFECT */
+.header::after{content:'';position:absolute;top:-100%;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,229,160,.3),transparent);animation:scan 4s linear infinite;pointer-events:none}
+@keyframes scan{from{top:-10%}to{top:110%}}
+
+/* CATEGORY CARDS */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.cat-card{border:1px solid var(--border);background:var(--bg-card);padding:12px;cursor:pointer;transition:all .2s;position:relative}
+.cat-card:hover{border-color:var(--accent-border);background:var(--bg-card-hover)}
+.cat-tag{font-size:10px;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.cat-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px}
+.cat-items{font-size:11px;color:var(--text-dim);line-height:1.5}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-badge">TSM Financial Operations</div>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      <span class="status-text">System ready · 6 nodes active</span>
+    </div>
+  </div>
+  <div class="header-title">Live Executive Demo</div>
+  <div class="header-sub">
+    Daily Accounting Dashboard
+    <span>→</span> ASC 958 / Financial Review Engine
+    <span>→</span> Controller Action Plan
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main">
+
+  <!-- LEFT CONTENT -->
+  <div class="content">
+
+    <!-- START HERE -->
+    <div class="section-label">Guided workflow</div>
+    <div class="start-block">
+      <div class="start-title">
+        <span class="start-title-badge">Start Here</span>
+        Staff Accountant Workflow
+      </div>
+
+      <!-- Step indicators -->
+      <div class="wizard-steps" id="wiz-steps">
+        <div class="wstep active" id="ws1">
+          <div class="wstep-num">1</div>
+          <span class="wstep-label">Select work</span>
+        </div>
+        <div class="wstep-line"></div>
+        <div class="wstep" id="ws2">
+          <div class="wstep-num">2</div>
+          <span class="wstep-label">Connect data</span>
+        </div>
+        <div class="wstep-line"></div>
+        <div class="wstep" id="ws3">
+          <div class="wstep-num">3</div>
+          <span class="wstep-label">Run review</span>
+        </div>
+      </div>
+
+      <!-- Panel -->
+      <div class="wizard-panel" id="wiz-panel"></div>
+    </div>
+
+    <!-- HOW TO READ -->
+    <div class="section-label">System map</div>
+    <div class="how-block">
+      <div class="how-title">How to read this page</div>
+      <div class="how-row"><span class="how-key">Daily Accounting Dashboard</span><span class="how-val">Live operating floor — AR risk, AP invoices, compliance posture, zero-trust status</span></div>
+      <div class="how-row"><span class="how-key">Financial Review Engine</span><span class="how-val">Detects issues in fund accounting, grant restrictions, report status, and compliance exposure</span></div>
+      <div class="how-row"><span class="how-key">Tax / 1099</span><span class="how-val">What needs to be ready before filing deadlines — vendor thresholds, W-9 readiness</span></div>
+      <div class="how-row"><span class="how-key">Compliance Shield</span><span class="how-val">Documentation or approval gaps that could create audit risk</span></div>
+      <div class="how-row"><span class="how-key">Zero Trust</span><span class="how-val">Who has access to financial systems and whether access should be reviewed</span></div>
+      <div class="how-row"><span class="how-key">Controller Action Plan</span><span class="how-val">What to fix, prioritize, or report next — the final output of the full cycle</span></div>
+    </div>
+
+    <!-- MODULE GRID -->
+    <div class="section-label">Your modules</div>
+    <div class="module-grid">
+
+      <div class="mod-card">
+        <div class="mod-num"><span class="mod-num-n">01</span> · Daily Dashboard <span class="mod-badge">Start here</span></div>
+        <div class="mod-title">Financial Command</div>
+        <div class="mod-subtitle">Your daily operating floor</div>
+        <div class="mod-desc">Shows what's at risk right now. AR priority, AP invoices, compliance score, and strategist next action. Open this to start your day.</div>
+        <div class="mod-metrics">
+          <span class="metric hot">$18.4K AR risk</span>
+          <span class="metric warn">12 AP invoices</span>
+          <span class="metric ok">6 security gaps</span>
+        </div>
+        <button class="mod-btn">Open daily accounting dashboard →</button>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-num"><span class="mod-num-n">02</span> · Find problems</div>
+        <div class="mod-title">Financial Intel</div>
+        <div class="mod-subtitle">ASC 958 · Fund accounting</div>
+        <div class="mod-desc">Shows what's wrong in financial reports. Fund accounting, grant restrictions, report status, Form 990, and compliance exposure.</div>
+        <div class="mod-metrics">
+          <span class="metric hot">$480K HRSA grant</span>
+          <span class="metric hot">OVERDUE report</span>
+          <span class="metric warn">84% Form 990</span>
+        </div>
+        <button class="mod-btn">Open financial intel →</button>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-num"><span class="mod-num-n">03</span> · Next actions</div>
+        <div class="mod-title">Controller Action Plan</div>
+        <div class="mod-subtitle">FinOps Strategist · BNCA</div>
+        <div class="mod-desc">Turns accounting work into executive action. Prioritized next steps, outcome summary, and controller-ready recommendations.</div>
+        <div class="mod-metrics">
+          <span class="metric ok">5/5 nodes reporting</span>
+          <span class="metric ok">12–18 hrs saved</span>
+        </div>
+        <button class="mod-btn">Open controller action plan →</button>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-num"><span class="mod-num-n">04</span> · Avoid penalties</div>
+        <div class="mod-title">Tax Prep</div>
+        <div class="mod-subtitle">1099 · Filing readiness</div>
+        <div class="mod-desc">Shows vendor + filing readiness. 1099/W-9 readiness, vendor threshold review, tax deadline windows, and filing risk.</div>
+        <div class="mod-metrics">
+          <span class="metric warn">W-9 gaps</span>
+          <span class="metric warn">Threshold review</span>
+        </div>
+        <button class="mod-btn">Open tax prep →</button>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-num"><span class="mod-num-n">05</span> · Avoid audit risk</div>
+        <div class="mod-title">Compliance Shield</div>
+        <div class="mod-subtitle">Audit support · Docs</div>
+        <div class="mod-desc">Shows missing docs and approval gaps. Approvals, supporting documents, audit trail, policy gaps, and controller review risk.</div>
+        <div class="mod-metrics">
+          <span class="metric hot">Missing approvals</span>
+          <span class="metric warn">Policy gaps</span>
+        </div>
+        <button class="mod-btn">Open compliance →</button>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-num"><span class="mod-num-n">06</span> · Protect access</div>
+        <div class="mod-title">Zero Trust</div>
+        <div class="mod-subtitle">Access · Security posture</div>
+        <div class="mod-desc">Shows who shouldn't have access. Permission review, QuickBooks access risk, financial data exposure, and security posture.</div>
+        <div class="mod-metrics">
+          <span class="metric hot">6 access gaps</span>
+          <span class="metric warn">QB exposure</span>
+        </div>
+        <button class="mod-btn">Open zero trust →</button>
+      </div>
+
+    </div>
+
+    <!-- 30-SECOND CLOSE -->
+    <div class="section-label">Positioning</div>
+    <div class="close-block">
+      <div class="close-title">30-Second FinOps Close</div>
+      <div class="close-text">Right here — this is your AP, reconciliation, tax readiness, compliance, and controller-reporting workload being processed instantly instead of manually.</div>
+      <div class="close-text">Most teams handle this with staff, spreadsheets, email follow-ups, and month-end pressure — typically <strong>$5K–$7K/month</strong> in coordination cost.</div>
+      <div class="close-text">TSM replaces that with a visible financial operations system at <strong>$1,750/month</strong>.</div>
+      <div class="close-final">"At this point, it's just how you want to start — most teams begin with the 30-day pilot."</div>
+    </div>
+
+    <!-- TALK TRACK -->
+    <div class="section-label">Demo script</div>
+    <div class="track-block">
+      <div class="track-title">Step-by-step talk track</div>
+      <div class="track-step" data-n="1">
+        <div class="track-action">Start on FinOps Presentation</div>
+        <div class="track-say">Say: <em>"This is the accounting workload your team already handles: AP, AR, reconciliation, tax, compliance, and close."</em></div>
+      </div>
+      <div class="track-step" data-n="2">
+        <div class="track-action">Click Bank Reconciliation or AR Ledger</div>
+        <div class="track-say">Say: <em>"I'm starting with one workflow because that's where month-end pressure shows up first."</em></div>
+      </div>
+      <div class="track-step" data-n="3">
+        <div class="track-action">Click RUN FULL ACCOUNTING REVIEW</div>
+        <div class="track-say">Say: <em>"This is the work normally chased manually across QuickBooks, bank feeds, spreadsheets, and email."</em></div>
+      </div>
+      <div class="track-step" data-n="4">
+        <div class="track-action">Open Daily Accounting Dashboard</div>
+        <div class="track-say">Say: <em>"This is the live operating floor — every node has a role."</em></div>
+      </div>
+      <div class="track-step" data-n="5">
+        <div class="track-action">Open Controller Action Plan</div>
+        <div class="track-say">Say: <em>"Now it's no longer activity. It's a next action for the controller."</em></div>
+      </div>
+      <div class="track-step" data-n="6">
+        <div class="track-action">Click SHOW ROI / PILOT OPTIONS</div>
+        <div class="track-say">Say: <em>"Most teams pay $5K–$7K/month to coordinate this manually."</em></div>
+      </div>
+      <div class="track-step" data-n="7">
+        <div class="track-action">Point to the rail — then stop talking</div>
+        <div class="track-say">Say: <em>"At this point, it's just how you want to start — most teams begin with the 30-day pilot."</em></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="sidebar-title">Staff Accountant Guide</div>
+    <div class="sidebar-sub">Use this to understand what is available and what to click.</div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-startday')">
+      Start my day
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-startday">
+      <div class="guide-step"><span>1.</span> Open Daily Accounting Dashboard</div>
+      <div class="guide-step"><span>2.</span> Review AR at risk, AP invoices, tax window</div>
+      <div class="guide-step"><span>3.</span> Check compliance score + security posture</div>
+      <div class="guide-step"><span>4.</span> Open Controller Action Plan for today's priorities</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-ap')">
+      Process AP / vendor invoices
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-ap">
+      <div class="guide-step"><span>1.</span> Select "AP Aging" in Start Here</div>
+      <div class="guide-step"><span>2.</span> Upload AP aging report or connect QB</div>
+      <div class="guide-step"><span>3.</span> Run Full Accounting Review</div>
+      <div class="guide-step"><span>4.</span> Review overdue + threshold flags</div>
+      <div class="guide-step"><span>5.</span> Send prioritized list to controller</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-ar')">
+      Review AR / collections
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-ar">
+      <div class="guide-step"><span>1.</span> Select "AR / Collections" in Start Here</div>
+      <div class="guide-step"><span>2.</span> Upload AR ledger or connect system</div>
+      <div class="guide-step"><span>3.</span> Run review — see aging buckets + follow-up flags</div>
+      <div class="guide-step"><span>4.</span> Open Strategist for collection priority list</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-rec')">
+      Run bank reconciliation
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-rec">
+      <div class="guide-step"><span>1.</span> Select "Bank Reconciliation" in Start Here</div>
+      <div class="guide-step"><span>2.</span> Upload bank statement + GL detail</div>
+      <div class="guide-step"><span>3.</span> System flags unmatched transactions</div>
+      <div class="guide-step"><span>4.</span> Review exceptions, push to close package</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-1099')">
+      Check 1099 / W-9 readiness
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-1099">
+      <div class="guide-step"><span>1.</span> Open Tax Prep module</div>
+      <div class="guide-step"><span>2.</span> Review vendors at/near $600 threshold</div>
+      <div class="guide-step"><span>3.</span> Flag missing W-9s for follow-up</div>
+      <div class="guide-step"><span>4.</span> Confirm filing deadline windows</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-audit')">
+      Check audit support / approvals
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-audit">
+      <div class="guide-step"><span>1.</span> Open Compliance Shield module</div>
+      <div class="guide-step"><span>2.</span> Review missing approval flags</div>
+      <div class="guide-step"><span>3.</span> Check supporting document gaps</div>
+      <div class="guide-step"><span>4.</span> Close gaps before audit window</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-ctrl')">
+      Send next actions to controller
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-ctrl">
+      <div class="guide-step"><span>1.</span> Run Full Accounting Review</div>
+      <div class="guide-step"><span>2.</span> Open Controller Action Plan</div>
+      <div class="guide-step"><span>3.</span> Review prioritized findings</div>
+      <div class="guide-step"><span>4.</span> Export or share with controller</div>
+    </div>
+
+    <button class="guide-btn" onclick="toggleGuide(this,'guide-pilot')">
+      Understand the 30-day pilot
+      <span class="guide-chevron">▶</span>
+    </button>
+    <div class="guide-expand" id="guide-pilot">
+      <div class="guide-step">Full 6-node system access for 30 days</div>
+      <div class="guide-step">Replaces AP/AR/rec/tax/compliance coordination</div>
+      <div class="guide-step">Typical cost offset: $5K–$7K/month saved</div>
+      <div class="guide-step">TSM price: $1,750/month</div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-title" style="font-size:10px;margin-bottom:10px">Today's risk snapshot</div>
+    <div class="sidebar-metric"><span class="sm-label">AR at risk</span><span class="sm-val hot">$18.4K</span></div>
+    <div class="sidebar-metric"><span class="sm-label">AP invoices pending</span><span class="sm-val warn">12</span></div>
+    <div class="sidebar-metric"><span class="sm-label">Security gaps</span><span class="sm-val hot">6</span></div>
+    <div class="sidebar-metric"><span class="sm-label">Nodes reporting</span><span class="sm-val ok">5 / 5</span></div>
+    <div class="sidebar-metric"><span class="sm-label">Form 990 status</span><span class="sm-val warn">84%</span></div>
+    <div class="sidebar-metric"><span class="sm-label">Monthly hours saved</span><span class="sm-val ok">12–18 hrs</span></div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /main -->
+
+<!-- STICKY CTA -->
+<div class="cta-bar">
+  <div class="cta-note"><strong>Most teams start with a 30-day pilot</strong> · $1,750/month · Full 6-node access</div>
+  <div class="cta-btns">
+    <button class="cta-btn">Start 30-day pilot</button>
+    <button class="cta-btn">Book walkthrough</button>
+    <button class="cta-btn primary">Open controller action plan →</button>
+  </div>
+</div>
+
+<!-- HOW TO FLOAT -->
+<button class="how-to-btn">How To</button>
+
+<script>
+// WIZARD STATE
+const workflows=[
+  {tag:'AP / Aging',name:'AP Aging',desc:'Overdue bills, vendor balances, payment timing'},
+  {tag:'AR / Collections',name:'AR / Collections',desc:'Outstanding invoices, follow-ups, aging buckets'},
+  {tag:'Reconciliation',name:'Bank Reconciliation',desc:'Unmatched transactions, GL to bank'},
+  {tag:'Month-End',name:'Month-End Close',desc:'Journal entries, close package, sign-off'},
+  {tag:'Tax / Filing',name:'1099 / Vendors',desc:'W-9 readiness, vendor thresholds, deadlines'},
+  {tag:'Variance',name:'Budget vs Actual',desc:'Variance analysis, GL detail, reporting'}
+];
+const sources=[
+  {name:'Upload documents',desc:'AP aging, AR ledger, bank statements, financial reports — PDF, Excel, CSV'},
+  {name:'Connect system data',desc:'QuickBooks, ERP, or accounting platform — pull data directly'},
+  {name:'Both',desc:'Upload files + live system data — most complete review'}
+];
+let step=1,selWork=[],selSrc=null;
+
+function setStep(n){
+  step=n;
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('ws'+i);
+    const dot=el.querySelector('.wstep-num');
+    el.className='wstep'+(i===n?' active':i<n?' done':'');
+    dot.textContent=i<n?'✓':i;
+  });
+  render();
+}
+
+function render(){
+  const p=document.getElementById('wiz-panel');
+  p.style.animation='none';
+  void p.offsetWidth;
+  p.style.animation='fadeIn .25s ease';
+
+  if(step===1){
+    p.innerHTML=`
+      <div class="wp-q">What are you working on today?</div>
+      <div class="wp-sub">Select one or more workflows — you can run them together.</div>
+      <div class="wf-grid">${workflows.map((w,i)=>`
+        <div class="wf-card${selWork.includes(i)?' sel':''}" onclick="toggleW(${i})">
+          <div class="wf-card-tag">${w.tag}</div>
+          <div class="wf-card-name">${w.name}</div>
+          <div class="wf-card-desc">${w.desc}</div>
+        </div>`).join('')}</div>
+      <div class="wf-footer">
+        <span></span>
+        <button class="btn-next${selWork.length?' on':''}" onclick="setStep(2)">Next: Connect data →</button>
+      </div>`;
+  } else if(step===2){
+    p.innerHTML=`
+      <div class="wp-q">How do you want to provide your data?</div>
+      <div class="wp-sub">Choose whichever fits your setup for today's review.</div>
+      <div class="src-grid">${sources.map((s,i)=>`
+        <div class="src-card${selSrc===i?' sel':''}" onclick="pickSrc(${i})">
+          <div class="src-name">${s.name}</div>
+          <div class="src-desc">${s.desc}</div>
+        </div>`).join('')}</div>
+      <div class="wf-footer">
+        <button class="btn-back" onclick="setStep(1)">← Back</button>
+        <button class="btn-next${selSrc!==null?' on':''}" onclick="setStep(3)">Review &amp; run →</button>
+      </div>`;
+  } else {
+    const wLabels=selWork.map(i=>workflows[i].name).join(', ');
+    const sLabel=selSrc!==null?sources[selSrc].name:'—';
+    p.innerHTML=`
+      <div class="wp-q" style="margin-bottom:14px">Ready to run your accounting review</div>
+      <div class="sum-row"><span class="sum-key">Workflows</span><span class="sum-val accent">${wLabels}</span></div>
+      <div class="sum-row"><span class="sum-key">Data source</span><span class="sum-val">${sLabel}</span></div>
+      <div class="sum-row"><span class="sum-key">System output</span><span class="sum-val">Risk detection → compliance gaps → prioritized next actions</span></div>
+      <button class="btn-run">▶ Run full accounting review</button>
+      <div class="run-note">Detects issues, flags compliance gaps, and tells you exactly what to fix first.</div>
+      <div class="wf-footer" style="margin-top:10px">
+        <button class="btn-back" onclick="setStep(2)">← Back</button>
+        <span></span>
+      </div>`;
+  }
+}
+
+function toggleW(i){
+  const idx=selWork.indexOf(i);
+  if(idx>-1)selWork.splice(idx,1);else selWork.push(i);
+  render();
+}
+function pickSrc(i){selSrc=i;render();}
+
+function toggleGuide(btn,id){
+  const el=document.getElementById(id);
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.guide-expand').forEach(e=>e.classList.remove('open'));
+  document.querySelectorAll('.guide-btn').forEach(b=>b.classList.remove('active'));
+  if(!isOpen){el.classList.add('open');btn.classList.add('active');}
+}
+
+render();
+</script>
+</body>
+</html>

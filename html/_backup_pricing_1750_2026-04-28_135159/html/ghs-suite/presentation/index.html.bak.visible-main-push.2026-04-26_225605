@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>GHS Healthcare Command · Live Demo</title>
+<style>
+:root{--bg:#05080d;--panel:#07111b;--panel2:#0b1724;--line:#123050;--cyan:#00e0ff;--green:#00f59f;--gold:#ffb000;--red:#ff3b57;--text:#d9f3ff;--muted:#8fb0c8;--white:#f8f8f5}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#10233a 0,#05080d 42%,#000 100%);color:var(--text);font-family:Inter,system-ui,Arial;overflow:hidden}
+.deck{height:100vh;display:flex;flex-direction:column}
+.top{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(2,7,13,.92)}
+.brand{font-weight:900;color:var(--cyan);letter-spacing:.16em}
+.badge{border:1px solid var(--cyan);color:var(--cyan);border-radius:999px;padding:7px 12px;font:900 11px monospace}
+.slides{flex:1;overflow:hidden;position:relative}
+.slide{display:none;height:calc(100vh - 68px);overflow:auto;padding:42px 56px}
+.slide.active{display:block}
+h1{font-size:48px;letter-spacing:.02em;margin:0 0 18px}
+h2{font-size:34px;color:var(--cyan);margin:0 0 18px}
+p,li{font-size:19px;line-height:1.5;color:#bcd1e4}
+.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+.card{background:linear-gradient(180deg,rgba(8,24,38,.96),rgba(3,10,16,.96));border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{color:var(--cyan);margin:0 0 10px;font-size:17px;letter-spacing:.08em}
+.big{font-size:64px;color:var(--green);font-weight:900}
+.nav{position:fixed;bottom:18px;right:24px;display:flex;gap:8px;z-index:50}
+button{cursor:pointer}
+.nav button,.btn{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:11px 14px;font:900 12px monospace;letter-spacing:.08em}
+.btn.out{background:transparent;color:var(--cyan);border:1px solid var(--cyan)}
+.btn.green{background:var(--green)}
+.btn.gold{background:var(--gold)}
+.progress{position:fixed;bottom:18px;left:24px;font:12px monospace;color:var(--muted)}
+.doc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.doc{background:var(--white);color:#171717;border:2px solid #d0d0d0;border-radius:12px;padding:14px;min-height:190px}
+.doc.active{background:#d9e8fb;border-color:#2f80ed}
+.doc .icon{font-size:24px}.doc .k{color:#777;text-transform:uppercase;letter-spacing:.1em;font-size:12px}.doc .name{font-size:17px;margin:6px 0}.doc .pain{color:#6b4a13;font-size:13px;line-height:1.35}
+.versions{display:flex;gap:6px;margin-top:12px}.versions button{background:#fff;border:1px solid #bbb;border-radius:9px;padding:8px 13px;font-size:16px}.versions button.sel{border-color:#2f80ed;background:#eef6ff}
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;color:#111;border:2px solid #d8d8d8;border-radius:12px;overflow:hidden;margin:16px 0}
+.stage{padding:16px;text-align:center;border-right:1px solid #d5d5d5}.stage:last-child{border-right:0}.stage.done{background:#e8f4dc;box-shadow:inset 0 0 0 2px #6c9d43}.stage .emoji{font-size:28px}.stage .title{font-size:15px;margin-top:6px}.stage .sub{font-size:13px;color:#555}.stage .status{margin-top:8px;color:#4a7d2d}
+.preview{background:#fbfaf5;color:#222;border:2px solid #d7d7d2;border-radius:10px;padding:14px;font:13px/1.5 monospace;white-space:pre-wrap;max-height:190px;overflow:auto}
+.output{background:#fff;color:#222;border:2px solid #6c9d43;border-radius:12px;padding:18px}
+.node-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.node{background:#f2f0ea;border-left:4px solid #2f80ed;border-radius:9px;padding:12px;font-size:14px}.node b{color:#2f6fc1;display:block;margin-bottom:5px}
+.bnca{background:#e8f4dc;border:2px solid #6c9d43;border-radius:10px;padding:14px;margin-top:12px;font-size:15px;line-height:1.4}
+.letters{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.letter{background:#fff;color:#111;border:1px solid #ddd;border-radius:12px;padding:18px;white-space:pre-wrap;font:13px/1.5 Georgia,serif;max-height:360px;overflow:auto}
+.checks{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.checks label{font:13px monospace;background:#07111b;border:1px solid var(--line);border-radius:999px;padding:8px 10px;color:var(--text)}
+select,textarea{width:100%;background:#02070d;color:#d9f3ff;border:1px solid var(--line);border-radius:8px;padding:10px;font:13px monospace}
+@media(max-width:1000px){.doc-grid,.g3,.g4,.g5,.letters,.node-grid,.pipeline{grid-template-columns:1fr}.slide{padding:24px}.stage{border-right:0;border-bottom:1px solid #ddd}}
+</style>
+
+
+
+
+<style id="ghs-demo-coach-css">
+#demoCoachFab{
+  position:fixed!important;
+  left:22px!important;
+  bottom:86px!important;
+  z-index:2147483647!important;
+  background:#00f59f!important;
+  color:#001018!important;
+  border:0!important;
+  border-radius:999px!important;
+  padding:13px 18px!important;
+  font:900 12px monospace!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.55)!important;
+}
+#demoCoach{
+  position:fixed!important;
+  left:22px!important;
+  bottom:145px!important;
+  width:420px!important;
+  max-height:620px!important;
+  z-index:2147483647!important;
+  background:#061018!important;
+  color:#d9f3ff!important;
+  border:1px solid #123050!important;
+  border-radius:16px!important;
+  display:none;
+  overflow:hidden!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.65)!important;
+}
+.dcHead{padding:14px;border-bottom:1px solid #123050;display:flex;justify-content:space-between;align-items:center}
+.dcTitle{color:#00e0ff;font:900 13px monospace;letter-spacing:.12em}
+.dcBody{padding:14px;max-height:460px;overflow:auto;font:12px/1.55 monospace}
+.dcStep{border:1px solid #123050;border-radius:12px;padding:12px;margin-bottom:10px;background:#07111b}
+.dcStep b{color:#00e0ff}
+.dcSay{border-left:3px solid #00f59f;padding:10px;margin-top:8px;background:#04120d;color:#c9ffe8}
+.dcBtns{display:flex;gap:8px;padding:12px;border-top:1px solid #123050}
+.dcBtns button,.dcMini{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:8px 10px;font:900 11px monospace;cursor:pointer}
+.dcBtns button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
+.dcPulse{outline:3px solid #00f59f!important;box-shadow:0 0 26px rgba(0,245,159,.75)!important}
+</style>
+
+</head>
+<body>
+<div class="deck">
+  <div class="top">
+    <div><div class="brand">GHS HEALTHCARE COMMAND · LIVE EXECUTIVE DEMO</div><div style="font:11px monospace;color:var(--muted)">Document intelligence → HC Nodes → HC Strategist → Main Strategist → HITL Manager → Letters + Reports</div></div>
+    <div class="badge">TSM NEURAL CORE · LIVE</div>
+  </div>
+
+  <div class="slides">
+    <section class="slide active">
+      <h1>Healthcare teams do not need another dashboard.</h1>
+      <p>They need a command layer that turns healthcare documents into operational decisions, manager-ready reports, and professional follow-up letters.</p>
+      <div class="grid g3">
+        <div class="card"><h3>24 ready scenarios</h3><p>8 common healthcare document types × 3 quality levels.</p></div>
+        <div class="card"><h3>Live coordination</h3><p>Each document runs through intake, HC nodes, HC Strategist, Main Strategist, and HITL.</p></div>
+        <div class="card"><h3>Letter automation</h3><p>Prior auth letters, denial appeals, referral follow-ups, compliance memos, and executive briefs.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>What the client sees</h2>
+      <div class="grid g5">
+        <div class="card"><h3>1. Intake</h3><p>Document is parsed and classified.</p></div>
+        <div class="card"><h3>2. HC Nodes</h3><p>Parallel clinical, coding, compliance, risk, and operations review.</p></div>
+        <div class="card"><h3>3. HC Strategist</h3><p>Findings become BNCA.</p></div>
+        <div class="card"><h3>4. Main Strategist</h3><p>Executive priority and risk view.</p></div>
+        <div class="card"><h3>5. HITL</h3><p>Manager reviews, approves, and acts.</p></div>
+      </div>
+    </section>
+
+    <section class="slide" id="live-run-slide">
+      <h2>Live Coordination Run — Choose any document</h2>
+      <div class="doc-grid" id="library"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+        <div>
+          <div class="preview" id="preview">Select a document.</div>
+          <div class="checks">
+            <label><input type="checkbox" checked value="prior"> Prior Auth Letter</label>
+            <label><input type="checkbox" checked value="appeal"> Denial Appeal</label>
+            <label><input type="checkbox" checked value="referral"> Referral Follow-up</label>
+            <label><input type="checkbox" checked value="compliance"> Compliance Memo</label>
+            <label><input type="checkbox" checked value="brief"> Executive Brief</label>
+          </div>
+          <button class="btn green" onclick="runPipeline()">RUN SELECTED DOCUMENT</button>
+          <button class="btn out" onclick="runAll24()">RUN ALL 24 SCENARIOS</button>
+          <button class="btn gold" onclick="oneClickDemoMode()">ONE-CLICK DEMO MODE</button>
+          <button class="btn out" onclick="sendRelay()">SEND TO HC STRATEGIST RELAY</button>
+          <button class="btn out" onclick="synthesize()">PUSH TO MAIN STRATEGIST</button>
+<div id="strategyRedirects" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+  <button onclick="openHCStrategist()" style="background:#001018;border:1px solid #00e0ff;color:#00e0ff;padding:10px 14px;border-radius:8px;font-weight:700">
+    OPEN HC STRATEGIST
+  </button>
+
+  <button onclick="openMainStrategist()" style="background:#001018;border:1px solid #00f59f;color:#00f59f;padding:10px 14px;border-radius:8px;font-weight:700">
+    OPEN MAIN STRATEGIST
+  </button>
+
+  <label style="display:flex;align-items:center;gap:6px;font-size:11px;margin-left:10px">
+    <input type="checkbox" id="autoRedirectToggle">
+    AUTO REDIRECT
+  </label>
+</div>
+
+<script>
+function openHCStrategist(){
+  window.open('/html/hc-strategist/index.html?v=live-demo','_blank');
+}
+
+function openMainStrategist(){
+  window.open('/html/main-strategist/index.html?v=live-demo','_blank');
+}
+
+// wrap existing push functions
+const oldSend = window.sendToHCStrategist || function(){};
+window.sendToHCStrategist = async function(){
+  await oldSend();
+  if(document.getElementById('autoRedirectToggle')?.checked){
+    setTimeout(()=>openHCStrategist(), 600);
+  }
+}
+
+const oldPush = window.pushToMainStrategist || function(){};
+window.pushToMainStrategist = async function(){
+  await oldPush();
+  if(document.getElementById('autoRedirectToggle')?.checked){
+    setTimeout(()=>openMainStrategist(), 800);
+  }
+}
+</script>
+</button>
+        </div>
+        <div>
+          <div class="pipeline">
+            <div class="stage" id="st0"><div class="emoji">📄</div><div class="title">Document Intake</div><div class="sub">Upload & parse</div><div class="status">—</div></div>
+            <div class="stage" id="st1"><div class="emoji">🔬</div><div class="title">HC-Nodes</div><div class="sub">Parallel analysis</div><div class="status">—</div></div>
+            <div class="stage" id="st2"><div class="emoji">🧠</div><div class="title">HC-Strategist</div><div class="sub">BNCA synthesis</div><div class="status">—</div></div>
+            <div class="stage" id="st3"><div class="emoji">📊</div><div class="title">Main Strategist</div><div class="sub">Priority & risk</div><div class="status">—</div></div>
+            <div class="stage" id="st4"><div class="emoji">👤</div><div class="title">HITL Manager</div><div class="sub">Final approval</div><div class="status">—</div></div>
+          </div>
+          <div class="output" id="output"><h3>BNCA Output</h3><p>Run a document to see findings.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Generated follow-up documents</h2>
+      <p>Clients can choose which documents they want produced after analysis.</p>
+      <div class="letters" id="letters"></div>
+    </section>
+
+    <section class="slide">
+      <h2>Executive close</h2>
+      <div class="grid g3">
+        <div class="card"><h3>CFO</h3><p>Reduces denial leakage, rework, and delayed revenue by turning findings into ready-to-send documents.</p></div>
+        <div class="card"><h3>COO</h3><p>Shows exactly where work is stuck, who owns it, and what action happens next.</p></div>
+        <div class="card"><h3>Compliance</h3><p>Keeps HITL approval, audit trails, correction memos, and standardized documentation.</p></div>
+      </div>
+      <p style="font-size:26px;color:var(--green);margin-top:32px">“The value is not just finding the issue. The value is producing the next action while the team is still in the workflow.”</p>
+    </section>
+  </div>
+</div>
+
+<div class="progress" id="progress">1 / 5</div>
+<div class="nav">
+  <button onclick="prevSlide()">← PREV</button>
+  <button onclick="nextSlide()">NEXT →</button>
+</div>
+
+<script>
+const docs=[
+ {id:'prior',icon:'🔐',k:'Prior Auth',name:'Prior Auth',pain:'Manual review bottlenecks, 72hr avg delay'},
+ {id:'discharge',icon:'🏥',k:'Discharge Summary',name:'Discharge Summary',pain:'Missing follow-up orders, readmission risk flags missed'},
+ {id:'denial',icon:'❌',k:'Claim Denial',name:'Claim Denial',pain:'Low appeal success, missed deadlines, lost revenue'},
+ {id:'referral',icon:'↗',k:'Referral Order',name:'Referral Order',pain:'Incomplete clinical context delays specialist acceptance'},
+ {id:'medrec',icon:'💊',k:'Medication Reconciliation',name:'Medication Reconciliation',pain:'Discrepancies across transitions cause adverse events'},
+ {id:'adt',icon:'🔔',k:'ADT Notification',name:'ADT Notification',pain:'Delayed care coordination, missed payer notifications'},
+ {id:'consent',icon:'✍️',k:'Consent Form',name:'Consent Form',pain:'Missing signatures, undocumented capacity assessments'},
+ {id:'clinical',icon:'📝',k:'Clinical Note',name:'Clinical Note',pain:'Vague documentation, missing HPI elements, billing risk'}
+];
+
+const versions={
+ prior:{
+  v1:`PRIOR AUTH REQUEST
+Patient: Johnson, M.
+Service: MRI Lumbar Spine
+Problem: back pain
+Missing: conservative therapy, neuro findings, duration, payer criteria.
+Status: HOLD — insufficient medical necessity.`,
+  v2:`PRIOR AUTH REQUEST
+Patient: Johnson, M.
+Service: MRI Lumbar Spine
+6 weeks PT mentioned but no dates. Radicular pain noted. NSAID trial unclear.
+Status: PARTIAL — request clarification.`,
+  v3:`PRIOR AUTH REQUEST
+Patient: Johnson, M.
+Service: MRI Lumbar Spine
+6 weeks PT failed, NSAIDs failed, worsening radicular pain, positive straight-leg raise, functional decline.
+Status: APPROVE & SUBMIT.`
+ },
+ denial:{
+  v1:`CLAIM DENIAL NOTICE
+Claim #: BCB-2025-04-99231
+Amount: $12,400
+Denial: CO-97 duplicate claim
+Missing: original claim status, remit, appeal deadline.
+Status: HOLD.`,
+  v2:`CLAIM DENIAL NOTICE
+Claim #: BCB-2025-04-99231
+Original may have paid at lower rate. Appeal deadline 05/10/2025. Need remit.
+Status: REVIEW.`,
+  v3:`CLAIM DENIAL NOTICE
+Claim #: BCB-2025-04-99231
+DOS: 03/15/2025  Patient: Martinez, J.
+Amount: $12,400  Procedure: 27447
+Denial: CO-97 — previously paid at claim BCB-99100
+Resolution: Verify BCB-99100 payment; if underpaid, appeal with remit
+Appeal deadline: 05/10/2025
+Required: Clinical notes + original remit + corrected claim
+Contact: BlueCross Provider Relations 1-800-555-0192`
+ }
+};
+
+['discharge','referral','medrec','adt','consent','clinical'].forEach(id=>{
+ const d=docs.find(x=>x.id===id);
+ versions[id]={
+  v1:`${d.name.toUpperCase()}
+Incomplete record. Missing required fields, owner lane, and documentation needed for downstream action.
+Status: HOLD — correction required.`,
+  v2:`${d.name.toUpperCase()}
+Partial record. Some required documentation present, but missing context creates delay, compliance exposure, or payer/provider friction.
+Status: PARTIAL — clarify and resubmit.`,
+  v3:`${d.name.toUpperCase()}
+Complete record. Required documentation, owner lane, timeline, and action path are present.
+Status: ACTIONABLE — proceed with workflow.`
+ };
+});
+
+let selected={id:'denial',v:'v3'}, currentBNCA='';
+
+function renderLib(){
+ library.innerHTML=docs.map(d=>`
+ <div class="doc ${selected.id===d.id?'active':''}" onclick="selectDoc('${d.id}','${selected.id===d.id?selected.v:'v1'}')">
+  <div class="icon">${d.icon}</div><div class="k">${d.k}</div><div class="name">${d.name}</div><div class="pain">${d.pain}</div>
+  <div class="versions">${['v1','v2','v3'].map(v=>`<button class="${selected.id===d.id&&selected.v===v?'sel':''}" onclick="event.stopPropagation();selectDoc('${d.id}','${v}')">${v}</button>`).join('')}</div>
+ </div>`).join('');
+ updatePreview();
+}
+function selectDoc(id,v){selected={id,v};renderLib()}
+function doc(){return docs.find(x=>x.id===selected.id)}
+function text(){return versions[selected.id][selected.v]}
+function quality(){return selected.v==='v3'?'complete':selected.v==='v2'?'partial':'incomplete'}
+function updatePreview(){preview.textContent=`${doc().icon} ${doc().name.toUpperCase()} — ${selected.v.toUpperCase()} — ${quality().toUpperCase()}\n\n${text()}`}
+
+function resetStages(){[0,1,2,3,4].forEach(i=>{let e=document.getElementById('st'+i);e.classList.remove('done');e.querySelector('.status').textContent='—'})}
+function stage(i,t){let e=document.getElementById('st'+i);e.classList.add('done');e.querySelector('.status').textContent=t+' ✓'}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+async function runPipeline(){
+ resetStages();
+ output.innerHTML='<h3>BNCA Output</h3><p>Running through command pipeline...</p>';
+ stage(0,'Parsed'); await wait(250);
+ stage(1,'11-node review'); await wait(250);
+ stage(2,'BNCA ready'); await wait(250);
+ stage(3,'Prioritized'); await wait(250);
+ stage(4,'HITL action');
+
+ const b=makeBNCA();
+ currentBNCA=b.action+'\n\n'+b.hitl;
+ output.innerHTML=`
+ <h3>BNCA Output · ${doc().name} ${selected.v.toUpperCase()}</h3>
+ <div class="node-grid">
+  <div class="node"><b>CLINICAL NODE</b>${b.clinical}</div>
+  <div class="node"><b>CODING / BILLING NODE</b>${b.coding}</div>
+  <div class="node"><b>COMPLIANCE NODE</b>${b.compliance}</div>
+  <div class="node"><b>RISK / OPERATIONS NODE</b>${b.risk}</div>
+ </div>
+ <div class="bnca"><b>HC-STRATEGIST → MAIN STRATEGIST: BEST NEXT COURSE OF ACTION</b><br>${b.action}</div>
+ <div class="bnca"><b>HITL MANAGER ACTION</b><br>${b.hitl}</div>`;
+ generateLetters();
+ await sendRelay(false);
+}
+
+function makeBNCA(){
+ const q=quality(), d=doc();
+ if(q==='complete') return {
+  clinical:'Clinical context is complete enough to support downstream action.',
+  coding:'Coding, claim, authorization, or documentation requirements are sufficiently supported.',
+  compliance:'Required documentation elements are present and audit trail can be preserved.',
+  risk:'Low risk. Workflow is ready for manager approval and execution.',
+  action:`APPROVE / EXECUTE — ${d.name} ${selected.v.toUpperCase()} is complete. Proceed with the appropriate letter, submission, referral, appeal, or compliance record.`,
+  hitl:'Manager approves execution, confirms owner lane, and tracks outcome in the operating record.'
+ };
+ if(q==='partial') return {
+  clinical:'Clinical context is present but not strong enough for confident submission.',
+  coding:'Some required fields exist, but ambiguity may cause payer/provider delay.',
+  compliance:'Documentation gap creates moderate review and audit risk.',
+  risk:'Moderate risk. Proceed only after correction owner resolves missing items.',
+  action:`HOLD / RETURN FOR CORRECTION — ${d.name} ${selected.v.toUpperCase()} is partial. Request missing documentation before submission and route corrected file back through HC nodes.`,
+  hitl:'Assign owner lane, request missing fields, set due date, and do not submit until corrected.'
+ };
+ return {
+  clinical:'Clinical documentation is too weak for action.',
+  coding:'Required coding/submission support is missing.',
+  compliance:'High documentation risk if acted on without correction.',
+  risk:'High risk. Submission may create denial, delay, compliance exposure, or patient coordination failure.',
+  action:`DO NOT SUBMIT — ${d.name} ${selected.v.toUpperCase()} is incomplete. Return to source team with required correction checklist.`,
+  hitl:'Manager blocks downstream action and assigns same-day remediation.'
+ };
+}
+
+function wanted(){return [...document.querySelectorAll('.checks input:checked')].map(x=>x.value)}
+function generateLetters(){
+ const lettersOut=[];
+ const w=wanted(), d=doc(), q=quality(), body=text();
+ if(w.includes('prior')) lettersOut.push(['Prior Authorization Letter',priorLetter(d,q,body)]);
+ if(w.includes('appeal')) lettersOut.push(['Denial Appeal Letter',appealLetter(d,q,body)]);
+ if(w.includes('referral')) lettersOut.push(['Referral Follow-up Letter',referralLetter(d,q,body)]);
+ if(w.includes('compliance')) lettersOut.push(['Compliance Documentation Memo',complianceMemo(d,q,body)]);
+ if(w.includes('brief')) lettersOut.push(['Executive Manager Brief',execBrief(d,q,body)]);
+ letters.innerHTML=lettersOut.map(x=>`<pre class="letter"><b>${x[0]}</b>\n\n${x[1]}</pre>`).join('');
+}
+
+function priorLetter(d,q,body){
+return `RE: Prior Authorization Support / ${d.name}
+
+To Utilization Review:
+
+Please review the enclosed clinical documentation for authorization consideration.
+
+Document Reviewed:
+${body}
+
+Medical Necessity Position:
+${q==='complete'?'The record supports authorization. Required clinical indicators and supporting documentation are present.':'The record currently requires correction before payer submission. Missing details should be resolved to avoid preventable delay or denial.'}
+
+Requested Action:
+${q==='complete'?'Approve and process the requested service based on documented need.':'Return to provider team for missing documentation, then resubmit with complete clinical support.'}
+
+Recommended Attachments:
+• Provider order
+• Current clinical note / HPI
+• Failed conservative treatment history
+• Relevant diagnostics
+• Medication and therapy history
+• Payer-specific checklist
+
+Best Next Course of Action:
+${currentBNCA}`;
+}
+
+function appealLetter(d,q,body){
+return `RE: Appeal / Reconsideration Request
+
+To Claims Review:
+
+We are submitting this appeal/reconsideration request based on the documentation below.
+
+Claim / Case Summary:
+${body}
+
+Appeal Basis:
+${q==='complete'?'The documentation supports appeal execution. The record includes enough context to challenge the denial, verify payment history, and submit corrected supporting documentation.':'The appeal packet is not yet complete. Missing remit, deadline, clinical support, or correction data must be resolved before appeal submission.'}
+
+Requested Action:
+${q==='complete'?'Reverse or adjust the denial and reprocess the claim according to the corrected documentation.':'Hold appeal submission until missing elements are attached and reviewed.'}
+
+Recommended Attachments:
+• Original claim
+• Remittance advice / EOB
+• Corrected claim if required
+• Clinical notes
+• Medical necessity support
+• Denial notice
+• Timely filing evidence
+
+Best Next Course of Action:
+${currentBNCA}`;
+}
+
+function referralLetter(d,q,body){
+return `RE: Referral Coordination Request
+
+To Receiving Specialist / Referral Team:
+
+Please review this referral packet and confirm acceptance or identify any missing documentation required for scheduling.
+
+Referral Summary:
+${body}
+
+Coordination Position:
+${q==='complete'?'The referral contains the clinical context, urgency, and supporting documentation needed for specialist review.':'The referral requires additional clinical context or attachments before specialist acceptance is likely.'}
+
+Requested Action:
+${q==='complete'?'Accept and schedule the patient, or confirm next available appointment window.':'Return required missing items so the referring team can complete the packet.'}
+
+Recommended Attachments:
+• Diagnosis and reason for referral
+• Recent clinical note
+• Imaging/lab results
+• Medication list
+• Urgency level
+• Patient contact details
+
+Best Next Course of Action:
+${currentBNCA}`;
+}
+
+function complianceMemo(d,q,body){
+return `COMPLIANCE DOCUMENTATION MEMO
+
+Subject: ${d.name} Documentation Review
+
+Issue Reviewed:
+${body}
+
+Compliance Finding:
+${q==='complete'?'Documentation is sufficient for workflow continuation with audit trail retained.':'Documentation should not move downstream until required elements are corrected and manager approval is logged.'}
+
+Risk:
+Incomplete records can create billing, payer, consent, clinical quality, or audit exposure.
+
+Corrective Action:
+• Identify missing elements
+• Assign correction owner
+• Set correction deadline
+• Attach supporting documentation
+• Preserve manager approval trail
+• Re-run through HC nodes after correction
+
+Best Next Course of Action:
+${currentBNCA}`;
+}
+
+function execBrief(d,q,body){
+return `EXECUTIVE MANAGER BRIEF
+
+Document:
+${d.name} / ${selected.v.toUpperCase()} / ${q.toUpperCase()}
+
+Operational Signal:
+${d.pain}
+
+Current Finding:
+${body}
+
+Manager Decision:
+${q==='complete'?'Ready for execution with HITL approval.':'Not ready for downstream action. Assign owner lane and correction deadline.'}
+
+Business Value:
+The system converts document review into a decision, manager action, and professional follow-up document in the same workflow.
+
+Recommended Next Step:
+${currentBNCA}`;
+}
+
+async function sendRelay(show=true){
+ if(!currentBNCA) return;
+ await fetch('/api/hc/node-report',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({
+  nodeKey:'ghs-document-pipeline',
+  node:'GHS Document Pipeline',
+  bnca:currentBNCA,
+  metrics:{document:doc().name,version:selected.v,quality:quality(),letters:wanted()},
+  source:'ghs-presentation-live-run',
+  ts:new Date().toISOString()
+ })});
+ if(show) alert('Sent to HC Strategist relay.');
+}
+async function synthesize(){
+ const r=await fetch('/api/hc/strategist/synthesize',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({system:'General Healthcare',source:'ghs-presentation-live-run'})});
+ const data=await r.json();
+ alert('Main Strategist updated. Nodes reporting: '+(data.mainStrategist?.nodeCount||'—'));
+}
+async function runAll24(){
+ for(const d of docs){for(const v of ['v1','v2','v3']){selected={id:d.id,v};renderLib();await runPipeline();}}
+ await synthesize();
+ alert('All 24 scenarios processed and pushed through the command chain.');
+}
+
+let idx=0;const slides=[...document.querySelectorAll('.slide')];
+function show(i){idx=Math.max(0,Math.min(slides.length-1,i));slides.forEach(s=>s.classList.remove('active'));slides[idx].classList.add('active');progress.textContent=(idx+1)+' / '+slides.length}
+function nextSlide(){show(idx+1)}function prevSlide(){show(idx-1)}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextSlide();if(e.key==='ArrowLeft')prevSlide()});
+renderLib();runPipeline();
+</script>
+
+<script id="real-letters-node-findings">
+(function(){
+  function activeDocName(){
+    try { return doc().name; } catch(e){ return "Healthcare Document"; }
+  }
+  function activeQuality(){
+    try { return quality(); } catch(e){ return "partial"; }
+  }
+  function activeBody(){
+    try { return text(); } catch(e){ return ""; }
+  }
+
+  window.makeNodeFindings = function(){
+    const d = activeDocName();
+    const q = activeQuality();
+    const body = activeBody();
+
+    const complete = q === "complete";
+    const partial = q === "partial";
+
+    return {
+      clinical: complete
+        ? `Clinical review supports action. ${d} includes sufficient care context, patient identifiers, urgency, and supporting documentation.`
+        : partial
+          ? `Clinical review found usable context, but missing or conflicting elements require provider clarification before action.`
+          : `Clinical review cannot support action. Required clinical context is missing or too vague.`,
+
+      coding: complete
+        ? `Coding / billing review supports downstream submission. Required codes, dates, payer context, and record linkage are adequate.`
+        : partial
+          ? `Coding / billing review found conflict risk. Missing claim lineage, code support, modifier detail, or authorization fields may trigger denial/rework.`
+          : `Coding / billing review blocks submission. Required identifiers, codes, or payer fields are absent.`,
+
+      compliance: complete
+        ? `Compliance review supports controlled execution with HITL approval and audit trail retained.`
+        : partial
+          ? `Compliance review requires correction owner, deadline, and manager approval before submission.`
+          : `Compliance review blocks action. Proceeding may create audit, consent, payer, or patient safety exposure.`,
+
+      risk: complete
+        ? `Risk level: LOW. Recommended path is execute, submit, appeal, route, or close workflow.`
+        : partial
+          ? `Risk level: MODERATE. Hold for correction to prevent denial, delay, or avoidable escalation.`
+          : `Risk level: HIGH. Stop downstream action and route back to source team immediately.`,
+
+      sourceText: body
+    };
+  };
+
+  window.makeProfessionalLetters = function(){
+    const d = activeDocName();
+    const q = activeQuality();
+    const body = activeBody();
+    const b = currentBNCA || "Pending BNCA generation.";
+    const complete = q === "complete";
+
+    return {
+      prior: `PRIOR AUTHORIZATION SUPPORT LETTER
+
+RE: Authorization Review Support
+
+To Utilization Review Team,
+
+Please review the enclosed documentation for authorization consideration.
+
+Document Type:
+${d}
+
+Record Summary:
+${body}
+
+Medical Necessity / Review Position:
+${complete
+? "The available documentation supports authorization review. The record contains sufficient clinical context, care rationale, and supporting details for payer submission."
+: "The current documentation is not yet ready for payer submission. Missing or conflicting elements should be corrected before authorization is submitted to reduce preventable denial risk."}
+
+Requested Action:
+${complete
+? "Please approve and process the requested service based on the enclosed clinical support."
+: "Please hold submission internally until the provider team supplies the missing documentation, then resubmit with a complete authorization packet."}
+
+Recommended Attachments:
+• Provider order
+• Current clinical note / HPI
+• Diagnosis and service request
+• Conservative therapy history, when applicable
+• Medication history, when applicable
+• Imaging, labs, or supporting diagnostics
+• Payer-specific checklist
+
+Best Next Course of Action:
+${b}
+
+Respectfully,
+GHS Healthcare Command
+Manager Review Required`,
+
+      appeal: `DENIAL APPEAL / RECONSIDERATION LETTER
+
+RE: Appeal / Reconsideration Request
+
+To Claims Review Department,
+
+We are submitting this appeal or reconsideration request based on the documentation reviewed by the GHS Healthcare Command workflow.
+
+Document Type:
+${d}
+
+Case Summary:
+${body}
+
+Appeal Position:
+${complete
+? "The record supports appeal execution. The documentation includes sufficient claim context, denial rationale, and supporting information to proceed with an appeal or corrected claim workflow."
+: "The appeal packet is not yet complete. Missing claim lineage, remittance data, payer rationale, clinical support, or deadline details must be resolved before submission."}
+
+Requested Action:
+${complete
+? "Please reverse, adjust, or reprocess the denial based on the attached documentation and corrected support."
+: "Please hold appeal submission internally until the missing elements are corrected and reviewed by the responsible owner lane."}
+
+Recommended Attachments:
+• Original claim
+• Denial notice
+• Remittance advice / EOB
+• Corrected claim, if required
+• Clinical documentation
+• Medical necessity support
+• Timely filing evidence
+• Manager approval note
+
+Best Next Course of Action:
+${b}
+
+Respectfully,
+GHS Healthcare Command
+Revenue Cycle / HITL Manager Review`,
+
+      referral: `REFERRAL FOLLOW-UP LETTER
+
+RE: Referral Coordination Request
+
+To Receiving Specialist / Referral Coordination Team,
+
+Please review this referral packet and confirm whether the patient can be accepted and scheduled, or identify any missing documentation required for acceptance.
+
+Document Type:
+${d}
+
+Referral / Case Summary:
+${body}
+
+Coordination Position:
+${complete
+? "The referral appears ready for specialist review. Required clinical context, urgency, and supporting documentation are present."
+: "The referral requires additional clinical context or attachments before specialist acceptance is likely. Missing information should be corrected to avoid scheduling delay."}
+
+Requested Action:
+${complete
+? "Please accept the referral, confirm scheduling availability, and notify the referring team of the appointment pathway."
+: "Please identify the missing items needed to complete the referral packet so the referring team can correct and resubmit."}
+
+Recommended Attachments:
+• Diagnosis and reason for referral
+• Most recent clinical note
+• Relevant imaging or lab results
+• Medication list
+• Urgency level
+• Patient contact details
+• Insurance / authorization details, if required
+
+Best Next Course of Action:
+${b}
+
+Respectfully,
+GHS Healthcare Command
+Referral Coordination Review`,
+
+      compliance: `COMPLIANCE DOCUMENTATION MEMO
+
+Subject: Documentation Review and Corrective Action Memo
+
+Document Type:
+${d}
+
+Issue Reviewed:
+${body}
+
+Compliance Finding:
+${complete
+? "Documentation is sufficient for workflow continuation. Required support is present and manager approval can be retained as part of the audit trail."
+: "Documentation should not move downstream until required elements are corrected. The current record may create billing, payer, consent, clinical quality, or audit exposure."}
+
+Corrective Action Requirements:
+• Identify missing or conflicting elements
+• Assign a correction owner
+• Set correction deadline
+• Attach supporting documentation
+• Preserve manager approval trail
+• Re-run through HC nodes after correction
+• Document final approval before submission or closeout
+
+Best Next Course of Action:
+${b}
+
+Prepared For:
+HITL Manager / Compliance Review
+
+Prepared By:
+GHS Healthcare Command`,
+
+      brief: `EXECUTIVE MANAGER BRIEF
+
+Document:
+${d}
+
+Version / Quality:
+${q.toUpperCase()}
+
+Operational Signal:
+${body}
+
+Manager Decision:
+${complete
+? "Ready for execution with HITL approval."
+: "Not ready for downstream action. Assign owner lane, correction deadline, and re-run after documentation is complete."}
+
+Business Value:
+The system converts document review into a decision, manager action, and professional follow-up document in the same workflow. This reduces manual drafting, avoids avoidable denials, improves response speed, and preserves manager accountability.
+
+Recommended Next Step:
+${b}
+
+Manager Action:
+Review recommendation, approve or hold execution, assign accountable owner, and track outcome in the operating record.`
+    };
+  };
+
+  const oldGenerateLetters = window.generateLetters;
+  window.generateLetters = function(){
+    const selectedTypes = typeof wanted === "function"
+      ? wanted()
+      : ["prior","appeal","referral","compliance","brief"];
+
+    const L = makeProfessionalLetters();
+    const labels = {
+      prior:"Prior Authorization Support Letter",
+      appeal:"Denial Appeal / Reconsideration Letter",
+      referral:"Referral Follow-up Letter",
+      compliance:"Compliance Documentation Memo",
+      brief:"Executive Manager Brief"
+    };
+
+    const container = document.getElementById("letters");
+    if(!container) return;
+
+    container.innerHTML = selectedTypes.map(k => `
+      <pre class="letter"><b>${labels[k] || k}</b>
+
+${L[k] || ""}</pre>
+    `).join("");
+  };
+
+  const oldMakeBNCA = window.makeBNCA;
+  window.makeBNCA = function(){
+    const q = activeQuality();
+    const d = activeDocName();
+    const f = makeNodeFindings();
+
+    if(q === "complete"){
+      return {
+        clinical:f.clinical,
+        coding:f.coding,
+        compliance:f.compliance,
+        risk:f.risk,
+        action:`APPROVE / EXECUTE — ${d} is complete. Proceed with the appropriate submission, appeal, referral, compliance record, or executive report. Generate the selected follow-up documents and preserve HITL approval.`,
+        hitl:"Manager approves execution, confirms owner lane, tracks outcome, and retains the generated letter/report in the operating record."
+      };
+    }
+
+    if(q === "partial"){
+      return {
+        clinical:f.clinical,
+        coding:f.coding,
+        compliance:f.compliance,
+        risk:f.risk,
+        action:`HOLD / RETURN FOR CORRECTION — ${d} is partial or conflicting. Request missing documentation, assign an owner lane, set a due date, and re-run through HC nodes before payer/provider submission.`,
+        hitl:"Manager assigns correction owner, blocks downstream submission, confirms missing elements, and re-runs the corrected packet."
+      };
+    }
+
+    return {
+      clinical:f.clinical,
+      coding:f.coding,
+      compliance:f.compliance,
+      risk:f.risk,
+      action:`DO NOT SUBMIT — ${d} is incomplete. Stop downstream action and return to the source team with a correction checklist.`,
+      hitl:"Manager blocks the workflow, assigns same-day remediation, and requires corrected documentation before any external action."
+    };
+  };
+
+})();
+</script>
+
+
+
+
+
+<button id="demoCoachFab" onclick="toggleDemoCoach()">DEMO COACH</button>
+<aside id="demoCoach">
+  <div class="dcHead">
+    <div><div class="dcTitle">GHS DEMO COACH</div><div style="font:10px monospace;color:#8fb0c8">what to click + what to say</div></div>
+    <button class="dcMini" onclick="toggleDemoCoach()">CLOSE</button>
+  </div>
+  <div class="dcBody" id="demoCoachBody"></div>
+  <div class="dcBtns">
+    <button onclick="coachPrev()">← BACK</button>
+    <button class="primary" onclick="coachNext()">NEXT →</button>
+    <button onclick="coachRun()">DO STEP</button>
+  </div>
+</aside>
+
+
+<script id="ghs-demo-coach-js">
+let coachIdx=0;
+const coachSteps=[
+ {title:'Start with the pain',say:'Healthcare teams do not need another dashboard. They need a command layer that turns document problems into decisions, letters, and manager-ready action.'},
+ {title:'Select a messy document',run:()=>selectDoc('denial','v2'),say:'I’m starting with Claim Denial v2 because this is the messy middle: conflicting denial codes, missing claim lineage, and an active appeal clock.'},
+ {title:'Run selected document',run:()=>runPipeline(),say:'This is a single real-world workflow. Watch the system move from document intake into HC-node analysis, BNCA, and HITL action.'},
+ {title:'Show the letters',run:()=>show(3),say:'The system does not stop at analysis. It drafts the follow-up documents your team would normally write manually.'},
+ {title:'Flip to complete version',run:()=>{show(2);selectDoc('denial','v3');runPipeline();},say:'Now I’m switching to v3. Same document category, cleaner packet. The recommendation flips from hold/correct to execute.'},
+ {title:'Run enterprise mode',run:()=>oneClickDemoMode(),say:'One-click demo mode seeds the 11 HC nodes, runs the selected document, pushes to HC Strategist, and updates Main Strategist.'},
+ {title:'Close',say:'The value is not just finding issues. The value is producing the next action while the team is still in the workflow.'}
+];
+function toggleDemoCoach(){
+ const c=document.getElementById('demoCoach');
+ c.style.display=c.style.display==='block'?'none':'block';
+ if(c.style.display==='block') renderCoach();
+}
+function renderCoach(){
+ const st=coachSteps[coachIdx];
+ document.getElementById('demoCoachBody').innerHTML =
+ `<div class="dcStep"><b>STEP ${coachIdx+1} / ${coachSteps.length}</b><br>${st.title}<div class="dcSay"><b>Say this:</b><br>${st.say}</div></div>`;
+}
+function coachRun(){const st=coachSteps[coachIdx]; if(st.run) st.run(); renderCoach();}
+function coachNext(){coachIdx=Math.min(coachSteps.length-1,coachIdx+1); renderCoach();}
+function coachPrev(){coachIdx=Math.max(0,coachIdx-1); renderCoach();}
+setTimeout(renderCoach,500);
+</script>
+
+
+<style id="ghs-floating-coach-css">
+#ghsCoachFab{position:fixed;left:22px;bottom:86px;z-index:999999;background:#00f59f;color:#001018;border:0;border-radius:999px;padding:13px 18px;font:900 12px monospace;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+#ghsCoach{position:fixed;left:22px;bottom:145px;width:420px;z-index:999999;background:#061018;color:#d9f3ff;border:1px solid #123050;border-radius:16px;display:none;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.65)}
+#ghsCoach .head{padding:14px;border-bottom:1px solid #123050;display:flex;justify-content:space-between;align-items:center}
+#ghsCoach .title{color:#00e0ff;font:900 13px monospace;letter-spacing:.12em}
+#ghsCoach .body{padding:14px;max-height:460px;overflow:auto;font:12px/1.55 monospace}
+#ghsCoach .step{border:1px solid #123050;border-radius:12px;padding:12px;margin-bottom:10px;background:#07111b}
+#ghsCoach .say{border-left:3px solid #00f59f;padding:10px;margin-top:8px;background:#04120d;color:#c9ffe8}
+#ghsCoach .btns{display:flex;gap:8px;padding:12px;border-top:1px solid #123050;flex-wrap:wrap}
+#ghsCoach button{background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:8px 10px;font:900 11px monospace;cursor:pointer}
+#ghsCoach button.primary{background:#00f59f;color:#001018;border-color:#00f59f}
+</style>
+
+<button id="ghsCoachFab" onclick="toggleGHSCoach()">DEMO COACH</button>
+<aside id="ghsCoach">
+  <div class="head">
+    <div><div class="title">BANNER DEMO COACH</div><div style="font:10px monospace;color:#8fb0c8">what to click + what to say</div></div>
+    <button onclick="toggleGHSCoach()">CLOSE</button>
+  </div>
+  <div class="body" id="ghsCoachBody"></div>
+  <div class="btns">
+    <button onclick="ghsPrev()">← BACK</button>
+    <button class="primary" onclick="ghsNext()">NEXT →</button>
+    <button onclick="ghsDoStep()">DO STEP</button>
+  </div>
+</aside>
+
+<script id="ghs-floating-coach-js">
+let ghsIdx=0;
+const ghsSteps=[
+ {t:'Open the frame',say:'What I’m going to show you is how your team moves from reviewing documents, to executing decisions, to seeing financial impact in real time.'},
+ {t:'Choose a messy document',run:()=>{try{show(2);selectDoc('denial','v2')}catch(e){}},say:'This is where teams lose time today — incomplete or conflicting documents that require manual review and follow-up.'},
+ {t:'Run the pipeline',run:()=>{try{runPipeline()}catch(e){}},say:'Instead of manual handoffs, this runs across the decision layers at the same time: clinical, coding, compliance, risk, and operations.'},
+ {t:'Point to BNCA',say:'This is the difference — not just insight, not just a report, but a clear Best Next Course of Action.'},
+ {t:'Show letters',run:()=>{try{show(3)}catch(e){}},say:'Everything the team would normally draft manually — prior auth support, appeal letters, referral follow-ups, compliance memos — is generated from the decision.'},
+ {t:'Run enterprise mode',run:()=>{try{show(2);oneClickDemoMode()}catch(e){}},say:'Now this becomes system-wide: 11 HC nodes, the document pipeline, HC Strategist, Main Strategist, and manager review.'},
+ {t:'Send to HC Strategist',run:()=>{try{sendRelay()}catch(e){}},say:'This pushes the document signal into the HC Strategist relay so it becomes part of the live operating picture.'},
+ {t:'Push to Main Strategist',run:()=>{try{synthesize()}catch(e){}},say:'Now leadership sees the summarized action and impact, not just raw alerts.'},
+ {t:'Close',say:'This is not about committing to a platform. It is about validating whether this improves your operation in a measurable way. Would you want to start that pilot in prior auth or denials first?'}
+];
+function toggleGHSCoach(){
+ const c=document.getElementById('ghsCoach');
+ c.style.display=c.style.display==='block'?'none':'block';
+ if(c.style.display==='block') renderGHSCoach();
+}
+function renderGHSCoach(){
+ const s=ghsSteps[ghsIdx];
+ document.getElementById('ghsCoachBody').innerHTML =
+ `<div class="step"><b>STEP ${ghsIdx+1} / ${ghsSteps.length}</b><br>${s.t}<div class="say"><b>Say this:</b><br>${s.say}</div></div>`;
+}
+function ghsDoStep(){const s=ghsSteps[ghsIdx]; if(s.run) s.run(); renderGHSCoach();}
+function ghsNext(){ghsIdx=Math.min(ghsSteps.length-1,ghsIdx+1);renderGHSCoach();}
+function ghsPrev(){ghsIdx=Math.max(0,ghsIdx-1);renderGHSCoach();}
+setTimeout(()=>{ if(document.getElementById('ghsCoachBody')) renderGHSCoach(); },800);
+</script>
+
+</body>
+</html>

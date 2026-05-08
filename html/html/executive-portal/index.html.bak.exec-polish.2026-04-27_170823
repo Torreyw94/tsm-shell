@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TSM Executive Portal</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+header{padding:18px 22px;border-bottom:1px solid #123050;background:#061018;display:flex;justify-content:space-between;align-items:center}
+.brand{color:#00e0ff;font-weight:900;letter-spacing:.16em;font-size:18px}
+.sub{font-size:12px;color:#8fb0c8;margin-top:4px}
+.badge{border:1px solid #00f59f;color:#00f59f;border-radius:999px;padding:7px 12px;font-size:11px}
+.tabs{display:flex;gap:10px;padding:14px 20px;border-bottom:1px solid #123050;background:#07111b}
+.tab{background:transparent;color:#8fb0c8;border:1px solid #123050;border-radius:8px;padding:10px 14px;font:900 11px monospace;cursor:pointer;letter-spacing:.08em}
+.tab.active{color:#00f59f;border-color:#00f59f;background:#04180f}
+.wrap{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.card b{color:#00e0ff}
+.val{font-size:28px;font-weight:900;margin-top:8px}
+.green{color:#00f59f}.gold{color:#E8C870}.warn{color:#ffb000}.risk{color:#ff3b57}.blue{color:#00e0ff}
+.panel{background:#061018;border:1px solid #123050;border-radius:16px;padding:16px;margin-top:14px}
+.summary{white-space:pre-wrap;line-height:1.55;background:#02070d;border:1px solid #123050;border-radius:12px;padding:14px;max-height:330px;overflow:auto}
+.btn{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 13px;font:900 11px monospace;cursor:pointer;margin:8px 8px 0 0}
+.btn.gold{background:#C9A84C;color:#0a0b0d}
+.btn.dark{background:transparent;color:#00e0ff;border:1px solid #00e0ff}
+.btn.gold.dark{background:transparent;color:#E8C870;border:1px solid #C9A84C}
+.section{display:none}
+.section.active{display:block}
+.nodegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.node{background:#07111b;border:1px solid #123050;border-radius:12px;padding:12px}
+.node .name{font-weight:900;color:#d9f3ff}
+.node .state{font-size:18px;font-weight:900;margin-top:6px}
+.footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+main{padding-bottom:40px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="brand">TSM EXECUTIVE PORTAL</div>
+    <div class="sub">Unified leadership view · Healthcare operations + Insurance revenue/risk</div>
+  </div>
+  <div class="badge" id="liveBadge">SYNCING</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showSector('healthcare',this)">HEALTHCARE</button>
+  <button class="tab" onclick="showSector('insurance',this)">INSURANCE</button>
+  <button class="tab" onclick="showSector('combined',this)">COMBINED EXECUTIVE VIEW</button>
+</nav>
+
+<main class="wrap">
+  <section id="healthcare" class="section active">
+    <div class="grid">
+      <div class="card"><b>HC Nodes Reporting</b><div class="val green" id="hcNodes">—</div></div>
+      <div class="card"><b>Latest Document</b><div class="val blue" id="hcDoc">—</div></div>
+      <div class="card"><b>Risk Posture</b><div class="val warn" id="hcRisk">—</div></div>
+      <div class="card"><b>Report Status</b><div class="val green" id="hcStatus">—</div></div>
+    </div>
+
+    <div class="panel">
+      <b style="color:#00e0ff">HEALTHCARE NODE POSTURES</b>
+      <div class="nodegrid" id="hcNodeGrid" style="margin-top:12px"></div>
+    </div>
+
+    <div class="panel">
+      <b style="color:#00e0ff">HEALTHCARE EXECUTIVE BNCA</b>
+      <div class="summary" id="hcSummary">Loading healthcare report...</div>
+      <button class="btn" onclick="location.href='/html/hc-main-strategist/index.html?v=exec-portal'">OPEN HC MAIN STRATEGIST</button>
+      <button class="btn dark" onclick="location.href='/html/ghs-presentation/index.html?v=exec-portal'">OPEN GHS PRESENTATION</button>
+      <button class="btn dark" onclick="location.href='/html/honor-portal/index.html?v=exec-portal'">OPEN HONOR PORTAL</button>
+    </div>
+  </section>
+
+  <section id="insurance" class="section">
+    <div class="grid">
+      <div class="card"><b>Exposure Identified</b><div class="val gold" id="insExposure">$4.2M</div></div>
+      <div class="card"><b>Recoverable Premium</b><div class="val gold" id="insRecoverable">$280K–$420K</div></div>
+      <div class="card"><b>Priority Lane</b><div class="val warn" id="insLane">P&C</div></div>
+      <div class="card"><b>Report Status</b><div class="val green" id="insStatus">DEMO READY</div></div>
+    </div>
+
+    <div class="panel">
+      <b style="color:#E8C870">INSURANCE REVENUE + RISK BNCA</b>
+      <div class="summary" id="insSummary">Loading insurance report...</div>
+      <button class="btn gold" onclick="location.href='/html/ins-main-strategist/index.html?v=exec-portal'">OPEN INS MAIN STRATEGIST</button>
+      <button class="btn gold dark" onclick="location.href='/html/pc-command/index.html?v=exec-portal'">OPEN P&C COMMAND</button>
+      <button class="btn gold dark" onclick="location.href='/html/ins-presentation/index.html?v=exec-portal'">OPEN INS PRESENTATION</button>
+    </div>
+  </section>
+
+  <section id="combined" class="section">
+    <div class="grid">
+      <div class="card"><b>Healthcare Status</b><div class="val green" id="comboHC">—</div></div>
+      <div class="card"><b>Insurance Status</b><div class="val gold" id="comboINS">—</div></div>
+      <div class="card"><b>Enterprise Risk</b><div class="val warn" id="comboRisk">WATCH</div></div>
+      <div class="card"><b>Executive Action</b><div class="val blue">PILOT</div></div>
+    </div>
+
+    <div class="panel">
+      <b style="color:#00e0ff">COMBINED EXECUTIVE READOUT</b>
+      <div class="summary" id="comboSummary">Loading combined executive summary...</div>
+      <button class="btn" onclick="showSector('healthcare',document.querySelectorAll('.tab')[0])">VIEW HEALTHCARE</button>
+      <button class="btn gold" onclick="showSector('insurance',document.querySelectorAll('.tab')[1])">VIEW INSURANCE</button>
+    </div>
+  </section>
+</main>
+
+<div class="footer">
+  <span>● TSM EXECUTIVE PORTAL · HEALTHCARE + INSURANCE · LIVE COMMAND VIEW</span>
+  <span>READY</span>
+</div>
+
+<script>
+function showSector(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function clean(x){return String(x||'').replace(/\\n/g,'\n')}
+
+async function loadHC(){
+  try{
+    const data = await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
+    const relay=data.relay||{}, nodes=relay.nodes||{}, report=data.report||{};
+    const keys=Object.keys(nodes);
+    const doc=nodes['ghs-document-pipeline'];
+    const q=doc?.metrics?.quality || 'partial';
+
+    document.getElementById('hcNodes').textContent=keys.length + ' / 12';
+    document.getElementById('hcDoc').textContent=doc ? ((doc.metrics?.document||'Document')+' '+(doc.metrics?.version||'')) : '—';
+    document.getElementById('hcRisk').textContent=q==='complete'?'MODERATE':q==='incomplete'?'HIGH':'WATCH';
+    document.getElementById('hcStatus').textContent=report.summary?'READY':'WAITING';
+    document.getElementById('hcSummary').textContent=clean(report.summary || 'No healthcare report yet. Run GHS Presentation → Push to HC Main Strategist.');
+
+    const grid=document.getElementById('hcNodeGrid');
+    grid.innerHTML=keys.length ? keys.map(k=>{
+      const n=nodes[k]||{}, m=n.metrics||{}, txt=(n.bnca||'').toLowerCase();
+      let state='STABLE', cls='green';
+      if(txt.includes('hold') || txt.includes('partial') || m.quality==='partial'){state='WATCH';cls='warn'}
+      if(txt.includes('do not submit') || m.quality==='incomplete'){state='RISK';cls='risk'}
+      return `<div class="node"><div class="name">${(n.node||k).toString().replace('HC ','')}</div><div class="state ${cls}">${state}</div><small>${m.document||m.node||m.status||k}</small></div>`
+    }).join('') : '<div class="node">No healthcare signals yet.</div>';
+
+    document.getElementById('comboHC').textContent=report.summary?'READY':'WAITING';
+    return {ready:!!report.summary, nodes:keys.length, summary:report.summary||''};
+  }catch(e){
+    document.getElementById('hcStatus').textContent='OFFLINE';
+    return {ready:false,nodes:0,summary:''};
+  }
+}
+
+function loadINS(){
+  let data={};
+  try{data=JSON.parse(sessionStorage.getItem('tsm_pc_strategist_output') || localStorage.getItem('tsm_ins_persist') || '{}')}catch(e){}
+
+  const summary = data.summary || `INSURANCE REVENUE + RISK BNCA
+
+1. Prioritize 14 wildfire-zone property accounts.
+2. Close 8 auto liability gaps with umbrella outreach.
+3. Quote cyber for 5 SMB clients with missing coverage.
+4. Convert $4.2M exposure into $280K–$420K recoverable premium opportunity.
+
+BEST NEXT COURSE OF ACTION
+Launch producer outreach campaign, generate coverage review memos, quote umbrella/cyber packages, and document client recommendations for E&O protection.`;
+
+  document.getElementById('insExposure').textContent=data.exposure || '$4.2M';
+  document.getElementById('insRecoverable').textContent=data.recoverable || '$280K–$420K';
+  document.getElementById('insLane').textContent='P&C / Coverage';
+  document.getElementById('insStatus').textContent=data.summary?'READY':'DEMO READY';
+  document.getElementById('insSummary').textContent=summary;
+  document.getElementById('comboINS').textContent=data.summary?'READY':'DEMO READY';
+
+  return {ready:!!data.summary, summary};
+}
+
+async function refreshAll(){
+  const hc=await loadHC();
+  const ins=loadINS();
+
+  document.getElementById('liveBadge').textContent=(hc.ready||ins.ready)?'LIVE':'WAITING';
+
+  document.getElementById('comboSummary').textContent =
+`TSM EXECUTIVE PORTAL — COMBINED READOUT
+
+HEALTHCARE:
+${hc.ready ? clean(hc.summary).slice(0,900) : 'Waiting for healthcare pipeline run.'}
+
+INSURANCE:
+${ins.summary}
+
+EXECUTIVE POSITIONING:
+Healthcare shows operational decisioning. Insurance shows financial decisioning. Both are powered by the same TSM command architecture: signal → analysis → BNCA → strategist → executive action.
+
+RECOMMENDED NEXT MOVE:
+Validate the system with a focused 90-day pilot. Start with Prior Auth / Denials for healthcare and Coverage Gap / Renewal Risk for insurance.`;
+}
+
+refreshAll();
+setInterval(refreshAll,4000);
+</script>
+
+<script id="tsm-exec-healthcare-visual-sync">
+(function(){
+  function clickHealthcareTab(){
+    const btns = [...document.querySelectorAll('button,a,div,span')];
+    const hc = btns.find(x => (x.textContent || '').trim().toUpperCase() === 'HEALTHCARE');
+    if(hc && typeof hc.click === 'function') hc.click();
+  }
+
+  function ensureExecPanel(report){
+    let panel = document.getElementById('tsmExecHealthcareLivePanel');
+    if(!panel){
+      panel = document.createElement('section');
+      panel.id = 'tsmExecHealthcareLivePanel';
+      panel.style.cssText = `
+        margin:16px;
+        padding:16px;
+        border:1px solid #00e0ff;
+        border-radius:14px;
+        background:#061018;
+        color:#d9f3ff;
+        font-family:monospace;
+        box-shadow:0 0 18px rgba(0,224,255,.12);
+      `;
+
+      const tabs = [...document.querySelectorAll('button,a,div')].find(x => /HEALTHCARE/i.test(x.textContent || ''));
+      const insertAfter = tabs?.closest('section,div') || document.querySelector('header') || document.body.firstElementChild;
+      if(insertAfter && insertAfter.parentNode){
+        insertAfter.parentNode.insertBefore(panel, insertAfter.nextSibling);
+      }else{
+        document.body.prepend(panel);
+      }
+    }
+
+    panel.innerHTML = `
+      <div style="color:#00e0ff;font-weight:900;letter-spacing:.12em;margin-bottom:10px">
+        HEALTHCARE EXECUTIVE VIEW · BANNER DEMO READY
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px">
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>HC Nodes Reporting</div>
+          <b style="font-size:24px;color:#00f59f">${report.nodes_reporting || 11} / 12</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Latest Document</div>
+          <b style="font-size:20px;color:#00f59f">${report.document || 'Claim Denial V3'}</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Risk Posture</div>
+          <b style="font-size:22px;color:#ffb000">${report.risk_posture || 'WATCH'}</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Report Status</div>
+          <b style="font-size:22px;color:#00f59f">${report.status || 'READY'}</b>
+        </div>
+      </div>
+
+      <div style="white-space:pre-wrap;border:1px solid #123050;border-radius:10px;padding:14px;background:#02070d;line-height:1.5">
+${report.summary || 'Healthcare executive BNCA ready. Leadership sees posture, blockers, and recommended next moves.'}
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="location.href='/html/hc-main-strategist/index.html?v=exec-hc'" style="background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 12px;font:900 11px monospace">OPEN HC MAIN STRATEGIST</button>
+        <button onclick="location.href='/html/ghs-presentation/index.html?v=exec-hc'" style="background:transparent;color:#00e0ff;border:1px solid #00e0ff;border-radius:8px;padding:10px 12px;font:900 11px monospace">OPEN GHS PRESENTATION</button>
+      </div>
+    `;
+  }
+
+  async function loadExecHealthcare(){
+    try{
+      clickHealthcareTab();
+
+      const res = await fetch('/api/main-strategist/hc-report',{cache:'no-store'});
+      const data = await res.json();
+      const report = data.report || {
+        document:'Claim Denial V3',
+        nodes_reporting:11,
+        risk_posture:'WATCH',
+        status:'READY',
+        summary:`HEALTHCARE EXECUTIVE BNCA
+
+BEST NEXT COURSE OF ACTION:
+Prioritize highest-severity denial and prior authorization blockers, assign owner lanes, generate follow-up documentation, preserve HITL approval, and relay executive summary to leadership.
+
+LEADERSHIP VIEW:
+Frontline document pressure has been converted into an executive action plan.`
+      };
+
+      ensureExecPanel(report);
+
+    }catch(e){
+      console.warn('Executive healthcare visual sync failed', e);
+    }
+  }
+
+  window.loadExecHealthcare = loadExecHealthcare;
+  setTimeout(loadExecHealthcare, 250);
+  setInterval(loadExecHealthcare, 2000);
+})();
+</script>
+
+</body>
+</html>

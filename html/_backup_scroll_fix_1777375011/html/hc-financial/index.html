@@ -1,0 +1,795 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HC FINANCIAL COMMAND · TSM Healthcare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
+:root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--p:#cc44ff;--dim:#0d150d;--border:#1e3a1e}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes countup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid var(--border);background:#0b120b}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.hdr-title{font-size:16px;font-weight:700;letter-spacing:2px;color:var(--g)}
+.hdr-sub{font-size:10px;color:#556655;letter-spacing:1px}
+.node-pill{padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;border:1px solid var(--g);color:var(--g)}
+
+/* NAV */
+.nav{display:flex;border-bottom:1px solid var(--border);background:#0b120b;padding:0 20px;overflow-x:auto}
+.nav-btn{padding:10px 18px;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;border:none;background:none;color:#558855;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:var(--g)}.nav-btn.active{color:var(--g);border-bottom-color:var(--g)}
+
+/* KPI CARDS */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:16px 20px}
+.kpi{background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.green::before{background:var(--g)}.kpi.amber::before{background:var(--a)}.kpi.red::before{background:var(--r)}.kpi.blue::before{background:var(--b)}
+.kpi-val{font-size:24px;font-weight:700;margin-bottom:2px;animation:countup .4s ease}
+.kpi-lbl{font-size:9px;color:#558855;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.kpi-trend{font-size:10px;display:flex;align-items:center;gap:4px}
+.trend-up{color:var(--g)}.trend-down{color:var(--r)}.trend-warn{color:var(--a)}
+.kpi-bench{font-size:9px;color:#445544;margin-top:3px}
+
+/* SPARKLINE */
+.sparkline{margin-top:8px;height:24px;display:flex;align-items:flex-end;gap:2px}
+.spark-bar{flex:1;background:var(--border);border-radius:1px;min-height:2px;transition:height .3s}
+.spark-bar.active{background:var(--g);opacity:.7}
+
+/* SECTIONS */
+.sec{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.sec-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--g);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.sec-hdr::before{content:'◆ ';font-size:8px}
+.sec-hdr-right{display:flex;gap:8px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:6px 10px;font-size:10px;letter-spacing:1px;color:#558855;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid #0f1f0f}
+tr:hover td{background:#0f1f0f}
+.num{text-align:right;font-family:'Courier New',monospace}
+
+/* BADGES */
+.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.bg{background:#003322;color:var(--g);border:1px solid var(--g)}
+.ba{background:#332200;color:var(--a);border:1px solid var(--a)}
+.br{background:#330000;color:var(--r);border:1px solid var(--r)}
+.bb{background:#001133;color:var(--b);border:1px solid var(--b)}
+.bp{background:#220033;color:var(--p);border:1px solid var(--p)}
+
+/* ALERT ROWS */
+.alert-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #0f1f0f}
+.pri{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;min-width:52px;text-align:center}
+.purgent{background:#330000;color:var(--r);border:1px solid var(--r)}
+.pmed{background:#332200;color:var(--a);border:1px solid var(--a)}
+.plow{background:#001133;color:var(--b);border:1px solid var(--b)}
+.pok{background:#003322;color:var(--g);border:1px solid var(--g)}
+.alert-txt{font-size:12px;flex:1}.alert-imp{font-size:11px;color:var(--a);min-width:80px;text-align:right}
+
+/* AI BOX */
+.ai-box{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.ai-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--a);margin-bottom:10px}
+.ai-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ai-btn{padding:5px 12px;background:#1a2000;border:1px solid var(--a);color:var(--a);font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;transition:all .2s}
+.ai-btn:hover{background:#2a3000}
+.ai-inp{flex:1;min-width:200px;background:#0b120b;border:1px solid var(--border);color:var(--g);font-family:inherit;font-size:12px;padding:8px 12px;border-radius:4px;outline:none}
+.ai-inp:focus{border-color:var(--g)}
+.ask-btn{padding:8px 16px;background:var(--g);color:#000;font-family:inherit;font-size:11px;font-weight:700;border:none;border-radius:4px;cursor:pointer}
+.ask-btn:disabled{opacity:.5;cursor:not-allowed}
+.ai-res{margin-top:10px;padding:10px;background:#0b120b;border:1px solid var(--border);border-radius:4px;color:#99cc99;font-size:12px;min-height:40px;white-space:pre-wrap;line-height:1.6}
+
+/* PRESETS */
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.pr-card{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;transition:border-color .2s}
+.pr-card:hover{border-color:var(--a)}
+.pr-card-title{color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px}
+.pr-card-desc{color:#558855;font-size:10px}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
+.stat-val{font-size:20px;font-weight:700;margin-bottom:4px}
+.stat-lbl{font-size:9px;color:#558855;letter-spacing:1px}
+.stat-bench{font-size:9px;color:#445544;margin-top:2px}
+
+/* AR AGING BARS */
+.aging-bar-wrap{display:flex;align-items:center;gap:10px}
+.aging-bar-bg{flex:1;height:8px;background:#0b120b;border-radius:4px;overflow:hidden}
+.aging-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.aging-pct{font-size:10px;min-width:35px;text-align:right}
+
+/* BENCHMARK ROW */
+.bench-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #0f1f0f}
+.bench-label{width:180px;font-size:11px;color:#99cc99}
+.bench-your{width:80px;text-align:right;font-weight:700;font-size:12px}
+.bench-nat{width:80px;text-align:right;font-size:11px;color:#558855}
+.bench-bar-wrap{flex:1;height:6px;background:#0b120b;border-radius:3px;position:relative}
+.bench-bar-nat{position:absolute;top:0;height:100%;background:#334433;border-radius:3px}
+.bench-bar-you{position:absolute;top:0;height:100%;border-radius:3px}
+.bench-status{width:70px;text-align:right}
+
+/* EXPORT BTN */
+.export-btn{padding:4px 10px;background:#001a11;border:1px solid var(--g);color:var(--g);font-family:inherit;font-size:9px;font-weight:700;border-radius:3px;cursor:pointer;letter-spacing:1px}
+.export-btn:hover{background:#003322}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 20px 16px}
+
+/* CASH FLOW */
+.cf-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:12px}
+.cf-month{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px}
+.cf-bar{width:100%;border-radius:2px 2px 0 0;transition:height .5s ease;min-height:2px}
+.cf-lbl{font-size:8px;color:#558855;text-align:center}
+.cf-val{font-size:8px;text-align:center}
+
+/* FOOTER */
+.footer{position:fixed;bottom:0;left:0;right:0;background:#0b120b;border-top:1px solid var(--border);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100}
+.fn{font-size:10px;color:#558855;letter-spacing:1px}
+.fbtns{display:flex;gap:8px}
+.fbtn{padding:6px 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
+.fbnca{background:#003322;border:1px solid var(--g);color:var(--g)}
+.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}
+
+.green{color:var(--g)}.amber{color:var(--a)}.red{color:var(--r)}.blue{color:var(--b)}
+[id^="tab-"]{display:none!important}
+</style>
+</head><body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <span style="font-size:22px">💰</span>
+    <div>
+      <div class="hdr-title">HC FINANCIAL COMMAND</div>
+      <div class="hdr-sub">Revenue Cycle · AR Aging · P&L · Cash Flow · Payer Analysis · Benchmarks</div>
+    </div>
+  </div>
+  <div class="node-pill">NODE ACTIVE</div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" onclick="window.switchTab('dash',this)">⊞ DASHBOARD</button>
+  <button class="nav-btn" onclick="window.switchTab('ar',this)">📊 AR AGING</button>
+  <button class="nav-btn" onclick="window.switchTab('pnl',this)">📈 P&L</button>
+  <button class="nav-btn" onclick="window.switchTab('payer',this)">🏦 PAYER ANALYSIS</button>
+  <button class="nav-btn" onclick="window.switchTab('cashflow',this)">💸 CASH FLOW</button>
+  <button class="nav-btn" onclick="window.switchTab('bench',this)">🎯 BENCHMARKS</button>
+  <button class="nav-btn" onclick="window.switchTab('ai',this)">🧠 AI ANALYSIS</button>
+  <button class="nav-btn" onclick="window.switchTab('presets',this)">⚡ PRESETS</button>
+</nav>
+
+<!-- DASHBOARD TAB -->
+<div id="tab-dash">
+  <div class="kpi-row">
+    <div class="kpi amber">
+      <div class="kpi-lbl">Days in AR</div>
+      <div class="kpi-val amber">47.2</div>
+      <div class="kpi-trend trend-warn">⚠ +2.1 vs last month</div>
+      <div class="kpi-bench">Benchmark: ≤45 days</div>
+      <div class="sparkline">
+        <div class="spark-bar" style="height:40%"></div>
+        <div class="spark-bar" style="height:55%"></div>
+        <div class="spark-bar" style="height:50%"></div>
+        <div class="spark-bar" style="height:60%"></div>
+        <div class="spark-bar" style="height:65%"></div>
+        <div class="spark-bar active" style="height:75%"></div>
+      </div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">Net Collection Rate</div>
+      <div class="kpi-val green">96.4%</div>
+      <div class="kpi-trend trend-up">↑ +0.8% vs last month</div>
+      <div class="kpi-bench">Benchmark: ≥95%</div>
+      <div class="sparkline">
+        <div class="spark-bar" style="height:80%"></div>
+        <div class="spark-bar" style="height:75%"></div>
+        <div class="spark-bar" style="height:82%"></div>
+        <div class="spark-bar" style="height:88%"></div>
+        <div class="spark-bar" style="height:90%"></div>
+        <div class="spark-bar active" style="height:95%"></div>
+      </div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Denial Rate</div>
+      <div class="kpi-val red">18.4%</div>
+      <div class="kpi-trend trend-down">↓ Exceeds 15% threshold</div>
+      <div class="kpi-bench">Benchmark: ≤12%</div>
+      <div class="sparkline">
+        <div class="spark-bar" style="height:50%"></div>
+        <div class="spark-bar" style="height:55%"></div>
+        <div class="spark-bar" style="height:60%"></div>
+        <div class="spark-bar" style="height:70%"></div>
+        <div class="spark-bar" style="height:80%"></div>
+        <div class="spark-bar active" style="height:90%"></div>
+      </div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-lbl">Cost to Collect</div>
+      <div class="kpi-val amber">$8.42</div>
+      <div class="kpi-trend trend-warn">⚠ +$0.31 vs last month</div>
+      <div class="kpi-bench">Benchmark: ≤$7.00</div>
+      <div class="sparkline">
+        <div class="spark-bar" style="height:60%"></div>
+        <div class="spark-bar" style="height:62%"></div>
+        <div class="spark-bar" style="height:65%"></div>
+        <div class="spark-bar" style="height:70%"></div>
+        <div class="spark-bar" style="height:72%"></div>
+        <div class="spark-bar active" style="height:78%"></div>
+      </div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">Monthly Net Revenue</div>
+      <div class="kpi-val green">$2.84M</div>
+      <div class="kpi-trend trend-up">↑ +$124K vs last month</div>
+      <div class="kpi-bench">Target: $2.90M</div>
+      <div class="sparkline">
+        <div class="spark-bar" style="height:70%"></div>
+        <div class="spark-bar" style="height:72%"></div>
+        <div class="spark-bar" style="height:75%"></div>
+        <div class="spark-bar" style="height:80%"></div>
+        <div class="spark-bar" style="height:88%"></div>
+        <div class="spark-bar active" style="height:92%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">ACTIVE FINANCIAL ALERTS <span></span></div>
+    <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">Days in AR at 47.2 — exceeds 45-day CMS threshold · $312K at risk in 90+ bucket</div><div class="alert-imp">$312K</div></div>
+    <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">Denial rate 18.4% exceeds 15% threshold — top payers: UHC (22%), Aetna (19%), Medicare (14%)</div><div class="alert-imp">$48K</div></div>
+    <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">Cost to collect at $8.42 — $1.42 above $7.00 benchmark · manual rework driving overage</div><div class="alert-imp">$1.42/claim</div></div>
+    <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">Surgery service line margin dropped to 12.4% — down from 18.2% prior quarter</div><div class="alert-imp">-5.8pt</div></div>
+    <div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">Medicare payer mix shifted +2.1% — review reimbursement rate impact on net revenue</div><div class="alert-imp">Payer mix</div></div>
+    <div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Net collection rate 96.4% — above 95% benchmark · appeal win rate tracking at 68%</div><div class="alert-imp">✓</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="sec" style="margin:0">
+      <div class="sec-hdr">PAYER MIX</div>
+      <table>
+        <thead><tr><th>PAYER</th><th>MIX %</th><th>NET REV</th><th>TREND</th></tr></thead>
+        <tbody>
+          <tr><td>Medicare</td><td>38.2%</td><td class="num">$1.08M</td><td class="green">↑ +2.1%</td></tr>
+          <tr><td>Medicaid</td><td>22.4%</td><td class="num">$636K</td><td class="amber">→ flat</td></tr>
+          <tr><td>Commercial</td><td>31.8%</td><td class="num">$903K</td><td class="red">↓ -1.8%</td></tr>
+          <tr><td>Self-Pay</td><td>7.6%</td><td class="num">$216K</td><td class="amber">→ flat</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sec" style="margin:0">
+      <div class="sec-hdr">SERVICE LINE MARGIN</div>
+      <table>
+        <thead><tr><th>SERVICE LINE</th><th>REVENUE</th><th>MARGIN</th><th>STATUS</th></tr></thead>
+        <tbody>
+          <tr><td>E&M Visits</td><td class="num">$187K</td><td class="green num">28.4%</td><td><span class="badge bg">GOOD</span></td></tr>
+          <tr><td>Diagnostics</td><td class="num">$128K</td><td class="green num">24.1%</td><td><span class="badge bg">GOOD</span></td></tr>
+          <tr><td>Procedures</td><td class="num">$224K</td><td class="amber num">18.7%</td><td><span class="badge ba">WATCH</span></td></tr>
+          <tr><td>Surgery</td><td class="num">$244K</td><td class="red num">12.4%</td><td><span class="badge br">ALERT</span></td></tr>
+          <tr><td>ER Visits</td><td class="num">$225K</td><td class="red num">8.2%</td><td><span class="badge br">ALERT</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('Analyze our financial dashboard: 47.2 days in AR, 18.4% denial rate, $8.42 cost to collect — identify top 3 revenue leakage points and provide 30-day recovery plan')">Revenue Leakage Analysis</button>
+      <button class="ai-btn" onclick="loadAI('Generate a CFO-ready monthly financial summary based on: Net Revenue $2.84M, NCR 96.4%, Days AR 47.2, Denial Rate 18.4%, Cost to Collect $8.42')">CFO Summary</button>
+      <button class="ai-btn" onclick="loadAI('Surgery service line margin dropped from 18.2% to 12.4% — identify root causes and provide margin recovery strategy')">Margin Recovery</button>
+    </div>
+    <div class="ai-row">
+      <input id="dash-inp" class="ai-inp" type="text" placeholder="Financial query...">
+      <button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">▶ ASK</button>
+    </div>
+    <div id="dash-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- AR AGING TAB -->
+<div id="tab-ar">
+  <div class="stat-grid" style="padding:16px 20px 0;margin:0">
+    <div class="stat-box">
+      <div class="stat-val amber">47.2</div>
+      <div class="stat-lbl">Days in AR</div>
+      <div class="stat-bench">Benchmark: ≤45</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val red">$312K</div>
+      <div class="stat-lbl">90+ Day Bucket</div>
+      <div class="stat-bench">Write-off risk</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val amber">$1.84M</div>
+      <div class="stat-lbl">Total AR Balance</div>
+      <div class="stat-bench">All payers</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val green">68%</div>
+      <div class="stat-lbl">Appeal Win Rate</div>
+      <div class="stat-bench">Benchmark: ≥65%</div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">AR AGING BUCKETS
+      <div class="sec-hdr-right"><button class="export-btn" onclick="exportCSV('aging')">⬇ EXPORT CSV</button></div>
+    </div>
+    <table id="aging-table">
+      <thead><tr><th>PAYER</th><th>0-30 DAYS</th><th>31-60 DAYS</th><th>61-90 DAYS</th><th>90+ DAYS</th><th>TOTAL</th><th>DAYS IN AR</th><th>STATUS</th></tr></thead>
+      <tbody>
+        <tr><td>Medicare</td><td class="num green">$284K</td><td class="num">$142K</td><td class="num amber">$88K</td><td class="num red">$64K</td><td class="num">$578K</td><td class="num amber">42.1</td><td><span class="badge ba">WATCH</span></td></tr>
+        <tr><td>Aetna</td><td class="num green">$198K</td><td class="num">$124K</td><td class="num amber">$96K</td><td class="num red">$112K</td><td class="num">$530K</td><td class="num red">54.8</td><td><span class="badge br">ALERT</span></td></tr>
+        <tr><td>BlueCross</td><td class="num green">$176K</td><td class="num">$98K</td><td class="num">$54K</td><td class="num amber">$42K</td><td class="num">$370K</td><td class="num green">38.4</td><td><span class="badge bg">GOOD</span></td></tr>
+        <tr><td>UHC</td><td class="num green">$142K</td><td class="num">$88K</td><td class="num amber">$72K</td><td class="num red">$68K</td><td class="num">$370K</td><td class="num red">58.2</td><td><span class="badge br">ALERT</span></td></tr>
+        <tr><td>Medicaid</td><td class="num green">$88K</td><td class="num">$44K</td><td class="num">$22K</td><td class="num amber">$18K</td><td class="num">$172K</td><td class="num green">36.1</td><td><span class="badge bg">GOOD</span></td></tr>
+        <tr><td>Self-Pay</td><td class="num amber">$48K</td><td class="num">$32K</td><td class="num red">$28K</td><td class="num red">$8K</td><td class="num">$116K</td><td class="num amber">44.2</td><td><span class="badge ba">WATCH</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">AGING DISTRIBUTION VISUAL</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#558855;margin-bottom:4px"><span>0-30 Days</span><span class="green">$936K · 50.9%</span></div>
+        <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:50.9%;background:var(--g)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#558855;margin-bottom:4px"><span>31-60 Days</span><span class="amber">$528K · 28.7%</span></div>
+        <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:28.7%;background:var(--a)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#558855;margin-bottom:4px"><span>61-90 Days</span><span class="amber">$360K · 19.6%</span></div>
+        <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:19.6%;background:#ff8800"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#558855;margin-bottom:4px"><span>90+ Days</span><span class="red">$312K · 17.0% ⚠ Write-off risk</span></div>
+        <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:17%;background:var(--r)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('Build a 90-day AR recovery plan for: Aetna $112K in 90+ bucket (54.8 days AR), UHC $68K in 90+ bucket (58.2 days AR) — prioritize by recovery probability and provide escalation steps')">AR Recovery Plan</button>
+      <button class="ai-btn" onclick="loadAI('Analyze $312K in 90+ day AR bucket across all payers — identify write-off candidates vs recoverable claims and provide collection strategy')">Write-off Analysis</button>
+      <button class="ai-btn" onclick="loadAI('Identify root causes for Aetna 54.8 days AR and UHC 58.2 days AR exceeding 45-day benchmark — provide payer-specific resolution tactics')">Payer Root Cause</button>
+    </div>
+    <div class="ai-row">
+      <input id="ar-inp" class="ai-inp" type="text" placeholder="AR aging query...">
+      <button class="ask-btn" id="ar-btn" onclick="Q(document.getElementById('ar-inp').value,'ar-btn','ar-res')">▶ ASK</button>
+    </div>
+    <div id="ar-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- P&L TAB -->
+<div id="tab-pnl">
+  <div class="stat-grid" style="padding:16px 20px 0;margin:0">
+    <div class="stat-box">
+      <div class="stat-val green">$2.84M</div>
+      <div class="stat-lbl">Net Revenue</div>
+      <div class="stat-bench">Target: $2.90M</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val amber">$2.18M</div>
+      <div class="stat-lbl">Operating Expenses</div>
+      <div class="stat-bench">Budget: $2.10M</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val amber">$660K</div>
+      <div class="stat-lbl">Operating Income</div>
+      <div class="stat-bench">Target: $800K</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val amber">23.2%</div>
+      <div class="stat-lbl">Operating Margin</div>
+      <div class="stat-bench">Target: 27.6%</div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">P&L BY SERVICE LINE
+      <div class="sec-hdr-right"><button class="export-btn" onclick="exportCSV('pnl')">⬇ EXPORT CSV</button></div>
+    </div>
+    <table id="pnl-table">
+      <thead><tr><th>SERVICE LINE</th><th>GROSS REV</th><th>ADJUSTMENTS</th><th>NET REV</th><th>DIRECT COST</th><th>CONTRIB MARGIN</th><th>MARGIN %</th><th>VS BUDGET</th></tr></thead>
+      <tbody>
+        <tr><td>E&M Visits</td><td class="num">$262K</td><td class="num red">-$75K</td><td class="num">$187K</td><td class="num">$134K</td><td class="num green">$53K</td><td class="num green">28.4%</td><td class="num green">+$8K</td></tr>
+        <tr><td>Diagnostics</td><td class="num">$171K</td><td class="num red">-$43K</td><td class="num">$128K</td><td class="num">$97K</td><td class="num green">$31K</td><td class="num green">24.1%</td><td class="num green">+$4K</td></tr>
+        <tr><td>Procedures</td><td class="num">$298K</td><td class="num red">-$74K</td><td class="num">$224K</td><td class="num">$182K</td><td class="num amber">$42K</td><td class="num amber">18.7%</td><td class="num red">-$6K</td></tr>
+        <tr><td>Surgery</td><td class="num">$342K</td><td class="num red">-$98K</td><td class="num">$244K</td><td class="num">$214K</td><td class="num red">$30K</td><td class="num red">12.4%</td><td class="num red">-$14K</td></tr>
+        <tr><td>ER Visits</td><td class="num">$312K</td><td class="num red">-$87K</td><td class="num">$225K</td><td class="num">$207K</td><td class="num red">$18K</td><td class="num red">8.2%</td><td class="num red">-$18K</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td><strong>TOTAL</strong></td><td class="num"><strong>$1.385M</strong></td><td class="num red"><strong>-$377K</strong></td><td class="num"><strong>$1.008M</strong></td><td class="num"><strong>$834K</strong></td><td class="num amber"><strong>$174K</strong></td><td class="num amber"><strong>17.3%</strong></td><td class="num red"><strong>-$26K</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">BUDGET VARIANCE — YTD</div>
+    <table>
+      <thead><tr><th>CATEGORY</th><th>BUDGET</th><th>ACTUAL</th><th>VARIANCE $</th><th>VARIANCE %</th><th>STATUS</th></tr></thead>
+      <tbody>
+        <tr><td>Net Revenue</td><td class="num">$2.90M</td><td class="num">$2.84M</td><td class="num red">-$60K</td><td class="num red">-2.1%</td><td><span class="badge ba">WATCH</span></td></tr>
+        <tr><td>Salaries & Benefits</td><td class="num">$1.42M</td><td class="num">$1.48M</td><td class="num red">-$60K</td><td class="num red">-4.2%</td><td><span class="badge br">OVER</span></td></tr>
+        <tr><td>Supplies & Materials</td><td class="num">$284K</td><td class="num">$268K</td><td class="num green">+$16K</td><td class="num green">+5.6%</td><td><span class="badge bg">UNDER</span></td></tr>
+        <tr><td>Contracted Services</td><td class="num">$198K</td><td class="num">$212K</td><td class="num red">-$14K</td><td class="num red">-7.1%</td><td><span class="badge br">OVER</span></td></tr>
+        <tr><td>Overhead & Facilities</td><td class="num">$196K</td><td class="num">$218K</td><td class="num red">-$22K</td><td class="num red">-11.2%</td><td><span class="badge br">OVER</span></td></tr>
+        <tr><td>Operating Income</td><td class="num">$800K</td><td class="num">$660K</td><td class="num red">-$140K</td><td class="num red">-17.5%</td><td><span class="badge br">ALERT</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('Operating income is $140K below budget (17.5% unfavorable variance). Salaries over by $60K, overhead over by $22K. Provide specific cost reduction strategies and prioritization.')">Cost Reduction Plan</button>
+      <button class="ai-btn" onclick="loadAI('Surgery margin at 12.4% and ER margin at 8.2% are critical. Analyze contributing factors and provide service line optimization strategies to return to 18%+ margin.')">Margin Optimization</button>
+      <button class="ai-btn" onclick="loadAI('Generate a board-ready P&L narrative for: Net Revenue $2.84M (-2.1% vs budget), Operating Income $660K (-17.5% vs budget), top variances in labor and overhead.')">Board Narrative</button>
+    </div>
+    <div class="ai-row">
+      <input id="pnl-inp" class="ai-inp" type="text" placeholder="P&L query...">
+      <button class="ask-btn" id="pnl-btn" onclick="Q(document.getElementById('pnl-inp').value,'pnl-btn','pnl-res')">▶ ASK</button>
+    </div>
+    <div id="pnl-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- PAYER ANALYSIS TAB -->
+<div id="tab-payer">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">PAYER PERFORMANCE SCORECARD
+      <div class="sec-hdr-right"><button class="export-btn" onclick="exportCSV('payer')">⬇ EXPORT CSV</button></div>
+    </div>
+    <table id="payer-table">
+      <thead><tr><th>PAYER</th><th>VOLUME</th><th>GROSS REV</th><th>NET REV</th><th>DENIAL RATE</th><th>DAYS IN AR</th><th>PAY SPEED</th><th>CONTRACT COMP</th><th>SCORE</th></tr></thead>
+      <tbody>
+        <tr><td>Medicare</td><td class="num">428</td><td class="num">$612K</td><td class="num">$578K</td><td class="num green">14.2%</td><td class="num green">42.1</td><td class="num green">28 days</td><td class="num green">98.2%</td><td><span class="badge bg">A</span></td></tr>
+        <tr><td>BlueCross</td><td class="num">312</td><td class="num">$428K</td><td class="num">$370K</td><td class="num green">11.8%</td><td class="num green">38.4</td><td class="num green">22 days</td><td class="num green">96.8%</td><td><span class="badge bg">A+</span></td></tr>
+        <tr><td>Medicaid</td><td class="num">284</td><td class="num">$214K</td><td class="num">$172K</td><td class="num amber">16.4%</td><td class="num green">36.1</td><td class="num amber">42 days</td><td class="num amber">91.2%</td><td><span class="badge ba">B</span></td></tr>
+        <tr><td>Aetna</td><td class="num">198</td><td class="num">$612K</td><td class="num">$530K</td><td class="num red">19.2%</td><td class="num red">54.8</td><td class="num red">58 days</td><td class="num amber">88.4%</td><td><span class="badge br">C</span></td></tr>
+        <tr><td>UHC</td><td class="num">176</td><td class="num">$448K</td><td class="num">$370K</td><td class="num red">22.1%</td><td class="num red">58.2</td><td class="num red">64 days</td><td class="num red">82.1%</td><td><span class="badge br">D</span></td></tr>
+        <tr><td>Self-Pay</td><td class="num">142</td><td class="num">$284K</td><td class="num">$116K</td><td class="num red">28.4%</td><td class="num amber">44.2</td><td class="num red">72 days</td><td class="num">N/A</td><td><span class="badge br">F</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="sec" style="margin:0 0 16px">
+      <div class="sec-hdr">CONTRACT COMPLIANCE FLAGS</div>
+      <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">UHC: 3 contract terms underpaid — estimated $42K recovery opportunity</div></div>
+      <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">Aetna: Prior auth requirements changed Jan 1 — 18 claims denied incorrectly</div></div>
+      <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">Medicaid: Fee schedule update pending — 12 CPT codes at risk of underpayment</div></div>
+      <div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">BlueCross & Medicare: All contract terms current and compliant</div></div>
+    </div>
+    <div class="sec" style="margin:0 0 16px">
+      <div class="sec-hdr">DENIAL REASONS BY PAYER</div>
+      <table>
+        <thead><tr><th>PAYER</th><th>TOP DENIAL CODE</th><th>VOLUME</th><th>AMOUNT</th></tr></thead>
+        <tbody>
+          <tr><td>UHC</td><td>CO-4 No Auth</td><td class="num">42</td><td class="num red">$84K</td></tr>
+          <tr><td>Aetna</td><td>PR-96 Non-covered</td><td class="num">38</td><td class="num red">$72K</td></tr>
+          <tr><td>Medicare</td><td>CO-11 Bundling</td><td class="num">24</td><td class="num amber">$38K</td></tr>
+          <tr><td>Medicaid</td><td>CO-B7 Not Cert</td><td class="num">18</td><td class="num amber">$22K</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('UHC scored D with 22.1% denial rate, 58.2 days AR, and $42K contract underpayment. Aetna scored C with 19.2% denial rate. Provide payer-specific remediation plan and contract renegotiation talking points.')">Payer Remediation</button>
+      <button class="ai-btn" onclick="loadAI('Analyze $42K UHC contract underpayment — provide recovery steps, appeal language, and contract audit methodology to prevent future underpayments')">Contract Recovery</button>
+      <button class="ai-btn" onclick="loadAI('Self-pay collection rate is extremely low (28.4% denial, 72-day payment). Design a self-pay financial counseling and early-out collection program.')">Self-Pay Strategy</button>
+    </div>
+    <div class="ai-row">
+      <input id="payer-inp" class="ai-inp" type="text" placeholder="Payer analysis query...">
+      <button class="ask-btn" id="payer-btn" onclick="Q(document.getElementById('payer-inp').value,'payer-btn','payer-res')">▶ ASK</button>
+    </div>
+    <div id="payer-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- CASH FLOW TAB -->
+<div id="tab-cashflow">
+  <div class="stat-grid" style="padding:16px 20px 0;margin:0">
+    <div class="stat-box">
+      <div class="stat-val green">$1.24M</div>
+      <div class="stat-lbl">Current Cash</div>
+      <div class="stat-bench">42 days operating reserve</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val amber">$892K</div>
+      <div class="stat-lbl">30-Day Forecast</div>
+      <div class="stat-bench">Base scenario</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val amber">$1.18M</div>
+      <div class="stat-lbl">60-Day Forecast</div>
+      <div class="stat-bench">Base scenario</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val green">$1.52M</div>
+      <div class="stat-lbl">90-Day Forecast</div>
+      <div class="stat-bench">Base scenario</div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">90-DAY CASH FLOW PROJECTION</div>
+    <table>
+      <thead><tr><th>MONTH</th><th>EXPECTED COLLECTIONS</th><th>OPERATING EXPENSES</th><th>NET CASH FLOW</th><th>CUMULATIVE CASH</th><th>SCENARIO</th></tr></thead>
+      <tbody>
+        <tr><td>Apr 2026 (Current)</td><td class="num green">$2.84M</td><td class="num red">$2.18M</td><td class="num green">+$660K</td><td class="num green">$1.24M</td><td><span class="badge bg">ACTUAL</span></td></tr>
+        <tr><td>May 2026</td><td class="num amber">$2.71M</td><td class="num">$2.20M</td><td class="num amber">+$510K</td><td class="num green">$892K</td><td><span class="badge ba">BASE</span></td></tr>
+        <tr><td>Jun 2026</td><td class="num amber">$2.68M</td><td class="num">$2.22M</td><td class="num amber">+$460K</td><td class="num green">$1.18M</td><td><span class="badge ba">BASE</span></td></tr>
+        <tr><td>Jul 2026</td><td class="num green">$2.96M</td><td class="num">$2.18M</td><td class="num green">+$780K</td><td class="num green">$1.52M</td><td><span class="badge ba">BASE</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">SCENARIO MODELING — CASH IMPACT</div>
+    <table>
+      <thead><tr><th>SCENARIO</th><th>ASSUMPTION</th><th>90-DAY IMPACT</th><th>CASH POSITION</th><th>RISK</th></tr></thead>
+      <tbody>
+        <tr><td>Base Case</td><td>Current trends continue</td><td class="num green">+$1.95M</td><td class="num green">$1.52M</td><td><span class="badge ba">MED</span></td></tr>
+        <tr><td>Denial Rate -5pt</td><td>Reduce denials to 13.4%</td><td class="num green">+$2.28M</td><td class="num green">$1.84M</td><td><span class="badge bg">LOW</span></td></tr>
+        <tr><td>AR Days -10</td><td>Reduce AR to 37 days</td><td class="num green">+$2.14M</td><td class="num green">$1.68M</td><td><span class="badge bg">LOW</span></td></tr>
+        <tr><td>UHC Contract Loss</td><td>UHC terminates contract</td><td class="num red">-$892K</td><td class="num red">$628K</td><td><span class="badge br">HIGH</span></td></tr>
+        <tr><td>Downside Case</td><td>Denial rate +3pt, AR +5 days</td><td class="num red">+$1.12M</td><td class="num amber">$740K</td><td><span class="badge br">HIGH</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('Build a 90-day cash flow optimization plan based on: Current cash $1.24M, May forecast $892K dip, 47.2 days AR, $312K in 90+ AR bucket — identify acceleration opportunities')">Cash Flow Optimization</button>
+      <button class="ai-btn" onclick="loadAI('Model cash impact of reducing AR days from 47.2 to 37 — calculate monthly collection acceleration, timing, and operational requirements')">AR Acceleration Model</button>
+      <button class="ai-btn" onclick="loadAI('Assess risk of UHC contract loss scenario: $370K monthly revenue, 58.2 days AR — provide contingency plan and payer diversification strategy')">Contract Risk Assessment</button>
+    </div>
+    <div class="ai-row">
+      <input id="cf-inp" class="ai-inp" type="text" placeholder="Cash flow query...">
+      <button class="ask-btn" id="cf-btn" onclick="Q(document.getElementById('cf-inp').value,'cf-btn','cf-res')">▶ ASK</button>
+    </div>
+    <div id="cf-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- BENCHMARKS TAB -->
+<div id="tab-bench">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">CMS NATIONAL BENCHMARK COMPARISON
+      <div class="sec-hdr-right"><button class="export-btn" onclick="exportCSV('bench')">⬇ EXPORT CSV</button></div>
+    </div>
+    <div style="display:flex;font-size:9px;color:#558855;padding:0 0 8px;gap:12px;letter-spacing:1px">
+      <span>■ YOUR PERFORMANCE</span>
+      <span style="color:#334433">■ NATIONAL AVERAGE</span>
+      <span class="green">↑ ABOVE BENCHMARK</span>
+      <span class="red">↓ BELOW BENCHMARK</span>
+    </div>
+
+    <div class="bench-row">
+      <div class="bench-label">Days in AR</div>
+      <div class="bench-your amber">47.2 days</div>
+      <div class="bench-nat">Natl: 42.1</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:60%"></div>
+        <div class="bench-bar-you" style="width:67%;background:var(--a)"></div>
+      </div>
+      <div class="bench-status"><span class="badge br">BELOW</span></div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">Net Collection Rate</div>
+      <div class="bench-your green">96.4%</div>
+      <div class="bench-nat">Natl: 95.1%</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:88%"></div>
+        <div class="bench-bar-you" style="width:92%;background:var(--g)"></div>
+      </div>
+      <div class="bench-status"><span class="badge bg">ABOVE</span></div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">Denial Rate</div>
+      <div class="bench-your red">18.4%</div>
+      <div class="bench-nat">Natl: 11.2%</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:40%"></div>
+        <div class="bench-bar-you" style="width:65%;background:var(--r)"></div>
+      </div>
+      <div class="bench-status"><span class="badge br">BELOW</span></div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">Cost to Collect</div>
+      <div class="bench-your red">$8.42</div>
+      <div class="bench-nat">Natl: $6.84</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:55%"></div>
+        <div class="bench-bar-you" style="width:70%;background:var(--r)"></div>
+      </div>
+      <div class="bench-status"><span class="badge br">BELOW</span></div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">Clean Claim Rate</div>
+      <div class="bench-your green">94.2%</div>
+      <div class="bench-nat">Natl: 92.8%</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:85%"></div>
+        <div class="bench-bar-you" style="width:88%;background:var(--g)"></div>
+      </div>
+      <div class="bench-status"><span class="badge bg">ABOVE</span></div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">Operating Margin</div>
+      <div class="bench-your amber">23.2%</div>
+      <div class="bench-nat">Natl: 26.4%</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:75%"></div>
+        <div class="bench-bar-you" style="width:66%;background:var(--a)"></div>
+      </div>
+      <div class="bench-status"><span class="badge ba">WATCH</span></div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">Appeal Win Rate</div>
+      <div class="bench-your green">68.0%</div>
+      <div class="bench-nat">Natl: 64.2%</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar-nat" style="width:70%"></div>
+        <div class="bench-bar-you" style="width:74%;background:var(--g)"></div>
+      </div>
+      <div class="bench-status"><span class="badge bg">ABOVE</span></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">BENCHMARK GAP ANALYSIS — REVENUE OPPORTUNITY</div>
+    <table>
+      <thead><tr><th>METRIC</th><th>CURRENT</th><th>BENCHMARK TARGET</th><th>GAP</th><th>REVENUE OPPORTUNITY</th><th>PRIORITY</th></tr></thead>
+      <tbody>
+        <tr><td>Denial Rate</td><td class="num red">18.4%</td><td class="num">11.2%</td><td class="num red">-7.2pt</td><td class="num green">+$204K/mo</td><td><span class="badge br">HIGH</span></td></tr>
+        <tr><td>Days in AR</td><td class="num amber">47.2</td><td class="num">42.1</td><td class="num amber">-5.1 days</td><td class="num green">+$144K cash</td><td><span class="badge br">HIGH</span></td></tr>
+        <tr><td>Cost to Collect</td><td class="num red">$8.42</td><td class="num">$6.84</td><td class="num red">-$1.58</td><td class="num green">+$48K/mo</td><td><span class="badge ba">MED</span></td></tr>
+        <tr><td>Operating Margin</td><td class="num amber">23.2%</td><td class="num">26.4%</td><td class="num amber">-3.2pt</td><td class="num green">+$91K/mo</td><td><span class="badge ba">MED</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-hdr">⚡ AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="loadAI('We have a $204K/month opportunity from closing the denial rate gap (18.4% to 11.2%) and $144K from AR acceleration. Build a prioritized 90-day benchmark improvement roadmap.')">Benchmark Roadmap</button>
+      <button class="ai-btn" onclick="loadAI('Compare our performance to CMS benchmarks: Denial rate 7.2pt above national average, Cost to collect $1.58 above benchmark. Identify which peer hospitals outperform and what practices drive their results.')">Peer Comparison</button>
+      <button class="ai-btn" onclick="loadAI('Generate a board presentation on our benchmark gaps: $204K denial opportunity, $91K margin opportunity — with specific action plan and 12-month improvement timeline')">Board Presentation</button>
+    </div>
+    <div class="ai-row">
+      <input id="bench-inp" class="ai-inp" type="text" placeholder="Benchmark query...">
+      <button class="ask-btn" id="bench-btn" onclick="Q(document.getElementById('bench-inp').value,'bench-btn','bench-res')">▶ ASK</button>
+    </div>
+    <div id="bench-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- AI ANALYSIS TAB -->
+<div id="tab-ai">
+  <div class="ai-box" style="margin-top:16px">
+    <div class="ai-hdr">⚡ DEEP FINANCIAL AI ANALYSIS</div>
+    <div class="ai-row">
+      <input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed financial query...">
+      <button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">▶ ASK</button>
+    </div>
+    <div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div>
+  </div>
+</div>
+
+<!-- PRESETS TAB -->
+<div id="tab-presets">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">PRESET LIBRARY — Click any to load into AI</div>
+    <div class="pr-grid">
+      <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Analyze our financial performance: Days AR 47.2 (benchmark 42.1), Denial Rate 18.4% (benchmark 11.2%), NCR 96.4%, Cost to Collect $8.42 — identify top 3 revenue leakage points and provide a prioritized 30-day recovery plan with specific actions"><div class="pr-card-title">Revenue Leakage Analysis</div><div class="pr-card-desc">Top 3 leakage points + recovery plan</div></div>
+      <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Generate a CFO-ready monthly financial executive summary: Net Revenue $2.84M vs $2.90M budget, Operating Income $660K vs $800K budget, Days AR 47.2, Denial Rate 18.4%, NCR 96.4%. Include variance analysis, risk flags, and recommended board actions"><div class="pr-card-title">CFO Executive Summary</div><div class="pr-card-desc">Board-ready financial narrative</div></div>
+      <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Build a 90-day cash flow optimization plan: Current cash $1.24M, AR balance $1.84M with $312K in 90+ bucket, 47.2 days AR. Model scenarios for AR acceleration, denial reduction impact, and minimum cash threshold requirements"><div class="pr-card-title">90-Day Cash Flow Plan</div><div class="pr-card-desc">Cash optimization + scenario modeling</div></div>
+      <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="UHC scored D: 22.1% denial rate, 58.2 days AR, $42K contract underpayment, 82.1% contract compliance. Aetna scored C: 19.2% denial rate, 54.8 days AR, 88.4% contract compliance. Provide a payer remediation strategy with contract renegotiation talking points for both payers"><div class="pr-card-title">Payer Remediation Strategy</div><div class="pr-card-desc">UHC & Aetna action plans</div></div>
+      <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="Surgery service line margin dropped from 18.2% to 12.4% (-5.8pt). ER margin is 8.2%. Operating income is $140K below budget. Salaries over by $60K, overhead over by $22K. Provide specific cost reduction strategies, service line optimization, and margin recovery timeline to return to 18%+ margin"><div class="pr-card-title">Margin Recovery Plan</div><div class="pr-card-desc">Surgery + ER margin restoration</div></div>
+      <div class="pr-card" onclick="loadPreset(this.dataset.p)" data-p="We have benchmark gaps worth $447K/month in opportunity: Denial rate gap $204K, AR acceleration $144K, cost to collect $48K, margin gap $91K. Build a 12-month financial performance improvement roadmap with quarterly milestones, resource requirements, and ROI projections"><div class="pr-card-title">Performance Improvement Roadmap</div><div class="pr-card-desc">12-month benchmark gap closure plan</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="fn">💰 FINANCIAL NODE &nbsp; Ready — run analysis or relay to Strategist</div>
+  <div class="fbtns">
+    <button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC FINANCIAL COMMAND: revenue cycle performance, AR aging risks, P&L variances, cash flow outlook, benchmark gaps — provide executive action plan','ai-btn','ai-res');window.switchTab('ai',document.querySelectorAll('.nav-btn')[6])">⚡ RUN BNCA</button>
+    <button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">🔗 RELAY TO STRATEGIST</button>
+  </div>
+</div>
+
+<div style="position:fixed;top:10px;right:10px;z-index:9999">
+  <a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE — $399/MO</a>
+</div>
+
+<script>
+(function(){
+  async function Q(prompt, btnId, resId) {
+    if (!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if (!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
+    try {
+      var r = await fetch('/api/hc/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system: 'You are a healthcare financial expert specializing in revenue cycle management, AR aging, P&L analysis, payer contract optimization, cash flow forecasting, and CMS benchmark comparison. Provide precise, actionable financial intelligence with specific metrics, dollar amounts, and implementation steps.',
+          message: prompt,
+          stream: false,
+          max_tokens: 1000
+        })
+      });
+      var d = await r.json();
+      var reply = d.response || d.content || (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content) || 'No response';
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\n\n' +
+        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
+    } catch(e) {
+      res.textContent = '> TSM NEURAL ERROR: ' + e.message;
+    }
+    btn.disabled = false;
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(function(el){
+      el.style.setProperty('display','none','important');
+    });
+    var t = document.getElementById('tab-'+id) || document.getElementById(id);
+    if(t) t.style.setProperty('display','block','important');
+    document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+    if(btn) btn.classList.add('active');
+  }
+
+  function loadAI(p) {
+    var aiBtn = null;
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      if((b.getAttribute('onclick')||'').indexOf("'ai'")>-1) aiBtn=b;
+    });
+    switchTab('ai', aiBtn);
+    var inp = document.getElementById('ai-inp');
+    if(inp){inp.value=p;inp.focus();}
+    setTimeout(function(){if(window.Q) Q(p,'ai-btn','ai-res');},50);
+  }
+
+  function loadPreset(p){loadAI(p);}
+
+  function exportCSV(tableId) {
+    var table = document.getElementById(tableId+'-table');
+    if(!table) return;
+    var rows = Array.from(table.querySelectorAll('tr'));
+    var csv = rows.map(function(row){
+      return Array.from(row.querySelectorAll('th,td')).map(function(cell){
+        return '"' + cell.textContent.trim().replace(/"/g,'""') + '"';
+      }).join(',');
+    }).join('\n');
+    var blob = new Blob([csv], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'hc-financial-'+tableId+'-'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();
+  }
+
+  window.Q = Q;
+  window.switchTab = switchTab;
+  window.loadAI = loadAI;
+  window.loadPreset = loadPreset;
+  window.exportCSV = exportCSV;
+
+  document.addEventListener('DOMContentLoaded', function(){
+    switchTab('dash', document.querySelector('.nav-btn'));
+  });
+})();
+</script>

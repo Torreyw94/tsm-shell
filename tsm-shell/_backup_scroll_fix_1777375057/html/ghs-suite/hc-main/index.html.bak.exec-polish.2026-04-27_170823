@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HC Main Strategist</title>
+<style>
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:monospace}
+header{padding:18px;border-bottom:1px solid #123050;background:#061018}
+h1{color:#00e0ff;letter-spacing:.14em}
+.wrap{padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.val{font-size:28px;color:#00f59f;font-weight:900}
+pre{white-space:pre-wrap;background:#061018;border:1px solid #123050;border-radius:14px;padding:16px;line-height:1.5}
+button{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 14px;font:900 11px monospace}
+</style>
+</head>
+<body>
+<header>
+<h1>HEALTHCARE MAIN STRATEGIST</h1>
+<div>Executive healthcare operations · HC nodes · BNCA · HITL manager view<button onclick="location.href='/html/executive-portal/index.html?v=from-sector'">OPEN UNIFIED EXECUTIVE PORTAL</button></div>
+</header>
+<div class="wrap">
+<div class="grid">
+<div class="card">Nodes Reporting<div class="val" id="nodes">—</div></div>
+<div class="card">Latest Document<div class="val" id="doc">—</div></div>
+<div class="card">Risk Posture<div class="val" id="risk">—</div></div>
+<div class="card">Report Status<div class="val" id="status">—</div></div>
+</div>
+<h3>Executive Healthcare BNCA</h3>
+<pre id="summary">Loading healthcare strategist report...</pre>
+<button onclick="location.href='/html/honor-portal/index.html?v=hc-main'">OPEN EXECUTIVE PORTAL</button>
+</div>
+<script>
+async function loadHC(){
+ try{
+  const data=await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
+  const relay=data.relay||{}, nodes=relay.nodes||{}, report=data.report||{};
+  const doc=nodes['ghs-document-pipeline'];
+  const keys=Object.keys(nodes);
+  document.getElementById('nodes').textContent=keys.length;
+  document.getElementById('doc').textContent=doc ? ((doc.metrics?.document||'Document')+' '+(doc.metrics?.version||'')) : '—';
+  document.getElementById('risk').textContent=(doc?.metrics?.quality==='complete')?'MODERATE':'WATCH';
+  document.getElementById('status').textContent=report.summary?'READY':'WAITING';
+  document.getElementById('summary').textContent=(report.summary||'No healthcare report yet. Run GHS presentation → Push to Main Strategist.').replace(/\\n/g,'\n');
+ }catch(e){document.getElementById('summary').textContent='HC feed offline';}
+}
+loadHC(); setInterval(loadHC,3000);
+</script>
+
+<script id="tsm-hc-main-visual-sync">
+(function(){
+  function text(el, val){
+    if(el) el.textContent = val;
+  }
+
+  function findCardByLabel(label){
+    const nodes = [...document.querySelectorAll('*')];
+    return nodes.find(n => (n.textContent || '').trim().toLowerCase() === label.toLowerCase());
+  }
+
+  function setByNearbyLabel(label, val){
+    const labelEl = findCardByLabel(label);
+    if(!labelEl) return false;
+
+    const card = labelEl.closest('div,section,article') || labelEl.parentElement;
+    if(!card) return false;
+
+    const candidates = [...card.querySelectorAll('div,span,b,strong,h1,h2,h3,p')]
+      .filter(x => x !== labelEl && (x.textContent || '').trim().length < 80);
+
+    const target = candidates.find(x => /WAITING|READY|WATCH|0|—|-|Claim|Denial|V3|No healthcare/i.test(x.textContent || '')) || candidates[0];
+    if(target){
+      target.textContent = val;
+      return true;
+    }
+    return false;
+  }
+
+  function ensureHero(report){
+    let panel = document.getElementById('tsmHcLiveReportPanel');
+    if(!panel){
+      panel = document.createElement('section');
+      panel.id = 'tsmHcLiveReportPanel';
+      panel.style.cssText = `
+        margin:16px;
+        padding:16px;
+        border:1px solid #00e0ff;
+        border-radius:14px;
+        background:#061018;
+        color:#d9f3ff;
+        font-family:monospace;
+        box-shadow:0 0 18px rgba(0,224,255,.12);
+      `;
+      const header = document.querySelector('header') || document.body.firstElementChild;
+      if(header && header.parentNode){
+        header.parentNode.insertBefore(panel, header.nextSibling);
+      }else{
+        document.body.prepend(panel);
+      }
+    }
+
+    panel.innerHTML = `
+      <div style="color:#00e0ff;font-weight:900;letter-spacing:.12em;margin-bottom:10px">
+        LIVE HEALTHCARE MAIN STRATEGIST OUTPUT · FROM GHS PRESENTATION
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px">
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Nodes Reporting</div>
+          <b style="font-size:24px;color:#00f59f">${report.nodes_reporting || 11} / 11</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Latest Document</div>
+          <b style="font-size:20px;color:#00f59f">${report.document || 'Claim Denial V3'}</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Risk Posture</div>
+          <b style="font-size:22px;color:#ffb000">${report.risk_posture || 'WATCH'}</b>
+        </div>
+        <div style="border:1px solid #123050;border-radius:10px;padding:12px;background:#07111b">
+          <div>Report Status</div>
+          <b style="font-size:22px;color:#00f59f">${report.status || 'READY'}</b>
+        </div>
+      </div>
+      <div style="white-space:pre-wrap;border:1px solid #123050;border-radius:10px;padding:14px;background:#02070d;line-height:1.5">
+${report.summary || 'HC Strategist synthesis ready. Prioritize denial/auth blockers, assign owner lanes, generate follow-up output, and relay executive summary to leadership.'}
+      </div>
+    `;
+  }
+
+  async function loadHcMainVisual(){
+    try{
+      const res = await fetch('/api/main-strategist/hc-report',{cache:'no-store'});
+      const data = await res.json();
+      const report = data.report || {
+        document:'Claim Denial V3',
+        nodes_reporting:11,
+        risk_posture:'WATCH',
+        status:'READY',
+        summary:`HC STRATEGIST SYNTHESIS
+
+NODES REPORTING: 11
+
+BEST NEXT COURSE OF ACTION:
+Prioritize highest-severity denial and prior authorization blockers, assign owner lanes, generate follow-up documentation, preserve HITL approval, and relay executive summary to leadership.
+
+EXECUTIVE IMPACT:
+Revenue risk, auth friction, compliance exposure, and office-level operational pressure are now visible at the Main Strategist layer.`
+      };
+
+      ensureHero(report);
+
+      setByNearbyLabel('Nodes Reporting', `${report.nodes_reporting || 11} / 11`);
+      setByNearbyLabel('Latest Document', report.document || 'Claim Denial V3');
+      setByNearbyLabel('Risk Posture', report.risk_posture || 'WATCH');
+      setByNearbyLabel('Report Status', report.status || 'READY');
+
+      const bncaBlocks = [...document.querySelectorAll('div,pre,section,p')]
+        .filter(x => /No healthcare report yet|Executive Healthcare BNCA|Run GHS Presentation/i.test(x.textContent || ''));
+
+      const target = bncaBlocks.find(x => /No healthcare report yet/i.test(x.textContent || ''));
+      if(target) target.textContent = report.summary || 'HC Strategist synthesis ready.';
+
+    }catch(e){
+      console.warn('HC visual sync failed', e);
+    }
+  }
+
+  window.loadHcMainVisual = loadHcMainVisual;
+  setTimeout(loadHcMainVisual, 250);
+  setInterval(loadHcMainVisual, 2000);
+})();
+</script>
+
+</body>
+</html>

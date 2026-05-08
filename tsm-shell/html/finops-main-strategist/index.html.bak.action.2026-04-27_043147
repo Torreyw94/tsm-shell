@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FinOps Main Strategist · TSM</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+header{padding:18px 22px;border-bottom:1px solid #123050;background:#061018;display:flex;justify-content:space-between;align-items:center}
+.brand{color:#00e0ff;font-weight:900;letter-spacing:.16em;font-size:18px}
+.sub{font-size:12px;color:#8fb0c8;margin-top:4px}
+.badge{border:1px solid #00f59f;color:#00f59f;border-radius:999px;padding:7px 12px;font-size:11px}
+.wrap{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.card b{color:#00e0ff}
+.val{font-size:28px;font-weight:900;color:#00f59f;margin-top:8px}
+.panel{background:#061018;border:1px solid #123050;border-radius:16px;padding:16px;margin-top:14px}
+.summary{white-space:pre-wrap;line-height:1.55;background:#02070d;border:1px solid #123050;border-radius:12px;padding:14px;max-height:360px;overflow:auto}
+.nodegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:12px}
+.node{background:#07111b;border:1px solid #123050;border-radius:12px;padding:12px}
+.node b{color:#d9f3ff}
+.node .state{font-size:18px;font-weight:900;color:#00f59f;margin-top:6px}
+.btn{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:10px 13px;font:900 11px monospace;cursor:pointer;margin:8px 8px 0 0}
+.btn.dark{background:transparent;color:#00e0ff;border:1px solid #00e0ff}
+.footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:#061018;border-top:1px solid #123050;color:#7aa6c2;font-size:10px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+main{padding-bottom:42px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="brand">FINOPS MAIN STRATEGIST</div>
+    <div class="sub">Financial Intel · Tax Intelligence · Compliance Shield · Zero Trust · Strategist</div>
+  </div>
+  <div class="badge" id="statusBadge">SYNCING</div>
+</header>
+
+<main class="wrap">
+  <section class="grid">
+    <div class="card"><b>Nodes Reporting</b><div class="val" id="nodeCount">5 / 5</div></div>
+    <div class="card"><b>AR At Risk</b><div class="val" id="arRisk">$18.4K</div></div>
+    <div class="card"><b>Tax Opportunity</b><div class="val" id="taxOpp">$34K</div></div>
+    <div class="card"><b>Security Gaps</b><div class="val" id="securityGaps">6</div></div>
+  </section>
+
+  <section class="panel">
+    <b style="color:#00e0ff;letter-spacing:.12em">NODE POSTURES</b>
+    <div class="nodegrid" id="nodeGrid"></div>
+  </section>
+
+  
+<style id="finops-accounting-lanes-css">
+#finopsAccountingLanes{
+  margin-top:16px;
+}
+.finops-lane-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.finops-lane{
+  background:#07111b;
+  border:1px solid #123050;
+  border-radius:14px;
+  padding:14px;
+}
+.finops-lane b{
+  color:#00e0ff;
+  letter-spacing:.08em;
+}
+.finops-lane .metric{
+  font-size:24px;
+  color:#00f59f;
+  font-weight:900;
+  margin:8px 0 4px;
+}
+.finops-lane ul{
+  margin:8px 0 0 18px;
+  padding:0;
+  line-height:1.45;
+}
+.finops-report-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.finops-report-actions button{
+  background:#00b7ff;
+  color:#001018;
+  border:0;
+  border-radius:8px;
+  padding:10px 13px;
+  font:900 11px monospace;
+  cursor:pointer;
+}
+.finops-report-actions button.dark{
+  background:transparent;
+  color:#00e0ff;
+  border:1px solid #00e0ff;
+}
+</style>
+
+<section id="finopsAccountingLanes" class="panel">
+  <b style="color:#00e0ff;letter-spacing:.12em">ACCOUNTING OPERATIONS LANES</b>
+  <div style="color:#8fb0c8;margin-top:6px">
+    Staff Accountant coverage: AP · AR · bank reconciliation · month-end close · 1099 readiness · executive reporting.
+  </div>
+
+  <div class="finops-lane-grid">
+    <div class="finops-lane">
+      <b>AP VENDOR INVOICE LANE</b>
+      <div class="metric" id="apMetric">12</div>
+      <small>vendor invoices pending validation</small>
+      <ul>
+        <li>Validate invoice accuracy and timing</li>
+        <li>Flag missing approvals or support</li>
+        <li>Prepare payment priority queue</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>BANK RECONCILIATION LANE</b>
+      <div class="metric" id="bankMetric">3</div>
+      <small>reconciling items need documentation</small>
+      <ul>
+        <li>Match bank feed to books</li>
+        <li>Resolve/document open items</li>
+        <li>Preserve audit trail</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>MONTH-END CLOSE CHECKLIST</b>
+      <div class="metric" id="closeMetric">84%</div>
+      <small>close readiness score</small>
+      <ul>
+        <li>AR/AP reviewed</li>
+        <li>Schedules updated</li>
+        <li>Controller review package prepared</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>1099 TRACKER</b>
+      <div class="metric" id="tax1099Metric">7</div>
+      <small>vendors need W-9 / threshold review</small>
+      <ul>
+        <li>Track vendor eligibility</li>
+        <li>Validate W-9 completeness</li>
+        <li>Prepare year-end 1099 readiness</li>
+      </ul>
+    </div>
+
+    <div class="finops-lane">
+      <b>EXECUTIVE REPORTING</b>
+      <div class="metric" id="reportMetric">READY</div>
+      <small>saved report available for review</small>
+      <ul>
+        <li>Summarize AR/AP blockers</li>
+        <li>Highlight tax and compliance risks</li>
+        <li>Recommend BNCA for controller</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="finops-report-actions">
+    <button onclick="buildFinOpsAccountingReport()">BUILD ACCOUNTING OPS REPORT</button>
+    <button onclick="exportFinOpsReport()">EXPORT PDF-READY</button>
+    <button class="dark" onclick="saveFinOpsMainReport()">SAVE REPORT</button>
+  </div>
+</section>
+
+<script id="finops-accounting-lanes-js">
+function buildFinOpsAccountingReport(){
+  const report = `TSM FINANCIAL OPERATIONS LAYER — ACCOUNTING OPS REPORT
+
+AP VENDOR INVOICE LANE
+- 12 vendor invoices pending validation.
+- Validate invoice accuracy, approvals, timing, and supporting documentation.
+- Prioritize invoices by due date and vendor impact.
+
+BANK RECONCILIATION LANE
+- 3 reconciling items require documentation.
+- Match bank feed transactions to QuickBooks activity.
+- Resolve or document exceptions before month-end review.
+
+MONTH-END CLOSE CHECKLIST
+- Close readiness: 84%.
+- AR/AP review active.
+- Supporting schedules and documentation require final update.
+- Controller review package should be prepared before close.
+
+1099 TRACKER
+- 7 vendors require W-9 / threshold review.
+- Maintain 1099 process and prepare year-end readiness.
+- Flag missing vendor tax documentation.
+
+BEST NEXT COURSE OF ACTION
+Prioritize AP validation and bank reconciliation exceptions first, complete 1099 vendor review, then package month-end support for Controller review.
+
+$1,250/MO VALUE POSITION
+Most teams pay $5K–$7K/month for someone to manage this manually. TSM delivers it as a system that monitors, flags, organizes, and reports the work for $1,250/month.`;
+
+  const summary=document.getElementById('summary');
+  if(summary) summary.textContent = report;
+
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Accounting Ops Report',
+    summary:report
+  }));
+
+  alert('Accounting Ops report built and saved.');
+}
+
+function saveFinOpsMainReport(){
+  const txt = document.getElementById('summary')?.textContent || 'FinOps report saved.';
+  localStorage.setItem('tsm_finops_report', JSON.stringify({
+    ts:new Date().toISOString(),
+    title:'TSM Financial Operations Executive Report',
+    summary:txt
+  }));
+  alert('Saved FinOps Main report.');
+}
+
+function exportFinOpsReport(){
+  const txt = document.getElementById('summary')?.textContent || '';
+  const w = window.open('', '_blank');
+  w.document.write(`<pre style="font-family:monospace;white-space:pre-wrap;line-height:1.5">${txt.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</pre>`);
+  w.document.title = 'TSM Financial Operations Report';
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+</script>
+
+
+<section class="panel">
+    <b style="color:#00e0ff;letter-spacing:.12em">FINANCIAL OPERATIONS EXECUTIVE BNCA</b>
+    <div class="summary" id="summary">Waiting for Financial Command report...</div>
+    <button class="btn" onclick="location.href='/html/financial-command/index.html?v=from-finops-main'">OPEN FINANCIAL COMMAND</button>
+    <button class="btn dark" onclick="location.href='/html/compliance/index.html?v=from-finops-main'">OPEN COMPLIANCE</button>
+    <button class="btn dark" onclick="location.href='/html/financial/index.html?v=from-finops-main'">OPEN FINANCIAL INTEL</button>
+    <button class="btn dark" onclick="refreshFinOps()">REFRESH</button>
+  </section>
+</main>
+
+<div class="footer">
+  <span>● FINOPS MAIN STRATEGIST · $1,250/MO OPERATIONS LAYER · EXECUTIVE REPORTING</span>
+  <span>READY</span>
+</div>
+
+<script>
+const defaultReport = `TSM FINANCIAL OPERATIONS LAYER — EXECUTIVE BNCA
+
+NODES REPORTING:
+1. Financial Intel — AR/AP, revenue flow, cash timing
+2. Tax Intelligence — 1099 readiness, tax opportunity, deadline monitoring
+3. Compliance Shield — documentation, audit support, controls
+4. Zero Trust — financial data access and permission risk
+5. Strategist — executive recommendation and next action
+
+BEST NEXT COURSE OF ACTION:
+Prioritize AR collections first, complete 1099 vendor validation, attach missing reconciliation support, and review financial data access permissions.
+
+$1,250/MO SERVICE VALUE:
+Most teams pay $5K–$7K/month for someone to manage this manually. TSM delivers it as an intelligent financial operations system for $1,250/month.
+
+COVERAGE:
+- Transaction monitoring
+- AR/AP management
+- Reconciliation oversight
+- Month-end intelligence
+- Compliance monitoring
+- Executive reporting`;
+
+function loadReport(){
+  try{return JSON.parse(localStorage.getItem('tsm_finops_report')||'{}')}catch(e){return{}}
+}
+
+function refreshFinOps(){
+  const data = loadReport();
+  const summary = data.summary || defaultReport;
+
+  document.getElementById('statusBadge').textContent = data.summary ? 'LIVE REPORT' : 'DEMO READY';
+  document.getElementById('summary').textContent = summary;
+
+  const nodes = [
+    ['Financial Intel','AR collections + cash timing','READY'],
+    ['Tax Intelligence','1099 + deadline windows','READY'],
+    ['Compliance Shield','audit trail + supporting docs','READY'],
+    ['Zero Trust','permission/security review','WATCH'],
+    ['Strategist','executive BNCA synthesis','READY']
+  ];
+
+  document.getElementById('nodeGrid').innerHTML = nodes.map(n => `
+    <div class="node">
+      <b>${n[0]}</b>
+      <div class="state">${n[2]}</div>
+      <small>${n[1]}</small>
+    </div>
+  `).join('');
+}
+refreshFinOps();
+setInterval(refreshFinOps,4000);
+</script>
+</body>
+</html>

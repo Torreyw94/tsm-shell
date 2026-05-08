@@ -1,0 +1,395 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HC COMPLIANCE COMMAND · TSM Healthcare</title>
+<style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f0a;color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;padding-bottom:60px}
+:root{--g:#00ff88;--a:#ffaa00;--r:#ff4444;--b:#00aaff;--dim:#0d150d;--border:#1e3a1e}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid var(--border);background:#0b120b}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.hdr-title{font-size:16px;font-weight:700;letter-spacing:2px;color:var(--g)}
+.hdr-sub{font-size:10px;color:#556655;letter-spacing:1px}
+.node-pill{padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;border:1px solid var(--g);color:var(--g)}
+.nav{display:flex;border-bottom:1px solid var(--border);background:#0b120b;padding:0 20px;overflow-x:auto}
+.nav-btn{padding:10px 18px;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:1px;border:none;background:none;color:#558855;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:var(--g)}.nav-btn.active{color:var(--g);border-bottom-color:var(--g)}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 20px}
+.kpi{background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.kpi-val{font-size:28px;font-weight:700;margin-bottom:4px}
+.kpi-lbl{font-size:10px;color:#558855;letter-spacing:1px;text-transform:uppercase}
+.kpi-sub{font-size:10px;margin-top:4px}
+.green{color:var(--g)}.amber{color:var(--a)}.red{color:var(--r)}.blue{color:var(--b)}
+.sec{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.sec-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--g);margin-bottom:12px}
+.sec-hdr::before{content:'◆ ';font-size:8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:6px 10px;font-size:10px;letter-spacing:1px;color:#558855;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid #0f1f0f}
+tr:hover td{background:#0f1f0f}
+.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.bg{background:#003322;color:var(--g);border:1px solid var(--g)}
+.ba{background:#332200;color:var(--a);border:1px solid var(--a)}
+.br{background:#330000;color:var(--r);border:1px solid var(--r)}
+.bb{background:#001133;color:var(--b);border:1px solid var(--b)}
+.alert-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #0f1f0f}
+.pri{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;min-width:52px;text-align:center}
+.purgent{background:#330000;color:var(--r);border:1px solid var(--r)}
+.pmed{background:#332200;color:var(--a);border:1px solid var(--a)}
+.plow{background:#001133;color:var(--b);border:1px solid var(--b)}
+.pok{background:#003322;color:var(--g);border:1px solid var(--g)}
+.alert-txt{font-size:12px;flex:1}
+.alert-imp{font-size:11px;color:var(--a);min-width:70px;text-align:right}
+.ai-box{margin:0 20px 16px;background:var(--dim);border:1px solid var(--border);border-radius:6px;padding:16px}
+.ai-hdr{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--a);margin-bottom:10px}
+.ai-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ai-btn{padding:5px 12px;background:#1a2000;border:1px solid var(--a);color:var(--a);font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer}
+.ai-inp{flex:1;min-width:200px;background:#0b120b;border:1px solid var(--border);color:var(--g);font-family:inherit;font-size:12px;padding:8px 12px;border-radius:4px;outline:none}
+.ai-inp:focus{border-color:var(--g)}
+.ask-btn{padding:8px 16px;background:var(--g);color:#000;font-family:inherit;font-size:11px;font-weight:700;border:none;border-radius:4px;cursor:pointer}
+.ask-btn:disabled{opacity:.5;cursor:not-allowed}
+.ai-res{margin-top:10px;padding:10px;background:#0b120b;border:1px solid var(--border);border-radius:4px;color:#99cc99;font-size:12px;min-height:40px;white-space:pre-wrap;line-height:1.6}
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.pr-card{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;transition:border-color .2s}
+.pr-card:hover{border-color:var(--a)}
+.pr-card-title{color:var(--a);font-weight:700;font-size:11px;margin-bottom:4px}
+.pr-card-desc{color:#558855;font-size:10px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:#0b120b;border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
+.stat-val{font-size:22px;font-weight:700;margin-bottom:4px}
+.stat-lbl{font-size:10px;color:#558855;letter-spacing:1px}
+.footer{position:fixed;bottom:0;left:0;right:0;background:#0b120b;border-top:1px solid var(--border);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100}
+.fn{font-size:10px;color:#558855;letter-spacing:1px}
+.fbtns{display:flex;gap:8px}
+.fbtn{padding:6px 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
+.fbnca{background:#003322;border:1px solid var(--g);color:var(--g)}
+.frelay{background:#001133;border:1px solid var(--b);color:var(--b)}
+[id^="tab-"]{display:none}
+</style>
+</head><body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-left">
+    <span style="font-size:22px">&#9878;&#65039;</span>
+    <div>
+      <div class="hdr-title">HC COMPLIANCE COMMAND</div>
+      <div class="hdr-sub">HIPAA &middot; CMS &middot; Joint Commission &middot; OIG &middot; Regulatory</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <a href="https://buy.stripe.com/28EbJ1e9i0dV53p0qQ0gw01" target="_blank" style="font-family:inherit;font-size:7px;letter-spacing:2px;padding:5px 12px;border:1px solid #4ade80;color:#4ade80;text-decoration:none;white-space:nowrap;background:transparent;" onmouseover="this.style.background='#4ade80';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#4ade80'">SUBSCRIBE &mdash; $399/MO</a>
+    <div class="node-pill">NODE ACTIVE</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn" onclick="switchTab('dash',this)">&#8862; DASHBOARD</button>
+  <button class="nav-btn" onclick="switchTab('hipaa',this)">&#128274; HIPAA</button>
+  <button class="nav-btn" onclick="switchTab('cms',this)">&#128203; CMS</button>
+  <button class="nav-btn" onclick="switchTab('jc',this)">&#127973; JOINT COMMISSION</button>
+  <button class="nav-btn" onclick="switchTab('oig',this)">&#9888;&#65039; OIG</button>
+  <button class="nav-btn" onclick="switchTab('ai',this)">&#129504; AI ANALYSIS</button>
+  <button class="nav-btn" onclick="switchTab('presets',this)">&#9889; PRESETS</button>
+</nav>
+
+<!-- ═══ TAB: DASHBOARD ═══ -->
+<div id="tab-dash">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-val green">96.8%</div><div class="kpi-lbl">Compliance Score</div><div class="kpi-sub green">Above Joint Commission 95% floor</div></div>
+    <div class="kpi"><div class="kpi-val amber">14</div><div class="kpi-lbl">Open Audit Items</div><div class="kpi-sub amber">3 HIPAA &middot; 6 CMS &middot; 5 OIG &middot; deadline watch</div></div>
+    <div class="kpi"><div class="kpi-val red">2</div><div class="kpi-lbl">Active Penalties</div><div class="kpi-sub red">$24K exposure &middot; response due Friday</div></div>
+    <div class="kpi"><div class="kpi-val amber">84%</div><div class="kpi-lbl">Staff Training</div><div class="kpi-sub amber">HIPAA annual &middot; 16% incomplete</div></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr">ACTIVE ALERTS</div>
+    <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">2 active penalties &mdash; $24K exposure &middot; CMS response documentation due Friday</div><div class="alert-imp">$24K</div></div>
+    <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">HIPAA Security Risk Assessment overdue &mdash; 3 items past 90-day remediation window</div><div class="alert-imp">OCR risk</div></div>
+    <div class="alert-row"><span class="pri purgent">URGENT</span><div class="alert-txt">OIG exclusion check overdue &mdash; 47 staff</div><div class="alert-imp">CMS risk</div></div>
+    <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">6 open CMS Conditions of Participation items &mdash; 2 approaching survey window</div><div class="alert-imp">Survey risk</div></div>
+    <div class="alert-row"><span class="pri pmed">MED</span><div class="alert-txt">OIG exclusion database check not completed for 3 new vendors this month</div><div class="alert-imp">Exclusion risk</div></div>
+    <div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">16% of staff HIPAA annual training incomplete &mdash; deadline in 18 days</div><div class="alert-imp">84% done</div></div>
+    <div class="alert-row"><span class="pri plow">LOW</span><div class="alert-txt">Joint Commission mock survey due Q2</div><div class="alert-imp">Accreditation</div></div>
+    <div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">Joint Commission compliance score 96.8% &mdash; above threshold &middot; tracer audit clear</div><div class="alert-imp">&#10003; Clear</div></div>
+    <div class="alert-row"><span class="pri pok">OK</span><div class="alert-txt">HIPAA security risk assessment complete</div><div class="alert-imp">&#10003;</div></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr">COMPLIANCE FINDINGS TRACKER</div>
+    <table><thead><tr><th>STANDARD</th><th>AREA</th><th>FINDING</th><th>RISK</th><th>STATUS</th></tr></thead>
+    <tbody>
+      <tr><td>HIPAA &sect;164.308</td><td>BAA Management</td><td>2 vendors missing BAA</td><td>HIGH</td><td><span class="badge br">OPEN</span></td></tr>
+      <tr><td>OIG &sect;1001</td><td>Exclusion Screening</td><td>47 staff not screened</td><td>HIGH</td><td><span class="badge br">OVERDUE</span></td></tr>
+      <tr><td>CMS CoP &sect;482.13</td><td>Patient Rights</td><td>Documentation gap</td><td>MED</td><td><span class="badge ba">IN PROGRESS</span></td></tr>
+      <tr><td>Stark Law &sect;411.353</td><td>Physician Comp</td><td>Contract review needed</td><td>MED</td><td><span class="badge ba">REVIEW</span></td></tr>
+      <tr><td>HIPAA &sect;164.312</td><td>Access Controls</td><td>MFA not enforced</td><td>LOW</td><td><span class="badge bb">PLANNED</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">&#9889; AI ANALYSIS</div>
+    <div class="ai-row">
+      <input id="dash-inp" class="ai-inp" type="text" placeholder="Compliance query..." onkeydown="if(event.key==='Enter')Q(this.value,'dash-btn','dash-res')">
+      <button class="ask-btn" id="dash-btn" onclick="Q(document.getElementById('dash-inp').value,'dash-btn','dash-res')">&#9654; ASK</button>
+    </div>
+    <div id="dash-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB: HIPAA ═══ -->
+<div id="tab-hipaa">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">HIPAA COMPLIANCE STATUS</div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-val green">94%</div><div class="stat-lbl">Privacy Rule</div></div>
+      <div class="stat-box"><div class="stat-val amber">89%</div><div class="stat-lbl">Security Rule</div></div>
+      <div class="stat-box"><div class="stat-val red">78%</div><div class="stat-lbl">BAA Compliance</div></div>
+    </div>
+    <table><thead><tr><th>REQUIREMENT</th><th>CATEGORY</th><th>STATUS</th><th>LAST REVIEW</th><th>FINDING</th><th>PRIORITY</th></tr></thead>
+    <tbody>
+      <tr><td>Privacy Rule &sect;164.502</td><td>PHI Minimum Necessary</td><td><span class="badge bg">COMPLIANT</span></td><td>Feb 15</td><td>No gaps</td><td>LOW</td></tr>
+      <tr><td>Security Rule &sect;164.308</td><td>Administrative Safeguards</td><td><span class="badge ba">PARTIAL</span></td><td>Jan 30</td><td>MFA gap</td><td>MED</td></tr>
+      <tr><td>BAA &sect;164.504</td><td>Business Associates</td><td><span class="badge br">GAP</span></td><td>Jan 15</td><td>2 missing BAAs</td><td>HIGH</td></tr>
+      <tr><td>Breach Notification &sect;164.400</td><td>Incident Response</td><td><span class="badge bg">COMPLIANT</span></td><td>Mar 01</td><td>Plan current</td><td>LOW</td></tr>
+      <tr><td>Training &sect;164.530</td><td>Workforce Training</td><td><span class="badge ba">PARTIAL</span></td><td>Feb 01</td><td>87% complete</td><td>MED</td></tr>
+    </tbody></table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">&#9889; AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="Q('Review HIPAA BAA compliance — identify gaps and provide remediation checklist','hipaa-btn','hipaa-res')">BAA Audit</button>
+      <button class="ai-btn" onclick="Q('Conduct HIPAA Security Rule gap analysis on access controls and encryption','hipaa-btn','hipaa-res')">Security Assessment</button>
+      <button class="ai-btn" onclick="Q('Design HIPAA privacy training program to reach 100% workforce completion','hipaa-btn','hipaa-res')">Privacy Training</button>
+    </div>
+    <div class="ai-row">
+      <input id="hipaa-inp" class="ai-inp" type="text" placeholder="HIPAA query..." onkeydown="if(event.key==='Enter')Q(this.value,'hipaa-btn','hipaa-res')">
+      <button class="ask-btn" id="hipaa-btn" onclick="Q(document.getElementById('hipaa-inp').value,'hipaa-btn','hipaa-res')">&#9654; ASK</button>
+    </div>
+    <div id="hipaa-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB: CMS ═══ -->
+<div id="tab-cms">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">CMS CONDITIONS OF PARTICIPATION</div>
+    <table><thead><tr><th>CoP STANDARD</th><th>SECTION</th><th>COMPLIANCE</th><th>SURVEY RISK</th><th>FINDING</th><th>ACTION</th></tr></thead>
+    <tbody>
+      <tr><td>Patient Rights</td><td>&sect;482.13</td><td><span class="badge ba">PARTIAL</span></td><td>MED</td><td>Consent doc gap</td><td>Update forms</td></tr>
+      <tr><td>Medical Staff</td><td>&sect;482.22</td><td><span class="badge bg">COMPLIANT</span></td><td>LOW</td><td>None</td><td>Monitor</td></tr>
+      <tr><td>Nursing Services</td><td>&sect;482.23</td><td><span class="badge bg">COMPLIANT</span></td><td>LOW</td><td>None</td><td>Monitor</td></tr>
+      <tr><td>Medical Records</td><td>&sect;482.24</td><td><span class="badge ba">PARTIAL</span></td><td>MED</td><td>Timeliness issue</td><td>Process fix</td></tr>
+      <tr><td>Infection Control</td><td>&sect;482.42</td><td><span class="badge bg">COMPLIANT</span></td><td>LOW</td><td>None</td><td>Monitor</td></tr>
+      <tr><td>Discharge Planning</td><td>&sect;482.43</td><td><span class="badge ba">PARTIAL</span></td><td>MED</td><td>Documentation</td><td>Training</td></tr>
+    </tbody></table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">&#9889; AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="Q('Analyze CMS Conditions of Participation gaps and provide survey readiness plan','cms-btn','cms-res')">CoP Gap Review</button>
+      <button class="ai-btn" onclick="Q('Build a CMS survey readiness program addressing top 3 CoP deficiencies','cms-btn','cms-res')">Survey Prep</button>
+      <button class="ai-btn" onclick="Q('Fix medical records timeliness issues to achieve CMS CoP compliance','cms-btn','cms-res')">Medical Records</button>
+    </div>
+    <div class="ai-row">
+      <input id="cms-inp" class="ai-inp" type="text" placeholder="CMS compliance query..." onkeydown="if(event.key==='Enter')Q(this.value,'cms-btn','cms-res')">
+      <button class="ask-btn" id="cms-btn" onclick="Q(document.getElementById('cms-inp').value,'cms-btn','cms-res')">&#9654; ASK</button>
+    </div>
+    <div id="cms-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB: JOINT COMMISSION ═══ -->
+<div id="tab-jc">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">JOINT COMMISSION STANDARDS</div>
+    <table><thead><tr><th>STANDARD</th><th>CHAPTER</th><th>SCORE</th><th>LAST SURVEY</th><th>FINDINGS</th><th>STATUS</th></tr></thead>
+    <tbody>
+      <tr><td>NPSG.01.01.01</td><td>Patient ID</td><td>98%</td><td>2024</td><td>None</td><td><span class="badge bg">COMPLIANT</span></td></tr>
+      <tr><td>NPSG.02.03.01</td><td>Critical Results</td><td>91%</td><td>2024</td><td>1 gap</td><td><span class="badge ba">WATCH</span></td></tr>
+      <tr><td>NPSG.03.04.01</td><td>Medication Safety</td><td>87%</td><td>2024</td><td>2 gaps</td><td><span class="badge ba">WATCH</span></td></tr>
+      <tr><td>RC.02.01.01</td><td>Medical Records</td><td>84%</td><td>2024</td><td>3 gaps</td><td><span class="badge ba">REVIEW</span></td></tr>
+      <tr><td>IC.02.02.01</td><td>Infection Prevention</td><td>96%</td><td>2024</td><td>None</td><td><span class="badge bg">COMPLIANT</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">&#9889; AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="Q('Prepare for Joint Commission mock survey Q2 — address top scoring gaps','jc-btn','jc-res')">Mock Survey Prep</button>
+      <button class="ai-btn" onclick="Q('Improve NPSG.03.04.01 medication safety score from 87% to 95%','jc-btn','jc-res')">Medication Safety</button>
+      <button class="ai-btn" onclick="Q('Address 3 medical records findings to improve RC.02.01.01 compliance','jc-btn','jc-res')">Medical Records Fix</button>
+    </div>
+    <div class="ai-row">
+      <input id="jc-inp" class="ai-inp" type="text" placeholder="Joint Commission query..." onkeydown="if(event.key==='Enter')Q(this.value,'jc-btn','jc-res')">
+      <button class="ask-btn" id="jc-btn" onclick="Q(document.getElementById('jc-inp').value,'jc-btn','jc-res')">&#9654; ASK</button>
+    </div>
+    <div id="jc-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB: OIG ═══ -->
+<div id="tab-oig">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">OIG COMPLIANCE PROGRAM</div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-val red">47</div><div class="stat-lbl">Staff Exclusion Checks Overdue</div></div>
+      <div class="stat-box"><div class="stat-val green">0</div><div class="stat-lbl">Active OIG Investigations</div></div>
+      <div class="stat-box"><div class="stat-val green">94%</div><div class="stat-lbl">Compliance Hotline Response Rate</div></div>
+    </div>
+    <table><thead><tr><th>REQUIREMENT</th><th>FREQUENCY</th><th>LAST CHECK</th><th>STATUS</th><th>STAFF AFFECTED</th><th>RISK</th></tr></thead>
+    <tbody>
+      <tr><td>OIG Exclusion List</td><td>Monthly</td><td>Jan 15</td><td><span class="badge br">OVERDUE</span></td><td>47 unscreened</td><td>HIGH</td></tr>
+      <tr><td>SAM.gov Debarment</td><td>Monthly</td><td>Mar 01</td><td><span class="badge bg">CURRENT</span></td><td>All staff</td><td>LOW</td></tr>
+      <tr><td>State Medicaid Exclusion</td><td>Monthly</td><td>Feb 01</td><td><span class="badge ba">DUE SOON</span></td><td>All staff</td><td>MED</td></tr>
+      <tr><td>Compliance Training</td><td>Annual</td><td>Dec 2024</td><td><span class="badge bg">CURRENT</span></td><td>All staff</td><td>LOW</td></tr>
+      <tr><td>Hotline Monitoring</td><td>Quarterly</td><td>Mar 01</td><td><span class="badge bg">CURRENT</span></td><td>N/A</td><td>LOW</td></tr>
+    </tbody></table>
+  </div>
+  <div class="ai-box">
+    <div class="ai-hdr">&#9889; AI ANALYSIS</div>
+    <div class="ai-row">
+      <button class="ai-btn" onclick="Q('Create OIG exclusion screening plan for 47 unscreened staff — timeline and process','oig-btn','oig-res')">Exclusion Screening</button>
+      <button class="ai-btn" onclick="Q('Design comprehensive OIG compliance program with 7 core elements','oig-btn','oig-res')">Compliance Program</button>
+      <button class="ai-btn" onclick="Q('Conduct OIG compliance risk assessment for our healthcare operations','oig-btn','oig-res')">Risk Assessment</button>
+    </div>
+    <div class="ai-row">
+      <input id="oig-inp" class="ai-inp" type="text" placeholder="OIG compliance query..." onkeydown="if(event.key==='Enter')Q(this.value,'oig-btn','oig-res')">
+      <button class="ask-btn" id="oig-btn" onclick="Q(document.getElementById('oig-inp').value,'oig-btn','oig-res')">&#9654; ASK</button>
+    </div>
+    <div id="oig-res" class="ai-res">&gt; AI ready.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB: AI ANALYSIS ═══ -->
+<div id="tab-ai">
+  <div class="ai-box" style="margin-top:16px">
+    <div class="ai-hdr">&#9889; DEEP AI ANALYSIS</div>
+    <div class="ai-row">
+      <input id="ai-inp" class="ai-inp" type="text" placeholder="Enter detailed compliance query..." onkeydown="if(event.key==='Enter')Q(this.value,'ai-btn','ai-res')">
+      <button class="ask-btn" id="ai-btn" onclick="Q(document.getElementById('ai-inp').value,'ai-btn','ai-res')">&#9654; ASK</button>
+    </div>
+    <div id="ai-res" class="ai-res">&gt; AI Analysis ready.</div>
+  </div>
+</div>
+
+<!-- ═══ TAB: PRESETS ═══ -->
+<div id="tab-presets">
+  <div class="sec" style="margin-top:16px">
+    <div class="sec-hdr">PRESET LIBRARY &mdash; Click any to load into AI</div>
+    <div class="pr-grid">
+      <div class="pr-card" onclick="loadAI('Draft CMS penalty response documentation for 2 active penalties — $24K exposure · include corrective action plan and timeline for remediation')"><div class="pr-card-title">Penalty Response</div><div class="pr-card-desc">CMS penalty documentation</div></div>
+      <div class="pr-card" onclick="loadAI('Conduct HIPAA Security Risk Assessment review — identify 3 overdue remediation items, prioritize by OCR enforcement risk, and build corrective action plan')"><div class="pr-card-title">HIPAA SRA Review</div><div class="pr-card-desc">Security risk assessment</div></div>
+      <div class="pr-card" onclick="loadAI('Review 6 open CMS Conditions of Participation items — identify 2 approaching survey window, build evidence package and mock survey preparation checklist')"><div class="pr-card-title">CoP Survey Prep</div><div class="pr-card-desc">CMS survey readiness</div></div>
+      <div class="pr-card" onclick="loadAI('Build OIG exclusion verification process for new vendors — design monthly screening workflow and retroactive check for 3 unverified vendors')"><div class="pr-card-title">OIG Exclusion Check</div><div class="pr-card-desc">Vendor exclusion screening</div></div>
+      <div class="pr-card" onclick="loadAI('Design HIPAA annual training completion push — identify 16% incomplete staff, build escalation path, and create training attestation tracking')"><div class="pr-card-title">Training Compliance</div><div class="pr-card-desc">HIPAA training completion</div></div>
+      <div class="pr-card" onclick="loadAI('Build 90-day compliance posture improvement plan — HIPAA, CMS CoP, OIG, Joint Commission — prioritized by enforcement risk and deadline')"><div class="pr-card-title">90-Day Compliance Plan</div><div class="pr-card-desc">Full compliance roadmap</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="fn">&#9878;&#65039; COMPLIANCE NODE &nbsp; Ready &mdash; run analysis or relay to Strategist</div>
+  <div class="fbtns">
+    <button class="fbtn fbnca" onclick="Q('Run a full BNCA for HC COMPLIANCE COMMAND: top risks, compliance gaps, priority actions','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">&#9889; RUN BNCA</button>
+    <button class="fbtn frelay" onclick="window.open('https://hc-strategist.tsmatter.com','_blank')">&#128279; RELAY TO STRATEGIST</button>
+  </div>
+</div>
+
+<!-- INTAKE FEED -->
+<div id="intakeFeed_compliance" style="display:none;position:fixed;top:60px;right:20px;z-index:9999;width:360px;background:#0a140a;border:1px solid rgba(0,255,136,0.25);border-left:3px solid #00ff88;padding:16px 18px;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.6)">
+  <div style="font-family:'Courier New',monospace;font-size:9px;letter-spacing:3px;color:#00ff88;margin-bottom:10px">&#9670; HC COMPLIANCE INTAKE</div>
+  <div id="intakeList_compliance" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
+</div>
+
+
+
+<script>
+// ── SINGLE TAB CONTROLLER ──
+function switchTab(id, btn) {
+  document.querySelectorAll('[id^="tab-"]').forEach(function(el) {
+    el.style.setProperty('display', 'none', 'important');
+  });
+  var target = document.getElementById('tab-' + id);
+  if (target) target.style.setProperty('display', 'block', 'important');
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+function loadAI(prompt) {
+  var aiBtn = null;
+  document.querySelectorAll('.nav-btn').forEach(function(b) {
+    if ((b.getAttribute('onclick') || '').indexOf("'ai'") > -1) aiBtn = b;
+  });
+  switchTab('ai', aiBtn);
+  var inp = document.getElementById('ai-inp');
+  if (inp) inp.value = prompt;
+  setTimeout(function() { Q(prompt, 'ai-btn', 'ai-res'); }, 50);
+}
+function loadPreset(p) { loadAI(p); }
+async function Q(prompt, btnId, resId) {
+    if (!prompt || !prompt.trim()) return;
+    var btn = document.getElementById(btnId);
+    var res = document.getElementById(resId);
+    if (!btn || !res) return;
+    btn.disabled = true;
+    res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
+    try {
+      var r = await fetch('/api/hc/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system: 'You are a healthcare compliance expert specializing in HIPAA, CMS regulations, OIG guidelines, and healthcare audit defense. Provide precise, actionable compliance intelligence.',
+          message: prompt,
+          stream: false,
+          max_tokens: 1000
+        })
+      });
+      var d = await r.json();
+      var reply = d.response || d.content || (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content) || 'No response';
+      res.style.whiteSpace = 'pre-wrap';
+      res.textContent = '> TSM NEURAL [' + new Date().toLocaleTimeString() + ']\n\n' +
+        reply.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,3}\s*/g,'').trim();
+    } catch(e) {
+      res.textContent = '> TSM NEURAL ERROR: ' + e.message;
+    }
+    btn.disabled = false;
+  }
+window.Q = Q;
+window.switchTab = switchTab;
+window.loadAI = loadAI;
+window.loadPreset = loadPreset;
+window.addEventListener('load', function() {
+  var first = document.querySelector('.nav-btn');
+  if (first) {
+    var m = (first.getAttribute('onclick') || '').match(/switchTab\('([^']+)'/);
+    switchTab(m ? m[1] : 'dash', first);
+  }
+});
+</script>
+</body></html>

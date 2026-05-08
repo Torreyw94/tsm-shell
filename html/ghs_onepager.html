@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GHS Healthcare Command Suite — One Pager</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0a0e14;
+    --ink2: #1e2835;
+    --muted: #5a6578;
+    --rule: #d0d8e4;
+    --accent: #c8392b;
+    --accent2: #1a4f8c;
+    --gold: #b07d2a;
+    --bg: #f7f5f0;
+    --white: #ffffff;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'Instrument Sans', sans-serif;
+  }
+
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
+  html, body {
+    width: 8.5in;
+    min-height: 11in;
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--ink);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP RULE ── */
+  .top-rule {
+    height: 4px;
+    background: var(--accent);
+    width: 100%;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 28px 48px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+  }
+
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 8px;
+  }
+
+  header h1 {
+    font-family: var(--serif);
+    font-size: 34px;
+    line-height: 1.05;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .header-right {
+    text-align: right;
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: white;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .header-stat {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.8;
+  }
+
+  .header-stat strong {
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+  }
+
+  /* ── TICKER ── */
+  .ticker-bar {
+    background: var(--ink2);
+    overflow: hidden;
+    height: 26px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: scroll 35s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.45);
+    padding: 0 18px;
+  }
+
+  .ticker-item.alert {
+    color: #e07060;
+  }
+
+  .ticker-item.ok {
+    color: #60b07a;
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── INTRO ── */
+  .intro {
+    background: var(--white);
+    padding: 20px 48px 18px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .intro-copy {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--ink2);
+    max-width: 540px;
+  }
+
+  .intro-copy strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .stat-cluster {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-left: 2px solid var(--accent);
+    padding-left: 18px;
+  }
+
+  .stat-item {
+    text-align: right;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* ── FEATURES GRID ── */
+  .features {
+    flex: 1;
+    padding: 22px 48px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 14px;
+  }
+
+  .feat {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 18px 20px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .feat.red::before { background: var(--accent); }
+  .feat.blue::before { background: var(--accent2); }
+  .feat.gold::before { background: var(--gold); }
+
+  .feat-number {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .feat-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .feat-body {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .feat-body strong {
+    color: var(--ink2);
+    font-weight: 500;
+  }
+
+  .feat-proof {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .feat-proof span {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .feat-proof span.blue { color: var(--accent2); }
+  .feat-proof span.gold { color: var(--gold); }
+
+  /* wide feature spans 2 cols */
+  .feat.wide {
+    grid-column: span 2;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  .footer-left strong {
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-family: var(--serif);
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 400;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .footer-right {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+
+  .footer-cta {
+    color: rgba(255,255,255,0.85);
+    font-size: 10px;
+    font-family: var(--sans);
+    font-weight: 500;
+    letter-spacing: 0;
+    display: block;
+    margin-bottom: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top-rule"></div>
+
+  <header>
+    <div>
+      <div class="header-eyebrow">GHS · Healthcare Command Suite · Operational Intelligence Platform</div>
+      <h1>Stop managing data.<br><em>Start commanding outcomes.</em></h1>
+    </div>
+    <div class="header-right">
+      <div class="live-badge"><span class="live-dot"></span>Live System</div>
+      <div class="header-stat">
+        <strong>Industry avg denial rate</strong> — 11.8% (2024)<br>
+        <strong>Medicare Advantage denials</strong> — +4.8% YoY<br>
+        <strong>Revenue at risk</strong> — up to 12% of net revenue<br>
+        <strong>Prior auth burden</strong> — +30% over 3 years
+      </div>
+    </div>
+  </header>
+
+  <div class="ticker-bar">
+    <div class="ticker-inner">
+      <span class="ticker-item alert">⬤ &nbsp;DENIAL RATE — 18.4% VS TARGET 9%</span>
+      <span class="ticker-item alert">⬤ &nbsp;REVENUE AT RISK — $2.1M</span>
+      <span class="ticker-item alert">⬤ &nbsp;CLAIMS BACKLOG — 247 PENDING</span>
+      <span class="ticker-item">⬤ &nbsp;PRIOR AUTH FRICTION — HIGH</span>
+      <span class="ticker-item ok">⬤ &nbsp;NODES LIVE — 11 / 11</span>
+      <span class="ticker-item">⬤ &nbsp;OPS QUEUE — 31</span>
+      <span class="ticker-item">⬤ &nbsp;STAFFING / THROUGHPUT — WATCHLIST</span>
+      <span class="ticker-item alert">⬤ &nbsp;DENIAL RATE — 18.4% VS TARGET 9%</span>
+      <span class="ticker-item alert">⬤ &nbsp;REVENUE AT RISK — $2.1M</span>
+      <span class="ticker-item alert">⬤ &nbsp;CLAIMS BACKLOG — 247 PENDING</span>
+      <span class="ticker-item">⬤ &nbsp;PRIOR AUTH FRICTION — HIGH</span>
+      <span class="ticker-item ok">⬤ &nbsp;NODES LIVE — 11 / 11</span>
+      <span class="ticker-item">⬤ &nbsp;OPS QUEUE — 31</span>
+      <span class="ticker-item">⬤ &nbsp;STAFFING / THROUGHPUT — WATCHLIST</span>
+    </div>
+  </div>
+
+  <div class="intro">
+    <div class="intro-copy">
+      Your revenue cycle team already has Epic. They have Tableau. They have RCM dashboards. What they don't have is a system that reads all of it and tells them <strong>exactly where to move first — with dollar values attached.</strong> The GHS Healthcare Command Suite is not another dashboard. It's a live operational command layer that sits on top of your existing systems, surfaces the highest-impact actions across your entire network, and puts every revenue cycle decision in priority order before your morning huddle.
+    </div>
+    <div class="stat-cluster">
+      <div class="stat-item">
+        <div class="stat-num">40%+</div>
+        <div class="stat-label">of providers exceed<br>10% denial rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">12%</div>
+        <div class="stat-label">net revenue at risk<br>from denied claims</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">30 days</div>
+        <div class="stat-label">typical deployment<br>timeline</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+
+    <div class="feat red">
+      <div class="feat-number">01 · Revenue Intelligence</div>
+      <div class="feat-title">Prioritized action queues with dollar values</div>
+      <div class="feat-body">The system reads your claims backlog, denial profile, and payer mix — then ranks every open item by revenue impact. Your team stops working the oldest claim and starts working the <strong>most expensive one.</strong></div>
+      <div class="feat-proof">With 247 claims backlog: identifying the top 20 to work first can recover <span>$400K–$600K</span> in a single cycle.</div>
+    </div>
+
+    <div class="feat blue">
+      <div class="feat-number">02 · Denial Prevention</div>
+      <div class="feat-title">Stop denials before they leave the building</div>
+      <div class="feat-body">BNCA Engine analyzes payer behavior patterns and flags high-risk claims <strong>before submission</strong> — not after rejection. Prior auth friction, coding gaps, and eligibility mismatches surface at the source.</div>
+      <div class="feat-proof">Industry denial rate: <span class="blue">11.8%</span> avg. Facilities using proactive denial logic target <span class="blue">&lt; 5%.</span></div>
+    </div>
+
+    <div class="feat gold">
+      <div class="feat-number">03 · Multi-Facility Command</div>
+      <div class="feat-title">One view. Every facility. Zero gaps.</div>
+      <div class="feat-body">Slice by facility, payer, service line — or see the full network consolidated. <strong>11 live operational nodes</strong> map across functional lanes. No more calling each site to build the morning report.</div>
+      <div class="feat-proof">Built for 30+ hospital networks. <span class="gold">Scales without adding headcount.</span></div>
+    </div>
+
+    <div class="feat red wide">
+      <div class="feat-number">04 · Sits on Top of Epic — Doesn't Replace It</div>
+      <div class="feat-title">Your team stays in their system. They just know where to go.</div>
+      <div class="feat-body">GHS Command Suite integrates directly with Epic, your clearinghouse, and payer portals. It translates what Epic is tracking into a <strong>prioritized action queue.</strong> No retraining. No migration. No disruption. The HC Strategist layer interprets the data and delivers the recommendation — your team executes in the tools they already know.</div>
+      <div class="feat-proof">Integration to live feeds: Epic · clearinghouse · payer portals. <span>Deployment: 30 days standard.</span> Your IT team handles the spec.</div>
+    </div>
+
+    <div class="feat blue">
+      <div class="feat-number">05 · Human-in-the-Loop Control</div>
+      <div class="feat-title">AI-assisted. Human-approved. Always.</div>
+      <div class="feat-body">Every recommendation is <strong>fully traceable.</strong> See the node data used, the payer logic applied, the dollar impact calculated. The HITL Manager step is a review gate — nothing goes out without your team's sign-off. Not a black box. A co-pilot.</div>
+      <div class="feat-proof">Audit trail on every action. <span class="blue">Explainable logic.</span> Regulatory-ready documentation.</div>
+    </div>
+
+    <div class="feat gold">
+      <div class="feat-number">06 · Operational Watchlist</div>
+      <div class="feat-title">Staffing, throughput, and capacity — live</div>
+      <div class="feat-body">Revenue cycle doesn't fail in the billing department alone. When throughput slows or staffing gaps emerge, the ops queue flags it <strong>before it becomes a denial.</strong> Watchlist alerts tie clinical operations to financial outcomes in real time.</div>
+      <div class="feat-proof">Ops queue live: <span class="gold">31 items.</span> Staffing / throughput: watchlist active.</div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <strong>GHS Healthcare Command Suite</strong>
+      Operational Intelligence · Revenue Cycle · Multi-Facility Management<br>
+      tsm-shell.fly.dev/html/ghs/ · Live demo available on request
+    </div>
+    <div class="footer-right">
+      <span class="footer-cta">Ready to see your facility's numbers?</span>
+      Contact GHS · HC Strategist · April 2026
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

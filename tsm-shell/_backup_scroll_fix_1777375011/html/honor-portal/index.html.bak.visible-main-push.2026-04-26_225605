@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Honor Portal · Executive Command</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#02070d;color:#d9f3ff;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.header{padding:18px 22px;border-bottom:1px solid #123050;display:flex;justify-content:space-between;align-items:center;background:#061018}
+.brand{color:#00e0ff;font-weight:900;letter-spacing:.16em}
+.badge{border:1px solid #00f59f;color:#00f59f;border-radius:999px;padding:7px 12px;font-size:11px}
+.wrap{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#07111b;border:1px solid #123050;border-radius:14px;padding:16px}
+.card b{color:#00e0ff}
+.val{font-size:26px;font-weight:900;margin-top:8px}
+.good{color:#00f59f}.watch{color:#ffb000}.risk{color:#ff3b57}
+.summary{white-space:pre-wrap;line-height:1.55;max-height:330px;overflow:auto;background:#061018;border:1px solid #123050;border-radius:14px;padding:16px}
+.btn{background:#00b7ff;color:#001018;border:0;border-radius:8px;padding:11px 14px;font:900 11px monospace;cursor:pointer;margin:10px 8px 0 0}
+.btn.dark{background:transparent;color:#00e0ff;border:1px solid #00e0ff}
+.small{color:#8fb0c8;font-size:12px}
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <div class="brand">HONOR PORTAL · EXECUTIVE COMMAND</div>
+    <div class="small">Main Strategist feed · HC node posture · revenue/risk overview</div>
+  </div>
+  <div class="badge" id="live">SYNCING</div>
+</header>
+
+<main class="wrap">
+  <section class="grid">
+    <div class="card"><b>Nodes Reporting</b><div class="val" id="nodes">—</div><div class="small">HC nodes + document pipeline</div></div>
+    <div class="card"><b>Latest Document</b><div class="val" id="doc">—</div><div class="small">from GHS presentation</div></div>
+    <div class="card"><b>Revenue Protected</b><div class="val good" id="revenue">$—</div><div class="small">simulated from BNCA quality</div></div>
+    <div class="card"><b>Risk Posture</b><div class="val" id="risk">—</div><div class="small">manager-facing priority</div></div>
+  </section>
+
+  <section class="card">
+    <b>OFFICE / NODE POSTURES</b>
+    <div class="grid" id="postures" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <b>EXECUTIVE SUMMARY</b>
+    <div class="summary" id="summary">Waiting for Main Strategist report...</div>
+    <button class="btn" onclick="location.href='/html/main-strategist/index.html?v=from-honor-portal'">OPEN MANAGER COMMAND VIEW</button>
+    <button class="btn dark" onclick="location.href='/html/hc-strategist/index.html?v=from-honor-portal'">OPEN HC STRATEGIST</button>
+    <button class="btn dark" onclick="refreshPortal()">REFRESH</button>
+  </section>
+</main>
+
+<script>
+async function refreshPortal(){
+  try{
+    const data = await fetch('/api/main-strategist/hc-report',{cache:'no-store'}).then(r=>r.json());
+    const relay = data.relay || {};
+    const nodes = relay.nodes || {};
+    const report = data.report || {};
+    const keys = Object.keys(nodes);
+    const docNode = nodes['ghs-document-pipeline'];
+    const q = docNode?.metrics?.quality || 'partial';
+
+    let protectedValue = 420000, risk='WATCH', riskClass='watch';
+    if(q === 'complete'){ protectedValue=784000; risk='MODERATE'; riskClass='good'; }
+    if(q === 'incomplete'){ protectedValue=180000; risk='HIGH'; riskClass='risk'; }
+
+    document.getElementById('live').textContent = keys.length ? 'LIVE · AUTO REFRESH' : 'WAITING';
+    document.getElementById('nodes').textContent = keys.length + ' / 12';
+    document.getElementById('doc').textContent = docNode ? ((docNode.metrics?.document || 'Doc') + ' ' + (docNode.metrics?.version || '')) : '—';
+    document.getElementById('revenue').textContent = '$' + protectedValue.toLocaleString();
+
+    const riskEl=document.getElementById('risk');
+    riskEl.textContent=risk;
+    riskEl.className='val ' + riskClass;
+
+    document.getElementById('postures').innerHTML = keys.map(k=>{
+      const n=nodes[k]||{};
+      const m=n.metrics||{};
+      const txt=(n.bnca||'').toLowerCase();
+      let cls='good', posture='STABLE';
+      if(txt.includes('hold') || txt.includes('partial') || txt.includes('risk') || m.quality==='partial'){cls='watch';posture='WATCH'}
+      if(txt.includes('do not submit') || txt.includes('high risk') || m.quality==='incomplete'){cls='risk';posture='RISK'}
+      return `<div class="card"><b>${(n.node || k).toString().replace('HC ','')}</b><div class="val ${cls}">${posture}</div><div class="small">${m.document || m.node || m.status || k}</div></div>`;
+    }).join('') || '<div class="card">No node signals yet. Run GHS pipeline and push to Main Strategist.</div>';
+
+    document.getElementById('summary').textContent = report.summary || 'No executive report yet. Run GHS presentation → Send to HC Strategist → Push to Main Strategist.';
+  }catch(e){
+    document.getElementById('live').textContent='OFFLINE';
+    document.getElementById('summary').textContent='Could not load Main Strategist feed. Run pipeline and refresh.';
+  }
+}
+refreshPortal();
+setInterval(refreshPortal,5000);
+</script>
+</body>
+</html>

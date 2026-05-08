@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TSM · Insurance Intelligence Suite · Live Executive Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* TSM_SCROLL_FIX */
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+main {
+  padding-bottom: 80px !important;
+  min-height: calc(100vh - 60px);
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
+}
+.ask-bar {
+  position: fixed;
+  bottom: 40px;
+  right: 12px;
+  z-index: 20;
+}
+.panel {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0b0d;
+  --surface:#111318;
+  --surface2:#181c22;
+  --border:#1f2535;
+  --gold:#C9A84C;
+  --gold-dim:#8A6E28;
+  --gold-bright:#E8C870;
+  --gold-pale:#F5DFA0;
+  --teal:#1a9e8a;
+  --teal-bright:#3BBFAF;
+  --amber:#EF9F27;
+  --amber-dim:#BA7517;
+  --red:#E24B4A;
+  --green:#1D9E75;
+  --green-bright:#5DCAA5;
+  --text:#e8ede6;
+  --text-dim:#7a8f88;
+  --text-muted:#3d4f48;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace}
+.deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:56px 72px;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.slide.active{opacity:1;pointer-events:all}
+.nav{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
+.pip{width:6px;height:6px;border-radius:50%;background:var(--text-muted);transition:all .3s;cursor:pointer}
+.pip.on{background:var(--gold);width:18px;border-radius:3px}
+.nav-arrows{position:fixed;bottom:28px;right:48px;display:flex;gap:8px;z-index:100}
+.arr{background:transparent;border:.5px solid var(--border);color:var(--text-dim);padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;border-radius:4px;transition:all .2s}
+.arr:hover{border-color:var(--gold);color:var(--gold)}
+.slide-num{position:fixed;top:28px;right:48px;font-size:11px;color:var(--text-muted);letter-spacing:.08em}
+.tag{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:3px;border:.5px solid var(--border);color:var(--text-dim)}
+.tag.live{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
+.tag.med{border-color:var(--teal);color:var(--teal-bright);background:rgba(26,158,138,.07)}
+.tag.high{border-color:var(--amber);color:var(--amber);background:rgba(239,159,39,.07)}
+.divider{height:.5px;background:var(--border);margin:28px 0}
+
+/* SLIDE 1 */
+#s1{justify-content:center}
+.s1-eyebrow{display:flex;gap:12px;align-items:center;margin-bottom:32px;flex-wrap:wrap}
+.s1-title{font-family:'Syne',sans-serif;font-size:68px;font-weight:800;line-height:.95;letter-spacing:-.02em;color:var(--text);margin-bottom:16px}
+.s1-title span{color:var(--gold)}
+.s1-sub{font-size:14px;color:var(--text-dim);line-height:1.8;max-width:580px;margin-bottom:48px}
+.s1-stats{display:flex;gap:48px}
+.s1-stat .n{font-size:36px;font-weight:700;color:var(--gold-bright)}
+.s1-stat .l{font-size:11px;color:var(--text-dim);letter-spacing:.06em;margin-top:4px}
+.s1-ticker{position:absolute;bottom:56px;left:72px;right:72px;display:flex;align-items:center;gap:16px;border-top:.5px solid var(--border);padding-top:20px}
+.ticker-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ticker-text{font-size:12px;color:var(--text-dim)}
+.ticker-val{color:var(--gold-pale);font-weight:500}
+
+/* SLIDE 2 */
+#s2{justify-content:center}
+.s2-head{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;line-height:1.1;margin-bottom:8px}
+.s2-head em{color:var(--amber);font-style:normal}
+.s2-deck{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.prob-card{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:20px 24px;position:relative;overflow:hidden}
+.prob-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+.prob-card.p1::before{background:var(--red)}
+.prob-card.p2::before{background:var(--amber)}
+.prob-card.p3::before{background:var(--teal)}
+.prob-card.p4::before{background:var(--gold)}
+.prob-card .pc-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.prob-card .pc-val{font-size:26px;font-weight:700;margin-bottom:4px}
+.prob-card.p1 .pc-val{color:var(--red)}
+.prob-card.p2 .pc-val{color:var(--amber)}
+.prob-card.p3 .pc-val{color:var(--teal-bright)}
+.prob-card.p4 .pc-val{color:var(--gold-bright)}
+.prob-card .pc-desc{font-size:12px;color:var(--text-dim);line-height:1.6}
+
+/* SLIDE 3 */
+#s3{justify-content:center}
+.s3-head{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;margin-bottom:28px}
+.arch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.arch-node{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:18px 12px;text-align:center;position:relative}
+.arch-node.hub{border-color:var(--gold);background:rgba(201,168,76,.05)}
+.arch-node.med-node{border-color:var(--teal);background:rgba(26,158,138,.05)}
+.arch-num{font-size:10px;color:var(--text-muted);margin-bottom:10px;letter-spacing:.08em}
+.arch-icon{font-size:20px;margin-bottom:10px;display:block}
+.arch-name{font-size:12px;font-weight:500;color:var(--text);margin-bottom:5px;line-height:1.3}
+.arch-route{font-size:9.5px;color:var(--text-muted);line-height:1.5}
+.arch-arrow{position:absolute;right:-7px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:11px;z-index:1}
+.arch-flow{margin-top:20px;background:var(--surface);border:.5px solid var(--border);border-radius:6px;padding:14px 20px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-dim);flex-wrap:wrap}
+.arch-flow strong{color:var(--gold-pale)}
+
+/* SLIDE 4 - SIM */
+#s4{padding:24px 56px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.s4-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-shrink:0}
+.s4-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800}
+.aud-tabs{display:flex;gap:6px;margin-bottom:10px;flex-shrink:0}
+.aud-tab{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:4px;border:.5px solid var(--border);color:var(--text-muted);cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace}
+.aud-tab:hover{border-color:var(--gold);color:var(--gold)}
+.aud-tab.active{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
+.sim-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0}
+.sim-panel{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.sim-panel.active-panel{border-color:var(--gold)}
+.sim-panel.firing-panel{border-color:var(--amber)}
+.panel-header{display:flex;align-items:center;gap:8px}
+.pdot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);flex-shrink:0;transition:background .3s}
+.pdot.live{background:var(--gold)}
+.pdot.firing{background:var(--amber);animation:blink .6s infinite}
+.panel-name{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
+.panel-route{font-size:10px;color:var(--text-muted)}
+.panel-out{font-size:11px;color:var(--text-dim);line-height:1.7;flex:1}
+.panel-out .pv{color:var(--text);font-weight:500}
+.panel-out .pg{color:var(--gold-pale);border-left:2px solid var(--gold);padding-left:8px;margin-top:6px;font-size:10px;line-height:1.6}
+.panel-out .pm{display:inline-block;background:var(--surface2);border:.5px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;margin:2px 2px 0 0}
+.panel-out .pm span{color:var(--gold-bright);font-weight:500;display:block;font-size:13px}
+.panel-out .pm small{color:var(--text-muted);font-size:9px}
+.flow-row{display:flex;align-items:center;gap:0;margin-bottom:12px}
+.fstep{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.fnode{width:26px;height:26px;border-radius:50%;border:.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);transition:all .3s}
+.fnode.done{background:var(--gold-dim);border-color:var(--gold);color:var(--gold-pale)}
+.fnode.go{background:rgba(239,159,39,.15);border-color:var(--amber);color:var(--amber);animation:blink .6s infinite}
+.flabel{font-size:8px;color:var(--text-muted);text-align:center;max-width:58px;line-height:1.3}
+.flabel.done{color:var(--gold)}
+.fconn{flex:1;height:.5px;background:var(--border);margin-top:-14px;transition:background .4s}
+.fconn.done{background:var(--gold)}
+.sim-log{background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:6px 12px;height:48px;overflow-y:auto;font-size:10px;line-height:1.6;flex-shrink:0}
+.ll{display:flex;gap:10px}
+.lt{color:var(--text-muted);flex-shrink:0}
+.lok{color:var(--gold)}
+.lwarn{color:var(--amber)}
+.sim-btns{display:flex;gap:8px;align-items:center;margin-top:8px;flex-shrink:0;flex-wrap:wrap}
+.btn-primary{padding:8px 22px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:500;cursor:pointer;border-radius:4px;border:.5px solid var(--gold);background:rgba(201,168,76,.1);color:var(--gold-pale);transition:all .2s;letter-spacing:.04em}
+.btn-primary:hover{background:rgba(201,168,76,.2)}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed}
+.btn-sec{padding:8px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;border-radius:4px;border:.5px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
+.btn-sec:hover{border-color:var(--text-dim);color:var(--text)}
+.btn-app{padding:6px 12px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;border-radius:4px;border:.5px solid var(--teal);background:rgba(26,158,138,.08);color:var(--teal-bright);transition:all .2s;text-decoration:none;display:inline-block}
+.btn-app:hover{background:rgba(26,158,138,.18)}
+.sim-status{font-size:11px;color:var(--text-muted);margin-left:auto}
+
+/* SLIDE 5 */
+#s5{justify-content:center}
+.s5-head{font-family:'Syne',sans-serif;font-size:46px;font-weight:800;line-height:1.05;margin-bottom:8px}
+.s5-head span{color:var(--gold)}
+.s5-sub{font-size:13px;color:var(--text-dim);margin-bottom:32px}
+.outcome-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.oc{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:18px 18px 14px}
+.oc-n{font-size:32px;font-weight:700;color:var(--gold-bright);margin-bottom:4px}
+.oc-l{font-size:11px;color:var(--text-dim);letter-spacing:.04em;line-height:1.5}
+.oc.teal .oc-n{color:var(--teal-bright)}
+.outcome-bar{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:18px 22px}
+.ob-row{display:flex;align-items:center;gap:16px;padding:7px 0;border-bottom:.5px solid var(--border)}
+.ob-row:last-child{border-bottom:none}
+.ob-label{font-size:11px;color:var(--text-dim);width:200px;flex-shrink:0}
+.ob-track{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.ob-fill{height:100%;border-radius:2px;background:var(--gold);transition:width 1.2s ease}
+.ob-fill.teal{background:var(--teal)}
+.ob-val{font-size:12px;font-weight:500;color:var(--gold-pale);width:70px;text-align:right}
+.s5-footer{margin-top:24px;display:flex;gap:32px;align-items:center}
+.s5-footer .tsm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text)}
+.s5-footer .tsm span{color:var(--gold)}
+.s5-footer p{font-size:12px;color:var(--text-muted);line-height:1.6}
+
+/* SLIDE 6 - TALK TRACK */
+#s6{justify-content:flex-start;padding:40px 56px;overflow-y:auto}
+.aud-selector{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.aud-btn{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:4px;border:.5px solid var(--border);color:var(--text-muted);cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;background:transparent}
+.aud-btn:hover{border-color:var(--gold);color:var(--gold)}
+.aud-btn.active{border-color:var(--gold);color:var(--gold-pale);background:rgba(201,168,76,.08)}
+.tt-progress{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap}
+.tt-pip{height:3px;flex:1;min-width:14px;border-radius:2px;background:var(--text-muted);transition:background .3s}
+.tt-pip.done{background:var(--gold-dim)}
+.tt-pip.active{background:var(--gold)}
+.tt-card{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:22px;min-height:240px;margin-bottom:14px}
+.tt-step-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.tt-step-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text);margin-bottom:12px;line-height:1.1}
+.tt-action{display:inline-block;font-size:11px;color:var(--amber);background:rgba(239,159,39,.07);border:.5px solid var(--amber-dim);border-radius:4px;padding:5px 12px;margin-bottom:12px;letter-spacing:.04em}
+.tt-say{border-left:2px solid var(--gold);padding:9px 14px;background:var(--surface2);border-radius:0 6px 6px 0;margin-bottom:7px}
+.tt-say p{font-size:13px;line-height:1.8;color:var(--text-dim)}
+.tt-say p .money{color:var(--gold-bright);font-weight:500}
+.tt-say p .med{color:var(--teal-bright);font-weight:500}
+.tt-tip{font-size:11px;color:var(--amber);background:rgba(239,159,39,.07);border-radius:4px;padding:7px 12px;margin-top:8px;border:.5px solid rgba(239,159,39,.2)}
+.tt-obj{border:.5px solid var(--border);border-radius:6px;margin-top:7px;overflow:hidden}
+.tt-obj-q{padding:10px 14px;font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;justify-content:space-between;letter-spacing:.02em}
+.tt-obj-q:hover{background:var(--surface2)}
+.tt-obj-a{display:none;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.7;border-top:.5px solid var(--border);background:var(--bg)}
+.tt-obj-a.open{display:block}
+.tt-nav{display:flex;gap:10px;align-items:center}
+.tt-btn-p{padding:8px 22px;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:500;cursor:pointer;border-radius:4px;border:.5px solid var(--gold);background:rgba(201,168,76,.1);color:var(--gold-pale);transition:all .2s;letter-spacing:.04em}
+.tt-btn-p:hover{background:rgba(201,168,76,.2)}
+.tt-btn-g{padding:8px 16px;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;border-radius:4px;border:.5px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
+.tt-btn-g:hover{border-color:var(--text-dim);color:var(--text)}
+.tt-counter{margin-left:auto;font-size:11px;color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="deck">
+<!-- SLIDE 1 · COVER -->
+<div class="slide active" id="s1">
+  <div class="s1-eyebrow">
+    <span class="tag live">LIVE SUITE</span>
+    <span class="tag med">NPN 18818059 · Licensed AZ Producer</span>
+    <span class="tag high">5 APPS · ALL LINES</span>
+  </div>
+  <div class="s1-title">TSM<br/><span>Insurance</span><br/>Intelligence</div>
+  <div class="s1-sub">Five AI-powered apps — AZ Insurance Command, DME Benefits Engine, Agents Intelligence, P&C Enterprise Command, and Pricing — coordinated into a single insurance intelligence loop for agents, agencies, brokers, and Medicare.</div>
+  <div class="s1-stats">
+    <div class="s1-stat"><div class="n">$2,400</div><div class="l">Avg unclaimed DME benefit per Medicare client</div></div>
+    <div class="s1-stat"><div class="n">&lt; 60s</div><div class="l">Client question to BNCA output</div></div>
+    <div class="s1-stat"><div class="n">5</div><div class="l">Live apps · all lines of business</div></div>
+  </div>
+  <div class="s1-ticker">
+    <div class="ticker-dot"></div>
+    <div class="ticker-text">Live · Medicare denial rate <span class="ticker-val">18.4% vs 9% target</span> · Unclaimed DME per book <span class="ticker-val">avg $2,400</span> · Agent ramp time <span class="ticker-val">cut 3x</span> · P&C renewal leakage <span class="ticker-val">-22%</span> · Compliance flags <span class="ticker-val">caught at intake</span></div>
+  </div>
+</div>
+
+<!-- SLIDE 2 · PROBLEM -->
+<div class="slide" id="s2">
+  <div class="s2-head">Insurance has<br/><em>four failure points.</em><br/>TSM closes all of them.</div>
+  <div class="divider"></div>
+  <div class="s2-deck">
+    <div class="prob-card p1">
+      <div class="pc-label">Independent agents · daily reality</div>
+      <div class="pc-val">Portal hell</div>
+      <div class="pc-desc">Agents toggle between 8–12 carrier portals per day. No unified view. Carrier rules change without notice. Medicare compliance windows missed. E&O exposure grows silently.</div>
+    </div>
+    <div class="prob-card p2">
+      <div class="pc-label">Agencies & IMOs · production gap</div>
+      <div class="pc-val">6-month ramp</div>
+      <div class="pc-desc">New agents average 6 months to first meaningful production. Senior agents miss 18–25% of cross-sell revenue in existing book. No AI layer to surface what's already there.</div>
+    </div>
+    <div class="prob-card p3">
+      <div class="pc-label">Medicare · DME benefit gap</div>
+      <div class="pc-val">$2,400 left</div>
+      <div class="pc-desc">Average Medicare beneficiary leaves $2,400 in Part B DME benefits unclaimed annually. CPAP, CGM, oxygen, wheelchairs — agents don't check. Clients don't know. Nobody wins.</div>
+    </div>
+    <div class="prob-card p4">
+      <div class="pc-label">TSM response · BNCA engine</div>
+      <div class="pc-val">All 5 apps live</div>
+      <div class="pc-desc">Every client question, every document, every compliance check routes through the AI node pipeline — Compliance, Coverage, Claims, Risk — and returns a single actionable BNCA in under 60 seconds.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 · ARCHITECTURE -->
+<div class="slide" id="s3">
+  <div class="s3-head">Five apps.<br/>One intelligence loop.</div>
+  <div class="arch-grid">
+    <div class="arch-node hub">
+      <div class="arch-num">01</div>
+      <div class="arch-icon">🏛</div>
+      <div class="arch-name">AZ Insurance Command</div>
+      <div class="arch-route">Medicare · ACA · P&C · Life<br/>Compliance · Carrier Intel<br/>Full multi-line dashboard</div>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node med-node">
+      <div class="arch-num">02</div>
+      <div class="arch-icon">💊</div>
+      <div class="arch-name">DME Benefits Engine</div>
+      <div class="arch-route">Medicare Part B checker<br/>8 DME categories<br/>Client-facing eligibility</div>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node">
+      <div class="arch-num">03</div>
+      <div class="arch-icon">🤝</div>
+      <div class="arch-name">Agents Intelligence</div>
+      <div class="arch-route">Agent · Agency · Carrier<br/>Cross-sell engine<br/>Compliance AI · Training</div>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node">
+      <div class="arch-num">04</div>
+      <div class="arch-icon">🏢</div>
+      <div class="arch-name">P&C Enterprise Command</div>
+      <div class="arch-route">Quote pipeline · Risk scoring<br/>Renewal engine<br/>Loss ratio analytics</div>
+      <div class="arch-arrow">→</div>
+    </div>
+    <div class="arch-node hub">
+      <div class="arch-num">05</div>
+      <div class="arch-icon">⚡</div>
+      <div class="arch-name">BNCA Engine · HITL</div>
+      <div class="arch-route">Compliance · Coverage<br/>Claims · Risk nodes<br/>Human approval · Audit trail</div>
+    </div>
+  </div>
+  <div class="arch-flow">
+    <span style="color:var(--text-muted)">Client question or document →</span>
+    <strong>4 AI nodes fire in parallel</strong>
+    <span style="color:var(--text-muted)">→ Insurance Strategist synthesizes →</span>
+    <strong>BNCA generated</strong>
+    <span style="color:var(--text-muted)">→ HITL reviews →</span>
+    <strong>Agent acts · audit trail complete</strong>
+  </div>
+</div>
+<!-- SLIDE 4 · LIVE SIM -->
+<div class="slide" id="s4" style="gap:12px">
+  <div class="s4-head">
+    <div class="s4-title">Live intelligence — watch it run</div>
+    <div style="display:flex;gap:8px">
+      <span class="tag live">LIVE · tsm-shell.fly.dev</span>
+      <span class="tag med">NPN 18818059</span>
+    </div>
+  </div>
+  <div class="aud-tabs">
+    <div class="aud-tab active" onclick="setAud('medicare',this)">Medicare Agent</div>
+    <div class="aud-tab" onclick="setAud('agency',this)">Agency / IMO</div>
+    <div class="aud-tab" onclick="setAud('broker',this)">Broker</div>
+    <div class="aud-tab" onclick="setAud('pc',this)">P&C Commercial</div>
+    <div class="aud-tab" onclick="setAud('hc',this)">Healthcare Co.</div>
+  </div>
+  <div class="flow-row">
+    <div class="fstep"><div class="fnode" id="fn0">1</div><div class="flabel" id="fl0">Client query received</div></div>
+    <div class="fconn" id="fc0"></div>
+    <div class="fstep"><div class="fnode" id="fn1">2</div><div class="flabel" id="fl1">4 nodes fire</div></div>
+    <div class="fconn" id="fc1"></div>
+    <div class="fstep"><div class="fnode" id="fn2">3</div><div class="flabel" id="fl2">Strategist synthesizes</div></div>
+    <div class="fconn" id="fc2"></div>
+    <div class="fstep"><div class="fnode" id="fn3">4</div><div class="flabel" id="fl3">BNCA generated</div></div>
+    <div class="fconn" id="fc3"></div>
+    <div class="fstep"><div class="fnode" id="fn4">5</div><div class="flabel" id="fl4">HITL reviews</div></div>
+    <div class="fconn" id="fc4"></div>
+    <div class="fstep"><div class="fnode" id="fn5">6</div><div class="flabel" id="fl5">Agent acts</div></div>
+  </div>
+  <div class="sim-wrap">
+    <div class="sim-panel" id="p-compliance">
+      <div class="panel-header"><div class="pdot" id="pd-compliance"></div><span class="panel-name">Compliance Node</span></div>
+      <div class="panel-route" id="compliance-route">CMS rules · State regs · E&O exposure</div>
+      <div class="panel-out" id="po-compliance"><span style="color:var(--text-muted)">Waiting...</span></div>
+    </div>
+    <div class="sim-panel" id="p-coverage">
+      <div class="panel-header"><div class="pdot" id="pd-coverage"></div><span class="panel-name">Coverage Node</span></div>
+      <div class="panel-route" id="coverage-route">Plan match · Gap analysis · Network check</div>
+      <div class="panel-out" id="po-coverage"><span style="color:var(--text-muted)">Waiting...</span></div>
+    </div>
+    <div class="sim-panel" id="p-claims">
+      <div class="panel-header"><div class="pdot" id="pd-claims"></div><span class="panel-name">Claims Node</span></div>
+      <div class="panel-route" id="claims-route">Denial risk · Appeal paths · Deadlines</div>
+      <div class="panel-out" id="po-claims"><span style="color:var(--text-muted)">Waiting...</span></div>
+    </div>
+    <div class="sim-panel" id="p-bnca">
+      <div class="panel-header"><div class="pdot" id="pd-bnca"></div><span class="panel-name">BNCA Output · Insurance Strategist</span></div>
+      <div class="panel-route">Best Next Course of Action · HITL queue</div>
+      <div class="panel-out" id="po-bnca"><span style="color:var(--text-muted)">Waiting for node synthesis...</span></div>
+    </div>
+  </div>
+  <div class="sim-log" id="simlog"><div class="ll"><span class="lt">--:--:--</span><span>Select audience tab above · Press Run to begin.</span></div></div>
+  <div class="sim-btns">
+    <button class="btn-primary" id="runbtn" onclick="runSim()">▶ Run intelligence cycle</button>
+    <button class="btn-sec" onclick="resetSim()">Reset</button>
+    <a class="btn-app" href="https://tsm-shell.fly.dev/html/az-ins/" target="_blank">→ AZ Command</a>
+    <a class="btn-app" href="https://tsm-shell.fly.dev/html/dme/" target="_blank">→ DME Engine</a>
+    <a class="btn-app" href="https://tsm-shell.fly.dev/html/agents-ins/" target="_blank">→ Agents Intel</a>
+    <a class="btn-app" href="https://tsm-shell.fly.dev/html/pc-command/" target="_blank">→ P&C Command</a>
+    <span class="sim-status" id="simstatus">idle</span>
+  </div>
+</div>
+
+<!-- SLIDE 5 · OUTCOMES -->
+<div class="slide" id="s5">
+  <div class="s5-head">Revenue recovered.<br/>Clients <span>retained.</span></div>
+  <div class="s5-sub">What TSM Insurance Intelligence delivers — by audience</div>
+  <div class="outcome-grid">
+    <div class="oc"><div class="oc-n">$2,400</div><div class="oc-l">Avg DME benefit per Medicare client found and claimed annually</div></div>
+    <div class="oc teal"><div class="oc-n">3x</div><div class="oc-l">Faster new agent ramp to first production milestone</div></div>
+    <div class="oc"><div class="oc-n">22%</div><div class="oc-l">Reduction in P&C renewal leakage with 90-day risk scoring</div></div>
+    <div class="oc teal"><div class="oc-n">100%</div><div class="oc-l">Compliance flag catch rate at point of sale — zero surprise CMS findings</div></div>
+  </div>
+  <div class="outcome-bar">
+    <div class="ob-row">
+      <div class="ob-label">Medicare DME benefit recovery</div>
+      <div class="ob-track"><div class="ob-fill" style="width:94%"></div></div>
+      <div class="ob-val">$2,400/client</div>
+    </div>
+    <div class="ob-row">
+      <div class="ob-label">Agent cross-sell revenue lift</div>
+      <div class="ob-track"><div class="ob-fill teal" style="width:78%"></div></div>
+      <div class="ob-val">+18–25%</div>
+    </div>
+    <div class="ob-row">
+      <div class="ob-label">Claim denial appeals pursued</div>
+      <div class="ob-track"><div class="ob-fill" style="width:100%"></div></div>
+      <div class="ob-val">100% scored</div>
+    </div>
+    <div class="ob-row">
+      <div class="ob-label">P&C renewal retention improvement</div>
+      <div class="ob-track"><div class="ob-fill teal" style="width:72%"></div></div>
+      <div class="ob-val">22% lift</div>
+    </div>
+    <div class="ob-row">
+      <div class="ob-label">Compliance E&O exposure reduction</div>
+      <div class="ob-track"><div class="ob-fill" style="width:88%"></div></div>
+      <div class="ob-val">proactive</div>
+    </div>
+  </div>
+  <div class="s5-footer">
+    <div class="tsm">TSM<span>·</span>Insurance</div>
+    <p>Five apps. One intelligence loop. Every line of business.<br/>Independent agents · Agencies · Brokers · Medicare · P&C · Healthcare.</p>
+    <div style="margin-left:auto;text-align:right">
+      <div style="font-size:11px;color:var(--text-muted)">NPN 18818059 · Live at</div>
+      <div style="font-size:13px;color:var(--gold-pale)">tsm-shell.fly.dev</div>
+    </div>
+  </div>
+</div>
+<!-- SLIDE 6 · TALK TRACK -->
+<div class="slide" id="s6">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800">Talk Track</div>
+    <div class="aud-selector" id="tt-aud-sel">
+      <button class="aud-btn active" onclick="setTTAud('agent',this)">Independent Agent</button>
+      <button class="aud-btn" onclick="setTTAud('agency',this)">Agency / IMO</button>
+      <button class="aud-btn" onclick="setTTAud('broker',this)">Broker</button>
+      <button class="aud-btn" onclick="setTTAud('medicare',this)">Medicare / DME</button>
+      <button class="aud-btn" onclick="setTTAud('hc',this)">Healthcare Co.</button>
+    </div>
+  </div>
+  <div class="tt-progress" id="tt-pips"></div>
+  <div class="tt-card" id="tt-card"></div>
+  <div class="tt-nav">
+    <button class="tt-btn-g" id="tt-back" onclick="ttGo(-1)">← back</button>
+    <button class="tt-btn-p" id="tt-next" onclick="ttGo(1)">next →</button>
+    <span class="tt-counter" id="tt-counter"></span>
+  </div>
+</div>
+</div><!-- /deck -->
+
+<div class="nav" id="nav"></div>
+<div class="nav-arrows">
+  <button class="arr" onclick="go(-1)">← prev</button>
+  <button class="arr" onclick="go(1)">next →</button>
+</div>
+<div class="slide-num" id="slidenum">1 / 6</div>
+
+<script>
+const BASE='https://tsm-shell.fly.dev';
+const slides=document.querySelectorAll('.slide');
+const navEl=document.getElementById('nav');
+let cur=0,running=false,currentAud='medicare';
+
+slides.forEach((_,i)=>{
+  const p=document.createElement('div');
+  p.className='pip'+(i===0?' on':'');
+  p.onclick=()=>goTo(i);
+  navEl.appendChild(p);
+});
+function goTo(n){
+  slides[cur].classList.remove('active');
+  document.querySelectorAll('.pip')[cur].classList.remove('on');
+  cur=Math.max(0,Math.min(n,slides.length-1));
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.pip')[cur].classList.add('on');
+  document.getElementById('slidenum').textContent=(cur+1)+' / '+slides.length;
+}
+function go(d){goTo(cur+d);}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+
+// ── AUDIENCE SCENARIOS ──────────────────────────────────────────────────────
+const AUD_SCENARIOS = {
+  medicare:{
+    label:'Medicare Agent',
+    query:'Medicare client — 72yo, on Part B, CPAP diagnosis 2022, INR 4.1 on warfarin. What DME benefits are unclaimed and what compliance issues exist for enrollment in MA plan?',
+    compliance:{route:'CMS Medicare rules · Part B eligibility · IOEP window check',
+      result:`<div class="pv">Compliance Node · Medicare</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>IOEP</span><small>window open</small></div>
+          <div class="pm"><span>SEP</span><small>check required</small></div>
+          <div class="pm"><span>Part B</span><small>active</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--gold)">→ CMS compliant · MA plan enrollment eligible</div>`},
+    coverage:{route:'Part B benefit check · Plan formulary · Network',
+      result:`<div class="pv">Coverage Node · DME + MA</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>$1,800</span><small>CPAP unclaimed</small></div>
+          <div class="pm"><span>$3,200</span><small>INR monitoring</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--gold)">→ Total unclaimed DME: $5,000+</div>`},
+    claims:{route:'Prior auth · Denial risk · Deadline tracking',
+      result:`<div class="pv">Claims Node · DME Auth</div>
+        <div style="margin-top:6px;font-size:10px;color:var(--gold-pale)">CPAP: RX on file. Supplier auth needed before claim. INR monitoring: covered under Part B with quarterly lab. No prior auth required. Denial risk: LOW.</div>`},
+    bnca:`<div class="pv">⚡ BNCA · Medicare Agent Action</div><div class="pg">APPROVE MA enrollment — SEP window open, Part B active. INITIATE DME referral for CPAP and INR monitoring — $5,000+ unclaimed. Warfarin management: flag for MTM consult at next appointment. Action: call client today, schedule benefits review, initiate supplier referral before end of week.</div>`
+  },
+  agency:{
+    label:'Agency / IMO',
+    query:'Agency production review: 47 agents, avg production 18 policies/month, new agent cohort (12 agents) at month 4 with 3.2 avg policies. Top performers averaging 31. Cross-sell penetration: 22%.',
+    compliance:{route:'Agent licensing · State compliance · E&O gaps',
+      result:`<div class="pv">Compliance Node · Agency</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>3</span><small>license gaps</small></div>
+          <div class="pm"><span>2</span><small>E&O flags</small></div>
+          <div class="pm"><span>12</span><small>CE due 90d</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--amber)">→ 3 agents writing outside licensed lines</div>`},
+    coverage:{route:'Book penetration · Cross-sell gaps · Product mix',
+      result:`<div class="pv">Coverage Node · Book Analysis</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>78%</span><small>single-line</small></div>
+          <div class="pm"><span>$340K</span><small>cross-sell gap</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--gold)">→ Life and disability severely underplaced</div>`},
+    claims:{route:'Agency production · Retention · Chargeback risk',
+      result:`<div class="pv">Claims Node · Production Risk</div>
+        <div style="margin-top:6px;font-size:10px;color:var(--gold-pale)">New agent cohort at 53% of benchmark at month 4. Chargeback risk HIGH on 8 of 12 new agents. Top performer patterns show: consistent Medicare + Life combo drives 31+ policies. Coaching gap identified.</div>`},
+    bnca:`<div class="pv">⚡ BNCA · Agency Action</div><div class="pg">IMMEDIATE: Remediate 3 licensing gaps — E&O exposure is active. PRIORITY: Run cross-sell AI on all single-line clients — $340K revenue opportunity in existing book. COACHING: Deploy top-performer script (Medicare + Life combo) to new agent cohort this week. New agents following this pattern hit 24+ policies by month 5 — project 6 of 12 to benchmark within 45 days.</div>`
+  },
+  broker:{
+    label:'Broker',
+    query:'Commercial broker review: manufacturing client, 85 employees, $2.1M revenue, current GL + WC. No EPLI, no cyber, no umbrella. WC mod 1.18. Renewal in 67 days.',
+    compliance:{route:'Regulatory requirements · Industry mandates · Coverage gaps',
+      result:`<div class="pv">Compliance Node · Commercial</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>EPLI</span><small>required by lender</small></div>
+          <div class="pm"><span>Cyber</span><small>PCI scope flagged</small></div>
+          <div class="pm"><span>WC mod</span><small>1.18 — high</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--amber)">→ Lender covenant breach risk on EPLI gap</div>`},
+    coverage:{route:'Coverage adequacy · Gap analysis · Carrier appetite',
+      result:`<div class="pv">Coverage Node · Commercial Account</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>$850K</span><small>umbrella gap</small></div>
+          <div class="pm"><span>3</span><small>uninsured risks</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--gold)">→ EPLI, Cyber, Umbrella all missing</div>`},
+    claims:{route:'WC claims history · Loss trend · Renewal risk',
+      result:`<div class="pv">Claims Node · Renewal Risk</div>
+        <div style="margin-top:6px;font-size:10px;color:var(--gold-pale)">WC mod 1.18 — 3 claims in 24 months, 2 open. Current carrier likely non-renews or surcharges +22%. Competitive market: 2 carriers with appetite for manufacturing at this mod. Window: 67 days.</div>`},
+    bnca:`<div class="pv">⚡ BNCA · Broker Action</div><div class="pg">URGENT: Market account NOW — 67 days to renewal, carrier non-renew likely. Best appetite: carrier A (mod tolerance to 1.25) and carrier B (GL + WC combo discount). PRESENT to client: EPLI + Cyber + Umbrella package — lender covenant requires EPLI, PCI scope triggers cyber. Revenue opportunity: $28,000 additional premium. Quote WC + GL + Umbrella package first, add EPLI and cyber in same meeting.</div>`
+  },
+  pc:{
+    label:'P&C Commercial',
+    query:'P&C pipeline review: 31 active quotes, 8 flagged for underwriting gaps, 4 renewals at 90-day window with retention risk scores above 7. Commercial auto fleet — 3 undisclosed drivers with MVR issues.',
+    compliance:{route:'Underwriting compliance · Carrier submission rules · MVR disclosure',
+      result:`<div class="pv">Compliance Node · P&C</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>3</span><small>MVR undisclosed</small></div>
+          <div class="pm"><span>8</span><small>UW gaps</small></div>
+          <div class="pm"><span>4</span><small>renewal risk 7+</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--red)">→ Non-renewal likely on commercial auto account</div>`},
+    coverage:{route:'Carrier appetite · Risk match · Quote optimization',
+      result:`<div class="pv">Coverage Node · Pipeline</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>$2.1M</span><small>premium at risk</small></div>
+          <div class="pm"><span>4</span><small>remarketing needed</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--gold)">→ 2 carriers with appetite for current risk profile</div>`},
+    claims:{route:'Loss ratio · Claim history · Retention scoring',
+      result:`<div class="pv">Claims Node · Retention</div>
+        <div style="margin-top:6px;font-size:10px;color:var(--gold-pale)">Fleet account: 3 MVR violations undisclosed. Carrier discovers at audit — non-renewal and potential rescission. Action required before renewal in 38 days. Remark to surplus lines carrier if standard market declines.</div>`},
+    bnca:`<div class="pv">⚡ BNCA · P&C Action</div><div class="pg">IMMEDIATE: Pull MVRs on all fleet drivers — disclose to carrier before they discover at audit. Non-disclosure is a rescission trigger. PIPELINE: 8 submissions with UW gaps — return to insured for missing info before submission or carrier declines and files adverse action. RENEWALS: 4 accounts at risk score 7+ — schedule retention calls this week, bring coverage review and updated valuations. Revenue at risk: $2.1M. Actionable today: MVR pull, UW gap letters, retention call schedule.</div>`
+  },
+  hc:{
+    label:'Healthcare Company',
+    query:'Healthcare company insurance review: 220 employees, self-funded health plan, stop-loss at $150K specific. 3 claimants approaching threshold. Medicare coordination of benefits issues flagged. HR director needs compliance memo for board.',
+    compliance:{route:'ACA compliance · Stop-loss · COB rules · Medicare secondary',
+      result:`<div class="pv">Compliance Node · Healthcare</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>COB</span><small>3 issues flagged</small></div>
+          <div class="pm"><span>MSP</span><small>Medicare secondary</small></div>
+          <div class="pm"><span>ACA</span><small>reporting due</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--amber)">→ Medicare Secondary Payer violation risk</div>`},
+    coverage:{route:'Stop-loss adequacy · Plan design · Benefit gaps',
+      result:`<div class="pv">Coverage Node · Self-Funded Plan</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <div class="pm"><span>3</span><small>claimants at risk</small></div>
+          <div class="pm"><span>$340K</span><small>exposure above SL</small></div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--gold)">→ Stop-loss adequacy review needed immediately</div>`},
+    claims:{route:'Claim trend · MSP coordination · Stop-loss trigger',
+      result:`<div class="pv">Claims Node · Healthcare Plan</div>
+        <div style="margin-top:6px;font-size:10px;color:var(--gold-pale)">3 claimants within 18% of $150K specific threshold. Q3 trend projects 2 will exceed. Stop-loss carrier notification required at $120K per terms. MSP rules require Medicare primary for 3 employees — COB corrections needed or CMS penalty exposure.</div>`},
+    bnca:`<div class="pv">⚡ BNCA · Healthcare Co. Action</div><div class="pg">IMMEDIATE: Notify stop-loss carrier on 2 claimants approaching threshold — late notice voids reimbursement. COMPLIANCE: Correct Medicare Secondary Payer coordination on 3 employees — MSP violation carries $1,000/day CMS penalty. BOARD MEMO: Generate compliance summary with stop-loss status, MSP corrections, and ACA reporting timeline — ready in 3 minutes. Plan design review: raise specific to $175K or add laser to reduce aggregate risk. Schedule TPA review call this week.</div>`
+  }
+};
+
+let currentAudKey = 'medicare';
+
+function setAud(key, el) {
+  currentAudKey = key;
+  document.querySelectorAll('.aud-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  resetSim();
+}
+
+// ── SIM ENGINE ───────────────────────────────────────────────────────────────
+function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false})}
+function slog(msg,cls=''){
+  const el=document.getElementById('simlog');
+  const d=document.createElement('div');
+  d.className='ll';
+  d.innerHTML=`<span class="lt">${ts()}</span><span class="${cls}">${msg}</span>`;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function fstep(i,s){
+  const n=document.getElementById('fn'+i),l=document.getElementById('fl'+i),c=document.getElementById('fc'+i);
+  n.className='fnode'+(s==='done'?' done':s==='go'?' go':'');
+  if(l) l.className='flabel'+(s==='done'?' done':'');
+  if(c&&s==='done') c.className='fconn done';
+}
+function spanel(id,s){
+  document.getElementById('p-'+id).className='sim-panel'+(s==='active'?' active-panel':s==='firing'?' firing-panel':'');
+  document.getElementById('pd-'+id).className='pdot'+(s==='live'?' live':s==='firing'?' firing':'');
+}
+function sout(id,h){document.getElementById('po-'+id).innerHTML=h;}
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function runSim(){
+  if(running)return;
+  running=true;
+  document.getElementById('runbtn').disabled=true;
+  document.getElementById('simstatus').textContent='running...';
+  document.getElementById('simlog').innerHTML='';
+  const sc = AUD_SCENARIOS[currentAudKey];
+
+  // Step 1 — intake
+  fstep(0,'go');
+  slog('TSM Insurance Intelligence: query received · '+sc.label+'...');
+  await delay(800);
+  fstep(0,'done');
+  slog('Client profile parsed · routing to 4 nodes in parallel','lok');
+  document.getElementById('fc0').className='fconn done';
+
+  // Step 2 — compliance node
+  await delay(400);fstep(1,'go');spanel('compliance','firing');
+  document.getElementById('compliance-route').textContent = sc.compliance.route;
+  slog('Compliance Node: firing · '+sc.compliance.route+'...');
+  await delay(1000);
+  fstep(1,'done');spanel('compliance','active');
+  sout('compliance', sc.compliance.result);
+  slog('Compliance Node: complete','lok');
+  document.getElementById('fc1').className='fconn done';
+
+  // Step 3 — coverage + claims in parallel
+  await delay(300);fstep(2,'go');
+  spanel('coverage','firing');spanel('claims','firing');
+  document.getElementById('coverage-route').textContent = sc.coverage.route;
+  document.getElementById('claims-route').textContent = sc.claims.route;
+  slog('Coverage Node + Claims Node: firing in parallel...');
+  await delay(1100);
+  spanel('coverage','active');spanel('claims','active');
+  sout('coverage', sc.coverage.result);
+  sout('claims', sc.claims.result);
+  fstep(2,'done');
+  slog('Coverage + Claims nodes: complete','lok');
+  document.getElementById('fc2').className='fconn done';
+
+  // Step 4 — strategist
+  await delay(400);fstep(3,'go');spanel('bnca','firing');
+  slog('Insurance Strategist: synthesizing 3 node findings into BNCA...');
+  try {
+    const r = await fetch(BASE+'/api/hc/ask',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        query: sc.query,
+        system:'TSM Insurance Intelligence',
+        location:'Arizona'
+      })
+    });
+    const d = await r.json();
+    const txt = d?.answer||d?.response||d?.result||null;
+    fstep(3,'done');spanel('bnca','active');
+    if(txt){
+      sout('bnca',`<div class="pv">⚡ BNCA · ${sc.label}</div><div class="pg">${txt.slice(0,280)}${txt.length>280?'...':''}</div>`);
+      slog('BNCA generated via live AI','lok');
+    } else {
+      sout('bnca', sc.bnca);
+      slog('BNCA generated (scenario)','lok');
+    }
+  } catch {
+    fstep(3,'done');spanel('bnca','active');
+    sout('bnca', sc.bnca);
+    slog('BNCA generated (scenario)','lok');
+  }
+  document.getElementById('fc3').className='fconn done';
+
+  // Step 5 — HITL
+  await delay(500);fstep(4,'go');
+  slog('HITL Manager: BNCA queued for agent review...');
+  await delay(700);
+  fstep(4,'done');
+  slog('HITL review complete · action approved','lok');
+  document.getElementById('fc4').className='fconn done';
+
+  // Step 6 — agent acts
+  await delay(400);fstep(5,'go');
+  slog('Agent: executing BNCA action · audit trail timestamped...');
+  await delay(600);
+  fstep(5,'done');
+  slog('── Intelligence cycle complete · 100% audit trail ──','lok');
+
+  document.getElementById('simstatus').textContent='cycle complete ✓';
+  running=false;
+  document.getElementById('runbtn').disabled=false;
+  document.getElementById('runbtn').textContent='▶ Run again';
+}
+
+function resetSim(){
+  if(running)return;
+  for(let i=0;i<6;i++){
+    const n=document.getElementById('fn'+i);if(n){n.className='fnode';n.textContent=i+1;}
+    const l=document.getElementById('fl'+i);if(l)l.className='flabel';
+    const c=document.getElementById('fc'+i);if(c)c.className='fconn';
+  }
+  ['compliance','coverage','claims','bnca'].forEach(id=>{
+    spanel(id,'');
+    sout(id,'<span style="color:var(--text-muted)">Waiting...</span>');
+  });
+  document.getElementById('simlog').innerHTML='<div class="ll"><span class="lt">--:--:--</span><span>Select audience tab · Press Run to begin.</span></div>';
+  document.getElementById('simstatus').textContent='idle';
+  document.getElementById('runbtn').textContent='▶ Run intelligence cycle';
+  document.getElementById('runbtn').disabled=false;
+}
+// ── TALK TRACKS BY AUDIENCE ────────────────────────────────────────────────
+const TT_TRACKS = {
+  agent:[
+    { label:"Open", title:"Opening line",
+      action:"Device open — say this before touching anything",
+      say:["What you're looking at is not another carrier portal.",
+           "It's an AI intelligence layer that tells you what to do next for every client — and catches the compliance issues before they become E&O claims."],
+      tip:"Say it slowly. Let them look at the screen." },
+    { label:"Step 1", title:"Set the pain",
+      action:"Don't click yet — just talk",
+      say:["Every day you're toggling between 8 carrier portals, looking up Medicare rules that changed last quarter, and manually checking eligibility you should already know.",
+           "The problem isn't effort. It's that none of those systems talk to each other."],
+      tip:"Watch for the nod. If they laugh — you're in." },
+    { label:"Step 2", title:"Show the DME gap",
+      action:"Open tsm-shell.fly.dev/html/dme/ — let it load",
+      say:["This is the DME Benefits Engine. It checks every Medicare client for unclaimed Part B benefits.",
+           "Average unclaimed benefit: <span class='money'>$2,400</span> per client per year.",
+           "CPAP, CGM, wheelchairs, oxygen — your clients qualify and nobody told them."],
+      tip:"Click one DME card. Let the benefit amount show. Don't explain it — let them read it." },
+    { label:"Step 3", title:"Run Medicare compliance check",
+      action:"Go back to Slide 4 · Select Medicare Agent tab · Hit Run",
+      say:["Now watch what happens when a Medicare client question comes in.",
+           "Four nodes fire simultaneously — Compliance, Coverage, Claims, Risk.",
+           "In under 60 seconds you have a BNCA — a specific action — not a list of things to look up."],
+      tip:"Count to 3 after hitting Run. Let the nodes animate. Then read the BNCA out loud." },
+    { label:"Step 4", title:"Show AZ Command",
+      action:"Open tsm-shell.fly.dev/html/az-ins/ — Medicare tab",
+      say:["This is your command center. Every line you write — Medicare, ACA, Life, P&C — in one place.",
+           "The compliance tab catches CMS rule changes and enrollment window issues before you submit.",
+           "No more missed SEP windows. No more surprise denials."],
+      tip:"Click the Compliance tab. Let them see the real-time check." },
+    { label:"Close", title:"Close",
+      action:null,
+      say:["What you just saw is what your practice looks like with an AI layer underneath it.",
+           "The <span class='money'>$2,400</span> in unclaimed DME? That's a conversation with every Medicare client you see this month.",
+           "The BNCA output? That's your 10-minute client call instead of a 45-minute portal session."],
+      tip:"Stop talking. Let them respond first." },
+    { label:"Objections", title:"Handle pushback",
+      action:null, say:[],
+      objections:[
+        { q:'"I already have carrier portals for this."',
+          a:'"The portals show you what they want you to see. TSM shows you what your client qualifies for — across all carriers, in real time. It also catches what the portals miss."' },
+        { q:'"Is this compliant with CMS rules?"',
+          a:'"Every BNCA goes through the Compliance Node before it reaches you. CMS Medicare rules, state regulations, E&O flags — all checked at the point of recommendation. You are still the licensed agent — you review and approve every action."' },
+        { q:'"How much does it cost?"',
+          a:'"Per-user pricing based on lines written. In most cases the first DME referral you generate covers the monthly cost. Want to see the pricing breakdown?"' },
+        { q:'"How long to set up?"',
+          a:'"One GROQ key, configured once. You are running live BNCA outputs the same day. No IT required."' }
+      ], tip:null }
+  ],
+  agency:[
+    { label:"Open", title:"Opening line",
+      action:"Open on the main dashboard — don't click yet",
+      say:["What you're looking at is a production intelligence system for your agency.",
+           "It tells you where your book of business has gaps, which agents are at chargeback risk, and what your top performers are doing that your new agents aren't."],
+      tip:"Let them look for 5 seconds." },
+    { label:"Step 1", title:"The production gap",
+      action:"Still don't click — just talk",
+      say:["The average agency loses 18 to 25 percent of available cross-sell revenue because agents don't know it's there.",
+           "Your existing clients already trust you. They just haven't been asked about the next line."],
+      tip:"This is the money line. Pause after it." },
+    { label:"Step 2", title:"Run agency scenario",
+      action:"Slide 4 · Agency / IMO tab · Hit Run",
+      say:["Watch what the system surfaces for a 47-agent book.",
+           "Licensing gaps, E&O exposure, cross-sell revenue sitting in existing accounts.",
+           "And a coaching recommendation for new agents — based on what your top producers actually do."],
+      tip:"Read the BNCA line about the top performer pattern out loud. That's the close." },
+    { label:"Step 3", title:"Show Agents Intelligence",
+      action:"Open tsm-shell.fly.dev/html/agents-ins/",
+      say:["Three views — Agent, Agency, Carrier.",
+           "The Agency view shows you your entire book analysis. The Agent view gives each producer their own BNCA coaching feed.",
+           "New agents using this system hit production benchmarks 3x faster."],
+      tip:"Click the Agency tab. Let them see the cross-sell engine." },
+    { label:"Close", title:"Close",
+      action:null,
+      say:["Your top producers are already doing what this system does — manually, in their heads.",
+           "This gives every agent on your team the same intelligence layer your best producer has.",
+           "What would 18% more cross-sell revenue mean for your agency this year?"],
+      tip:"Ask the question. Then stop talking." },
+    { label:"Objections", title:"Handle pushback",
+      action:null, say:[],
+      objections:[
+        { q:'"We already track production in our AMS."',
+          a:'"Your AMS tracks what happened. This tells you what to do next — which clients to call, which agents to coach, which lines are being left on the table. It sits on top of your AMS, not instead of it."' },
+        { q:'"Can we white-label this for our agents?"',
+          a:'"Yes. White-labeling is available at the enterprise tier. Your brand, your NPN, TSM intelligence layer underneath. Your agents see your platform."' },
+        { q:'"What about carrier appointment requirements?"',
+          a:'"Every BNCA recommendation respects the agent\'s appointment status and licensed lines. The Compliance Node checks this before any recommendation reaches the agent."' }
+      ], tip:null }
+  ],
+  broker:[
+    { label:"Open", title:"Opening line",
+      action:"Open on the dashboard — let it load",
+      say:["What you're looking at is a commercial account intelligence system.",
+           "It catches the coverage gaps your clients don't know they have — before their carrier discovers them at renewal."],
+      tip:"Let it breathe." },
+    { label:"Step 1", title:"The renewal gap",
+      action:"Don't click — just talk",
+      say:["The average commercial account has three uninsured risks the broker hasn't surfaced.",
+           "EPLI, cyber, umbrella — not because the broker doesn't know, but because the workflow never prompts the conversation.",
+           "TSM prompts it. Every time. On every account."],
+      tip:"Watch for the head tilt. That means they recognize the problem." },
+    { label:"Step 2", title:"Run broker scenario",
+      action:"Slide 4 · Broker tab · Hit Run",
+      say:["Manufacturing client. 85 employees. GL and WC only.",
+           "Watch the Coverage Node surface three missing lines — and a lender covenant breach on EPLI.",
+           "That's a non-renewal risk and a client liability conversation in the same account."],
+      tip:"Read the BNCA revenue opportunity line: $28,000 additional premium. Let it land." },
+    { label:"Step 3", title:"P&C Command",
+      action:"Open tsm-shell.fly.dev/html/pc-command/",
+      say:["This is your renewal pipeline. Every commercial account, risk-scored at 90 days.",
+           "The accounts most likely to non-renew or move to market show up before you lose them.",
+           "One broker using this caught 4 non-renewals in the first month. Retained $380K in premium."],
+      tip:"Point to the ticker. Let them see the live renewal count." },
+    { label:"Close", title:"Close",
+      action:null,
+      say:["Every commercial account you write has coverage gaps. The question is whether you find them or the next broker does.",
+           "TSM finds them. Automatically. On every account. Every renewal cycle."],
+      tip:"Stop. Let them respond." },
+    { label:"Objections", title:"Handle pushback",
+      action:null, say:[],
+      objections:[
+        { q:'"We do coverage reviews manually."',
+          a:'"Manual reviews catch what you remember to check. The Coverage Node checks every line, every account, every renewal — and flags what the manual process misses. It\'s a second set of eyes that never gets busy."' },
+        { q:'"How does this integrate with Applied Epic or EzLynx?"',
+          a:'"TSM runs alongside your existing AMS via browser. No integration required to start. API connection to Applied and EzLynx available for enterprise deployments — your account data pulls automatically."' }
+      ], tip:null }
+  ],
+  medicare:[
+    { label:"Open", title:"Opening line",
+      action:"Open DME engine — tsm-shell.fly.dev/html/dme/",
+      say:["Most Medicare agents are leaving <span class='money'>$2,400</span> per client per year on the table.",
+           "Not because they don't care — because nobody built a tool that checks it automatically."],
+      tip:"Say the dollar amount clearly. It's the hook." },
+    { label:"Step 1", title:"DME is the hidden revenue",
+      action:"Click CPAP card — show the benefit amount",
+      say:["Medicare Part B covers CPAP machines, CGM devices, wheelchairs, oxygen concentrators.",
+           "Your client with a sleep study from 2022? They qualify. Your diabetic clients? CGM is covered.",
+           "This isn't new money — it's money they're already entitled to that nobody claimed."],
+      tip:"Click through 2-3 cards slowly. Let the dollar amounts register." },
+    { label:"Step 2", title:"Run Medicare compliance",
+      action:"Slide 4 · Medicare Agent tab · Hit Run",
+      say:["Now watch the full BNCA for a real Medicare client scenario.",
+           "Compliance check catches the enrollment window. Coverage node surfaces $5,000 in unclaimed DME.",
+           "The BNCA tells you exactly what to do — enroll, refer to DME supplier, flag for MTM consult."],
+      tip:"Read the BNCA action line slowly. One sentence at a time." },
+    { label:"Step 3", title:"MA + DME combo",
+      action:"Open AZ Command — Medicare tab",
+      say:["This is where Medicare gets powerful for your practice.",
+           "Every Medicare Advantage enrollment you write — the DME check runs automatically.",
+           "You're not just placing a plan. You're the agent who found <span class='money'>$5,000</span> in benefits they didn't know about."],
+      tip:"That's a referral machine. Say it." },
+    { label:"Close", title:"Close",
+      action:null,
+      say:["The agents winning in Medicare right now aren't writing more plans. They're adding more value per client.",
+           "DME benefits, drug plan optimization, annual wellness — TSM surfaces all of it.",
+           "One conversation. One tool. One reason clients refer their friends."],
+      tip:"Stop. Let them respond." },
+    { label:"Objections", title:"Handle pushback",
+      action:null, say:[],
+      objections:[
+        { q:'"Is this CMS compliant for marketing?"',
+          a:'"The DME engine is an agent tool — it surfaces what clients qualify for under existing Part B benefits. No marketing materials, no solicitation. You are presenting information about benefits they already have. Fully CMS compliant."' },
+        { q:'"I don\'t do DME — I just place plans."',
+          a:'"You don\'t have to do DME. You make the referral to a DME supplier. They handle the claim. You get the client relationship and the referral credit. Your job is finding it — this does the finding."' },
+        { q:'"How current is the Part B coverage data?"',
+          a:'"CMS Medicare rules update continuously in the Compliance Node. Part B benefit data is current. Any CMS rule change affecting DME coverage pushes within 24 hours of publication."' }
+      ], tip:null }
+  ],
+  hc:[
+    { label:"Open", title:"Opening line",
+      action:"Open AZ Command — Compliance tab",
+      say:["What you're looking at is an insurance intelligence system built for healthcare organizations.",
+           "Self-funded plans, stop-loss coordination, Medicare Secondary Payer rules, ACA reporting — all in one compliance and coverage layer."],
+      tip:"Healthcare company buyers respond to compliance first. Lead with it." },
+    { label:"Step 1", title:"The hidden exposure",
+      action:"Don't click — just talk",
+      say:["Most healthcare companies are running self-funded plans with stop-loss triggers they aren't tracking in real time.",
+           "And Medicare Secondary Payer violations are a $1,000-per-day CMS penalty that most HR teams discover at audit — not at enrollment."],
+      tip:"Watch for the compliance officer to lean in. That's your buyer." },
+    { label:"Step 2", title:"Run healthcare scenario",
+      action:"Slide 4 · Healthcare Co. tab · Hit Run",
+      say:["220 employees, self-funded, stop-loss at $150K.",
+           "Watch the Compliance Node surface MSP violations and stop-loss threshold alerts.",
+           "The BNCA tells you what to do: notify the stop-loss carrier, correct COB, and generate the board memo."],
+      tip:"Read the MSP penalty line: $1,000 per day. Pause. Let it land." },
+    { label:"Step 3", title:"Board memo generation",
+      action:"Point to the BNCA output — board memo line",
+      say:["This is the closer for healthcare companies.",
+           "The BNCA doesn't just flag the issue — it generates the compliance memo for the board.",
+           "Your HR director walks into the board meeting with a document that took 3 minutes instead of 3 days."],
+      tip:"If they have a compliance officer in the room — this is their moment." },
+    { label:"Close", title:"Close",
+      action:null,
+      say:["The insurance complexity for a healthcare company is different from a manufacturer or retailer.",
+           "MSP rules, ACA reporting, self-funded plan design, stop-loss triggers — TSM understands all of it.",
+           "One intelligence layer. Every insurance line your organization touches."],
+      tip:"Ask: what's your biggest compliance concern right now? Then listen." },
+    { label:"Objections", title:"Handle pushback",
+      action:null, say:[],
+      objections:[
+        { q:'"We have a TPA for this."',
+          a:'"Your TPA manages claims. TSM monitors compliance and surfaces coverage gaps before they become claims. It works alongside your TPA — it doesn\'t replace them."' },
+        { q:'"How does this work with our broker relationship?"',
+          a:'"TSM plugs into your existing broker relationship. Your broker uses the intelligence layer to give you better analysis. It makes your broker more effective — not redundant."' },
+        { q:'"What about HIPAA?"',
+          a:'"No patient data, no PHI. TSM works with plan-level and aggregate data only. HIPAA compliant by design. No employee health information enters the system."' }
+      ], tip:null }
+  ]
+};
+
+let ttCur=0, ttAud='agent';
+
+function setTTAud(key, el){
+  ttAud=key; ttCur=0;
+  document.querySelectorAll('.aud-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  ttRender();
+}
+
+function ttRender(){
+  const steps = TT_TRACKS[ttAud];
+  const step = steps[ttCur];
+  document.getElementById('tt-pips').innerHTML = steps.map((_,i)=>
+    '<div class="tt-pip'+(i<ttCur?' done':i===ttCur?' active':'')+'"></div>'
+  ).join('');
+  let h='<div class="tt-step-label">'+step.label+'</div>';
+  h+='<div class="tt-step-title">'+step.title+'</div>';
+  if(step.action) h+='<div class="tt-action">&#9658; '+step.action+'</div>';
+  step.say.forEach(line=>{h+='<div class="tt-say"><p>'+line+'</p></div>';});
+  if(step.objections){
+    step.objections.forEach((o,i)=>{
+      h+='<div class="tt-obj"><div class="tt-obj-q" onclick="ttObj('+i+')"><span>'+o.q+'</span><span id="ttchev'+i+'">&#9662;</span></div>';
+      h+='<div class="tt-obj-a" id="ttoa'+i+'">Say: '+o.a+'</div></div>';
+    });
+  }
+  if(step.tip) h+='<div class="tt-tip">&#8627; '+step.tip+'</div>';
+  document.getElementById('tt-card').innerHTML=h;
+  document.getElementById('tt-counter').textContent=(ttCur+1)+' / '+steps.length;
+  document.getElementById('tt-back').style.visibility=ttCur===0?'hidden':'visible';
+  document.getElementById('tt-next').textContent=ttCur===steps.length-1?'restart':'next →';
+}
+
+function ttGo(d){
+  const steps=TT_TRACKS[ttAud];
+  if(d===1&&ttCur===steps.length-1){ttCur=0;}
+  else ttCur=Math.max(0,Math.min(steps.length-1,ttCur+d));
+  ttRender();
+}
+function ttObj(i){document.getElementById('ttoa'+i).classList.toggle('open');}
+
+ttRender();
+</script>
+<script src="/html/assets/tsm/ins-intel-inbox.js?v=ins-inbox1"></script>
+
+<script id="ins-presentation-save-output">
+(function(){
+  const oldRun = window.runSim;
+  if(typeof oldRun === 'function' && !window.__insSaveWrapped){
+    window.__insSaveWrapped = true;
+    window.runSim = async function(){
+      await oldRun.apply(this, arguments);
+      try{
+        const bnca = document.getElementById('po-bnca')?.innerText || '';
+        const compliance = document.getElementById('po-compliance')?.innerText || '';
+        const coverage = document.getElementById('po-coverage')?.innerText || '';
+        const claims = document.getElementById('po-claims')?.innerText || '';
+        const audience = document.querySelector('.aud-tab.active')?.innerText || 'Insurance';
+        window.InsIntelInbox?.saveIntel({
+          source:'Insurance Presentation Live Run',
+          audience,
+          title: audience + ' · BNCA Output',
+          bnca, compliance, coverage, claims,
+          risk:'Generated from live insurance intelligence cycle.',
+          metrics:{status:'saved-after-run'}
+        });
+      }catch(e){console.warn('save output skipped',e)}
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSMatter · AI Engine Wiring Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#060a08;--bg2:#0c1109;--bg3:#101510;
+  --border:rgba(0,255,100,0.07);--border2:rgba(0,255,100,0.14);
+  --g:#00ff64;--g2:#00cc50;--g3:#008f38;--gdim:rgba(0,255,100,0.1);
+  --red:#ff4455;--amber:#ffaa00;--blue:#00aaff;--purple:#a855f7;--teal:#00e5cc;
+  --purpledim:rgba(168,85,247,0.1);--amberdim:rgba(255,170,0,0.1);--reddim:rgba(255,68,85,0.1);
+  --text:#b8d8b8;--text2:#5a7a5a;--text3:#2e4a2e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:24px}
+h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--g);margin-bottom:4px}
+h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border2)}
+h3{font-size:11px;color:var(--g2);letter-spacing:.1em;text-transform:uppercase;margin:16px 0 7px}
+p{font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.subtitle{font-size:11px;color:var(--text2);margin-bottom:28px}
+
+pre{background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:14px 16px;font-size:11px;line-height:1.7;overflow-x:auto;margin-bottom:10px;white-space:pre}
+code{font-family:'JetBrains Mono',monospace;font-size:11px}
+.comment{color:var(--text3)}
+.kw{color:var(--g)}
+.str{color:var(--amber)}
+.fn{color:var(--purple)}
+.val{color:var(--teal)}
+.tag{color:var(--blue)}
+
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.08em;margin-right:5px;margin-bottom:4px}
+.badge-g{background:var(--gdim);color:var(--g);border:1px solid rgba(0,255,100,.2)}
+.badge-p{background:var(--purpledim);color:var(--purple);border:1px solid rgba(168,85,247,.2)}
+.badge-a{background:var(--amberdim);color:var(--amber);border:1px solid rgba(255,170,0,.2)}
+.badge-r{background:var(--reddim);color:var(--red);border:1px solid rgba(255,68,85,.2)}
+.badge-b{background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2)}
+
+.node-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.node-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px 12px}
+.nc-name{font-size:10px;font-weight:700;color:var(--g);margin-bottom:3px}
+.nc-profile{font-size:9px;color:var(--text2);margin-bottom:2px}
+.nc-node{font-size:9px;color:var(--text3)}
+
+.method-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.method-row:last-child{border-bottom:none}
+.method-name{font-size:10px;font-weight:700;color:var(--purple);min-width:120px;flex-shrink:0;margin-top:1px}
+.method-desc{font-size:10px;color:var(--text2);line-height:1.6}
+.method-type{font-size:8px;padding:1px 6px;border-radius:2px;background:var(--purpledim);color:var(--purple);flex-shrink:0;margin-top:2px}
+
+.alert{background:var(--amberdim);border:1px solid rgba(255,170,0,.25);border-radius:3px;padding:10px 12px;font-size:10px;color:var(--amber);line-height:1.6;margin-bottom:12px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gdim);border:1px solid rgba(0,255,100,.2);color:var(--g);font-size:9px;font-weight:700;flex-shrink:0;margin-right:6px}
+
+.attr-row{display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--border)}
+.attr-row:last-child{border-bottom:none}
+.attr-name{font-size:9px;color:var(--teal);min-width:180px;flex-shrink:0;font-weight:700}
+.attr-val{font-size:9px;color:var(--text2)}
+</style>
+</head>
+<body>
+
+<h1>TSMatter AI Engine · Wiring Guide</h1>
+<p class="subtitle">How to connect <code>tsm-ai-engine.js</code> to every app in the hub.</p>
+
+<!-- ── STEP 1: DROP THE FILE ── -->
+<h2>Step 1 — Place the engine on your server</h2>
+<pre><span class="comment"># Upload to your server once. Every app references this single file.</span>
+/html/shared/tsm-ai-engine.js</pre>
+
+<p>That's the only file you need to host. All apps reference it via a single script tag. No npm, no build step, no CDN calls.</p>
+
+<!-- ── STEP 2: ADD SCRIPT TAG ── -->
+<h2>Step 2 — Add one script tag to each app</h2>
+<pre><span class="tag">&lt;script</span> <span class="kw">src</span>=<span class="str">"/html/shared/tsm-ai-engine.js"</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+
+<p>Add this before your closing <code>&lt;/body&gt;</code> tag in every HTML file in the hub.</p>
+
+<!-- ── STEP 3: INIT ── -->
+<h2>Step 3 — Initialize for the right company + node</h2>
+<p>Call <code>TSMai.init(profileId, nodeId)</code> at the top of each app's script block. Pick the profile and node from the tables below.</p>
+
+<pre><span class="tag">&lt;script&gt;</span>
+  <span class="comment">// HonorHealth · HC-Billing node</span>
+  <span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'honorhealth'</span>, <span class="str">'hc-billing'</span>);
+
+  <span class="comment">// Banner Health · HC-Strategist node</span>
+  <span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'banner'</span>, <span class="str">'hc-strategist'</span>);
+
+  <span class="comment">// Desert Financial · compliance node</span>
+  <span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'desertfinancial'</span>, <span class="str">'compliance'</span>);
+
+  <span class="comment">// Federation / Sovereign Strategist</span>
+  <span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'federation'</span>, <span class="str">'strategist'</span>);
+<span class="tag">&lt;/script&gt;</span></pre>
+
+<!-- ── APP MAP ── -->
+<h2>App → Profile → Node map</h2>
+<p>Every app in your hub maps to one row in this table.</p>
+
+<div class="node-grid">
+  <div class="node-card"><div class="nc-name">honor-portal/nu-index.html</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-command</div></div>
+  <div class="node-card"><div class="nc-name">strategist/nu-index.html</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-strategist</div></div>
+  <div class="node-card"><div class="nc-name">healthcare/om-hc-center.html</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-command</div></div>
+  <div class="node-card"><div class="nc-name">hc-billing.tsmatter.com</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-billing</div></div>
+  <div class="node-card"><div class="nc-name">hc-compliance.tsmatter.com</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-compliance</div></div>
+  <div class="node-card"><div class="nc-name">hc-insurance.tsmatter.com</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-insurance</div></div>
+  <div class="node-card"><div class="nc-name">hc-medical.tsmatter.com</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-medical</div></div>
+  <div class="node-card"><div class="nc-name">hc-pharmacy.tsmatter.com</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-pharmacy</div></div>
+  <div class="node-card"><div class="nc-name">hc-taxprep.tsmatter.com</div><div class="nc-profile">profile: honorhealth</div><div class="nc-node">node: hc-taxprep</div></div>
+  <div class="node-card"><div class="nc-name">html/strategist/ (federation)</div><div class="nc-profile">profile: federation</div><div class="nc-node">node: strategist</div></div>
+  <div class="node-card"><div class="nc-name">desertfi apps</div><div class="nc-profile">profile: desertfinancial</div><div class="nc-node">node: financial</div></div>
+  <div class="node-card"><div class="nc-name">banner apps</div><div class="nc-profile">profile: banner</div><div class="nc-node">node: hc-strategist</div></div>
+</div>
+
+<!-- ── METHOD REFERENCE ── -->
+<h2>Core methods — quick reference</h2>
+
+<div class="method-row">
+  <div class="method-name">TSMai.init()</div>
+  <div class="method-desc">Initialize with a company profile and node ID. Call once per app load.<br><code>TSMai.init('honorhealth', 'hc-billing')</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.stream()</div>
+  <div class="method-desc">Send a prompt, stream result into an element with typewriter effect.<br><code>TSMai.stream(prompt, document.getElementById('out'), { thinkEl: thinkBar })</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.pack()</div>
+  <div class="method-desc">Run a named pull pack. IDs: revenue, variance, denial, auth, compliance, executive, payer.<br><code>TSMai.pack('revenue', outEl)</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.strategist()</div>
+  <div class="method-desc">Run a strategist analysis mode. Modes: priority, denial, revenue, compliance, payer, coding, forecast, board.<br><code>TSMai.strategist('denial', contextText, outEl)</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.draft()</div>
+  <div class="method-desc">Draft a document. Types: appeal, auth, query, compliance, education, executive.<br><code>TSMai.draft('appeal', claimContext, outEl)</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.chat()</div>
+  <div class="method-desc">Multi-turn chat — maintains conversation history automatically.<br><code>TSMai.chat(userMsg, chatContainer)</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.score()</div>
+  <div class="method-desc">Calculate a 0-100 health score from live data. Colors the element automatically.<br><code>TSMai.score(data, scoreEl, labelEl)</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.signals()</div>
+  <div class="method-desc">Generate and render live strategic signals into a container.<br><code>TSMai.signals(signalContainer)</code></div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.wire()</div>
+  <div class="method-desc">Attach AI logic to existing DOM buttons/inputs without rewriting HTML.<br>See the wiring pattern below.</div>
+</div>
+<div class="method-row">
+  <div class="method-name">TSMai.wireAll()</div>
+  <div class="method-desc">Auto-scan the page for <code>data-tsmai</code> attributes and wire everything. Zero-JS option.</div>
+</div>
+
+<!-- ── WIRING PATTERNS ── -->
+<h2>Wiring patterns — 3 ways to wire any existing app</h2>
+
+<h3>Pattern A — TSMai.wire() — attach to existing buttons, zero HTML changes</h3>
+<p>Best for: apps that already have buttons + output divs. Just attach the logic.</p>
+<pre><span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'honorhealth'</span>, <span class="str">'hc-billing'</span>);
+
+<span class="comment">// Wire a pull pack button to an output div</span>
+<span class="fn">TSMai</span>.<span class="kw">wire</span>({
+  trigger:  <span class="str">'#btn-revenue-pack'</span>,    <span class="comment">// existing button</span>
+  output:   <span class="str">'#revenue-out'</span>,          <span class="comment">// existing output div</span>
+  thinking: <span class="str">'#think-bar'</span>,            <span class="comment">// optional loading bar</span>
+  error:    <span class="str">'#err-out'</span>,              <span class="comment">// optional error div</span>
+  type:     <span class="str">'pack'</span>,
+  packId:   <span class="str">'revenue'</span>
+});
+
+<span class="comment">// Wire a strategist button</span>
+<span class="fn">TSMai</span>.<span class="kw">wire</span>({
+  trigger:  <span class="str">'#btn-run-strat'</span>,
+  output:   <span class="str">'#strat-out'</span>,
+  input:    <span class="str">'#strat-context'</span>,   <span class="comment">// reads value from this input</span>
+  thinking: <span class="str">'#think-bar'</span>,
+  type:     <span class="str">'strategist'</span>,
+  mode:     <span class="str">'denial'</span>
+});
+
+<span class="comment">// Wire a chat send button</span>
+<span class="fn">TSMai</span>.<span class="kw">wire</span>({
+  trigger:  <span class="str">'#chat-send-btn'</span>,
+  output:   <span class="str">'#chat-messages'</span>,
+  input:    <span class="str">'#chat-input'</span>,
+  type:     <span class="str">'chat'</span>
+});
+
+<span class="comment">// Wire a document drafter</span>
+<span class="fn">TSMai</span>.<span class="kw">wire</span>({
+  trigger:  <span class="str">'#btn-draft'</span>,
+  output:   <span class="str">'#draft-out'</span>,
+  input:    <span class="str">'#draft-context'</span>,
+  type:     <span class="str">'draft'</span>,
+  docType:  <span class="str">'appeal'</span>
+});
+
+<span class="comment">// Wire a health score</span>
+<span class="fn">TSMai</span>.<span class="kw">wire</span>({
+  trigger:  <span class="str">'#btn-score'</span>,
+  output:   <span class="str">'#score-dummy'</span>,   <span class="comment">// required by wire(), can be any div</span>
+  type:     <span class="str">'score'</span>,
+  scoreEl:  <span class="str">'#score-number'</span>,
+  labelEl:  <span class="str">'#score-label'</span>
+});
+
+<span class="comment">// Wire live signals</span>
+<span class="fn">TSMai</span>.<span class="kw">wire</span>({
+  trigger:  <span class="str">'#btn-refresh-signals'</span>,
+  output:   <span class="str">'#signals-container'</span>,
+  type:     <span class="str">'signals'</span>
+});
+
+<span class="comment">// Chained — wire multiple in one call sequence</span>
+<span class="fn">TSMai</span>
+  .<span class="kw">wire</span>({ trigger:<span class="str">'#btn-a'</span>, output:<span class="str">'#out-a'</span>, type:<span class="str">'pack'</span>, packId:<span class="str">'denial'</span> })
+  .<span class="kw">wire</span>({ trigger:<span class="str">'#btn-b'</span>, output:<span class="str">'#out-b'</span>, type:<span class="str">'pack'</span>, packId:<span class="str">'auth'</span> })
+  .<span class="kw">wire</span>({ trigger:<span class="str">'#btn-c'</span>, output:<span class="str">'#out-c'</span>, type:<span class="str">'strategist'</span>, mode:<span class="str">'board'</span> });</pre>
+
+<h3>Pattern B — data-tsmai attributes — zero JavaScript required</h3>
+<p>Best for: rapid wiring. Add attributes to existing HTML elements, call <code>TSMai.wireAll()</code> once.</p>
+<pre><span class="tag">&lt;body</span> <span class="kw">data-tsmai-profile</span>=<span class="str">"honorhealth"</span> <span class="kw">data-tsmai-node</span>=<span class="str">"hc-billing"</span><span class="tag">&gt;</span>
+
+  <span class="comment">&lt;!-- Pull pack button --&gt;</span>
+  <span class="tag">&lt;button</span>
+    <span class="kw">data-tsmai</span>=<span class="str">"pack"</span>
+    <span class="kw">data-tsmai-pack</span>=<span class="str">"revenue"</span>
+    <span class="kw">data-tsmai-output</span>=<span class="str">"#revenue-out"</span>
+    <span class="kw">data-tsmai-thinking</span>=<span class="str">"#think-bar"</span>
+  <span class="tag">&gt;</span>Pull Revenue Pack<span class="tag">&lt;/button&gt;</span>
+
+  <span class="comment">&lt;!-- Strategist button --&gt;</span>
+  <span class="tag">&lt;button</span>
+    <span class="kw">data-tsmai</span>=<span class="str">"strategist"</span>
+    <span class="kw">data-tsmai-mode</span>=<span class="str">"denial"</span>
+    <span class="kw">data-tsmai-output</span>=<span class="str">"#strat-out"</span>
+    <span class="kw">data-tsmai-input</span>=<span class="str">"#context-input"</span>
+  <span class="tag">&gt;</span>Run Denial Analysis<span class="tag">&lt;/button&gt;</span>
+
+  <span class="comment">&lt;!-- Static prompt button --&gt;</span>
+  <span class="tag">&lt;button</span>
+    <span class="kw">data-tsmai</span>=<span class="str">"stream"</span>
+    <span class="kw">data-tsmai-prompt</span>=<span class="str">"What is our top denial risk today?"</span>
+    <span class="kw">data-tsmai-output</span>=<span class="str">"#quick-out"</span>
+  <span class="tag">&gt;</span>Top Denial Risk<span class="tag">&lt;/button&gt;</span>
+
+  <span class="comment">&lt;!-- Score button --&gt;</span>
+  <span class="tag">&lt;button</span>
+    <span class="kw">data-tsmai</span>=<span class="str">"score"</span>
+    <span class="kw">data-tsmai-score</span>=<span class="str">"#score-el"</span>
+    <span class="kw">data-tsmai-label</span>=<span class="str">"#label-el"</span>
+    <span class="kw">data-tsmai-output</span>=<span class="str">"#dummy"</span>
+  <span class="tag">&gt;</span>Calculate Score<span class="tag">&lt;/button&gt;</span>
+
+<span class="tag">&lt;/body&gt;</span>
+
+<span class="comment">&lt;!-- Auto-wires everything on DOMContentLoaded --&gt;</span>
+<span class="tag">&lt;script</span> <span class="kw">src</span>=<span class="str">"/html/shared/tsm-ai-engine.js"</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+
+<h3>Pattern C — direct calls — full programmatic control</h3>
+<p>Best for: custom logic, conditional flows, or calling AI from your own event handlers.</p>
+<pre><span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'honorhealth'</span>, <span class="str">'hc-strategist'</span>);
+
+<span class="comment">// Direct stream call</span>
+<span class="kw">async function</span> <span class="fn">runMyAnalysis</span>() {
+  <span class="kw">const</span> out = document.<span class="fn">getElementById</span>(<span class="str">'my-output'</span>);
+  <span class="kw">const</span> text = <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">stream</span>(
+    <span class="str">'What is the top revenue risk at HonorHealth right now?'</span>,
+    out,
+    { thinkEl: document.<span class="fn">getElementById</span>(<span class="str">'my-loader'</span>) }
+  );
+  console.<span class="fn">log</span>(<span class="str">'AI said:'</span>, text);
+}
+
+<span class="comment">// Raw API call (returns text string, no UI)</span>
+<span class="kw">const</span> answer = <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">call</span>(<span class="str">'Summarize the denial situation in 2 sentences.'</span>);
+
+<span class="comment">// Pull a pack, handle the result yourself</span>
+<span class="kw">const</span> packResult = <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">pack</span>(<span class="str">'denial'</span>, outEl);
+
+<span class="comment">// Score with live data override</span>
+<span class="fn">TSMai</span>.<span class="kw">updateData</span>({ denialRate: <span class="val">16.2</span>, revenueAtRisk: <span class="val">32000</span> });
+<span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">score</span>(<span class="kw">null</span>, scoreEl, labelEl);
+
+<span class="comment">// Chat with history</span>
+<span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">chat</span>(<span class="str">'What should I do about the Mesa denial spike?'</span>, chatContainer);
+<span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">chat</span>(<span class="str">'And what should the Mesa OM do first?'</span>, chatContainer); <span class="comment">// remembers context</span>
+<span class="fn">TSMai</span>.<span class="kw">chatReset</span>(); <span class="comment">// clear history</span></pre>
+
+<!-- ── WIRING EACH APP ── -->
+<h2>Exact wiring for each app in the hub</h2>
+
+<h3>honor-portal/nu-index.html</h3>
+<pre><span class="comment">// In the existing &lt;script&gt; block, replace the callClaude() function body:</span>
+<span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'honorhealth'</span>, <span class="str">'hc-command'</span>);
+
+<span class="comment">// Replace runStrategist() with:</span>
+<span class="kw">async function</span> <span class="fn">runStrategist</span>() {
+  <span class="kw">const</span> mode = document.<span class="fn">getElementById</span>(<span class="str">'strat-mode'</span>).<span class="kw">value</span>;
+  <span class="kw">const</span> ctx  = document.<span class="fn">getElementById</span>(<span class="str">'strat-context'</span>).<span class="kw">value</span>;
+  <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">strategist</span>(mode, ctx,
+    document.<span class="fn">getElementById</span>(<span class="str">'strat-out'</span>),
+    { thinkEl: document.<span class="fn">getElementById</span>(<span class="str">'strat-thinking'</span>),
+      errEl:   document.<span class="fn">getElementById</span>(<span class="str">'strat-err'</span>) }
+  );
+}
+
+<span class="comment">// Replace runPack() with:</span>
+<span class="kw">async function</span> <span class="fn">runPack</span>(packId) {
+  <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">pack</span>(packId,
+    document.<span class="fn">getElementById</span>(<span class="str">'strat-out'</span>),
+    { thinkEl: document.<span class="fn">getElementById</span>(<span class="str">'strat-thinking'</span>) }
+  );
+}
+
+<span class="comment">// Replace sendChat() with:</span>
+<span class="kw">async function</span> <span class="fn">sendChat</span>(preset) {
+  <span class="kw">const</span> inp = document.<span class="fn">getElementById</span>(<span class="str">'chat-inp'</span>);
+  <span class="kw">const</span> msg = preset || inp.<span class="kw">value</span>.<span class="fn">trim</span>();
+  <span class="kw">if</span> (!msg) <span class="kw">return</span>;
+  inp.<span class="kw">value</span> = <span class="str">''</span>;
+  <span class="fn">TSMai</span>.<span class="kw">ui</span>.<span class="fn">chatMessage</span>(document.<span class="fn">getElementById</span>(<span class="str">'chat-msgs'</span>), msg, <span class="str">'user'</span>);
+  <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">chat</span>(msg, document.<span class="fn">getElementById</span>(<span class="str">'chat-msgs'</span>));
+}
+
+<span class="comment">// Auto-score on load:</span>
+<span class="fn">TSMai</span>.<span class="kw">score</span>(<span class="kw">null</span>,
+  document.<span class="fn">getElementById</span>(<span class="str">'strat-score'</span>),
+  document.<span class="fn">getElementById</span>(<span class="str">'strat-score-sub'</span>)
+);</pre>
+
+<h3>strategist/nu-index.html</h3>
+<pre><span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'honorhealth'</span>, <span class="str">'hc-strategist'</span>);
+
+<span class="comment">// Replace runStrategist(), runPack(), quickAsk() with TSMai equivalents</span>
+<span class="comment">// All function signatures are identical — just swap callClaude() for TSMai methods</span>
+
+<span class="kw">async function</span> <span class="fn">quickAsk</span>(prompt) {
+  <span class="kw">await</span> <span class="fn">TSMai</span>.<span class="kw">stream</span>(prompt,
+    document.<span class="fn">getElementById</span>(<span class="str">'strat-out'</span>),
+    { thinkEl: document.<span class="fn">getElementById</span>(<span class="str">'thinking-bar'</span>),
+      errEl:   document.<span class="fn">getElementById</span>(<span class="str">'strat-err'</span>) }
+  );
+}</pre>
+
+<h3>html/strategist/ (Federation Sovereign Strategist)</h3>
+<pre><span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'federation'</span>, <span class="str">'strategist'</span>);
+
+<span class="comment">// PULL HEALTHCARE etc. → map to packs:</span>
+<span class="kw">document</span>.<span class="fn">querySelectorAll</span>(<span class="str">'[data-pull]'</span>).<span class="fn">forEach</span>(btn => {
+  btn.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+    <span class="kw">const</span> packId = btn.<span class="fn">getAttribute</span>(<span class="str">'data-pull'</span>); <span class="comment">// e.g. "revenue", "compliance"</span>
+    <span class="fn">TSMai</span>.<span class="kw">pack</span>(packId, document.<span class="fn">getElementById</span>(<span class="str">'ai-output'</span>));
+  });
+});</pre>
+
+<h3>hc-billing.tsmatter.com (and all other subdomain nodes)</h3>
+<pre><span class="comment">&lt;!-- Add to &lt;head&gt; --&gt;</span>
+<span class="tag">&lt;script</span> <span class="kw">src</span>=<span class="str">"https://tsm-shell.fly.dev/html/shared/tsm-ai-engine.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="comment">&lt;!-- Then in your script block --&gt;</span>
+<span class="fn">TSMai</span>.<span class="kw">init</span>(<span class="str">'honorhealth'</span>, <span class="str">'hc-billing'</span>);
+
+<span class="comment">// Wire your AI buttons immediately — no refactoring needed</span>
+<span class="fn">TSMai</span>
+  .<span class="kw">wire</span>({ trigger: <span class="str">'#btn-analyze'</span>,    output: <span class="str">'#ai-out'</span>, type: <span class="str">'pack'</span>, packId: <span class="str">'denial'</span> })
+  .<span class="kw">wire</span>({ trigger: <span class="str">'#btn-doc-draft'</span>,  output: <span class="str">'#doc-out'</span>, type: <span class="str">'draft'</span>, docType: <span class="str">'appeal'</span>, input: <span class="str">'#doc-ctx'</span> })
+  .<span class="kw">wire</span>({ trigger: <span class="str">'#btn-chat-send'</span>,  output: <span class="str">'#chat-msgs'</span>, type: <span class="str">'chat'</span>, input: <span class="str">'#chat-inp'</span> });</pre>
+
+<!-- ── AVAILABLE PACK IDS ── -->
+<h2>Available pack IDs and mode IDs</h2>
+
+<h3>Pack IDs — for TSMai.pack(packId)</h3>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">
+  <span class="badge badge-g">revenue</span>
+  <span class="badge badge-g">variance</span>
+  <span class="badge badge-g">denial</span>
+  <span class="badge badge-g">auth</span>
+  <span class="badge badge-g">compliance</span>
+  <span class="badge badge-g">executive</span>
+  <span class="badge badge-g">payer</span>
+</div>
+
+<h3>Strategist modes — for TSMai.strategist(mode)</h3>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">
+  <span class="badge badge-p">priority</span>
+  <span class="badge badge-p">denial</span>
+  <span class="badge badge-p">revenue</span>
+  <span class="badge badge-p">compliance</span>
+  <span class="badge badge-p">payer</span>
+  <span class="badge badge-p">coding</span>
+  <span class="badge badge-p">forecast</span>
+  <span class="badge badge-p">board</span>
+</div>
+
+<h3>Document types — for TSMai.draft(docType)</h3>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">
+  <span class="badge badge-a">appeal</span>
+  <span class="badge badge-a">auth</span>
+  <span class="badge badge-a">query</span>
+  <span class="badge badge-a">compliance</span>
+  <span class="badge badge-a">education</span>
+  <span class="badge badge-a">executive</span>
+</div>
+
+<h3>Profile IDs — for TSMai.init(profileId)</h3>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">
+  <span class="badge badge-b">honorhealth</span>
+  <span class="badge badge-b">banner</span>
+  <span class="badge badge-b">desertfinancial</span>
+  <span class="badge badge-b">ameris</span>
+  <span class="badge badge-b">federation</span>
+</div>
+
+<h3>Node IDs — for TSMai.init(profileId, nodeId)</h3>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">
+  <span class="badge badge-b">hc-billing</span>
+  <span class="badge badge-b">hc-compliance</span>
+  <span class="badge badge-b">hc-medical</span>
+  <span class="badge badge-b">hc-insurance</span>
+  <span class="badge badge-b">hc-pharmacy</span>
+  <span class="badge badge-b">hc-taxprep</span>
+  <span class="badge badge-b">hc-grants</span>
+  <span class="badge badge-b">hc-vendors</span>
+  <span class="badge badge-b">hc-command</span>
+  <span class="badge badge-b">hc-strategist</span>
+  <span class="badge badge-b">hc-financial</span>
+  <span class="badge badge-b">hc-legal</span>
+  <span class="badge badge-b">financial</span>
+  <span class="badge badge-b">compliance</span>
+  <span class="badge badge-b">strategist</span>
+</div>
+
+<!-- ── DATA-TSMAI ATTR REFERENCE ── -->
+<h2>data-tsmai attribute reference</h2>
+<div class="attr-row"><div class="attr-name">data-tsmai</div><div class="attr-val">Type: pack | stream | strategist | draft | chat | score | signals</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-output</div><div class="attr-val">CSS selector for the output element. Required.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-thinking</div><div class="attr-val">CSS selector for the loading/thinking bar element.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-error</div><div class="attr-val">CSS selector for the error display element.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-input</div><div class="attr-val">CSS selector for the input/textarea to read the prompt from.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-pack</div><div class="attr-val">Pack ID. Used when data-tsmai="pack".</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-mode</div><div class="attr-val">Strategist mode. Used when data-tsmai="strategist".</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-prompt</div><div class="attr-val">Static prompt string. Used when data-tsmai="stream".</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-doc</div><div class="attr-val">Document type. Used when data-tsmai="draft".</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-score</div><div class="attr-val">CSS selector for the score number element.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-label</div><div class="attr-val">CSS selector for the score label element.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-profile (on body)</div><div class="attr-val">Auto-init profile ID on DOMContentLoaded.</div></div>
+<div class="attr-row"><div class="attr-name">data-tsmai-node (on body)</div><div class="attr-val">Auto-init node ID on DOMContentLoaded.</div></div>
+
+<!-- ── ADDING NEW PROFILES ── -->
+<h2>Adding a new company profile</h2>
+<p>When you onboard Banner, Dignity Health, or any new client — add their profile to the <code>PROFILES</code> object in tsm-ai-engine.js:</p>
+<pre><span class="comment">// Inside tsm-ai-engine.js — PROFILES object</span>
+<span class="kw">dignityheath</span>: {
+  id: <span class="str">'dignityhealth'</span>,
+  company: <span class="str">'Dignity Health'</span>,
+  sector: <span class="str">'healthcare'</span>,
+  persona: <span class="str">'VP Revenue Cycle'</span>,
+  allowedNodes: [<span class="str">'hc-billing'</span>,<span class="str">'hc-compliance'</span>,<span class="str">'hc-insurance'</span>,<span class="str">'hc-strategist'</span>],
+  disallowedDomains: [<span class="str">'mortgage'</span>,<span class="str">'construction'</span>,<span class="str">'schools'</span>],
+  offices: [<span class="str">'site-a'</span>,<span class="str">'site-b'</span>,<span class="str">'site-c'</span>,<span class="str">'site-d'</span>],
+  priorities: [<span class="str">'network_denial_rate'</span>,<span class="str">'site_variance'</span>,<span class="str">'payer_mix'</span>],
+  currentData: { denialRate: <span class="val">17.9</span>, revenueAtRisk: <span class="val">340000</span> },
+  systemPrompt() {
+    <span class="kw">return</span> <span class="str">`You are HC-Strategist for Dignity Health network.
+Persona: ${this.persona}.
+Focus on network-level analysis across all sites.
+Prioritize: site variance, network denial rate, payer mix optimization.
+Return: top issue, dollar impact, 3 actions, which site director acts first.`</span>;
+  }
+}</pre>
+
+<div style="margin-top:32px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;font-size:10px;color:var(--text2);line-height:1.7">
+  <span style="color:var(--g);font-weight:700">TSMatter AI Engine v1.0.0</span> · Single file, zero dependencies · Drop at /html/shared/tsm-ai-engine.js · Reference from any app in the hub
+</div>
+
+</body>
+</html>
