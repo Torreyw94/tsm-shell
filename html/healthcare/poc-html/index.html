@@ -452,27 +452,23 @@ async function readFile(file){
   const preview = document.getElementById('doc-preview');
   preview.textContent = 'Reading ' + file.name + '...';
   if(file.type === 'application/pdf' || file.name.endsWith('.pdf')){
-    const reader = new FileReader();
-    reader.onload = async ev => {
-      try {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        const pdf = await pdfjsLib.getDocument({data: ev.target.result}).promise;
-        let text = '';
-        for(let i = 1; i <= pdf.numPages; i++){
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          text += content.items.map(s => s.str).join(' ') + '
-';
-        }
-        docText = text.trim();
+    preview.textContent = 'Extracting PDF text...';
+    const form = new FormData();
+    form.append('pdf', file);
+    try {
+      const res = await fetch('/api/extract-pdf', { method: 'POST', body: form });
+      const data = await res.json();
+      if(data.ok && data.text){
+        docText = data.text;
         document.getElementById('doc-text').value = docText;
-        preview.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + 'KB, ' + pdf.numPages + ' pages)';
+        preview.textContent = '✓ ' + file.name + ' (' + data.pages + ' pages, ' + data.words + ' words extracted)';
         updateDocStatus();
-      } catch(err) {
-        preview.textContent = '✗ PDF error: ' + err.message;
+      } else {
+        preview.textContent = '✗ ' + (data.error || 'PDF extraction failed — paste text manually');
       }
-    };
-    reader.readAsArrayBuffer(file);
+    } catch(err) {
+      preview.textContent = '✗ Server error: ' + err.message;
+    }
   } else {
     const reader = new FileReader();
     reader.onload = ev => {
