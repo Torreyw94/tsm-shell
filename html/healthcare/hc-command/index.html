@@ -1684,7 +1684,7 @@ function switchTab(name, el) {
             <li><span class="step-num">02</span><span>Pick a preset from the sidebar or type your own query</span></li>
             <li><span class="step-num">03</span><span>Optionally attach a PDF, DOCX, or XLSX for document analysis</span></li>
             <li><span class="step-num">04</span><span>Click RUN ANALYSIS — response streams in real-time</span></li>
-            <li><span class="step-num">05</span><span>Hit RELAY TO STRATEGIST to escalate to strategist.tsmatter.com</span></li>
+            <li><span class="step-num">05</span><span>Hit RELAY TO STRATEGIST to escalate to /healthcare/hc-main-strategist/index.html</span></li>
           </ul>
         </div>
 
@@ -1710,7 +1710,7 @@ function switchTab(name, el) {
             <li><span class="step-num">02</span><span>Click any preset — it auto-loads into the Audit Engine</span></li>
             <li><span class="step-num">03</span><span>Add your specific program details or paste agreement text</span></li>
             <li><span class="step-num">04</span><span>Set Analysis Type to "FinTech" and Report Type to "Compliance Audit"</span></li>
-            <li><span class="step-num">05</span><span>Export results or relay to Compliance at compliance.tsmatter.com</span></li>
+            <li><span class="step-num">05</span><span>Export results or relay to Compliance at /healthcare/hc-compliance/index.html</span></li>
           </ul>
         </div>
 
@@ -1721,7 +1721,7 @@ function switchTab(name, el) {
           <ul class="howto-steps">
             <li><span class="step-num">01</span><span>Run any analysis in the Audit Engine tab</span></li>
             <li><span class="step-num">02</span><span>Click the gold ⚡ RELAY TO STRATEGIST button</span></li>
-            <li><span class="step-num">03</span><span>Your query + AI response packages and opens strategist.tsmatter.com</span></li>
+            <li><span class="step-num">03</span><span>Your query + AI response packages and opens /healthcare/hc-main-strategist/index.html</span></li>
             <li><span class="step-num">04</span><span>Context is pre-loaded — Strategist receives full financial context</span></li>
             <li><span class="step-num">05</span><span>Use for M&A decisions, board presentation prep, or executive briefings</span></li>
           </ul>
@@ -1736,7 +1736,7 @@ function switchTab(name, el) {
             <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Invoices API</strong> — /api/invoices/aging (AR + DSO metrics)</span></li>
             <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Compliance API</strong> — /api/compliance/score (framework scores)</span></li>
             <li><span class="step-num">▸</span><span><strong style="color:var(--green)">Audit API</strong> — /api/audit/queue (open items + flags)</span></li>
-            <li><span class="step-num">▸</span><span><strong style="color:var(--gold)">Relay API</strong> — POST /api/relay → strategist.tsmatter.com</span></li>
+            <li><span class="step-num">▸</span><span><strong style="color:var(--gold)">Relay API</strong> — POST /api/relay → /healthcare/hc-main-strategist/index.html</span></li>
           </ul>
         </div>
       </div>
@@ -2081,7 +2081,7 @@ function relayToStrategist() {
   const query = document.getElementById('queryInput').value.trim();
   const response = document.getElementById('aiResponse').innerText.trim();
   const context = encodeURIComponent(`[RELAYED FROM: TSM Financial Intelligence Pro]\n\nFINANCIAL QUERY:\n${query}${response ? '\n\nINTEL WORKBENCH<br>AI ANALYSIS:\n' + response : ''}`);
-  window.open('https://strategist.tsmatter.com?relay=' + context, '_blank');
+  window.location.href='/healthcare/hc-main-strategist/index.html';
 }
 
 function generateReport(type) {
