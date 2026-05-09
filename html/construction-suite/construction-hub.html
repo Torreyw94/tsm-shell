@@ -1,65 +1,85 @@
-<!-- ALL APPS -->
-<section id="apps" style="margin-top:2.5rem;">
-  <div class="sec-hd">
-    <div class="sec-hd-tag">THE FULL SUITE</div>
-    <div class="sec-hd-line"></div>
-  </div>
-  <div class="apps-grid">
-    <a class="app-card" href="/construction-suite/construction-command-pro.html" style="--cc:var(--cyan)">
-      <div class="app-num">01 · COMMAND CENTER</div>
-      <div class="app-name">Construction Command</div>
-      <div class="app-role">MULTI-NODE INTELLIGENCE HUB</div>
-      <div class="app-desc">The central operating layer. Deploy queries to all specialist nodes simultaneously and synthesize unified intelligence recommendations.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
-    </a>
-    <a class="app-card" href="/construction-suite/construction-pro.html" style="--cc:var(--amber)">
-      <div class="app-num">02 · INTELLIGENCE CORE</div>
-      <div class="app-name">AuditOps · Construction Pro</div>
-      <div class="app-role">30 MODULES · 7 DOMAINS</div>
-      <div class="app-desc">The deepest intelligence layer covering Safety, Finance, Logistics, Compliance, Operations, Geotech, and Legal.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE · 30 MODULES</span></div>
-    </a>
-    <a class="app-card" href="/construction-suite/construction-strategist.html" style="--cc:var(--orange)">
-      <div class="app-num">03 · SOVEREIGN CORE</div>
-      <div class="app-name">Construction Strategist</div>
-      <div class="app-role">EXECUTIVE BNCA SYNTHESIS</div>
-      <div class="app-desc">Generates a single ranked, dollar-prioritized Best Next Course of Action for your operation.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
-    </a>
-    <a class="app-card" href="/construction-suite/compliance-hub.html" style="--cc:var(--red)">
-      <div class="app-num">04 · COMPLIANCE SHIELD</div>
-      <div class="app-name">Construction Compliance</div>
-      <div class="app-role">OSHA · DAVIS-BACON · EPA</div>
-      <div class="app-desc">Dollar-quantified fine exposure with 30-day remediation protocols for every compliance gap.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
-    </a>
-    <a class="app-card" href="/financial/index-elevated.html" style="--cc:var(--green)">
-      <div class="app-num">05 · FINANCIAL INTEL</div>
-      <div class="app-name">Construction Financial</div>
-      <div class="app-role">CASH FLOW · MARGINS · RETAINAGE</div>
-      <div class="app-desc">Job costing, cash flow stress testing, retainage release strategy, and cost overrun recovery.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
-    </a>
-    <a class="app-card" href="/construction-suite/legal.html" style="--cc:var(--blue)">
-      <div class="app-num">06 · LEGAL COMMAND</div>
-      <div class="app-name">Construction Legal</div>
-      <div class="app-role">LIENS · DISPUTES · BONDS</div>
-      <div class="app-desc">Mechanics lien deadlines across 50 states, subcontractor default scoring, and claim strategy.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE · 50 STATES</span></div>
-    </a>
-    <a class="app-card" href="/construction-suite/auditops-tax.html" style="--cc:var(--purple)">
-      <div class="app-num">07 · TAX INTELLIGENCE</div>
-      <div class="app-name">Construction Tax Prep</div>
-      <div class="app-role">§179 · S-CORP · DEPRECIATION</div>
-      <div class="app-desc">S-Corp optimization, job-site depreciation, and quarterly tax planning for construction entities.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
-    </a>
-    <a class="app-card" href="/construction-suite/document-showcase.html" style="--cc:var(--cyan2)">
-      <div class="app-num">08 · DOCUMENT INTELLIGENCE</div>
-      <div class="app-name">Document Showcase</div>
-      <div class="app-role">DOC ANALYSIS · REPORT BUILDER</div>
-      <div class="app-desc">Upload contracts, soil reports, and pay apps to run through the full node chain instantly.</div>
-      <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
-    </a>
-  </div>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSTRUCT INTELLIGENCE HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --cyan: #06b6d4; --amber: #f59e0b; --orange: #f97316; --red: #ef4444; --green: #10b981; --blue: #3b82f6; --purple: #a855f7; --cyan2: #22d3ee; }
+        body { background-color: #020617; color: #f8fafc; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        .sec-hd-tag { color: var(--cyan); font-weight: 700; letter-spacing: 0.1em; }
+        .sec-hd-line { height: 1px; background: linear-gradient(90deg, var(--cyan), transparent); margin-top: 0.5rem; margin-bottom: 2rem; }
+        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+        .app-card { background: #0f172a; border: 1px solid #1e293b; padding: 1.5rem; border-radius: 0.5rem; transition: all 0.2s; display: block; text-decoration: none; border-left: 4px solid var(--cc); }
+        .app-card:hover { border-color: var(--cc); background: #1e293b; transform: translateY(-2px); }
+        .app-num { font-size: 0.75rem; color: #64748b; margin-bottom: 0.5rem; }
+        .app-name { font-size: 1.25rem; font-weight: 800; color: #f8fafc; margin-bottom: 0.25rem; }
+        .app-role { font-size: 0.875rem; color: var(--cc); font-weight: 600; margin-bottom: 1rem; }
+        .app-desc { font-size: 0.875rem; color: #94a3b8; line-height: 1.5; margin-bottom: 1.5rem; min-height: 4.5rem; }
+        .app-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1e293b; pt-4; margin-top: 1rem; padding-top: 1rem; }
+        .app-open { font-weight: 700; font-size: 0.875rem; color: #f8fafc; }
+        .app-status { font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #1e293b; border-radius: 0.25rem; color: var(--cc); }
+    </style>
+</head>
+<body class="p-8">
+    <section id="apps">
+        <div class="sec-hd">
+            <div class="sec-hd-tag">CONSTRUCT INTELLIGENCE SUITE · LIVE</div>
+            <div class="sec-hd-line"></div>
+        </div>
+        <div class="apps-grid">
+            <!-- 01: Command Center -->
+            <a class="app-card" href="/construction-suite/construction-command-pro.html" style="--cc:var(--cyan)">
+                <div class="app-num">01 · COMMAND CENTER</div>
+                <div class="app-name">Construction Command</div>
+                <div class="app-role">MULTI-NODE INTELLIGENCE HUB</div>
+                <div class="app-desc">Deploy queries to all specialist nodes simultaneously and synthesize unified recommendations.</div>
+                <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
+            </a>
+            <!-- 02: AuditOps Pro -->
+            <a class="app-card" href="/construction-suite/construction-pro.html" style="--cc:var(--amber)">
+                <div class="app-num">02 · INTELLIGENCE CORE</div>
+                <div class="app-name">AuditOps · Construction Pro</div>
+                <div class="app-role">30 MODULES · 7 DOMAINS</div>
+                <div class="app-desc">Safety, Finance, Logistics, Compliance, Operations, Geotech, and Legal modules.</div>
+                <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
+            </a>
+            <!-- 03: Strategist -->
+            <a class="app-card" href="/construction-suite/construction-strategist.html" style="--cc:var(--orange)">
+                <div class="app-num">03 · SOVEREIGN CORE</div>
+                <div class="app-name">Construction Strategist</div>
+                <div class="app-role">EXECUTIVE BNCA SYNTHESIS</div>
+                <div class="app-desc">Generates ranked, dollar-prioritized Best Next Course of Action.</div>
+                <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
+            </a>
+            <!-- 04: Compliance -->
+            <a class="app-card" href="/construction-suite/compliance-hub.html" style="--cc:var(--red)">
+                <div class="app-num">04 · COMPLIANCE SHIELD</div>
+                <div class="app-name">Construction Compliance</div>
+                <div class="app-role">OSHA · DAVIS-BACON · EPA</div>
+                <div class="app-desc">Dollar-quantified fine exposure with 30-day remediation protocols.</div>
+                <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
+            </a>
+            <!-- 05: Financial -->
+            <a class="app-card" href="/financial/index-elevated.html" style="--cc:var(--green)">
+                <div class="app-num">05 · FINANCIAL INTEL</div>
+                <div class="app-name">Construction Financial</div>
+                <div class="app-role">CASH FLOW · MARGINS</div>
+                <div class="app-desc">Job costing, cash flow stress testing, and retainage release strategy.</div>
+                <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
+            </a>
+            <!-- 06: Legal -->
+            <a class="app-card" href="/construction-suite/legal.html" style="--cc:var(--blue)">
+                <div class="app-num">06 · LEGAL COMMAND</div>
+                <div class="app-name">Construction Legal</div>
+                <div class="app-role">LIENS · DISPUTES · BONDS</div>
+                <div class="app-desc">Mechanics lien deadlines across 50 states and default scoring.</div>
+                <div class="app-footer"><span class="app-open">OPEN APP ↗</span><span class="app-status">LIVE</span></div>
+            </a>
+        </div>
+    </section>
+    <script src="/tsm-ai-client.js"></script>
+    <script src="/tsm-app-runtime.js"></script>
+</body>
+</html>
