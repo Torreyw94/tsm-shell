@@ -18,7 +18,7 @@ function getAppSlug() {
   return window.location.hostname.replace(".tsmatter.com", "");
 }
 
-export async function askAI(userMessage, history = []) {
+async function askAI(userMessage, history = []) {
   const messages = [...history, { role: "user", content: userMessage }];
   const res = await fetch(AI_ENDPOINT, {
     method: "POST",
@@ -30,7 +30,7 @@ export async function askAI(userMessage, history = []) {
   return data.reply;
 }
 
-export function initAIButton(btnSel, inputSel, outputSel, options = {}) {
+function initAIButton(btnSel, inputSel, outputSel, options = {}) {
   const btn    = document.querySelector(btnSel);
   const input  = document.querySelector(inputSel);
   const output = document.querySelector(outputSel);
