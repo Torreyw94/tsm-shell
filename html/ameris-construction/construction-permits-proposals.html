@@ -1198,3 +1198,43 @@ function setFilter(arg) {
     });
 }
 </script>
+
+<script>
+async function askAI() {
+    const input = document.querySelector('.ai-input-box input') || document.querySelector('input[type="text"]');
+    const outputBody = document.getElementById('oBody') || document.querySelector('.ai-output-area');
+    
+    if (!input || !input.value) return;
+    
+    console.log("TSM Neural Core: Processing Request...");
+    if(outputBody) outputBody.innerText = "THINKING...";
+
+    try {
+        const response = await fetch("https://tsm-shell.fly.dev/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                app: "construction", 
+                prompt: input.value 
+            })
+        });
+
+        const data = await response.json();
+        if(outputBody) outputBody.innerText = data.reply || data.response;
+        console.log("TSM Neural Core: Response Received");
+    } catch (err) {
+        console.error("Wiring Error:", err);
+        if(outputBody) outputBody.innerText = "Connection to Neural Core failed. Check Port 3000.";
+    }
+}
+
+// Attach the 'Enter' key to the input box for AI triggering
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('.ai-input-box input');
+    if(input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') askAI();
+        });
+    }
+});
+</script>
