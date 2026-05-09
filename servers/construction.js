@@ -12,6 +12,17 @@ const groq = async (prompt, maxTokens=800) => {
   return d.choices?.[0]?.message?.content || 'AI unavailable';
 };
 
+
+// Root route aliases for /api/audit and /api/chat
+router.post('/', async (req,res) => {
+  try {
+    const {query='',message='',messages=[],nodeKey='general',app='',factor='',sector=''} = req.body||{};
+    const q = query||message||messages.map(m=>m.content).join(' ');
+    const content = await groq(`Construction AI. Node: ${nodeKey||sector||'general'}. Factor: ${factor}. Query: ${q}. Focus: job costing, subcontractors, lien compliance, OSHA, project financials.`);
+    res.json({ok:true,content,reply:content,result:content,ts:new Date().toISOString()});
+  } catch(e){res.status(500).json({ok:false,error:e.message});}
+});
+
 // ask + query alias
 router.post('/ask', async (req,res) => {
   try {
