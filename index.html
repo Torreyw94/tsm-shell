@@ -659,7 +659,7 @@ async function checkBridge() {
     if (res.ok) {
       bridgeOk = true;
       banner.className = 'bridge-banner show ok';
-      txt.textContent = '✓ TSM Neural bridge online · ai.tsmatter.com connected';
+      txt.textContent = '✓ TSM Neural bridge online · tsm-shell.fly.dev connected';
       setTimeout(() => banner.classList.remove('show'), 4000);
     } else { warnBridge(banner, txt); }
   } catch(e) { warnBridge(banner, txt); }
@@ -672,7 +672,7 @@ function warnBridge(banner, txt) {
     txt.textContent = '⚠ Bridge unreachable — running in simulation mode';
     setTimeout(() => banner.classList.remove('show'), 6000);
   } else {
-    txt.textContent = '⚠ TSM Neural bridge unreachable — check /var/www/tsm-ai config at ai.tsmatter.com';
+    txt.textContent = '⚠ TSM Neural bridge unreachable — check //app/scripts config at tsm-shell.fly.dev';
   }
 }
 
@@ -718,7 +718,7 @@ async function callAI(systemPrompt, userMessage, onChunk, onDone) {
     if (!res.ok) {
       const errText = await res.text().catch(()=>'');
       if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
-      else { onChunk('[Bridge error ' + res.status + ' — verify ai.tsmatter.com/v1/chat is live and CORS is open]\n' + errText.slice(0,200)); onDone(); }
+      else { onChunk('[Bridge error ' + res.status + ' — verify tsm-shell.fly.dev/v1/chat is live and CORS is open]\n' + errText.slice(0,200)); onDone(); }
       return;
     }
     const ct = res.headers.get('content-type') || '';
@@ -751,7 +751,7 @@ async function callAI(systemPrompt, userMessage, onChunk, onDone) {
     onDone();
   } catch(err) {
     if (CONFIG.useFallback) { await simulateResponse(systemPrompt, userMessage, onChunk, onDone); }
-    else { onChunk('[Connection error: ' + err.message + ']\nVerify ai.tsmatter.com is reachable and CORS headers include your portal domain.'); onDone(); }
+    else { onChunk('[Connection error: ' + err.message + ']\nVerify tsm-shell.fly.dev is reachable and CORS headers include your portal domain.'); onDone(); }
   }
 }
 
