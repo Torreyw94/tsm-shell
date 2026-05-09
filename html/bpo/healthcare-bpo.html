@@ -3,6 +3,64 @@
 :root{--a:#00e5ff;--bg:#05090d;--p:#081522;--b:rgba(255,255,255,.09);--t:#e8f7ff;--m:#8aa6b7}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,rgba(0,255,198,.08),transparent 35%),var(--bg);color:var(--t);font-family:Inter,system-ui,Arial}
 header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:#07131d;border-bottom:1px solid var(--b)}.logo{color:var(--a);font-weight:900;letter-spacing:.18em;font-size:20px}.sub{color:var(--m);font-size:11px;letter-spacing:.12em}a{color:var(--a)}#nav{display:flex;gap:8px;padding:10px 20px;background:#07131d;border-bottom:1px solid var(--b);overflow:auto}.nb{background:#0b1722;color:#dff7ff;border:1px solid var(--b);border-radius:8px;padding:9px 12px;font-weight:800;white-space:nowrap}.nb.active,.nb:hover{color:var(--a);border-color:var(--a)}#app{display:flex}aside{width:240px;background:#07131d;min-height:calc(100vh - 110px);border-right:1px solid var(--b);padding:12px}main{flex:1;padding:18px}.si{display:flex;justify-content:space-between;padding:10px;border-left:3px solid transparent;color:#bad3e4}.si.active{border-left-color:var(--a);background:rgba(255,255,255,.04)}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stat,.card{background:rgba(8,21,34,.94);border:1px solid var(--b);border-radius:14px;padding:18px}.stat small,.ey{color:var(--m);letter-spacing:.16em;font-size:11px}.stat strong{display:block;color:var(--a);font-size:34px;margin:8px 0}.stat span{color:#9fb8c8}.hero h1{font-size:42px;margin:8px 0;color:#fff}.hero p{color:#bad3e4;line-height:1.6}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}input,textarea{width:100%;background:#050b12;color:#dff7ff;border:1px solid var(--b);border-radius:10px;padding:12px;margin:8px 0;font-family:monospace}textarea{min-height:130px}button.primary,.prompt{background:var(--a);color:#001;border:0;border-radius:10px;padding:11px 14px;font-weight:900;margin:5px;cursor:pointer}.prompt{display:block;width:100%;text-align:left;background:#0b1722;color:#dff7ff;border:1px solid rgba(0,255,198,.18)}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.06)}td:first-child{color:var(--a)}em{color:#ffc400;font-style:normal}.out{display:none;white-space:pre-wrap;background:#050b12;border:1px solid rgba(0,255,198,.18);border-left:3px solid var(--a);padding:14px;border-radius:10px;margin-top:12px;line-height:1.5}.view{display:none}.view.active{display:block}@media(max-width:900px){#app{display:block}aside{width:auto;min-height:auto}.kpis,.grid2{grid-template-columns:1fr}}
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
 </style></head><body>
 <header><div><div class="logo">HealthcareOps BPO</div><div class="sub">RCM · PRIOR AUTH · CLAIMS · COMPLIANCE · PATIENT FLOW · STRATEGIST</div></div><div><a href="/bpo/bpo-website.html">BPO Website</a> · <a href="/bpo/launch.html">Launch</a></div></header>
 <div id="nav"><button class="nb active" onclick="sv('dashboard',this)">⬛ DASHBOARD</button><button class="nb " onclick="sv('intake',this)">🩺 INTAKE</button><button class="nb " onclick="sv('insurance',this)">📑 PRIOR AUTH</button><button class="nb " onclick="sv('billing',this)">💳 BILLING / RCM</button><button class="nb " onclick="sv('compliance',this)">🛡 COMPLIANCE</button><button class="nb " onclick="sv('ai',this)">🤖 AI ANALYST</button></div><div id="app"><aside><div class="si active"><span>⬛ DASHBOARD</span><b>1</b></div><div class="si "><span>🩺 INTAKE</span><b>2</b></div><div class="si "><span>📑 PRIOR AUTH</span><b>3</b></div><div class="si "><span>💳 BILLING / RCM</span><b>4</b></div><div class="si "><span>🛡 COMPLIANCE</span><b>5</b></div><div class="si "><span>🤖 AI ANALYST</span><b>6</b></div></aside><main><div class="kpis"><div class="stat"><small>CLAIMS PENDING</small><strong>247</strong><span>adjudication queue</span></div><div class="stat"><small>DENIAL RATE</small><strong>18.4%</strong><span>above target</span></div><div class="stat"><small>COMPLIANCE</small><strong>84%</strong><span>HIPAA + CMS</span></div><div class="stat"><small>OPS QUEUE</small><strong>31</strong><span>front-desk pressure</span></div></div>

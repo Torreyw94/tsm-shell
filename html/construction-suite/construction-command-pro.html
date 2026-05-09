@@ -8,6 +8,64 @@ h1{font-size:56px;color:#00ffc6;max-width:900px}.card{border:1px solid #17313d;b
 button{background:#00ffc6;color:#001;border:0;padding:12px 18px;font-weight:900}textarea{width:100%;height:110px;background:#071018;color:#fff;border:1px solid #17313d;padding:12px}
 #out{white-space:pre-wrap;color:#bfffe6;margin-top:14px;border:1px solid #17313d;padding:16px}
 </style><link rel="stylesheet" href="/construction-suite/assets/construction-platform.css">
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
 </head><body>
 <div class="top"><b>Construction Command</b><span><a href="/construction-suite/construction-hub.html">Hub</a> · <a href="/construction-suite/presentation.html">Deck</a></span></div>
 <h1>COMMAND EVERY JOB SITE</h1><p>Multi-node operating layer</p>
@@ -27,14 +85,10 @@ Assign an owner today, review active project exposure, and escalate the highest-
 CONFIDENCE
 92%`;
 }
-</script><script src="/construction-suite/tsm-app-runtime.js"></script><script src="/construction-suite/assets/construction-platform.js"></script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/tsm-app-runtime.js"></script>
 <script src="tsm-bridge-construct.js"></script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/tsm-app-runtime.js"></script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/tsm-app-runtime.js"></script>
 <script>
   window.APP_CONFIG = { logic: "strategist", node_level: "COMMAND" };
 </script>
@@ -345,6 +399,64 @@ body{font-family:var(--body);background:var(--bg);color:var(--white);display:fle
 }
 </style>
 
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
 </head>
 <body>
 
@@ -1192,12 +1304,9 @@ if(inp&&out)inp.addEventListener("focus",function(){out.style.display="block";})
 </script>
 
 <script src="/tsm-ai-client.js"></script>
-<script src="/tsm-app-runtime.js"></script>
 <script src="tsm-bridge-construct.js"></script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/tsm-app-runtime.js"></script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/tsm-app-runtime.js"></script>
 <script>
   window.APP_CONFIG = { logic: "strategist", node_level: "COMMAND" };
 </script>

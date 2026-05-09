@@ -138,6 +138,64 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 })();
 </script>
 
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
 <style id="jcss">.journey-bar{display:flex;align-items:center;padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;gap:4px}.journey-step{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:6px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .2s;border:1px solid transparent}.journey-step.active{color:var(--green);border-color:var(--green);background:rgba(57,217,138,.08)}.journey-step.done .journey-num{background:var(--green);color:#000}.journey-num{width:18px;height:18px;border-radius:50%;background:var(--border2);display:grid;place-items:center;font-size:10px;font-weight:700;flex-shrink:0}.journey-arrow{color:var(--border2);padding:0 2px}.next-step-cta{margin-top:16px;padding:12px 16px;background:rgba(57,217,138,.08);border:1px solid rgba(57,217,138,.25);border-radius:8px;display:flex;align-items:center;justify-content:space-between}.cta-label{font-size:12px;color:var(--muted)}.cta-title{font-size:14px;font-weight:700;color:var(--green);margin-top:2px}.next-step-btn{background:var(--green);color:#000;border:none;padding:8px 18px;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px}.refinement-area{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-bottom:14px}.refinement-label{font-size:10px;color:var(--pink);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:var(--mono)}.refinement-text{font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap}.export-box{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:16px}.export-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn-export{padding:10px 18px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;font-size:13px;font-weight:600}.btn-export.primary{background:var(--green);color:#000;border-color:var(--green)}</style></head>
 <body>
 <div style="text-align:center;font-size:0.8rem;color:#9ca3af;padding:8px;">
