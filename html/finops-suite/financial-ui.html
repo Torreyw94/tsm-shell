@@ -222,45 +222,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
 .cat-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px}
 .cat-items{font-size:11px;color:var(--text-dim);line-height:1.5}
 </style>
+
 <script>
 window.TSM_UI = {
     runAudit: async (sector, factor) => {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Processing...</span>';
         try {
-            const res = await fetch('/api/groq', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    system: 'You are a FinOps strategist and controller. Be specific, actionable, and concise.',
-                    messages: [{ role: 'user', content: `Analyze the "${factor}" module for sector: ${sector}. Provide key risks, immediate actions, and financial impact. Under 200 words.` }]
-                })
-            });
-            const data = await res.json();
-            if (feed) feed.innerText = data.content || "Analysis complete.";
-        } catch (e) {
-            if (feed) feed.innerText = "[STRATEGIST] Bridge error: " + e.message;
-        }
-    }
-};
-// Wire the sector cards to the auto-fill search prompt logic
-document.addEventListener('click', (e) => {
-    const card = e.target.closest('.module-card');
-    if (card) {
-        const sector = card.dataset.sector || "Construction";
-        const factor = card.querySelector('h3')?.innerText || "General Audit";
-        TSM_UI.runAudit(sector, factor);
-    }
-});
-console.log("TSM_UI: Direct Neural Link Established.");
-</script>
-<script>
-window.TSM_UI = {
-    runAudit: async (sector, factor) => {
-        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
-        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Processing...</span>';
-        try {
-            const res = await fetch('/api/groq', {
+            const res = await fetch('/api/financial/query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -333,6 +302,25 @@ window.forceNav = function(target) {
   }
   .node-card { position: relative; }
 </style>
+
+// TSM AI Caller — routes all AI through server
+async function tsmAI(systemPrompt, userContent, maxTokens) {
+  try {
+    const res = await fetch('/api/financial/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: systemPrompt ? systemPrompt + '\n\n' + userContent : userContent,
+        maxTokens: maxTokens || 1024
+      })
+    });
+    if (!res.ok) throw new Error('Server ' + res.status);
+    const d = await res.json();
+    return d.answer || d.output || d.content || 'No response.';
+  } catch(e) {
+    return '[AI Error] ' + e.message;
+  }
+}
 </head>
 <body>
 
@@ -845,5 +833,18 @@ window.addEventListener('mousedown', function(e) {
 }, true); // The 'true' here is key—it captures the click before any other script can stop it.
 </script>
 <script src="/groq-bridge.js"></script>
+
+// BNCA Node Reporter — wires this node to the strategist
+(function() {
+  if (!window.TSM_BNCA) return;
+  var nodeId = document.title.replace(/[^a-z0-9]/gi,'_').toLowerCase() || 'finops_node';
+  window.TSM_BNCA.report(nodeId, {
+    status: 'READY',
+    url: window.location.href,
+    label: document.title,
+    timestamp: Date.now()
+  });
+  console.log('[TSM] Node reported to strategist:', nodeId);
+})();
 </body>
 </html>

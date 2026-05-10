@@ -543,7 +543,7 @@ window.TSM_UI = {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/groq', {
+            const res = await fetch('/api/financial/query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -591,7 +591,26 @@ async function getVaultPrompt(key) {
   const d = await r.json();
   return d.system;
 }
-</script></head>
+</script>
+// TSM AI Caller — routes all AI through server
+async function tsmAI(systemPrompt, userContent, maxTokens) {
+  try {
+    const res = await fetch('/api/financial/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: systemPrompt ? systemPrompt + '\n\n' + userContent : userContent,
+        maxTokens: maxTokens || 1024
+      })
+    });
+    if (!res.ok) throw new Error('Server ' + res.status);
+    const d = await res.json();
+    return d.answer || d.output || d.content || 'No response.';
+  } catch(e) {
+    return '[AI Error] ' + e.message;
+  }
+}
+</head>
 <body>
 
 <!-- TOP BAR -->

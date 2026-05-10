@@ -947,13 +947,14 @@ body::before {
 .key-status.err { color: var(--red); }
 </style>
 <script src="/finops-suite/assets/bnca-bridge.js"></script>
+
 <script>
 window.TSM_UI = {
     runAudit: async (sector, factor) => {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/groq', {
+            const res = await fetch('/api/financial/query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -976,35 +977,25 @@ document.addEventListener('click', (e) => {
 });
 console.log("TSM_UI: Direct Neural Link Established.");
 </script>
-<script>
-window.TSM_UI = {
-    runAudit: async (sector, factor) => {
-        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
-        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
-        try {
-            const res = await fetch('/api/groq', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
-            });
-            const data = await res.json();
-            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
-        } catch (e) {
-            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
-        }
-    }
-};
-// Wire the sector cards to the auto-fill search prompt logic
-document.addEventListener('click', (e) => {
-    const card = e.target.closest('.module-card');
-    if (card) {
-        const sector = card.dataset.sector || "Construction";
-        const factor = card.querySelector('h3')?.innerText || "General Audit";
-        TSM_UI.runAudit(sector, factor);
-    }
-});
-console.log("TSM_UI: Direct Neural Link Established.");
-</script>
+
+// TSM AI Caller — routes all AI through server
+async function tsmAI(systemPrompt, userContent, maxTokens) {
+  try {
+    const res = await fetch('/api/financial/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: systemPrompt ? systemPrompt + '\n\n' + userContent : userContent,
+        maxTokens: maxTokens || 1024
+      })
+    });
+    if (!res.ok) throw new Error('Server ' + res.status);
+    const d = await res.json();
+    return d.answer || d.output || d.content || 'No response.';
+  } catch(e) {
+    return '[AI Error] ' + e.message;
+  }
+}
 </head>
 <body>
 
@@ -1610,7 +1601,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
 <script>
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let tsmNeuralCoreKey = localStorage.getItem('tsm_tsm-neural-core_key') || '';
-const TSM_NEURAL_CORE_URL = '/api/groq';
+const TSM_NEURAL_CORE_URL = '/api/financial/query';
 const MODEL = 'llama-3.3-70b-versatile';
 const chatHistory = [];
 
@@ -1760,7 +1751,7 @@ async function tsmNeuralCoreChat(messages, maxTokens = 2048) {
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-  return data.content || data.choices?.[0]?.message?.content || "";
+  return data.content || data.answer || data.choices?.[0]?.message?.content || "";
 }
 
 // ─── CHAT ─────────────────────────────────────────────────────────────────────
@@ -2047,7 +2038,7 @@ function showTab(name, el) {
 function aiAnalyzeAlerts() {
   var out = document.querySelector('.ai-output, #ai-output, .synthesis-output');
   if (out) out.textContent = 'Analyzing compliance alerts...';
-  fetch('/api/groq', {
+  fetch('/api/financial/query', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ messages: [{ role: 'user', content: 'Analyze the current compliance alerts and provide prioritized remediation steps for HIPAA, SOX, AML/KYC, and GDPR issues. Be specific and actionable.' }] })
