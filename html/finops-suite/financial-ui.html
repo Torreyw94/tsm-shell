@@ -303,6 +303,21 @@ console.log("TSM_UI: Direct Neural Link Established.");
 }
 .active-node { position: relative; }
 </style>
+
+<script>
+// Clear any rogue service workers
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        for(let reg of regs) reg.unregister();
+    });
+}
+
+// Global Force-Nav function
+window.forceNav = function(target) {
+    console.log("Sovereign Link: Forcing jump to " + target);
+    window.location.href = target + '?v=1778379301';
+};
+</script>
 </head>
 <body>
 
