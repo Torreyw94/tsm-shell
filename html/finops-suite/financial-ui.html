@@ -440,7 +440,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
         <button class="mod-btn" onclick="window.location.href='/finops-suite/finops-operations.html'">Open operations suite →</button>
       </div>
 
-      <div class="mod-card" onclick="window.location.href='#'" style="cursor:pointer">
+      <div class="mod-card" onclick="window.location.href='/finops-suite/finops-showcase-v2.html'" style="cursor:pointer">
         <div class="mod-num"><span class="mod-num-n">08</span> · POC closer</div>
         <div class="mod-title">Accounting Doc POC</div>
         <div class="mod-subtitle">10 doc types · 4 AI engines · Best Next Actions</div>
@@ -450,7 +450,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
           <span class="metric ok">4 AI engines</span>
           <span class="metric warn">&lt;30s output</span>
         </div>
-        <button class="mod-btn" onclick="window.location.href='#'">Launch accounting POC →</button>
+        <button class="mod-btn" onclick="window.location.href='/finops-suite/finops-showcase-v2.html'">Launch accounting POC →</button>
       </div>
     </div>
 
@@ -773,8 +773,8 @@ function runFullDemo(){
   window.__FINOPS_NODE_05_08_FIX__ = true;
 
   const ROUTES = {
-    "05": "#?v=accounting-doc-poc-fixed",
-    "08": "#?v=accounting-doc-poc"
+    "05": "/finops-suite/finops-showcase-v2.html?v=accounting-doc-poc-fixed",
+    "08": "/finops-suite/finops-showcase-v2.html?v=accounting-doc-poc"
   };
 
   function openNode(num){
@@ -851,8 +851,8 @@ function runFullDemo(){
   window.__FINOPS_HARD_REMAP_05_08__ = true;
 
   const TARGETS = {
-    compliance: "#?v=accounting-doc-poc-fixed",
-    accounting: "#?v=accounting-doc-poc"
+    compliance: "/finops-suite/finops-showcase-v2.html?v=accounting-doc-poc-fixed",
+    accounting: "/finops-suite/finops-showcase-v2.html?v=accounting-doc-poc"
   };
 
   function go(kind){
@@ -936,7 +936,7 @@ function runFullDemo(){
   window.__FINOPS_CORRECT_05_08_TARGETS__ = true;
 
   const TARGET_05 = "/finops-suite/compliance.html?v=compliance";
-  const TARGET_08 = "#?v=accounting-doc-poc";
+  const TARGET_08 = "/finops-suite/finops-showcase-v2.html?v=accounting-doc-poc";
 
   function go(url){ window.location.href = url; }
 
@@ -1011,24 +1011,5 @@ function runFullDemo(){
 })();
 </script>
 
-
-<script>
-// Kill the legacy redirect function
-window.go = function() { return false; };
-
-function runFinOpsAudit(element) {
-    console.log("TSM_SHIELD: FinOps Redirect Blocked. Analyzing...");
-    const moduleName = element.querySelector('h3')?.innerText || "FinOps Module";
-    
-    // Update the Intelligence Feed without changing the page
-    const feed = document.querySelector('.intelligence-feed');
-    if (feed) {
-        feed.innerHTML = `[STRATEGIST] Analyzing ${moduleName}... <span class='loading'></span>`;
-        // Trigger your established Neural Link
-        if (window.tsmInstance) window.tsmInstance.runAudit("Accounting", moduleName);
-    }
-    return false;
-}
-</script>
 </body>
 </html>
