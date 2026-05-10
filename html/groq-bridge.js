@@ -3,17 +3,19 @@
 window.GroqBridge = {
   // Core call — all other methods use this
   async ask(userPrompt, system = "") {
-    const res = await fetch("/api/groq", {
+    const res = await fetch("/api/financial/query", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        messages: [{ role: "user", content: userPrompt }],
         system: system || undefined,
+        user: userPrompt,
+        query: userPrompt,
+        maxTokens: 1024
       }),
     });
     if (!res.ok) throw new Error(`Groq error ${res.status}`);
     const data = await res.json();
-    return data.content;
+    return data.answer || data.content || 'No response.';
   },
 
   // ── Doc Showcase ─────────────────────────────────────────────────────────────
