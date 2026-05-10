@@ -1807,10 +1807,7 @@ document.addEventListener("DOMContentLoaded", () => {{
 
 if 'window.TSM_HUB_AI' not in text:
     text = text.replace('<script src="/tsm-ai-client.js"></script>
-<script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
-</body>', patch + '\\n<script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
-</body>') if '<script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
-</body>' in text else text + patch
+</body>', patch + '\\n</body>') if '</body>' in text else text + patch
 file_path.write_text(text, encoding='utf-8')
 print(f"  patched: {file_path}")
 PY
@@ -1831,6 +1828,5 @@ boot().catch(err => {
 });
 </script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
 </body>
 </html>

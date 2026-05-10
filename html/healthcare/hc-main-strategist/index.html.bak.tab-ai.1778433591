@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HC STRATEGIST · TSM Healthcare Full System</title>
+<title>TSM HC-Main STRATEGIST · TSM Healthcare Full System</title>
 <style>
 /* TSM_SCROLL_FIX */
 html, body {
@@ -115,7 +115,83 @@ tr:hover td{background:#0f1f0f}
   .kpi-row,.stat-grid,.health-row,.pr-grid,.report-grid{grid-template-columns:1fr}
 }
 </style>
+<<<<<<< HEAD
 <script src="/shared/tsm-zero-trust.js"></script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+</head>
+<body>
+<header>
+<h1>HEALTHCARE MAIN STRATEGIST</h1>
+<div>Executive healthcare operations · HC nodes · BNCA · HITL manager view<button onclick="location.href='/executive-portal/index.html?v=from-sector'">OPEN UNIFIED EXECUTIVE PORTAL</button></div>
+</header>
+<div class="wrap">
+<div class="grid">
+<div class="card">Nodes Reporting<div class="val" id="nodes">—</div></div>
+<div class="card">Latest Document<div class="val" id="doc">—</div></div>
+<div class="card">Risk Posture<div class="val" id="risk">—</div></div>
+<div class="card">Report Status<div class="val" id="status">—</div></div>
+</div>
+<h3>Executive Healthcare BNCA</h3>
+<pre id="summary">Loading healthcare strategist report...</pre>
+<button onclick="location.href='/honor-portal/index.html?v=hc-main'">OPEN EXECUTIVE PORTAL</button>
+=======
 <script>
 window.TSM_UI = {
     runAudit: async (sector, factor) => {
@@ -180,7 +256,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
   <div class="hdr-left">
     <span style="font-size:22px">♟️</span>
     <div>
-      <div class="hdr-title">HC STRATEGIST</div>
+      <div class="hdr-title">MAYO STRATEGIST</div>
       <div class="hdr-sub">Beacon of Truth · BNCA Engine · Healthcare Command Authority</div>
     </div>
   </div>
@@ -197,7 +273,6 @@ console.log("TSM_UI: Direct Neural Link Established.");
   <button class="nav-btn" onclick="switchTab('analytics',this)">📈 ANALYTICS</button>
   <button class="nav-btn" onclick="switchTab('reports',this)">🗂 REPORTS</button>
   <button class="nav-btn" onclick="switchTab('ai',this)">🧠 INTEL WORKBENCH<br>AI ANALYSIS</button>
-  <button class="nav-btn" onclick="location.href='/doc-showcase/index.html'">📄 DOC SHOWCASE</button>
   <button class="nav-btn" onclick="switchTab('presets',this)">⚡ PRESETS</button>
 </nav>
 
@@ -256,6 +331,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
     </div>
     <div id="dash-res" class="ai-res">&gt; AI ready.</div>
   </div>
+>>>>>>> c643f8f0e2c9a4b5093de0c5d5e7e427d60b3869
 </div>
 
 <div id="tab-nodes">
@@ -396,8 +472,8 @@ RUN ENTERPRISE BNCA</button>
 <div class="footer">
   <div class="fn">♟️ STRATEGIST NODE · real-time node reporting · report memory live</div>
   <div class="fbtns">
-    <button class="fbtn fbnca" onclick="askHC('Run a full BNCA for HC STRATEGIST: top risks, compliance gaps, priority actions, and office-manager next steps.','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">⚡ RUN BNCA</button>
-    <button class="fbtn frelay" onclick="window.location.href='/healthcare/hc-main-strategist/index.html'">🔗 RELAY TO STRATEGIST</button>
+    <button class="fbtn fbnca" onclick="askHC('Run a full BNCA for MAYO STRATEGIST: top risks, compliance gaps, priority actions, and office-manager next steps.','dash-btn','dash-res');switchTab('dash',document.querySelector('.nav-btn'))">⚡ RUN BNCA</button>
+    <button class="fbtn frelay" onclick="window.open('https://mayo-/healthcare/hc-main-strategist/index.html','_blank')">🔗 RELAY TO STRATEGIST</button>
   </div>
 </div>
 
@@ -636,11 +712,11 @@ async function runEnterpriseBnca() {
 
   const system =
     document.getElementById('system-filter')?.value ||
-    'HonorHealth';
+    'Mayo Clinic';
 
   const location =
     document.getElementById('location-filter')?.value ||
-    'Scottsdale - Shea';
+    'Mayo Clinic';
 
   out.innerHTML = '⏳ Running enterprise BNCA...';
 
@@ -681,11 +757,11 @@ async function generateLeadershipBrief() {
 
   const system =
     document.getElementById('system-filter')?.value ||
-    'HonorHealth';
+    'Mayo Clinic';
 
   const location =
     document.getElementById('location-filter')?.value ||
-    'Scottsdale - Shea';
+    'Mayo Clinic';
 
   const audience =
     document.getElementById('brief-audience')?.value ||
@@ -736,11 +812,11 @@ function startAutoSync(intervalMs = 10000) {
     try {
       const system =
         document.getElementById('system-filter')?.value ||
-        'HonorHealth';
+        'Mayo Clinic';
 
       const location =
         document.getElementById('location-filter')?.value ||
-        'Scottsdale - Shea';
+        'Mayo Clinic';
 
       const res = await fetch(
         `/api/hc/nodes/filter?system=${encodeURIComponent(system)}&location=${encodeURIComponent(location)}`
@@ -837,7 +913,7 @@ The problem is — those don’t live in one system. They compound across teams.
 
 STEP 2 — SHOW THE SYSTEM
 
-Navigate to /html/healthcare/
+Navigate to /html/mayo/
 
 “This is your live operational surface — every node represents a functional lane:
 operations, billing, insurance, compliance.
@@ -846,7 +922,7 @@ Each one is reporting pressure in real time.”
 
 STEP 3 — TRANSITION TO STRATEGIST
 
-Move to /html/hc-strategist/
+Move to /html/mayo-strategist/
 
 “But this is where it becomes actionable.”
 
@@ -896,7 +972,7 @@ This tells your office what to do — in priority order — tied to real dollars
 
 STEP 9 — CLOSE
 
-“What you just saw is Scottsdale-Shea — your facility, your numbers.
+“What you just saw is Mayo Clinic — your facility, your numbers.
 
 …we’d be identifying and acting on revenue leakage within the first 48 hours.”
 
@@ -951,6 +1027,5 @@ FINAL LINE
 </div>
 
 <script src="/tsm-ai-client.js"></script>
-<script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
 </body>
 </html>

@@ -2437,6 +2437,5 @@ window.safeAnalyze = async function(input, targetId="output"){
 })();
 </script>
 <script src="/tsm-ai-client.js"></script>
-<script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
 </body>
 </html>
