@@ -41,6 +41,26 @@ const aiLimiter = rateLimit({
   message: { ok: false, error: 'AI rate limit reached. Wait 60 seconds.' }
 });
 
+
+// ── Prospect Auth ─────────────────────────────────────────────
+const basicAuth = require('express-basic-auth');
+const prospectGuard = basicAuth({
+  users: {
+    'demo':     'tsm-demo-2025',
+    'prospect': 'tsm-prospect-2025'
+  },
+  challenge: true,
+  realm: 'TSM Financial Operations'
+});
+app.use('/finops-suite', prospectGuard);
+app.use('/html/finops-suite', prospectGuard);
+app.use('/html/finops-main-strategist', prospectGuard);
+app.use('/html/financial-command', prospectGuard);
+app.use('/html/financial-intel', prospectGuard);
+app.use('/html/tax-prep', prospectGuard);
+app.use('/html/compliance', prospectGuard);
+app.use('/html/zero-trust', prospectGuard);
+// ──────────────────────────────────────────────────────────────
 app.use('/api/', apiLimiter);
 app.use('/api/music/revision/run', aiLimiter);
 app.use('/api/music/agent-pass', aiLimiter);
@@ -2958,25 +2978,6 @@ app.post('/api/strategist/query', async function(req, res) {
 // ===== MUSIC PROTECTION LAYER =====
 const crypto = require('crypto');
 
-// ── Prospect Auth ─────────────────────────────────────────────
-const basicAuth = require('express-basic-auth');
-const prospectGuard = basicAuth({
-  users: {
-    'demo':     'tsm-demo-2025',
-    'prospect': 'tsm-prospect-2025'
-  },
-  challenge: true,
-  realm: 'TSM Financial Operations'
-});
-app.use('/finops-suite', prospectGuard);
-app.use('/html/finops-suite', prospectGuard);
-app.use('/html/finops-main-strategist', prospectGuard);
-app.use('/html/financial-command', prospectGuard);
-app.use('/html/financial-intel', prospectGuard);
-app.use('/html/tax-prep', prospectGuard);
-app.use('/html/compliance', prospectGuard);
-app.use('/html/zero-trust', prospectGuard);
-// ──────────────────────────────────────────────────────────────
 
 global.MUSIC_DEMO_ACCESS = global.MUSIC_DEMO_ACCESS || {
   tokens: {},
