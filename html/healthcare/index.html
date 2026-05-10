@@ -163,5 +163,161 @@ document.getElementById("nodeGrid").innerHTML = nodes.map(([key,title,meta,color
 </script>
 
 <script src="/healthcare/js/hc-node-enhance.js?v=deep-intel-final"></script>
+
+<script>
+(function(){
+  if(window.__HC_HUB_BUTTONS_TXT_GUIDE__) return;
+  window.__HC_HUB_BUTTONS_TXT_GUIDE__ = true;
+
+  const nodeGuide = {
+    operations: {
+      title:"OPERATIONS INTEL",
+      text:"Use this node to explain intake pressure, scheduling backlog, staffing coverage, and throughput blockers. Click INTEL WORKBENCH to show timeline, notes, smart prompts, and BNCA."
+    },
+    medical: {
+      title:"MEDICAL INTEL",
+      text:"Use this node to show clinical documentation gaps, CPT/audit exposure, provider routing, and care-flow blockers."
+    },
+    pharmacy: {
+      title:"PHARMACY INTEL",
+      text:"Use this node to show prior auth dependencies, medication access blockers, DEA/drug interaction risk, and pharmacy workflow pressure."
+    },
+    financial: {
+      title:"FINANCIAL INTEL",
+      text:"Use this node to connect revenue-cycle drag, P&L pressure, aging claims, and cash-flow impact."
+    },
+    legal: {
+      title:"LEGAL INTEL",
+      text:"Use this node to show contracts, HIPAA/regulatory defense, escalation memos, and policy-risk ownership."
+    },
+    vendors: {
+      title:"VENDORS INTEL",
+      text:"Use this node to show supplier SLA exceptions, contract review, vendor ROI, and supply-chain blockers."
+    },
+    compliance: {
+      title:"COMPLIANCE INTEL",
+      text:"Use this node to show HIPAA, CMS, OIG, audit trail, documentation gaps, and policy remediation."
+    },
+    billing: {
+      title:"BILLING INTEL",
+      text:"Use this node to show denials, coding, claim scrubbing, AR recovery, clean-claim rate, and payer friction."
+    },
+    taxprep: {
+      title:"TAX PREP INTEL",
+      text:"Use this node to show 1099/W-9 readiness, filing windows, vendor tax gaps, and APR risk."
+    },
+    grants: {
+      title:"GRANTS INTEL",
+      text:"Use this node to show restricted funding, HRSA reporting, grant compliance, and overdue report risk."
+    },
+    insurance: {
+      title:"INSURANCE INTEL",
+      text:"Use this node to show eligibility, prior auth aging, payer rules, appeal queues, and authorization SLA."
+    }
+  };
+
+  function keyFromCard(card){
+    if(!card) return "operations";
+    const ds = card.dataset || {};
+    if(ds.node) return ds.node;
+    const t=(card.innerText||"").toLowerCase();
+    if(t.includes("tax")) return "taxprep";
+    return Object.keys(nodeGuide).find(k=>t.includes(k)) || "operations";
+  }
+
+  function ensureGuide(){
+    let g=document.getElementById("hc-txt-guide");
+    if(g) return g;
+
+    g=document.createElement("aside");
+    g.id="hc-txt-guide";
+    g.style.cssText=`
+      position:fixed;right:22px;top:170px;width:330px;z-index:99998;
+      background:#07131d;border:1px solid rgba(0,255,198,.35);
+      border-radius:14px;padding:16px;color:#dff7ff;
+      box-shadow:0 0 28px rgba(0,255,198,.16);font-family:Inter,system-ui,Arial;
+    `;
+    g.innerHTML=`
+      <div style="color:#00ffc6;font-weight:950;letter-spacing:.14em;margin-bottom:8px">HC PRESENTATION GUIDE</div>
+      <div id="hc-guide-title" style="font-size:18px;font-weight:900;color:#ffc400;margin-bottom:8px">START HERE</div>
+      <div id="hc-guide-text" style="color:#9fb8c8;line-height:1.55;font-size:13px">
+        Start on the command chain. Explain that every node has an owner lane, an operational queue, and a Best Next Course of Action.
+      </div>
+      <pre id="hc-guide-script" style="white-space:pre-wrap;background:#050b12;border:1px solid rgba(0,255,198,.18);border-radius:10px;padding:10px;margin-top:12px;font-size:12px;color:#dff7ff">Talk track:
+“This is the office-manager command layer. We are not replacing systems. We are connecting the operational signals and telling the office what to do next.”</pre>
+    `;
+    document.body.appendChild(g);
+    return g;
+  }
+
+  function updateGuide(key){
+    const g=ensureGuide();
+    const data=nodeGuide[key] || nodeGuide.operations;
+    g.querySelector("#hc-guide-title").textContent=data.title;
+    g.querySelector("#hc-guide-text").textContent=data.text;
+    g.querySelector("#hc-guide-script").textContent =
+`Talk track:
+“This is ${data.title.replace(" INTEL","").toLowerCase()} in the healthcare command chain. The purpose is to identify the top issue, assign ownership, and push unresolved risk into the Healthcare Strategist.”
+
+Demo move:
+1. Click INTEL WORKBENCH.
+2. Show Timeline.
+3. Click Smart Prompts.
+4. Click BNCA.
+5. Explain owner lane and next action.`;
+  }
+
+  function openWorkbench(key){
+    updateGuide(key);
+    if(window.hcOpenEnhancedNode){
+      window.hcOpenEnhancedNode(key);
+      return;
+    }
+    alert((nodeGuide[key]||nodeGuide.operations).title + "\n\nWorkbench script is loading. Refresh once if needed.");
+  }
+
+  function wire(){
+    ensureGuide();
+
+    document.querySelectorAll(".node-card,[data-node]").forEach(card=>{
+      const key=keyFromCard(card);
+
+      card.addEventListener("mouseenter",()=>updateGuide(key));
+
+      card.querySelectorAll(".intel-btn,.hc-intel-gold-btn,.nc-open-btn,button").forEach(btn=>{
+        const txt=(btn.innerText||"").toLowerCase();
+        if(!txt.includes("intel")) return;
+
+        btn.style.pointerEvents="auto";
+        btn.style.cursor="pointer";
+        btn.onclick=function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          openWorkbench(key);
+          return false;
+        };
+      });
+    });
+
+    document.querySelectorAll(".bottom-actions button").forEach(btn=>{
+      btn.onclick=function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const t=(btn.innerText||"").toLowerCase();
+        if(t.includes("billing")) openWorkbench("billing");
+        else if(t.includes("compliance")) openWorkbench("compliance");
+        else openWorkbench("operations");
+        return false;
+      };
+    });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",wire);
+  else wire();
+
+  [500,1200,2500,4000].forEach(ms=>setTimeout(wire,ms));
+})();
+</script>
+
 </body>
 </html>
