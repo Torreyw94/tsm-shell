@@ -536,14 +536,42 @@
   .bar-btn.primary { background: var(--gold-dim); color: var(--gold); border-color: rgba(245,166,35,0.3); }
   .bar-btn.primary:hover { background: rgba(245,166,35,0.2); }
 </style>
-
 <script>
 window.TSM_UI = {
     runAudit: async (sector, factor) => {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/financial/query', {
+            const res = await fetch('/api/groq', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
+            });
+            const data = await res.json();
+            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
+        } catch (e) {
+            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
+        }
+    }
+};
+// Wire the sector cards to the auto-fill search prompt logic
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.module-card');
+    if (card) {
+        const sector = card.dataset.sector || "Construction";
+        const factor = card.querySelector('h3')?.innerText || "General Audit";
+        TSM_UI.runAudit(sector, factor);
+    }
+});
+console.log("TSM_UI: Direct Neural Link Established.");
+</script>
+<script>
+window.TSM_UI = {
+    runAudit: async (sector, factor) => {
+        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
+        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
+        try {
+            const res = await fetch('/api/groq', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -568,29 +596,15 @@ console.log("TSM_UI: Direct Neural Link Established.");
 </script>
 <script>
 async function getVaultPrompt(key) {
-  try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 3000);
-    const r = await fetch('/api/prompt', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ key }),
-      signal: ctrl.signal
-    });
-    clearTimeout(timer);
-    if (!r.ok) throw new Error(r.status);
-    const d = await r.json();
-    return d.system || d.prompt || '';
-  } catch(e) {
-    console.warn('[Vault] ' + key + ' timed out — using doc context only.');
-    return '';
-  }
+  const r = await fetch('/api/prompt', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ key })
+  });
+  const d = await r.json();
+  return d.system;
 }
-</script>
-<script>
-async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
-</script>
-</head>
+</script></head>
 <body>
 
 <!-- TOP BAR -->
@@ -819,7 +833,7 @@ ADJUSTED BANK BALANCE: $298,470.00
 BOOK BALANCE: $250,320.00
 DIFFERENCE: $48,150.00
 FLAGGED ACCOUNTS: 3 accounts with unreconciled items
-NOTES: $48K variance unresolved. Two deposits in transit over 30 days old. One check outstanding since January. Controller review required.`
+NOTES: $48K variance unresolved. Two deposits in transit over 30 days old. One check outstanding since January — possible lost check. Controller review required.`
   },
   'ap-aging': {
     name: 'AP Aging Report',
@@ -831,20 +845,25 @@ CURRENT (0-30 days): $148,200.00
 31-60 DAYS: $89,400.00
 61-90 DAYS: $52,880.00
 90+ DAYS (OVERDUE): $22,000.00
-CREDIT HOLD: 3 vendors — Acme Supply ($14,200), TechParts Inc ($5,800), FlexStaff ($2,000)
+CREDIT HOLD: 3 vendors on credit hold — Acme Supply ($14,200), TechParts Inc ($5,800), FlexStaff ($2,000)
 HIGH RISK: Acme Supply — $14,200 past due 94 days, threatening service suspension
-EARLY PAY DISCOUNTS: 4 vendors offering 2/10 net 30 — $3,840 savings available this week
-NOTES: AP manager approval required over $10,000. CFO review needed for credit hold vendors.`
+EARLY PAY DISCOUNTS AVAILABLE: 4 vendors offering 2/10 net 30 — $3,840 savings available if paid this week
+NOTES: AP manager approval required for all payments over $10,000. CFO review needed for credit hold vendors.`
   },
   'gl-extract': {
     name: 'GL Extract Q1',
     context: `DOCUMENT TYPE: General Ledger Extract — Q1 2025
-PERIOD: January 1 - March 31, 2025
+PERIOD: January 1 – March 31, 2025
 TOTAL REVENUE: $2,420,000 vs Budget $2,820,000 — VARIANCE: -$400,000 (-14.3%)
 COGS: $1,500,400 — Gross Profit: $919,600 (38% margin)
-OPERATING EXPENSES: Payroll $480,200 (over $20,200) | Rent $84,000 | Utilities $31,800 (over $3,800) | Marketing $62,400 (under $27,600)
+OPERATING EXPENSES:
+  Payroll: $480,200 (budgeted $460,000) — OVER by $20,200
+  Rent: $84,000 (on budget)
+  Utilities: $31,800 (budgeted $28,000) — OVER by $3,800
+  Marketing: $62,400 (budgeted $90,000) — UNDER by $27,600
+  Other: $118,800
 NET INCOME: $142,400
-FLAGGED: Revenue shortfall from Q1 project delays. Payroll overage from overtime. Marketing underspend may impact Q2.`
+FLAGGED: Revenue shortfall driven by Q1 project delays. Payroll overage due to overtime. Marketing underspend may impact Q2 pipeline.`
   },
   'ar-aging': {
     name: 'AR Aging Report',
@@ -852,80 +871,111 @@ FLAGGED: Revenue shortfall from Q1 project delays. Payroll overage from overtime
 PERIOD: As of April 30, 2025
 TOTAL OUTSTANDING: $198,640.00
 CLIENTS: 14 active, 8 with overdue balances
-CURRENT: $82,400 | 31-60 DAYS: $54,200 | 61-90 DAYS: $38,840 | 90+ DAYS: $23,200
-HIGH RISK: Westside Holdings $18,400 (97 days, no response) | Delta Logistics $12,200 (disputed) | Sunrise Group $8,600 (promised May 10)
-WRITE-OFF RISK: $18,400 Westside — recommend collections escalation. DSO: 52 days (target 35).`
+CURRENT (0-30 days): $82,400.00
+31-60 DAYS: $54,200.00
+61-90 DAYS: $38,840.00
+90+ DAYS: $23,200.00
+HIGH RISK CLIENTS:
+  - Westside Holdings: $18,400 — 97 days overdue, no response to 3 collection attempts
+  - Delta Logistics: $12,200 — 78 days, disputed invoice
+  - Sunrise Group: $8,600 — 63 days, promised payment May 10
+WRITE-OFF RISK: $18,400 Westside Holdings — recommend escalation to collections
+DSO: 52 days (target: 35 days)`
   },
   'month-end': {
     name: 'Month-End Close Checklist — April 2025',
     context: `DOCUMENT TYPE: Month-End Close Checklist
-PERIOD: April 2025 | STATUS: 70% Complete
-DONE: Bank Recon, Credit Card Recon, AP Recon, Prepaid Amortization, Financial Statements Drafted
-PENDING: AR Aging Review (in progress), Accrual Entries (not started), Payroll Posting (BLOCKED - HR no data), Approvals (blocked)
-TARGET CLOSE: May 10, 2025 — AT RISK: Payroll blocked, HR has not submitted April data.`
+PERIOD: April 2025
+CLOSE STATUS: 70% Complete
+COMPLETED TASKS:
+  ✓ Bank Reconciliation — complete
+  ✓ Credit Card Reconciliation — complete
+  ✓ AP Reconciliation — complete
+  ✓ Prepaid Amortization — complete
+  ✓ Financial Statements Drafted — complete
+PENDING TASKS:
+  ✗ AR Aging Review — IN PROGRESS
+  ✗ Accrual Entries — NOT STARTED
+  ✗ Payroll Posting — NOT STARTED (payroll data not yet received from HR)
+  ✗ Approvals Completed — BLOCKED on payroll
+TARGET CLOSE DATE: May 10, 2025
+AT RISK: Payroll posting blocked — HR has not submitted April payroll data. Close deadline at risk.`
   },
   'expense': {
     name: 'Expense Report — Field Ops',
     context: `DOCUMENT TYPE: Employee Expense Report
 EMPLOYEE: Marcus Webb — Field Operations Manager
-TOTAL: $8,420.00 | DATE: April 30, 2025
-ITEMS: Travel $340 (ok) | Team meals $1,840 (MISSING RECEIPT) | Equipment $3,200 (ok) | Hotel $780 (ok) | Fuel $290 (MISSING) | Subcontractor meals $1,970 (MISSING + POLICY VIOLATION over $500 limit)
-STATUS: HOLD — 3 missing receipts ($4,100) + VP approval needed for policy exception.`
+DEPARTMENT: Construction / Field Operations
+REPORT DATE: April 30, 2025
+TOTAL: $8,420.00
+EXPENSES:
+  04/08: Travel — Phoenix to Tucson — $340 — Receipt attached
+  04/12: Meals (team) — $1,840 — Receipt MISSING
+  04/15: Equipment rental — $3,200 — Receipt attached
+  04/18: Hotel (3 nights) — $780 — Receipt attached
+  04/22: Fuel — $290 — Receipt MISSING
+  04/28: Subcontractor meals — $1,970 — Receipt MISSING — FLAGGED (over $500 policy limit)
+POLICY VIOLATIONS: Subcontractor meal expense ($1,970) exceeds $500 policy limit — requires VP approval
+MISSING RECEIPTS: 3 items totaling $4,100
+STATUS: HOLD — cannot approve until receipts received and VP sign-off on policy exception`
   },
   'income-stmt': {
     name: 'Income Statement Q1 2025',
     context: `DOCUMENT TYPE: Income Statement (P&L)
-PERIOD: Q1 2025 (January - March)
-REVENUE: $2,420,000 | COGS: $1,500,400 | GROSS PROFIT: $919,600 (38% — target 44%)
-OPEX: Payroll $480,200 | Rent $84,000 | Utilities $31,800 | Marketing $62,400 | G&A $118,800
-NET INCOME: $142,400 | YOY: Revenue down 8.2% vs Q1 2024
-ALERT: Gross margin 6pts below target — COGS overrun from material costs (+12%) and overtime.`
+PERIOD: Q1 2025 (January – March)
+REVENUE: $2,420,000
+COGS: $1,500,400
+GROSS PROFIT: $919,600 (38% margin — target was 44%)
+OPERATING EXPENSES:
+  Payroll: $480,200
+  Rent: $84,000
+  Utilities: $31,800
+  Marketing: $62,400
+  G&A: $118,800
+  Total OpEx: $777,200
+EBITDA: $142,400
+NET INCOME: $142,400
+YEAR-OVER-YEAR: Revenue down 8.2% vs Q1 2024
+MARGIN ALERT: Gross margin fell from 44% target to 38% — 6 point gap driven by COGS overrun
+NOTES: Q1 underperformance driven by project delays, material cost increases (+12%), and overtime labor.`
   }
 };
 
-const ENGINE_DEFS = [
-  { num:1, name:'Document Triage & Flag Analysis',   system:'You are a financial document triage AI. Identify document type, flag issues, missing info, compliance risks. Output: DOCUMENT TYPE / ISSUES FOUND / COMPLIANCE FLAGS / MISSING INFO / PRIORITY.' },
-  { num:2, name:'Variance & Risk Intelligence',      system:'You are a financial variance and risk intelligence AI. Analyze for financial risks, variances from budget, and anomalies. Output: VARIANCE SUMMARY / RISK FACTORS / ANOMALIES / RECOMMENDED ACTION.' },
-  { num:3, name:'Controller Action Plan - BNCA',     system:'You are a Controller Action Plan AI. Generate specific prioritized next actions a controller must take. Output: IMMEDIATE ACTIONS / THIS WEEK / THIS MONTH / ESCALATE TO.' },
-  { num:4, name:'CFO Executive Intelligence',        system:'You are a CFO Executive Intelligence AI. Translate document into executive-level intelligence. Output: EXECUTIVE SUMMARY / FINANCIAL IMPACT / STRATEGIC RISK / BOARD-LEVEL FLAG.' }
-];
+// ===== ENGINE PROMPTS =====
+function buildPrompts(doc) {
+  const ctx = `DOCUMENT: ${doc.name}\n\n${doc.context}`;
+  return [
+    {
+      num: 1,
+      name: 'Document Triage & Flag Analysis',
+      prompt: await getVaultPrompt('the_tsm_finops_triage')
+    },
+    {
+      num: 2,
+      name: 'Variance & Risk Intelligence',
+      prompt: await getVaultPrompt('the_tsm_finops_variance')
+    },
+    {
+      num: 3,
+      name: 'Controller Action Plan · BNCA',
+      prompt: await getVaultPrompt('the_tsm_finops_controller')
+    },
+    {
+      num: 4,
+      name: 'CFO Executive Intelligence',
+      prompt: await getVaultPrompt('the_tsm_finops_cfo')
+    }
+  ];
+}
 
+// ===== STATE =====
 let currentDoc = docs['ap-aging'];
 let currentMode = 'sample';
 let uploadedContent = null;
-let engineOutputs = { 1:'', 2:'', 3:'', 4:'' };
+let engineOutputs = { 1: '', 2: '', 3: '', 4: '' };
 let completedEngines = 0;
 
-async function getVaultPrompt(key) {
-  try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 3000);
-    const r = await fetch('/api/prompt', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key }),
-      signal: ctrl.signal
-    });
-    clearTimeout(timer);
-    if (!r.ok) throw new Error(r.status);
-    const d = await r.json();
-    return d.system || d.prompt || '';
-  } catch(e) {
-    return '';
-  }
-}
-
-async function buildEnginePrompt(def) {
-  const system = def.system || 'You are a financial analysis AI.';
-  const ctx = 'DOCUMENT: ' + currentDoc.name + '\n\n' + currentDoc.context;
-  const prior = [1,2,3]
-    .filter(function(n) { return n < def.num && engineOutputs[n]; })
-    .map(function(n) { return '--- ENGINE ' + n + ' ---\n' + engineOutputs[n]; })
-    .join('\n\n');
-  const user = [ctx, prior].filter(Boolean).join('\n\n').slice(0, 3000);
-  return { system: system, user: user };
-}
-
+// ===== MODE =====
 function setMode(mode) {
   currentMode = mode;
   document.getElementById('modeS').className = 'mode-btn' + (mode === 'sample' ? ' active' : '');
@@ -934,186 +984,230 @@ function setMode(mode) {
   document.getElementById('uploadZone').className = 'upload-zone' + (mode === 'upload' ? ' visible' : '');
 }
 
+// ===== SELECT DOC =====
 function selectDoc(el, key) {
-  document.querySelectorAll('.doc-item').forEach(function(d) { d.classList.remove('selected'); });
+  document.querySelectorAll('.doc-item').forEach(d => d.classList.remove('selected'));
   el.classList.add('selected');
   currentDoc = docs[key];
   uploadedContent = null;
-  updateStatus('<span style="color:var(--green)">&#10003;</span> ' + currentDoc.name + ' — READY TO FIRE');
-  setBottom('FINOPS NEURAL BRIDGE · ' + currentDoc.name + ' loaded · Ready to fire all 4 engines');
+  updateStatus(`✓ ${currentDoc.name} — READY TO FIRE`);
+  setBottom(`FINOPS NEURAL BRIDGE · ${currentDoc.name} loaded · Ready to fire all 4 engines`);
 }
 
+// ===== HANDLE UPLOAD =====
 async function handleUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
-  updateStatus('Loading: ' + file.name + '...');
+
+  updateStatus(`Loading: ${file.name}...`);
+
   try {
     const text = await file.text();
     uploadedContent = text.substring(0, 4000);
     currentDoc = { name: file.name, context: uploadedContent };
-    updateStatus('<span style="color:var(--green)">&#10003;</span> ' + file.name + ' — READY TO FIRE');
-    setBottom('FINOPS NEURAL BRIDGE · ' + file.name + ' loaded · Ready to fire all 4 engines');
+    updateStatus(`✓ ${file.name} — READY TO FIRE`);
+    setBottom(`FINOPS NEURAL BRIDGE · ${file.name} loaded · Ready to fire all 4 engines`);
   } catch(err) {
-    updateStatus('Warning: Error reading file: ' + err.message);
+    updateStatus(`⚠ Error reading file: ${err.message}`);
   }
 }
 
+// ===== PIPELINE =====
 async function animatePipeline(step) {
+  const nodes = ['pipe-0','pipe-1','pipe-2','pipe-3','pipe-4'];
+  const arrows = ['arr-0','arr-1','arr-2','arr-3'];
+
   if (step === 'reset') {
-    ['pipe-0','pipe-1','pipe-2','pipe-3','pipe-4'].forEach(function(n) {
-      document.getElementById(n).className = 'pipe-circle';
-    });
-    ['arr-0','arr-1','arr-2','arr-3'].forEach(function(a) {
-      document.getElementById(a).className = 'pipe-arrow';
-    });
+    nodes.forEach(n => { const el = document.getElementById(n); el.className = 'pipe-circle'; });
+    arrows.forEach(a => { const el = document.getElementById(a); el.className = 'pipe-arrow'; });
     document.getElementById('completeCount').textContent = '0';
     return;
   }
+
   if (step === 'start') {
     document.getElementById('pipe-0').classList.add('active');
     await sleep(400);
-    document.getElementById('pipe-0').classList.replace('active','done');
+    document.getElementById('pipe-0').classList.remove('active');
+    document.getElementById('pipe-0').classList.add('done');
     document.getElementById('arr-0').classList.add('done');
     document.getElementById('pipe-1').classList.add('active');
     await sleep(400);
-    document.getElementById('pipe-1').classList.replace('active','done');
+    document.getElementById('pipe-1').classList.remove('active');
+    document.getElementById('pipe-1').classList.add('done');
     document.getElementById('arr-1').classList.add('done');
     document.getElementById('pipe-2').classList.add('active');
   }
+
   if (step === 'bnca') {
-    document.getElementById('pipe-2').classList.replace('active','done');
+    document.getElementById('pipe-2').classList.remove('active');
+    document.getElementById('pipe-2').classList.add('done');
     document.getElementById('arr-2').classList.add('done');
     document.getElementById('pipe-3').classList.add('active');
   }
+
   if (step === 'done') {
-    document.getElementById('pipe-3').classList.replace('active','done');
+    document.getElementById('pipe-3').classList.remove('active');
+    document.getElementById('pipe-3').classList.add('done');
     document.getElementById('arr-3').classList.add('done');
     document.getElementById('pipe-4').classList.add('active');
     await sleep(500);
-    document.getElementById('pipe-4').classList.replace('active','done');
+    document.getElementById('pipe-4').classList.remove('active');
+    document.getElementById('pipe-4').classList.add('done');
   }
 }
 
-function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ===== FIRE ALL ENGINES =====
 async function fireAllEngines() {
   const btn = document.getElementById('fireBtn');
   btn.disabled = true;
-  btn.textContent = 'ENGINES FIRING...';
+  btn.textContent = '⚡ ENGINES FIRING...';
+
   completedEngines = 0;
-  engineOutputs = { 1:'', 2:'', 3:'', 4:'' };
   document.getElementById('completeCount').textContent = '0';
-  for (var i = 1; i <= 4; i++) {
+
+  // Reset all engines
+  for (let i = 1; i <= 4; i++) {
     setEngineStatus(i, 'idle');
-    setEngineOutput(i, '<span class="engine-placeholder">Queued...</span>');
+    setEngineOutput(i, `<span class="engine-placeholder">Queued...</span>`);
     setTokens(i, '—');
+    engineOutputs[i] = '';
   }
+
   animatePipeline('reset');
   await sleep(200);
   animatePipeline('start');
-  setBottom('FINOPS NEURAL BRIDGE · ' + currentDoc.name + ' · All 4 engines firing...');
 
-  for (var j = 0; j < ENGINE_DEFS.length; j++) {
-    var def = ENGINE_DEFS[j];
-    setEngineStatus(def.num, 'running');
-    setEngineOutput(def.num, '<div class="engine-loading"><div class="spinner"></div> Engine ' + def.num + ' running — ' + def.name + '...</div>');
-    if (j === 2) animatePipeline('bnca');
-    var p = await buildEnginePrompt(def);
-    var result = await callGroq(p.system, p.user);
-    engineOutputs[def.num] = result;
-    setEngineOutput(def.num, result, true);
-    setEngineStatus(def.num, result.startsWith('Warning') ? 'error' : 'complete');
+  const prompts = buildPrompts(currentDoc);
+  setBottom(`FINOPS NEURAL BRIDGE · ${currentDoc.name} loaded · All 4 engines firing...`);
+
+  // Fire engines sequentially (each feeds context forward)
+  for (let i = 0; i < prompts.length; i++) {
+    const p = prompts[i];
+    setEngineStatus(p.num, 'running');
+    setEngineOutput(p.num, `<div class="engine-loading"><div class="spinner"></div> Engine ${p.num} running — ${p.name}...</div>`);
+
+    if (i === 2) animatePipeline('bnca');
+
+    const result = await callClaude(p.prompt);
+    engineOutputs[p.num] = result;
+    setEngineOutput(p.num, result, true);
+    setEngineStatus(p.num, result.startsWith('⚠') ? 'error' : 'complete');
     completedEngines++;
     document.getElementById('completeCount').textContent = completedEngines;
-    setTokens(def.num, Math.floor(result.length / 4) + ' tokens');
+    setTokens(p.num, Math.floor(result.length / 4) + ' tokens');
+
     await sleep(200);
   }
 
   animatePipeline('done');
-  setBottom('FINOPS NEURAL BRIDGE · ' + currentDoc.name + ' · All 4 engines complete · ' + new Date().toLocaleTimeString());
+  setBottom(`FINOPS NEURAL BRIDGE · ${currentDoc.name} loaded · ✓ All 4 engines complete · ${new Date().toLocaleTimeString()}`);
   btn.disabled = false;
-  btn.innerHTML = '&#9889; FIRE ALL 4 ENGINES';
+  btn.innerHTML = '⚡ FIRE ALL 4 ENGINES';
 }
 
-async function callGroq(system, user) {
+// ===== CLAUDE API =====
+async function callClaude(prompt) {
   try {
-    const res = await fetch('/api/financial/query', {
+    const res = await fetch('/api/groq', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ system: system, user: user, maxTokens: 1024 })
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt.slice(0, 3000) }], max_tokens: 1000
+      })
     });
-    if (!res.ok) return 'Warning: Server ' + res.status;
+
     const data = await res.json();
-    return data.answer || 'Warning: No response received.';
+    if (data.error) return `⚠ API Error: ${data.error.message}`;
+    return data.content || data.reply || '⚠ No response received.';
   } catch(err) {
-    return 'Warning: Connection error: ' + err.message;
+    return `⚠ Connection error: ${err.message}`;
   }
 }
 
+// ===== UI HELPERS =====
 function setEngineStatus(num, state) {
-  var el = document.getElementById('status-' + num);
-  var map = { idle:['es-idle','IDLE'], running:['es-running','RUNNING'], complete:['es-complete','COMPLETE'], error:['es-error','ERROR'] };
+  const el = document.getElementById('status-' + num);
+  const map = {
+    idle: ['es-idle', 'IDLE'],
+    running: ['es-running', 'RUNNING'],
+    complete: ['es-complete', 'COMPLETE'],
+    error: ['es-error', 'ERROR']
+  };
   el.className = 'engine-status ' + map[state][0];
   el.textContent = map[state][1];
 }
 
 function setEngineOutput(num, content, isText) {
-  var el = document.getElementById('output-' + num);
+  const el = document.getElementById('output-' + num);
   if (isText) el.textContent = content;
   else el.innerHTML = content;
 }
 
-function setTokens(num, val) { document.getElementById('tokens-' + num).textContent = val; }
-function updateStatus(msg) { document.getElementById('sbStatus').innerHTML = msg; }
-function setBottom(msg) { document.getElementById('bottomMsg').textContent = msg; }
+function setTokens(num, val) {
+  document.getElementById('tokens-' + num).textContent = val;
+}
+
+function updateStatus(msg) {
+  document.getElementById('sbStatus').innerHTML = msg;
+}
+
+function setBottom(msg) {
+  document.getElementById('bottomMsg').textContent = msg;
+}
+
 function setTab(el) {
-  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
 }
 
+// ===== COPY =====
 function copyEngine(num) {
-  var text = engineOutputs[num];
+  const text = engineOutputs[num];
   if (!text) return;
-  navigator.clipboard.writeText(text).then(function() {
-    var btn = document.querySelector('#output-' + num).closest('.engine').querySelector('.copy-btn');
-    var orig = btn.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector(`#output-${num}`).closest('.engine').querySelector('.copy-btn');
+    const orig = btn.textContent;
     btn.textContent = 'COPIED!';
-    setTimeout(function() { btn.textContent = orig; }, 1500);
+    setTimeout(() => btn.textContent = orig, 1500);
   });
 }
 
-var ENGINE_NAMES = ['','Document Triage & Flag Analysis','Variance & Risk Intelligence','Controller Action Plan - BNCA','CFO Executive Intelligence'];
-
+// ===== EXPORT =====
 function exportTxt() {
-  var all = [1,2,3,4].map(function(n) {
-    return '=== ENGINE ' + n + ': ' + ENGINE_NAMES[n] + ' ===\n\n' + (engineOutputs[n] || '(not run)');
+  const all = Object.entries(engineOutputs).map(([n, t]) => {
+    const names = ['','Document Triage & Flag Analysis','Variance & Risk Intelligence','Controller Action Plan · BNCA','CFO Executive Intelligence'];
+    return `=== ENGINE ${n}: ${names[n]} ===\n\n${t || '(not run)'}`;
   }).join('\n\n' + '='.repeat(60) + '\n\n');
-  var blob = new Blob(['FINOPS DOC SHOWCASE\nDocument: ' + currentDoc.name + '\nGenerated: ' + new Date().toLocaleString() + '\n\n' + all], { type: 'text/plain' });
-  var a = document.createElement('a');
+
+  const blob = new Blob([`FINOPS DOC SHOWCASE\nDocument: ${currentDoc.name}\nGenerated: ${new Date().toLocaleString()}\n\n${'='.repeat(60)}\n\n${all}`], { type: 'text/plain' });
+  const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'finops-bnca-' + Date.now() + '.txt';
+  a.download = `finops-bnca-${Date.now()}.txt`;
   a.click();
 }
 
-function saveReport() { exportTxt(); }
+function saveReport() {
+  exportTxt();
+}
 
 function managerExport() {
-  var e3 = engineOutputs[3] || '(not generated)';
-  var e4 = engineOutputs[4] || '(not generated)';
-  var blob = new Blob(['MANAGER EXPORT\nDocument: ' + currentDoc.name + '\nDate: ' + new Date().toLocaleString() + '\n\n=== CONTROLLER ACTION PLAN ===\n\n' + e3 + '\n\n=== CFO EXECUTIVE INTELLIGENCE ===\n\n' + e4], { type: 'text/plain' });
-  var a = document.createElement('a');
+  const engine3 = engineOutputs[3] || '(Controller action plan not yet generated)';
+  const engine4 = engineOutputs[4] || '(CFO report not yet generated)';
+  const blob = new Blob([`MANAGER EXPORT — FINOPS DOC SHOWCASE\nDocument: ${currentDoc.name}\nDate: ${new Date().toLocaleString()}\n\n=== CONTROLLER ACTION PLAN ===\n\n${engine3}\n\n=== CFO EXECUTIVE INTELLIGENCE ===\n\n${engine4}`], { type: 'text/plain' });
+  const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'manager-export-' + Date.now() + '.txt';
+  a.download = `manager-export-${Date.now()}.txt`;
   a.click();
 }
 
 function pushToStrategist() {
-  var msg = [1,2,3,4].map(function(n) { return engineOutputs[n]; }).filter(Boolean).join('\n\n---\n\n');
+  const msg = Object.entries(engineOutputs).map(([n,t]) => t).filter(Boolean).join('\n\n---\n\n');
   if (!msg) { alert('Run the engines first.'); return; }
-  alert('All engine outputs pushed to FinOps Strategist.');
+  alert('✓ All engine outputs pushed to FinOps Strategist.\n\nIn production this would post to your strategist cross-app state.');
 }
 </script>
-
 <script src="/tsm-bnca-bridge.js"></script>
 
 <script>
