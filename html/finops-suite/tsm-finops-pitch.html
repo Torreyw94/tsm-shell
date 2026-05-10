@@ -404,20 +404,6 @@
 
 <script src="/html/tsm-bnca-bridge.js"></script>
 <script>
-// TSM AI Caller
-async function tsmAI(prompt, maxTokens) {
-  try {
-    const res = await fetch('/api/financial/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: prompt, maxTokens: maxTokens || 512 })
-    });
-    if (!res.ok) throw new Error('Server ' + res.status);
-    const d = await res.json();
-    return d.answer || 'No response.';
-  } catch(e) { return '[AI Error] ' + e.message; }
-}
-
 // Live stat updater — pulls from BNCA bridge
 async function refreshLiveStats() {
   if (!window.TSM_BNCA) return;

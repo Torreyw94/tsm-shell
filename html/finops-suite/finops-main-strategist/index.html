@@ -95,24 +95,9 @@ document.addEventListener('click', (e) => {
 console.log("TSM_UI: Direct Neural Link Established.");
 </script>
 
-// TSM AI Caller — routes all AI through server
-async function tsmAI(systemPrompt, userContent, maxTokens) {
-  try {
-    const res = await fetch('/api/financial/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: systemPrompt ? systemPrompt + '\n\n' + userContent : userContent,
-        maxTokens: maxTokens || 1024
-      })
-    });
-    if (!res.ok) throw new Error('Server ' + res.status);
-    const d = await res.json();
-    return d.answer || d.output || d.content || 'No response.';
-  } catch(e) {
-    return '[AI Error] ' + e.message;
-  }
-}
+<script>
+async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
+</script>
 </head>
 <body>
 <header>
