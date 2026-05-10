@@ -775,5 +775,21 @@ function runFullDemo(){
 
 
 
+
+<script>
+window.addEventListener('mousedown', function(e) {
+    const card05 = e.target.closest('#node-05');
+    const card08 = e.target.closest('#node-08');
+    
+    if (card05) {
+        console.log("Forcing Navigation to Compliance...");
+        window.location.href = 'compliance.html';
+    }
+    if (card08) {
+        console.log("Forcing Navigation to Showcase...");
+        window.location.href = 'finops-showcase-v2.html';
+    }
+}, true); // The 'true' here is key—it captures the click before any other script can stop it.
+</script>
 </body>
 </html>
