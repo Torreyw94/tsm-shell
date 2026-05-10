@@ -602,13 +602,20 @@ function runFinopsAction(type){
 
   async function load(){
     try{
-      // [PATCHED] Read from BNCA localStorage bridge
-      const entries = window.TSM_BNCA ? window.TSM_BNCA.readAll() : [];
-      if (!entries || entries.length === 0) {
+      const res = await fetch('/api/finops/actions',{cache:'no-store'});
+      const data = await res.json();
+
+      if(!data.actions || data.actions.length === 0){
         stream(["[READY] Awaiting actions..."]);
-      } else {
-        stream(entries.map(e => e.action || e.label || e.nodeId || JSON.stringify(e)));
+        return;
       }
+
+      stream(
+        data.actions.slice(-5).map(a =>
+          "[" + new Date(a.ts).toLocaleTimeString() +
+          "] → " + a.type + " :: " + (a.summary || "processing")
+        )
+      );
 
     }catch(e){
       stream(["[SYSTEM] reconnecting..."]);

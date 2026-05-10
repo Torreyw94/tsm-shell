@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM Financial Operations — Executive Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cyan: #00e0ff;
+    --cyan-dim: #00b8d4;
+    --cyan-glow: rgba(0,224,255,0.12);
+    --bg: #070d12;
+    --bg2: #0c1520;
+    --bg3: #111d2a;
+    --border: rgba(0,224,255,0.18);
+    --border-dim: rgba(0,224,255,0.08);
+    --text: #e8f4f8;
+    --text-muted: #7a9baa;
+    --red: #ff4444;
+    --green: #00e676;
+    --amber: #ffb300;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(7,13,18,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-dim);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 52px;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: .15em;
+    color: var(--cyan);
+  }
+  .nav-links { display: flex; gap: 0; }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0 1rem;
+    height: 52px;
+    display: flex; align-items: center;
+    border-left: 1px solid var(--border-dim);
+    transition: color .2s, background .2s;
+  }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-cta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity .2s;
+  }
+  .nav-cta:hover { opacity: .85; }
+
+  /* SLIDES */
+  section {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 6vw 60px;
+    border-bottom: 1px solid var(--border-dim);
+    position: relative;
+  }
+  section:nth-child(odd) { background: var(--bg); }
+  section:nth-child(even) { background: var(--bg2); }
+
+  .slide-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .slide-label::after {
+    content: '';
+    flex: 1; max-width: 60px;
+    height: 1px; background: var(--cyan); opacity: .4;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    letter-spacing: .04em;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+  h1 span { color: var(--cyan); }
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: .06em;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+  h2 span { color: var(--cyan); }
+  h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .85rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: .5rem;
+  }
+  p { color: var(--text-muted); font-size: 1.05rem; max-width: 640px; }
+  p strong { color: var(--text); font-weight: 500; }
+
+  /* HERO */
+  #hero { min-height: 100vh; justify-content: center; text-align: left; }
+  .hero-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .85rem;
+    color: var(--text-muted);
+    letter-spacing: .08em;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+  }
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 3rem; flex-wrap: wrap;
+  }
+  .hero-stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--cyan);
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .7rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .hero-btns { display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .8rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: opacity .2s;
+  }
+  .btn-primary:hover { opacity: .85; }
+  .btn-outline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .8rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    padding: 14px 28px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background .2s;
+  }
+  .btn-outline:hover { background: var(--cyan-glow); }
+
+  /* GRID CARDS */
+  .grid { display: grid; gap: 1.5px; margin-top: 2.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card {
+    background: var(--bg3);
+    border: 1px solid var(--border-dim);
+    padding: 1.75rem;
+    transition: border-color .25s, background .25s;
+  }
+  .card:hover { border-color: var(--border); background: #152030; }
+  .card-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: .75rem;
+    display: block;
+  }
+  .card h3 { font-size: .9rem; color: var(--white); margin-bottom: .5rem; }
+  .card p { font-size: .9rem; max-width: 100%; }
+  .card .metric {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--cyan);
+    line-height: 1;
+    margin: .75rem 0 .25rem;
+  }
+  .card .metric.red { color: var(--red); }
+  .card .metric.green { color: var(--green); }
+  .card .metric.amber { color: var(--amber); }
+
+  /* RISK TABLE */
+  .risk-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+  .risk-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .7rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .risk-table td {
+    padding: 14px 16px;
+    font-size: .9rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-dim);
+    vertical-align: top;
+  }
+  .risk-table tr:hover td { background: var(--bg3); color: var(--text); }
+  .risk-table td:first-child { color: var(--text); font-weight: 500; }
+  .pill {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+  }
+  .pill.red { background: rgba(255,68,68,.12); color: var(--red); border: 1px solid rgba(255,68,68,.3); }
+  .pill.green { background: rgba(0,230,118,.1); color: var(--green); border: 1px solid rgba(0,230,118,.25); }
+  .pill.amber { background: rgba(255,179,0,.1); color: var(--amber); border: 1px solid rgba(255,179,0,.25); }
+  .pill.cyan { background: var(--cyan-glow); color: var(--cyan); border: 1px solid rgba(0,224,255,.3); }
+
+  /* TIMELINE / WORKFLOW */
+  .flow { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; }
+  .flow-step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-dim);
+    position: relative;
+  }
+  .flow-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--border);
+    line-height: 1;
+    min-width: 40px;
+    transition: color .25s;
+  }
+  .flow-step:hover .flow-num { color: var(--cyan); }
+  .flow-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .8rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: .4rem;
+  }
+  .flow-desc { font-size: .9rem; color: var(--text-muted); max-width: 100%; }
+  .flow-btn {
+    margin-top: .75rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .7rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid rgba(0,224,255,.35);
+    padding: 7px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background .2s;
+  }
+  .flow-btn:hover { background: var(--cyan-glow); }
+
+  /* COMPARISON */
+  .compare-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px; margin-top: 2rem; }
+  .compare-col { padding: 2rem 1.75rem; background: var(--bg3); }
+  .compare-col.tsm { border-top: 3px solid var(--cyan); }
+  .compare-col.hire { border-top: 3px solid var(--red); }
+  .compare-col h3 { font-size: 1rem; margin-bottom: 1.25rem; }
+  .compare-col.tsm h3 { color: var(--cyan); }
+  .compare-col.hire h3 { color: var(--red); }
+  .compare-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: .9rem; font-size: .9rem; color: var(--text-muted);
+  }
+  .compare-item .icon { font-size: 1rem; margin-top: 2px; flex-shrink: 0; }
+  .compare-item .icon.yes { color: var(--green); }
+  .compare-item .icon.no { color: var(--red); }
+
+  /* CTA SECTION */
+  #cta {
+    background: var(--bg2);
+    text-align: center;
+    align-items: center;
+  }
+  #cta p { margin: 0 auto 2rem; text-align: center; }
+  .cta-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    color: var(--cyan);
+    letter-spacing: .04em;
+    line-height: 1;
+    margin: 1rem 0 .5rem;
+  }
+  .cta-price-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .8rem;
+    letter-spacing: .15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* MODULE URLS */
+  .url-card {
+    background: var(--bg3);
+    border: 1px solid var(--border-dim);
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+    margin-bottom: 1.5px;
+    transition: border-color .2s;
+  }
+  .url-card:hover { border-color: var(--border); }
+  .url-label { font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--cyan); margin-bottom: .25rem; }
+  .url-name { font-size: 1rem; color: var(--white); font-weight: 500; }
+  .url-desc { font-size: .85rem; color: var(--text-muted); }
+  .url-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border: 1px solid rgba(0,224,255,.35);
+    padding: 8px 18px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .2s;
+    display: inline-block;
+  }
+  .url-link:hover { background: var(--cyan-glow); }
+
+  /* SCAN LINE EFFECT */
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.03) 3px, rgba(0,0,0,.03) 4px);
+    pointer-events: none; z-index: 999;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed; top: 52px; left: 0; height: 2px;
+    background: var(--cyan); z-index: 101; width: 0%;
+    transition: width .1s;
+  }
+
+  /* BLINKING CURSOR */
+  .blink { animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  @media (max-width: 700px) {
+    .compare-wrap { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<nav>
+  <div class="nav-logo">TSM · FinOps</div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#modules">Modules</a>
+    <a href="#demo">Live Demo</a>
+    <a href="#compare">vs Hire</a>
+    <a href="#cta">Start</a>
+  </div>
+  <button class="nav-cta" onclick="window.open('https://tsm-shell.fly.dev/finops-suite/financial-ui.html')">Open Suite ↗</button>
+</nav>
+
+<!-- SLIDE 1: HERO -->
+<section id="hero">
+  <div class="slide-label">01 · Executive Briefing</div>
+  <h1>Your Accounting<br><span>Already Running.</span></h1>
+  <div class="hero-sub">
+    TSM Financial Operations — a live, AI-powered accounting layer that sees your AR, AP, compliance, and tax posture in real time. No hiring lag. No onboarding. No payroll liability.<span class="blink">_</span>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-val">$18.4K</div>
+      <div class="hero-stat-label">AR at Risk · Detected Now</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">5/5</div>
+      <div class="hero-stat-label">Nodes Reporting Live</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">$34K</div>
+      <div class="hero-stat-label">Tax Opportunity Flagged</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">6</div>
+      <div class="hero-stat-label">Security Gaps Identified</div>
+    </div>
+  </div>
+  <div class="hero-btns">
+    <a class="btn-primary" href="https://tsm-shell.fly.dev/finops-suite/financial-ui.html" target="_blank">Open Live Suite ↗</a>
+    <a class="btn-outline" href="#problem">See the problem →</a>
+  </div>
+</section>
+
+<!-- SLIDE 2: THE PROBLEM -->
+<section id="problem">
+  <div class="slide-label">02 · The Risk of Hiring</div>
+  <h2>What you're<br><span>actually buying</span><br>when you hire.</h2>
+  <p>A Staff Accountant feels safe. It's the known path. But the real cost is buried in onboarding time, error risk, turnover, and what they <strong>can't see</strong> without enterprise tooling.</p>
+
+  <table class="risk-table">
+    <thead>
+      <tr>
+        <th>Risk Factor</th>
+        <th>Staff Accountant</th>
+        <th>TSM FinOps</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Time to value</td>
+        <td><span class="pill amber">60–90 day ramp</span></td>
+        <td><span class="pill cyan">Day 1 — live now</span></td>
+      </tr>
+      <tr>
+        <td>Monthly cost (all-in)</td>
+        <td><span class="pill red">$6,500–$9,000+</span></td>
+        <td><span class="pill green">$1,750/mo flat</span></td>
+      </tr>
+      <tr>
+        <td>Turnover exposure</td>
+        <td><span class="pill red">High — 1–2 yr avg tenure</span></td>
+        <td><span class="pill cyan">None</span></td>
+      </tr>
+      <tr>
+        <td>AR visibility</td>
+        <td><span class="pill amber">Manual aging reports</span></td>
+        <td><span class="pill cyan">Live · $18.4K flagged</span></td>
+      </tr>
+      <tr>
+        <td>Tax deadline awareness</td>
+        <td><span class="pill amber">Calendar reminders</span></td>
+        <td><span class="pill cyan">1099 + W-9 tracking live</span></td>
+      </tr>
+      <tr>
+        <td>Compliance audit trail</td>
+        <td><span class="pill red">Manual, inconsistent</span></td>
+        <td><span class="pill cyan">Automatic · every action</span></td>
+      </tr>
+      <tr>
+        <td>After-hours coverage</td>
+        <td><span class="pill red">None</span></td>
+        <td><span class="pill cyan">24/7 — always on</span></td>
+      </tr>
+      <tr>
+        <td>Controller-ready output</td>
+        <td><span class="pill amber">Depends on skill level</span></td>
+        <td><span class="pill cyan">BNCA synthesis on demand</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SLIDE 3: THE SOLUTION -->
+<section id="solution">
+  <div class="slide-label">03 · The System</div>
+  <h2>Six nodes.<br><span>One operating layer.</span></h2>
+  <p>TSM FinOps is not a dashboard. It's an active financial intelligence system — each node monitors a specific risk domain and feeds the executive BNCA synthesis in real time.</p>
+
+  <div class="grid grid-3" style="margin-top: 2.5rem;">
+    <div class="card">
+      <span class="card-tag">Node 01</span>
+      <h3>Financial Command</h3>
+      <div class="metric">LIVE</div>
+      <p>Daily operating floor. AR priority, AP invoices, compliance score, and next action — all in one view.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Node 02</span>
+      <h3>Financial Intel</h3>
+      <div class="metric amber">$480K</div>
+      <p>HRSA grant tracking, ASC 958 fund accounting, Form 990 status, and compliance exposure.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Node 03</span>
+      <h3>Controller Action Plan</h3>
+      <div class="metric green">BNCA</div>
+      <p>Turns accounting work into executive action — prioritized next steps, outcome summary, controller-ready.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Node 04</span>
+      <h3>Tax Prep</h3>
+      <div class="metric amber">7</div>
+      <p>1099 · W-9 · filing readiness. Vendors needing W-9 tracked live. Deadline windows surfaced automatically.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Node 05</span>
+      <h3>Compliance Shield</h3>
+      <div class="metric red">6 GAPS</div>
+      <p>Documentation gaps, approval chains, audit trail validation, and controller-ready compliance packages.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Node 06</span>
+      <h3>Zero Trust</h3>
+      <div class="metric amber">WATCH</div>
+      <p>Access review, permission security posture, and system integrity monitoring — always running.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Node 07 · Day-to-day ops</span>
+      <h3>FinOps Operations Suite</h3>
+      <div class="metric amber">6 MOD</div>
+      <p>Cashiering workbench, service request tracker, client inbox, client records hub, quarterly portfolio prep, and compliance center. 3 exceptions · 11 open requests · CRM synced.</p>
+    </div>
+    <div class="card" style="border-color: rgba(0,224,255,.3);">
+      <span class="card-tag">Node 08 · POC Closer</span>
+      <h3>Accounting Doc POC</h3>
+      <div class="metric green">&lt;30s</div>
+      <p>Drop any accounting document — AP invoice, PO, expense report, bank rec, P&amp;L, journal entry, AR invoice, or month-end close — and get instant AI triage, variance analysis, controller action plan, and CFO intelligence. 10 doc types · 4 AI engines.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: LIVE DEMO URLS -->
+<section id="demo">
+  <div class="slide-label">04 · Live — Click to Open</div>
+  <h2>Every module.<br><span>Running right now.</span></h2>
+  <p>These are not mockups. Click any button to open the live system in your browser and see real data flowing.</p>
+
+  <div style="margin-top: 2.5rem;">
+    <div class="url-card">
+      <div>
+        <div class="url-label">Start here · Daily Dashboard</div>
+        <div class="url-name">Financial Command</div>
+        <div class="url-desc">AR risk · AP invoices · compliance score · strategist feed</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/financial-command/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card">
+      <div>
+        <div class="url-label">Find problems · Fund Accounting</div>
+        <div class="url-name">Financial Intel</div>
+        <div class="url-desc">ASC 958 · HRSA $480K grant · Form 990 · compliance exposure</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/financial-intel/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card">
+      <div>
+        <div class="url-label">Next actions · BNCA Synthesis</div>
+        <div class="url-name">Controller Action Plan — FinOps Strategist</div>
+        <div class="url-desc">Prioritized executive output · build accounting report · export PDF-ready</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/finops-main-strategist/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card">
+      <div>
+        <div class="url-label">Avoid penalties · 1099 Filing</div>
+        <div class="url-name">Tax Prep</div>
+        <div class="url-desc">Vendor threshold review · W-9 completeness · deadline monitoring</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/tax-prep/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card">
+      <div>
+        <div class="url-label">Avoid audit risk · Documentation</div>
+        <div class="url-name">Compliance Shield</div>
+        <div class="url-desc">Missing approvals · supporting docs · controller-ready audit trail</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/compliance/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card">
+      <div>
+        <div class="url-label">Protect access · Security posture</div>
+        <div class="url-name">Zero Trust</div>
+        <div class="url-desc">Who has access · permission review · system integrity</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/zero-trust/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card" style="border-color: rgba(0,224,255,.35);">
+      <div>
+        <div class="url-label">Full suite · All modules</div>
+        <div class="url-name">FinOps Hub — Financial UI</div>
+        <div class="url-desc">Every node · cross-suite apps · staff accountant guide · pilot enrollment</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/financial-ui.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card">
+      <div>
+        <div class="url-label">Day-to-day ops · 6 modules</div>
+        <div class="url-name">FinOps Operations Suite</div>
+        <div class="url-desc">Cashiering · service requests · client inbox · CRM · quarterly portfolio · compliance center</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/finops-operations/index.html" target="_blank">Open →</a>
+    </div>
+    <div class="url-card" style="border-color: rgba(0,224,255,.25);">
+      <div>
+        <div class="url-label">POC Closer · 10 doc types · 4 AI engines</div>
+        <div class="url-name">Accounting Doc POC</div>
+        <div class="url-desc">Drop any doc — instant AI triage · variance analysis · controller action plan · CFO intelligence · &lt;30s output</div>
+      </div>
+      <a class="url-link" href="https://tsm-shell.fly.dev/finops-suite/accounting-doc-poc/index.html" target="_blank">Open →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: DEMO WALKTHROUGH -->
+<section id="walkthrough">
+  <div class="slide-label">05 · What to Click in the Demo</div>
+  <h2>Show them<br><span>in this order.</span></h2>
+  <p>Follow this sequence during your walkthrough. Each step builds the case. Takes 8–12 minutes total.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-num">01</div>
+      <div>
+        <div class="flow-title">Open Financial Command — show the live dashboard</div>
+        <div class="flow-desc">Point to: <strong style="color:var(--text)">$18.4K AR at risk</strong>, <strong style="color:var(--text)">12 AP invoices</strong>, <strong style="color:var(--text)">6 security gaps</strong>. Say: "This is what your controller sees the moment they open the system — no reports to run."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/financial-command/index.html" target="_blank">Open Financial Command →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">02</div>
+      <div>
+        <div class="flow-title">Open Financial Intel — show fund accounting & grant exposure</div>
+        <div class="flow-desc">Point to: <strong style="color:var(--text)">$480K HRSA grant</strong>, <strong style="color:var(--text)">OVERDUE report badge</strong>, <strong style="color:var(--text)">84% Form 990</strong>. Say: "A new hire wouldn't know to check this on day one. We already flagged it."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/financial-intel/index.html" target="_blank">Open Financial Intel →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">03</div>
+      <div>
+        <div class="flow-title">Open the Strategist — click BUILD ACCOUNTING OPS REPORT</div>
+        <div class="flow-desc">Watch the AI generate the full accounting ops report live. Point to: <strong style="color:var(--text)">AP Vendor Invoice Lane</strong>, <strong style="color:var(--text)">Bank Reconciliation Lane</strong>, <strong style="color:var(--text)">Month-End Close Checklist</strong>. Say: "This is a controller-ready deliverable generated in seconds."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/finops-main-strategist/index.html" target="_blank">Open Strategist →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">04</div>
+      <div>
+        <div class="flow-title">Show Tax Prep — 7 vendors flagged for W-9</div>
+        <div class="flow-desc">Point to the <strong style="color:var(--text)">1099 tracker</strong> and <strong style="color:var(--text)">W-9 completeness</strong> status. Say: "This catches the IRS penalty before it happens — a $250–$500 fine per missing form."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/tax-prep/index.html" target="_blank">Open Tax Prep →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">05</div>
+      <div>
+        <div class="flow-title">Open FinOps Operations Suite — show day-to-day coverage</div>
+        <div class="flow-desc">Point to: <strong style="color:var(--text)">3 exceptions</strong>, <strong style="color:var(--text)">11 open requests</strong>, <strong style="color:var(--text)">CRM synced</strong>. Say: "This is the operational layer running underneath the executive view — cashiering, client records, service requests, all in one place."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/finops-operations/index.html" target="_blank">Open Operations Suite →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">06</div>
+      <div>
+        <div class="flow-title">Launch Accounting Doc POC — drop a real document</div>
+        <div class="flow-desc">Drop an AP invoice, bank rec, or any accounting doc. Watch it triage in under 30 seconds. Point to: <strong style="color:var(--text)">variance analysis</strong>, <strong style="color:var(--text)">controller action plan</strong>, <strong style="color:var(--text)">CFO intelligence</strong>. Say: "Hand us a document. We hand you a decision."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/accounting-doc-poc/index.html" target="_blank">Launch Doc POC →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">07</div>
+      <div>
+        <div class="flow-title">Return to Financial UI — show the Staff Accountant Guide</div>
+        <div class="flow-desc">Open the right-panel guide. Walk through <strong style="color:var(--text)">"Start my day"</strong> and <strong style="color:var(--text)">"Send next actions to controller"</strong>. Say: "We hand the controller exactly what they need — no interpretation required."</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/financial-ui.html" target="_blank">Open Financial UI →</a>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">08</div>
+      <div>
+        <div class="flow-title">Close on price — $1,750/mo vs. $6,500–$9,000/mo hire</div>
+        <div class="flow-desc">Say: "You just saw your accounting layer working. Full 6-node access, executive BNCA synthesis, live risk detection. The 30-day pilot lets you run both in parallel — before you commit to anything." Click <strong style="color:var(--text)">START 30-DAY PILOT</strong>.</div>
+        <a class="flow-btn" href="https://tsm-shell.fly.dev/finops-suite/financial-ui.html#pilot" target="_blank">Open Pilot Enrollment →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: HEAD-TO-HEAD -->
+<section id="compare">
+  <div class="slide-label">06 · Head to Head</div>
+  <h2>TSM FinOps<br><span>vs. the hire.</span></h2>
+  <p>This isn't anti-headcount. It's pro-leverage. Run TSM now, hire a controller later when the books are clean enough to hand off.</p>
+
+  <div class="compare-wrap">
+    <div class="compare-col tsm">
+      <h3>TSM FinOps · $1,750/mo</h3>
+      <div class="compare-item"><span class="icon yes">✓</span><span>Live on day 1 — no ramp time</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>Flat monthly cost — no benefits, FICA, PTO</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>6 accounting nodes running simultaneously</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>AR, AP, Tax, Compliance, Security — all covered</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>Controller-ready BNCA output on demand</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>Audit trail automatic — every action logged</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>24/7 — no sick days, no turnover</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>30-day pilot — zero long-term commitment</span></div>
+      <div class="compare-item"><span class="icon yes">✓</span><span>Saves 12–18 hours of controller time per month</span></div>
+    </div>
+    <div class="compare-col hire">
+      <h3>Staff Accountant · $6,500–$9,000/mo</h3>
+      <div class="compare-item"><span class="icon no">✗</span><span>60–90 day onboarding before full productivity</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Benefits, FICA, PTO add 25–35% to base cost</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>One person — one focus area at a time</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Tax and compliance knowledge varies by candidate</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Reports depend on their skill level and bandwidth</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Manual documentation — inconsistent audit trails</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Average tenure 1–2 years — turnover risk real</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Wrong hire = 6-month correction cycle</span></div>
+      <div class="compare-item"><span class="icon no">✗</span><span>Still needs controller oversight to verify work</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7: ROI -->
+<section id="roi">
+  <div class="slide-label">07 · Return on Investment</div>
+  <h2>The math<br><span>is simple.</span></h2>
+  <p>At $1,750/month, TSM FinOps costs less than one week of a Staff Accountant's salary. Here's what you get for the difference.</p>
+
+  <div class="grid grid-3" style="margin-top: 2.5rem;">
+    <div class="card">
+      <span class="card-tag">Cost savings</span>
+      <h3>Monthly delta</h3>
+      <div class="metric green">$4,750+</div>
+      <p>Saved per month vs. mid-range Staff Accountant hire ($6,500 base, no benefits included).</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Penalty avoidance</span>
+      <h3>1099 / W-9 misses</h3>
+      <div class="metric amber">$250–$500</div>
+      <p>Per missing or late form. 7 vendors currently flagged. TSM catches these before the deadline.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">AR recovery</span>
+      <h3>At-risk receivables</h3>
+      <div class="metric red">$18.4K</div>
+      <p>Currently identified in the live system. Active AR monitoring catches collection timing before it becomes bad debt.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Time saved</span>
+      <h3>Controller hours</h3>
+      <div class="metric green">12–18 hrs</div>
+      <p>Per month returned to the controller — no manual report compilation, no status chasing.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Grant exposure</span>
+      <h3>HRSA fund at risk</h3>
+      <div class="metric red">$480K</div>
+      <p>Flagged with OVERDUE status in Financial Intel. Proper fund accounting protects grant compliance.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Tax opportunity</span>
+      <h3>Identified savings</h3>
+      <div class="metric green">$34K</div>
+      <p>Tax opportunity surfaced by the intelligence layer — proactive, not reactive.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: CTA -->
+<section id="cta">
+  <div class="slide-label" style="justify-content:center;">08 · Start Now</div>
+  <h2 style="text-align:center;">30-day pilot.<br><span>Full access.</span></h2>
+  <div class="cta-price">$1,750<span style="font-size:2rem; color: var(--text-muted)">/mo</span></div>
+  <div class="cta-price-sub">Full 6-node access · Executive BNCA synthesis · No long-term commitment</div>
+  <p>Your books are already being watched. The pilot runs alongside whatever you're doing now — no disruption, no commitment until you've seen the output for 30 days.</p>
+  <div class="cta-btns" style="margin-top: 2rem;">
+    <a class="btn-primary" href="https://tsm-shell.fly.dev/finops-suite/financial-ui.html" target="_blank">Start 30-Day Pilot ↗</a>
+    <a class="btn-outline" href="https://tsm-shell.fly.dev/finops-suite/financial-ui.html" target="_blank">Book Walkthrough ↗</a>
+    <a class="btn-outline" href="https://tsm-shell.fly.dev/finops-suite/finops-main-strategist/index.html" target="_blank">Open Controller Action Plan ↗</a>
+  </div>
+  <div style="margin-top: 3rem; font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .15em; color: var(--text-muted); text-transform: uppercase; text-align: center;">
+    TSM Financial Operations · $1,750/mo Operations Layer · Executive Reporting<span class="blink"> _</span>
+  </div>
+</section>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement;
+    const pct = (s.scrollTop / (s.scrollHeight - s.clientHeight)) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  });
+</script>
+</body>
+</html>

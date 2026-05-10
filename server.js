@@ -3,6 +3,8 @@ const express = require('express');
 const { limiter, aiLimiter, botGuard, apiKeyGuard } = require('./servers/middleware');
 const path = require('path');
 const app = express();
+app.use(express.json());
+require('./groq-route')(app);
 
 // =====================================================
 // HEALTHCARE ASK · FORCED FIRST SAFE BNCA ROUTE
