@@ -60,7 +60,6 @@ app.use('/html/financial-intel', prospectGuard);
 app.use('/html/tax-prep', prospectGuard);
 app.use('/html/compliance', prospectGuard);
 app.use('/html/zero-trust', prospectGuard);
-app.use('/finops-suite', express.static(require('path').join(__dirname, 'html/finops-suite')));
 // ──────────────────────────────────────────────────────────────
 app.use('/api/', apiLimiter);
 app.use('/api/music/revision/run', aiLimiter);
