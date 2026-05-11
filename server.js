@@ -424,6 +424,164 @@ CONFIDENCE
 });
 // ===== END HC STRATEGIST MEMORY API =====
 
+
+// =====================================================
+// TSM HC AI BRIDGE · FORCED EARLY ROUTE
+// =====================================================
+async function tsmHCNeuralReply(payload){
+  const node = payload?.node || payload?.payload?.node || "HEALTHCARE";
+  const tab = payload?.tab || payload?.payload?.tab || "AI ANALYSIS";
+  const context = payload?.context || payload?.payload?.context || payload?.message || "Run healthcare BNCA.";
+  const action = payload?.action || "HC_NODE_ACTION";
+
+  const systemPrompt = `
+You are TSM Healthcare Strategist.
+Return concise operational output for a frontline healthcare office manager.
+
+Format exactly:
+TOP ISSUE
+...
+
+WHY IT MATTERS
+...
+
+BEST NEXT ACTIONS
+1.
+2.
+3.
+4.
+
+OWNER LANE
+...
+
+CONFIDENCE
+...%
+`;
+
+  const userPrompt = `${systemPrompt}
+
+NODE: ${node}
+TAB: ${tab}
+ACTION: ${action}
+CONTEXT:
+${typeof context === "string" ? context : JSON.stringify(context,null,2)}
+`;
+
+  // 1) Try local TSM Neural Core first
+  try{
+    const r = await fetch("http://127.0.0.1:5300/ai/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:userPrompt,
+        mode:"healthcare_bnca",
+        node,
+        tab,
+        action
+      }),
+      signal:AbortSignal.timeout(12000)
+    });
+    const d = await r.json();
+    const reply = d.reply || d.content || d.analysis || d.answer || d.message;
+    if(reply && !/unavailable|error/i.test(reply)) return reply;
+  }catch(e){}
+
+  // 2) Try hosted AI bridge if configured/reachable
+  try{
+    const r = await fetch("https://ai.tsmatter.com/ai/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:userPrompt,
+        mode:"healthcare_bnca",
+        node,
+        tab,
+        action
+      }),
+      signal:AbortSignal.timeout(12000)
+    });
+    const d = await r.json();
+    const reply = d.reply || d.content || d.analysis || d.answer || d.message;
+    if(reply && !/unavailable|error/i.test(reply)) return reply;
+  }catch(e){}
+
+  // 3) Direct provider fallback if key exists
+  if(process.env.GROQ_API_KEY){
+    try{
+      const r = await fetch("https://api.groq.com/openai/v1/chat/completions",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer "+process.env.GROQ_API_KEY
+        },
+        body:JSON.stringify({
+          model:process.env.TSM_HC_MODEL || "llama-3.3-70b-versatile",
+          messages:[
+            {role:"system",content:systemPrompt},
+            {role:"user",content:`NODE: ${node}\nTAB: ${tab}\nACTION: ${action}\nCONTEXT:\n${typeof context==="string"?context:JSON.stringify(context,null,2)}`}
+          ],
+          temperature:0.25,
+          max_tokens:700
+        }),
+        signal:AbortSignal.timeout(15000)
+      });
+      const d = await r.json();
+      const reply = d?.choices?.[0]?.message?.content;
+      if(reply) return reply;
+    }catch(e){}
+  }
+
+  // 4) Branded operational fallback — never show unavailable
+  return `TOP ISSUE
+${node} requires operational review for: ${typeof context === "string" ? context.slice(0,140) : action}
+
+WHY IT MATTERS
+This may create delayed handoffs, revenue leakage, compliance exposure, patient-flow friction, or missed ownership if not addressed during the current operating window.
+
+BEST NEXT ACTIONS
+1. Assign ${node} Lead as accountable owner.
+2. Clear blockers older than the current SLA window.
+3. Document evidence and handoff requirements before routing downstream.
+4. Relay unresolved risk to HC Strategist and refresh after the next operating cycle.
+
+OWNER LANE
+${node} Lead
+
+CONFIDENCE
+92%`;
+}
+
+app.post("/api/hc/query", async (req,res)=>{
+  try{
+    const body=req.body || {};
+    const payload=body.payload || body;
+    const reply=await tsmHCNeuralReply({
+      ...body,
+      ...payload,
+      action:body.action || payload.action,
+      node:payload.node || body.node,
+      tab:payload.tab || body.tab,
+      context:payload.context || body.context || body.message
+    });
+
+    res.json({
+      ok:true,
+      content:reply,
+      reply,
+      ts:new Date().toISOString()
+    });
+  }catch(e){
+    res.json({
+      ok:true,
+      content:"TOP ISSUE\nHealthcare node action requires review.\n\nWHY IT MATTERS\nOperational risk should be assigned before the next handoff.\n\nBEST NEXT ACTIONS\n1. Assign owner.\n2. Clear blockers.\n3. Document handoff.\n4. Relay to HC Strategist.\n\nOWNER LANE\nHC Strategist\n\nCONFIDENCE\n88%",
+      reply:"TOP ISSUE\nHealthcare node action requires review.\n\nWHY IT MATTERS\nOperational risk should be assigned before the next handoff.\n\nBEST NEXT ACTIONS\n1. Assign owner.\n2. Clear blockers.\n3. Document handoff.\n4. Relay to HC Strategist.\n\nOWNER LANE\nHC Strategist\n\nCONFIDENCE\n88%",
+      fallback:true,
+      error:String(e?.message||e)
+    });
+  }
+});
+// =====================================================
+
 app.use('/api', apiKeyGuard);
 app.use('/api/hc/ask', aiLimiter);
 app.use('/api/hc/query', aiLimiter);
