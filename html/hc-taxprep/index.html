@@ -1909,6 +1909,7 @@ if 'window.TSM_HUB_AI' not in text:
 })();
 </script>
 
+<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
 </body>', patch + '\\n
 
 
@@ -2018,6 +2019,7 @@ if 'window.TSM_HUB_AI' not in text:
 })();
 </script>
 
+<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
 </body>') if '
 
 
@@ -2127,6 +2129,7 @@ if 'window.TSM_HUB_AI' not in text:
 })();
 </script>
 
+<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
 </body>' in text else text + patch
 file_path.write_text(text, encoding='utf-8')
 print(f"  patched: {file_path}")
@@ -2256,5 +2259,6 @@ boot().catch(err => {
 })();
 </script>
 
+<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
 </body>
 </html>

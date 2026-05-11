@@ -538,7 +538,10 @@ document.addEventListener("DOMContentLoaded", () => {{
 </script>
 '''
 if 'window.TSM_HUB_AI' not in text:
-    text = text.replace('</body>', patch + '\n</body>') if '</body>' in text else text + patch
+    text = text.replace('<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
+</body>', patch + '\n<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
+</body>') if '<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
+</body>' in text else text + patch
 file_path.write_text(text, encoding='utf-8')
 print(f"patched {app}: {file_path}")
 PY
@@ -555,4 +558,5 @@ boot().catch(err => {
   setText('footerStatus', `Boot failed: ${err.message}`);
 });
 </script>
+<script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features-all"></script>
 </body>
