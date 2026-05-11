@@ -343,6 +343,87 @@ CONFIDENCE
 });
 // ===== END TSM BPO OPS CLOUD API =====
 
+
+// ===== HC STRATEGIST MEMORY API · FORCED EARLY =====
+const fsHCForced = require("fs");
+const HC_MEM_FORCED_PATH = "./data/hc-strategist-memory.json";
+
+function hcMemReadForced(){
+  try { return JSON.parse(fsHCForced.readFileSync(HC_MEM_FORCED_PATH,"utf8")); }
+  catch(e){
+    return {items:[
+      {id:"HC-1001",node:"BILLING",action:"Review AR aging",risk:"HIGH",owner:"Billing Lead",status:"Open",summary:"Billing: denial rate and AR aging require owner-lane action",ts:new Date().toISOString()},
+      {id:"HC-1002",node:"MEDICAL",action:"Check clinical task backlog",risk:"MED",owner:"Medical Lead",status:"Open",summary:"Medical: clinical documentation backlog requires provider routing",ts:new Date().toISOString()}
+    ]};
+  }
+}
+function hcMemWriteForced(db){
+  fsHCForced.mkdirSync("./data",{recursive:true});
+  fsHCForced.writeFileSync(HC_MEM_FORCED_PATH,JSON.stringify(db,null,2));
+}
+
+app.get("/api/hc/strategist-memory",(req,res)=>{
+  const db=hcMemReadForced();
+  res.json({ok:true,items:db.items});
+});
+
+app.post("/api/hc/strategist-memory",(req,res)=>{
+  const db=hcMemReadForced();
+  const b=req.body||{};
+  const item={
+    id:"HC-"+Math.floor(1000+Math.random()*8999),
+    node:b.node||"HC Node",
+    action:b.action||"Node action",
+    risk:b.risk||"MED",
+    owner:b.owner||"HC Strategist",
+    status:b.status||"Open",
+    summary:b.summary||"Node issue relayed to strategist",
+    ts:new Date().toISOString()
+  };
+  db.items.unshift(item);
+  hcMemWriteForced(db);
+  res.json({ok:true,item});
+});
+
+app.get("/api/hc/strategist-rollup",(req,res)=>{
+  const db=hcMemReadForced();
+  const items=db.items||[];
+  const open=items.filter(x=>x.status!=="Done").length;
+  const high=items.filter(x=>x.risk==="HIGH").length;
+  const nodes=[...new Set(items.map(x=>x.node))];
+  res.json({
+    ok:true,
+    open,
+    high,
+    nodes:nodes.length,
+    total:items.length,
+    top_issue:items[0]?.summary||"No node issue relayed yet",
+    executive:`HC STRATEGIST ROLLUP
+
+OPEN ITEMS
+${open}
+
+HIGH RISK
+${high}
+
+NODES REPORTING
+${nodes.length}
+
+TOP ISSUE
+${items[0]?.summary||"No node issue relayed yet"}
+
+BEST NEXT COURSE OF ACTION
+1. Assign accountable owner by node.
+2. Clear high-risk blockers first.
+3. Document handoff evidence.
+4. Refresh BNCA after next operating cycle.
+
+CONFIDENCE
+92%`
+  });
+});
+// ===== END HC STRATEGIST MEMORY API =====
+
 app.use('/api', apiKeyGuard);
 app.use('/api/hc/ask', aiLimiter);
 app.use('/api/hc/query', aiLimiter);
