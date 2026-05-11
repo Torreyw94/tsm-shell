@@ -9,7 +9,7 @@
 <style>
  '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/financial/query', {
+            const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -38,7 +38,7 @@ window.TSM_UI = {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/financial/query', {
+            const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -64,7 +64,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
 <script>
 async function getVaultPrompt(key) {
   try {
-    const r = await fetch('/api/prompt', {
+    const r = await fetch('/api/chat', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ key })
@@ -84,7 +84,7 @@ async function getVaultPrompt(key) {
 }
 </script>
 <script>
-async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
+async function tsmAI(s,u,m){try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
 </script>
 </head>
 <body>
@@ -234,11 +234,11 @@ async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{meth
 
 <script>
 const NODES = {
-    fin: { url: '/api/financial/query', label: 'Financial Intelligence' },
-  tax: { url: '/api/financial/query', label: 'Tax Intelligence' },
-  comp: { url: '/api/financial/query', label: 'Compliance Shield' },
-  zt: { url: '/api/financial/query', label: 'Zero Trust' },
-  strat: { url: '/api/financial/query', label: 'Strategist' }
+    fin: { url: '/api/chat', label: 'Financial Intelligence' },
+  tax: { url: '/api/chat', label: 'Tax Intelligence' },
+  comp: { url: '/api/chat', label: 'Compliance Shield' },
+  zt: { url: '/api/chat', label: 'Zero Trust' },
+  strat: { url: '/api/chat', label: 'Strategist' }
 };
 
 const PLAYBOOKS = {
@@ -331,7 +331,7 @@ function loadPreviews() {
 }
 
 function pingNode(id) {
-  fetch('/api/financial/query', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'user',content:'ping'}]})})
+  fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages:[{role:'user',content:'ping'}]})})
     .catch(() => { const d=document.getElementById('dot-'+id); const s=document.getElementById('status-'+id); if(d)d.style.background='#ef4444'; if(s)s.textContent='OFFLINE'; });
 }
 
@@ -343,7 +343,7 @@ async function queryNode(id, query) {
   body.innerHTML = '<span class="cursor-blink">▌</span>';
   statusEl.textContent = 'PROCESSING';
   try {
-    const res = await fetch('/api/financial/query', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({app:window.location.hostname.replace('.tsmatter.com',''),messages: [
@@ -783,7 +783,7 @@ function runSafeAnalysis() {
   </div>
   <script>
   (function(){
-    var AI_ENDPOINT = '/api/financial/query';
+    var AI_ENDPOINT = '/api/chat';
     function getSlug(){ return window.location.hostname.replace('.tsmatter.com',''); }
     var history = [];
     function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -865,7 +865,7 @@ function runSafeAnalysis() {
     btn.disabled = true;
     res.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> TSM Neural processing...';
     try {
-      var r = await fetch('/api/financial/query', {
+      var r = await fetch('/api/chat', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -949,7 +949,7 @@ function runSafeAnalysis() {
     body.innerHTML = '<span class="cursor-blink">▌</span>';
     statusEl.textContent = 'PROCESSING';
     try{
-      var r = await fetch('/api/financial/query', {
+      var r = await fetch('/api/chat', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -1016,7 +1016,7 @@ function runSafeAnalysis() {
 
 Be direct, specific, dollar-focused.';
     try{
-      var r = await fetch('/api/financial/query', {
+      var r = await fetch('/api/chat', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({app:'financial-command', messages:[{role:'user',content:context}]})
@@ -1055,7 +1055,7 @@ Be direct, specific, dollar-focused.';
     if(!out) return;
     out.innerHTML = '<span class="spin">⟳</span> Analyzing document...';
     try{
-      var r = await fetch('/api/financial/query',{
+      var r = await fetch('/api/chat',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({app:'financial-command',messages:[{role:'user',content:prompt}]})
@@ -1452,7 +1452,7 @@ function runFullDemo(){
 function safeAnalyze(query, outputId) {
   var out = document.getElementById(outputId) || document.querySelector('.intelligence-feed-output');
   if (out) out.textContent = 'Analyzing...';
-  fetch('/api/financial/query', {
+  fetch('/api/chat', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ messages: [{ role: 'user', content: query }] })

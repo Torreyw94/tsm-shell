@@ -245,7 +245,7 @@ window.TSM_UI = {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/financial/query', {
+            const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -271,7 +271,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
 <script>
 async function getVaultPrompt(key) {
   try {
-    const r = await fetch('/api/prompt', {
+    const r = await fetch('/api/chat', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ key })
@@ -291,7 +291,7 @@ async function getVaultPrompt(key) {
 }
 </script>
 <script>
-async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
+async function tsmAI(s,u,m){try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
 </script>
 </head>
 <body>
@@ -808,7 +808,7 @@ async function askAIPanel(msg, ctx, targetId) {
   const target = document.getElementById(targetId);
   if (target) target.textContent = 'Generating…';
   try {
-    const resp = await fetch('/api/financial/query', {
+    const resp = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + aiKey },
       body: JSON.stringify({ model: aiModel, max_tokens: 600, messages: [{ role: 'system', content: CTX_PROMPTS[ctx] }, { role: 'user', content: msg }] })
@@ -825,7 +825,7 @@ async function draftReply() {
   const target = document.getElementById('reply-text');
   target.value = 'Drafting…';
   try {
-    const resp = await fetch('/api/financial/query', {
+    const resp = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + aiKey },
       body: JSON.stringify({ model: aiModel, max_tokens: 300, messages: [{ role: 'system', content: CTX_PROMPTS.inbox }, { role: 'user', content: 'Draft a professional, warm client-service response to a client asking about the status of their account transfer submitted 3 days ago. Keep it concise and reassuring.' }] })
@@ -852,7 +852,7 @@ async function streamAI(history, sysprompt) {
   const textEl = appendAIMsg('ai', '');
   let full = '', tokens = 0;
   try {
-    const resp = await fetch('/api/financial/query', {
+    const resp = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + aiKey },
       body: JSON.stringify({ model: aiModel, max_tokens: 700, stream: true, messages: [{ role: 'system', content: sysprompt }, ...history] })

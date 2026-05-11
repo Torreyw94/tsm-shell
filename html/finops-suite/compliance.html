@@ -954,7 +954,7 @@ window.TSM_UI = {
         const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
         if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
         try {
-            const res = await fetch('/api/financial/query', {
+            const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
@@ -979,7 +979,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
 </script>
 
 <script>
-async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
+async function tsmAI(s,u,m){try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:s?(s+'\n\n'+u):u,maxTokens:m||1024})});if(!r.ok)throw new Error('Server '+r.status);const d=await r.json();return d.answer||'No response.';}catch(e){return'[AI Error] '+e.message;}}
 </script>
 </head>
 <body>
@@ -1586,7 +1586,7 @@ async function tsmAI(s,u,m){try{const r=await fetch('/api/financial/query',{meth
 <script>
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let tsmNeuralCoreKey = localStorage.getItem('tsm_tsm-neural-core_key') || '';
-const TSM_NEURAL_CORE_URL = '/api/financial/query';
+const TSM_NEURAL_CORE_URL = '/api/chat';
 const MODEL = 'llama-3.3-70b-versatile';
 const chatHistory = [];
 
@@ -2023,7 +2023,7 @@ function showTab(name, el) {
 function aiAnalyzeAlerts() {
   var out = document.querySelector('.ai-output, #ai-output, .synthesis-output');
   if (out) out.textContent = 'Analyzing compliance alerts...';
-  fetch('/api/financial/query', {
+  fetch('/api/chat', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ messages: [{ role: 'user', content: 'Analyze the current compliance alerts and provide prioritized remediation steps for HIPAA, SOX, AML/KYC, and GDPR issues. Be specific and actionable.' }] })
