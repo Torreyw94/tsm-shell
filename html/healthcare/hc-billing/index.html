@@ -211,7 +211,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
 <script src="/healthcare/js/hc-strategist-relay.js?v=relay1" defer></script>
 <script src="/healthcare/js/hc-universal-tab-ai.js?v=universal-ai" defer></script>
 <script src="/healthcare/js/hc-howto-system.js?v=howto-final" defer></script>
-    <script src="../../hc-strategist-v1.js"></script>
+    <script src="/hc-strategist-v1.js"></script>
 <script src="/healthcare/js/hc-enterprise-final-layer.js?v=enterprise-final" defer></script>
 </head><body>
 
@@ -332,5 +332,8 @@ Analyzing...';
 <script src="/tsm-ai-client.js"></script>
 <script src="/healthcare/js/hc-node-ai-guide.js?v=tab-ai"></script>
 <script src="/healthcare/js/hc-node-feature-upgrades.js?v=frontline-features"></script>
-<script>const switchTab = (id) => { if(window.hcTabController) hcTabController.switchTab(id); else console.error("Tab Controller not ready"); };</script>
+<script>
+  const Q = (s) => document.querySelector(s);
+  const switchTab = (id) => { if(window.hcTabController) window.hcTabController.switchTab(id); };
+</script>
 </body></html>
