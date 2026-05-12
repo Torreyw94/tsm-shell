@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HC Executive Portal · TSM</title>
+<style>
+:root{
+  --bg:#05090d;--p:#07131d;--p2:#081522;--line:rgba(0,255,198,.18);
+  --text:#dff7ff;--muted:#86a4b8;--green:#00ffc6;--blue:#00aaff;
+  --red:#ff4d6d;--yellow:#ffc400;--purple:#b56cff;--orange:#ff7a00;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top right,rgba(0,255,198,.08),transparent 34%),var(--bg);color:var(--text);font-family:Inter,system-ui,Arial}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:#07131d;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.logo{color:var(--green);font-weight:950;letter-spacing:.16em;font-size:18px}
+.sub{color:var(--muted);font-size:12px;margin-top:4px}
+.btn{background:#00ffc6;color:#001;border:0;border-radius:10px;padding:11px 14px;font-weight:950;cursor:pointer;margin-left:8px}
+.btn.purple{background:#b56cff;color:#fff}.btn.gold{background:#ffc400;color:#001}
+.wrap{padding:18px;display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.full{grid-column:1/-1}
+.card{background:rgba(8,21,34,.94);border:1px solid rgba(0,255,198,.18);border-radius:16px;padding:18px}
+.ey{color:var(--green);font-size:11px;letter-spacing:.16em;font-weight:950;margin-bottom:10px}
+h1{font-size:44px;margin:8px 0;color:#fff;letter-spacing:-.04em}
+h2{margin:0 0 10px;color:#fff}
+p{color:#a8bfd0;line-height:1.55}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:#07131d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px}
+.kpi small{color:#7793a7;letter-spacing:.13em;font-size:10px}
+.kpi b{display:block;font-size:30px;margin:8px 0;color:var(--green)}
+.kpi.red b{color:var(--red)}.kpi.yellow b{color:var(--yellow)}.kpi.purple b{color:var(--purple)}
+.feed{display:flex;flex-direction:column;gap:10px}
+.alert{background:#050b12;border:1px solid rgba(255,255,255,.08);border-left:4px solid var(--yellow);border-radius:12px;padding:13px}
+.alert.critical{border-left-color:var(--red)}.alert.active{border-left-color:var(--green)}
+.alert b{color:#fff}.alert span{display:block;color:#8aa6b7;font-size:12px;margin-top:5px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:11px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left}
+th{color:#7793a7;font-size:11px;letter-spacing:.13em}
+.status{font-weight:950}.high{color:var(--red)}.med{color:var(--yellow)}.good{color:var(--green)}
+.brief{white-space:pre-wrap;background:#050b12;border:1px solid rgba(0,255,198,.18);border-radius:14px;padding:16px;line-height:1.55;color:#dff7ff}
+.chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chain span{padding:9px 12px;background:#050b12;border:1px solid rgba(0,255,198,.18);border-radius:999px;color:#dff7ff}
+.timeline{border-left:1px solid rgba(0,255,198,.25);padding-left:18px}
+.titem{position:relative;margin:14px 0;background:#050b12;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
+.titem:before{content:"";position:absolute;left:-24px;top:17px;width:10px;height:10px;border-radius:50%;background:var(--green)}
+#presentation{display:none;position:fixed;inset:0;z-index:1000;background:#05090d;color:#dff7ff;padding:42px;overflow:auto}
+#presentation.active{display:block}
+#presentation h1{font-size:64px;color:#00ffc6}
+@media(max-width:1000px){.wrap{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <div class="logo">HC EXECUTIVE PORTAL</div>
+    <div class="sub">Enterprise Healthcare Command Authority · CFO / COO / Regional Leadership View</div>
+  </div>
+  <div>
+    <button class="btn" onclick="runExecutiveBriefing()">Run Executive Briefing</button>
+    <button class="btn gold" onclick="exportExecutiveBrief()">Export Brief</button>
+    <button class="btn purple" onclick="openPresentation()">Presentation Mode</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card full">
+    <div class="ey">ENTERPRISE FINANCIAL EXPOSURE</div>
+    <h1>Healthcare Operations Command Authority</h1>
+    <p>High-managerial view of the most pertinent financial, compliance, staffing, and operational responsibilities across the healthcare command chain.</p>
+    <div class="kpis">
+      <div class="kpi red"><small>REVENUE AT RISK</small><b>$12.4M</b><span>systemwide exposure</span></div>
+      <div class="kpi yellow"><small>DENIAL PRESSURE</small><b>18.4%</b><span>above target</span></div>
+      <div class="kpi purple"><small>UNRESOLVED ESCALATIONS</small><b>42</b><span>owner lane needed</span></div>
+      <div class="kpi"><small>NODES REPORTING</small><b>11 / 11</b><span>HC mesh online</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="ey">EXECUTIVE SITUATION ROOM</div>
+    <div class="feed">
+      <div class="alert critical"><b>CRITICAL · Payer denial trend accelerating</b><span>UHC / Aetna pattern detected across 3 facilities</span></div>
+      <div class="alert"><b>WATCH · CMS audit response due in 48 hours</b><span>Compliance node requests executive owner lane</span></div>
+      <div class="alert active"><b>ACTIVE · Revenue recovery opportunity</b><span>AR days reduction could unlock projected cash acceleration</span></div>
+      <div class="alert"><b>STAFFING · Scheduling backlog above threshold</b><span>Operations node recommends intake rebalance</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="ey">EXECUTIVE AI BRIEFING ENGINE</div>
+    <pre id="execBrief" class="brief">EXECUTIVE BRIEFING
+
+TOP ISSUE
+Revenue-cycle degradation tied to payer escalation delays.
+
+WHY IT MATTERS
+Projected reimbursement exposure may exceed internal threshold if unresolved.
+
+BEST NEXT ACTIONS
+1. Escalate payer ownership lane.
+2. Reallocate staffing resources to denial queue.
+3. Push unresolved backlog to HC Strategist.
+4. Trigger payer escalation workflow.
+
+CONFIDENCE
+92%</pre>
+  </section>
+
+  <section class="card full">
+    <div class="ey">CROSS-HOSPITAL OPERATIONAL ROLLUP</div>
+    <table>
+      <thead><tr><th>Facility</th><th>Revenue Risk</th><th>Staffing</th><th>Compliance</th><th>Throughput</th><th>Executive Action</th></tr></thead>
+      <tbody>
+        <tr><td>HonorHealth Scottsdale</td><td class="status high">HIGH</td><td class="status med">MED</td><td class="status good">LOW</td><td class="status good">GOOD</td><td>Escalate denial backlog</td></tr>
+        <tr><td>Banner North</td><td class="status med">MED</td><td class="status high">HIGH</td><td class="status med">WATCH</td><td class="status med">DELAYED</td><td>Rebalance staffing</td></tr>
+        <tr><td>Dignity West</td><td class="status high">CRITICAL</td><td class="status high">HIGH</td><td class="status med">ACTIVE</td><td class="status high">IMPACTED</td><td>Executive intervention</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <div class="ey">GOVERNANCE & OWNERSHIP</div>
+    <h2>Owner Chain</h2>
+    <div class="chain">
+      <span>Billing Lead</span><span>RCM Director</span><span>HC Strategist</span><span>Executive Escalation Pending</span>
+    </div>
+    <p>Tracks unresolved owner chains, aging escalations, SLA breach risk, and strategist ownership across the enterprise.</p>
+  </section>
+
+  <section class="card">
+    <div class="ey">PREDICTIVE ENTERPRISE INTELLIGENCE</div>
+    <div class="kpis">
+      <div class="kpi red"><small>PROJECTED DENIAL IMPACT</small><b>$2.8M</b></div>
+      <div class="kpi yellow"><small>STAFFING RISK</small><b>72%</b></div>
+      <div class="kpi"><small>AR IMPROVEMENT</small><b>12d</b></div>
+      <div class="kpi purple"><small>AUDIT EXPOSURE</small><b>6</b></div>
+    </div>
+  </section>
+
+  <section class="card full">
+    <div class="ey">REAL OPERATIONAL TIMELINE</div>
+    <div class="timeline">
+      <div class="titem"><b>08:42 AM</b><br>Medical flagged documentation gap.</div>
+      <div class="titem"><b>08:51 AM</b><br>Billing denial probability increased.</div>
+      <div class="titem"><b>09:02 AM</b><br>Strategist escalation triggered.</div>
+      <div class="titem"><b>09:11 AM</b><br>Compliance review initiated.</div>
+    </div>
+  </section>
+
+  <section class="card full">
+    <div class="ey">ENTERPRISE SECURITY / TRUST INDICATORS</div>
+    <div class="kpis">
+      <div class="kpi"><small>PHI SAFEGUARDS</small><b>ON</b></div>
+      <div class="kpi"><small>AUDIT LOGGING</small><b>ON</b></div>
+      <div class="kpi"><small>ROLE CONTROLS</small><b>ACTIVE</b></div>
+      <div class="kpi"><small>STRATEGIST TRACE</small><b>ENABLED</b></div>
+    </div>
+  </section>
+</main>
+
+<section id="presentation">
+  <button class="btn" onclick="closePresentation()">Close</button>
+  <h1>HC Executive Briefing Mode</h1>
+  <pre class="brief">POSITIONING
+This is the executive command layer for healthcare operations.
+
+WHAT IT DOES
+Problem detected
+↓
+AI interprets operational risk
+↓
+Owner assigned
+↓
+Cross-node coordination begins
+↓
+BNCA generated
+↓
+Escalation tracked
+↓
+Executive visibility maintained
+↓
+Outcome recorded
+
+CLOSE
+“We are not giving your staff another dashboard. We are giving leadership a healthcare operations command authority.”</pre>
+</section>
+
+<script>
+async function runExecutiveBriefing(){
+  const out=document.getElementById("execBrief");
+  out.textContent="TSM Neural Core running executive briefing...";
+  try{
+    const r=await fetch("/api/hc/query",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"EXECUTIVE_PORTAL_BRIEFING",payload:{node:"EXECUTIVE_PORTAL",tab:"Enterprise Rollup",context:"Generate executive healthcare system briefing for revenue risk, denial pressure, staffing, compliance, and ownership.",priority:"HIGH"}})});
+    const d=await r.json();
+    out.textContent=d.reply||d.content||out.textContent;
+  }catch(e){
+    out.textContent="EXECUTIVE BRIEFING\n\nTOP ISSUE\nRevenue-cycle degradation tied to payer escalation delays.\n\nWHY IT MATTERS\nProjected reimbursement exposure may exceed threshold.\n\nBEST NEXT ACTIONS\n1. Escalate payer owner lane.\n2. Reallocate staffing.\n3. Push backlog to HC Strategist.\n4. Trigger payer escalation workflow.\n\nCONFIDENCE\n92%";
+  }
+}
+function exportExecutiveBrief(){
+  const text=document.body.innerText;
+  const blob=new Blob([text],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="hc-executive-portal-brief.txt";
+  a.click();
+}
+function openPresentation(){document.getElementById("presentation").classList.add("active")}
+function closePresentation(){document.getElementById("presentation").classList.remove("active")}
+</script>
+</body>
+</html>
