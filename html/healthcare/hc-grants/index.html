@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+      const Q = (s) => document.querySelector(s);
+      const switchTab = (id) => {
+        console.log("Switching to tab:", id);
+        if (window.hcTabController) {
+          window.hcTabController.switchTab(id);
+        } else {
+          console.error("HC Tab Controller not initialized yet.");
+        }
+      };
+    </script>
     <style>.enterprise-capability-layer, .node-content-wrapper { overflow: visible !important; height: auto !important; padding-bottom: 80px; }</style>
     <script>const Q = (s) => document.querySelector(s);</script>
     <style>.enterprise-capability-layer, .node-content-wrapper { height: auto !important; min-height: 900px; overflow: visible !important; }</style>
