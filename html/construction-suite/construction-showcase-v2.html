@@ -703,6 +703,25 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 </div>
 
 <script>
+window.selectDoc = (name, type) => { 
+    window.selectedDocument = { name, type }; 
+    document.getElementById("ready-to-fire").innerText = "✔ " + name + " - READY TO FIRE"; 
+}; 
+async function fireAllEngines() { 
+    const doc = window.selectedDocument; 
+    if(!doc) return alert("Select a document first"); 
+    document.querySelectorAll(".pipeline-icon").forEach(i => i.classList.add("active")); 
+    const response = await fetch("/api/hc/query", { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ 
+            prompt: `Parse this construction ${doc.type} and extract structural flags.`, 
+            context: doc.name 
+        }) 
+    }); 
+    const data = await response.json(); 
+    if(window.populatePanels) populatePanels(data); 
+}
 // ===== TAB SWITCHING =====
 function switchTab(name){
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
