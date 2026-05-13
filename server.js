@@ -859,6 +859,7 @@ app.get('/suite/healthcare', (req,res) => res.sendFile(path.join(__dirname,'html
 app.get('/suite/music', (req,res) => res.sendFile(path.join(__dirname,'html/music-command/index.html')));
 app.get('/suite/construction', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/index.html')));
 app.get('/suite/finops',     (req,res) => res.sendFile(path.join(__dirname,'html/finops-suite/copilot.html')));
+app.get('/finops-presentation', (req,res) => res.sendFile(path.join(__dirname,'html/finops-suite/tsm-presentation.html')));
 app.get('/suite/insurance',  (req,res) => res.sendFile(path.join(__dirname,'html/tsm-insurance/az-ins.html')));
 app.get('/suite',            (req,res) => res.sendFile(path.join(__dirname,'html/suite-index.html')));
 
