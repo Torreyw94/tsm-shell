@@ -860,7 +860,7 @@ app.get('/suite/music', (req,res) => res.sendFile(path.join(__dirname,'html/musi
 app.get('/suite/construction', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/index.html')));
 app.get('/suite/finops',     (req,res) => res.sendFile(path.join(__dirname,'html/finops-suite/copilot.html')));
 app.get('/showcase-only', (req,res) => res.sendFile(path.join(__dirname,'html/showcase-standalone/index.html')));
-app.get('/construction', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/construction-hub.html'))); app.get('/construction/showcase', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/showcase/index.html')));
+app.get('/construction', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/index.html')));
 app.get('/construction-showcase', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/construction-showcase-v2.html')));
 app.get('/construction-showcase', (req,res) => res.sendFile(path.join(__dirname,'html/construction-suite/construction-showcase-v2.html')));
 app.get('/finops-presentation', (req,res) => res.sendFile(path.join(__dirname,'html/finops-suite/tsm-presentation.html')));
