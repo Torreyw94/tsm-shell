@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🏗️ CONSTRUCTION SHOWCASE LIVE</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background: #0a0a0a; color: #eee; font-family: sans-serif;">
+    <div style="display: flex; height: 100vh;">
+        <!-- Sidebar with 12 Construction Docs -->
+        <div id="con-showcase-sidebar-v5" style="width: 300px; border-right: 1px solid #333; padding: 20px; overflow-y: auto;">
+            <h2 style="color: #f1c40f; font-size: 14px;">PROJECT ASSETS</h2>
+            <div class="sample-card" onclick="previewDoc('site-plan-master.pdf', 'Plans')">Site Plan - Master (17.6MB)</div>
+            <div class="sample-card" onclick="previewDoc('mep-drawings.dwg', 'Plans')">MEP Coordination L1 (8.7MB)</div>
+            <div class="sample-card" onclick="previewDoc('osha-safety-2026.pdf', 'Safety')">OSHA Safety Plan (2.1MB)</div>
+            <div class="sample-card" onclick="previewDoc('permit-foundation.pdf', 'Permits')">Building Permit (0.4MB)</div>
+            <div class="sample-card" onclick="previewDoc('zoning-variance.pdf', 'Permits')">Zoning Variance (3.2MB)</div>
+            <div class="sample-card" onclick="previewDoc('incident-report.pdf', 'Safety')">Incident Report (0.3MB)</div>
+            <div class="sample-card" onclick="previewDoc('progress-w17.pdf', 'Reports')">Weekly Progress (0.8MB)</div>
+            <div class="sample-card" onclick="previewDoc('invoice-q1.xlsx', 'Financial')">Q1 Invoice Summary (1.3MB)</div>
+            <div class="sample-card" onclick="previewDoc('change-order-7.pdf', 'Financial')">Change Order #7 (0.6MB)</div>
+            <div class="sample-card" onclick="previewDoc('bid-roofing.pdf', 'Contracts')">Subcontractor Bid (0.9MB)</div>
+            <div class="sample-card" onclick="previewDoc('architect-agreement.pdf', 'Contracts')">Owner-Architect Agreement (1.5MB)</div>
+            <div class="sample-card" onclick="previewDoc('electrical-diagram.pdf', 'Plans')">Electrical Diagram (5.4MB)</div>
+        </div>
+
+        <!-- Main Workspace -->
+        <div style="flex: 1; padding: 40px; display: flex; flex-direction: column;">
+            <div id="preview-stage" style="background: #111; border: 2px dashed #f1c40f; padding: 60px; text-align: center; border-radius: 12px; margin-bottom: 30px;">
+                <p id="preview-text" style="color: #888;">Select a document to preview content...</p>
+            </div>
+            
+            <button onclick="fireEngines()" style="background: #f1c40f; color: #000; padding: 20px; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">FIRE ALL 4 ENGINES</button>
+            
+            <div id="results" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                <div style="background: #1a1a1a; padding: 20px; border: 1px solid #333;">01. Document Triage</div>
+                <div style="background: #1a1a1a; padding: 20px; border: 1px solid #333;">02. Safety Intelligence</div>
+                <div style="background: #1a1a1a; padding: 20px; border: 1px solid #333;">03. Superintendent Action Plan</div>
+                <div style="background: #1a1a1a; padding: 20px; border: 1px solid #333;">04. Developer Executive Intel</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selected = null;
+        function previewDoc(name, type) {
+            selected = { name, type };
+            document.getElementById('preview-text').innerHTML = "<strong style='color:#f1c40f'>PREVIEWING: " + name + "</strong><br><br>[STRUCTURAL DATA DETECTED]<br>- Phase: " + type + "<br>- Status: Ready for Extraction";
+        }
+        async function fireEngines() {
+            if(!selected) return alert("Please select a document");
+            alert("Processing " + selected.name + " through 4-engine pipeline...");
+        }
+    </script>
+</body>
+</html>
