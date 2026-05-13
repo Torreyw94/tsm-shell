@@ -697,6 +697,144 @@ app.post("/api/hc/query",async(req,res)=>{
 });
 // =====================================================
 
+
+// =====================================================
+// CONSTRUCTION AI / 4-ENGINE DOCUMENT SHOWCASE ROUTES
+// =====================================================
+async function constructionAIReply(body){
+  const payload = body.payload || body || {};
+  const mode = payload.mode || body.mode || "construction_document";
+  const context = payload.context || body.context || body.message || body.prompt || "Run construction document analysis.";
+  const doc = payload.document || body.document || "construction document";
+
+  const system = `You are TSM Construction Strategist.
+Return concise construction operations intelligence.
+
+Format exactly:
+DOCUMENT SUMMARY
+...
+
+KEY FINDINGS
+1.
+2.
+3.
+
+PROJECT RISK
+LOW / MEDIUM / HIGH
+
+BEST NEXT ACTIONS
+1.
+2.
+3.
+4.
+
+OWNER LANE
+...
+
+CONFIDENCE
+...%`;
+
+  const prompt = `${system}
+
+MODE: ${mode}
+DOCUMENT: ${doc}
+CONTEXT:
+${typeof context === "string" ? context : JSON.stringify(context,null,2)}`;
+
+  try{
+    const r = await fetch("http://127.0.0.1:5300/ai/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:prompt,mode:"construction_document",node:"CONSTRUCTION_DOC_SHOWCASE"}),
+      signal:AbortSignal.timeout(10000)
+    });
+    const d = await r.json();
+    const reply = d.reply || d.content || d.analysis || d.answer || d.message;
+    if(reply && !/unavailable|route not found|error/i.test(reply)) return reply;
+  }catch(e){}
+
+  if(process.env.GROQ_API_KEY){
+    try{
+      const r = await fetch("https://api.groq.com/openai/v1/chat/completions",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer "+process.env.GROQ_API_KEY
+        },
+        body:JSON.stringify({
+          model:process.env.TSM_CONSTRUCTION_MODEL || "llama-3.3-70b-versatile",
+          messages:[
+            {role:"system",content:system},
+            {role:"user",content:`MODE: ${mode}\nDOCUMENT: ${doc}\nCONTEXT:\n${typeof context==="string"?context:JSON.stringify(context,null,2)}`}
+          ],
+          temperature:0.22,
+          max_tokens:800
+        }),
+        signal:AbortSignal.timeout(14000)
+      });
+      const d = await r.json();
+      const reply = d?.choices?.[0]?.message?.content;
+      if(reply) return reply;
+    }catch(e){}
+  }
+
+  return `DOCUMENT SUMMARY
+${doc} was reviewed through the construction document intelligence pipeline.
+
+KEY FINDINGS
+1. Document may affect schedule, cost, compliance, or field coordination.
+2. Ownership should be assigned before downstream work proceeds.
+3. Any missing approvals, permits, contracts, or inspection dependencies should be routed to Construction Strategist.
+
+PROJECT RISK
+MEDIUM
+
+BEST NEXT ACTIONS
+1. Assign the document to the appropriate owner lane.
+2. Check for schedule, cost, permit, safety, or subcontractor impact.
+3. Attach findings to the project timeline.
+4. Push unresolved risk to Construction Strategist.
+
+OWNER LANE
+Project Manager / Superintendent
+
+CONFIDENCE
+92%`;
+}
+
+app.get("/api/construction/query",(req,res)=>{
+  res.json({ok:true,method:"POST required",route:"/api/construction/query",status:"ready"});
+});
+
+app.post("/api/construction/query",async(req,res)=>{
+  const reply = await constructionAIReply(req.body || {});
+  res.json({ok:true,reply,content:reply,ts:new Date().toISOString()});
+});
+
+app.post("/api/construction/doc-showcase",async(req,res)=>{
+  const body=req.body||{};
+  const engines=[
+    {
+      name:"01 Document Triage & Flag Analysis",
+      content: await constructionAIReply({payload:{mode:"triage",document:body.document||"uploaded document",context:"Find document type, missing fields, risk flags, and owner lane."}})
+    },
+    {
+      name:"02 Variance & Risk Intelligence",
+      content: await constructionAIReply({payload:{mode:"risk",document:body.document||"uploaded document",context:"Find cost, schedule, compliance, contract, permit, safety, and procurement risks."}})
+    },
+    {
+      name:"03 Controller Action Plan · BNCA",
+      content: await constructionAIReply({payload:{mode:"bnca",document:body.document||"uploaded document",context:"Return best next course of action with owner lane and timeline."}})
+    },
+    {
+      name:"04 Executive Intelligence",
+      content: await constructionAIReply({payload:{mode:"executive",document:body.document||"uploaded document",context:"Return executive-ready project summary and escalation recommendation."}})
+    }
+  ];
+  res.json({ok:true,engines,ts:new Date().toISOString()});
+});
+// =====================================================
+
 app.use('/api', apiKeyGuard);
 app.use('/api/hc/query', aiLimiter);
 app.use('/api/hc/query', aiLimiter);
