@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HC Command Chain · TSM</title>
+<style>
+:root{
+  --bg:#05090d;--p:#081522;--p2:#07131d;--line:rgba(0,255,198,.18);
+  --text:#dff7ff;--muted:#7f9aae;--green:#00ffc6;--blue:#00aaff;
+  --yellow:#ffc400;--red:#ff4d6d;--purple:#b56cff;--orange:#ff7a00;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top right,rgba(0,255,198,.08),transparent 35%),var(--bg);color:var(--text);font-family:Inter,system-ui,Arial;font-size:13px}
+.top{position:sticky;top:0;z-index:100;background:#07131d;border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:10px;overflow:auto}
+.logo{font-weight:950;color:var(--green);letter-spacing:.16em;white-space:nowrap}
+.chain{display:flex;align-items:center;gap:8px;white-space:nowrap;color:#93aabc}
+.pill{border:1px solid var(--green);color:var(--green);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:850;background:#061720}
+.pill.yellow{background:var(--green);color:#001;border-color:var(--green)}
+.upload{margin-left:auto;background:#2a0b46;color:#ffd7ff;border:1px solid #b56cff;border-radius:8px;padding:8px 14px;font-weight:900}
+.ticker{border-bottom:1px solid var(--line);background:#061018;color:#ffc400;padding:9px 20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800;letter-spacing:.06em}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid rgba(255,255,255,.08)}
+.kpi{background:#081522;border-right:1px solid rgba(255,255,255,.06);padding:12px 16px}
+.kpi small{display:block;color:#5d7890;letter-spacing:.14em;font-size:10px}
+.kpi b{display:block;font-size:22px;color:var(--green);margin:4px 0}
+.shell{display:grid;grid-template-columns:180px 1fr 270px;min-height:calc(100vh - 145px)}
+.left,.right{background:#07131d;border-right:1px solid rgba(255,255,255,.08);padding:12px}
+.right{border-right:0;border-left:1px solid rgba(255,255,255,.08)}
+.left h4,.right h4{color:#5d7890;font-size:10px;letter-spacing:.18em;margin:12px 0}
+.play{padding:10px 8px;border-left:3px solid transparent;color:#bfd7e8;display:flex;justify-content:space-between}
+.play.active{border-color:var(--green);background:#092131}
+.play span{color:#ffc400;font-size:11px}
+.main{padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.node-card{background:#081522;border:1px solid rgba(0,255,198,.2);min-height:235px;padding:14px;position:relative;overflow:hidden}
+.node-card:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--c,var(--green))}
+.node-card h2{margin:8px 0 2px;color:var(--c,var(--green));letter-spacing:.1em}
+.node-card .meta{color:#638096;font-size:11px;margin-bottom:12px}
+.node-card p{color:#cfe7f6;line-height:1.45;font-size:12px}
+.node-card .label{color:#fff;font-size:11px;margin-top:8px}
+.node-card .live{position:absolute;right:14px;bottom:17px;color:var(--green);font-size:10px}
+.intel-btn{
+  position:absolute;left:14px;bottom:14px;background:#ffc400;color:#001;border:0;border-radius:11px;
+  padding:11px 20px;font-weight:950;letter-spacing:.08em;box-shadow:0 0 22px rgba(255,196,0,.25);cursor:pointer
+}
+.open-btn{position:absolute;left:200px;bottom:17px;background:#00aaff;color:#001;border:0;border-radius:3px;padding:8px 14px;font-weight:900;cursor:pointer}
+.right h3{color:#b56cff;letter-spacing:.14em;margin-bottom:4px}
+.right .sub{color:#6f8299;font-size:11px;letter-spacing:.12em}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:14px 0}
+.rgrid button{background:#081522;border:1px solid var(--blue);color:#8fdcff;padding:8px;font-size:11px}
+.rgrid button.hot{border-color:#ff4d6d;color:#ff4d6d}
+.rgrid button.gold{border-color:#ffc400;color:#ffc400}
+.bnca{border-top:1px solid rgba(255,255,255,.08);padding-top:12px;white-space:pre-wrap;color:#dff7ff;line-height:1.45;font-size:12px}
+.footer{position:fixed;left:12px;bottom:42px;background:#061c12;border:1px solid #0d8b55;color:#00ffc6;border-radius:5px;padding:7px 12px;font-size:11px;z-index:20}
+.bottom-actions{position:fixed;right:18px;bottom:18px;display:flex;gap:8px;z-index:20}
+.bottom-actions button{background:#00ffc6;color:#001;border:0;border-radius:18px;padding:12px 16px;font-weight:950}
+@media(max-width:1000px){.shell{grid-template-columns:1fr}.left,.right{display:none}.main{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+<script src="/healthcare/js/hc-strategist-relay.js?v=relay1" defer></script>
+  <link rel="stylesheet" href="/shared/tsm-shared.css">
+  <script src="/shared/tsm-shared.js"></script>
+</head>
+<body>
+<div class="top">
+  <div class="logo">HC COMMAND CHAIN:</div>
+  <div class="chain">
+    <span>OM →</span>
+    <button class="pill">Billing</button><button class="pill">Compliance</button><button class="pill">Medical</button><button class="pill">Pharmacy</button>
+    <button class="pill">Operations</button><button class="pill">Insurance</button><button class="pill">Financial</button><button class="pill">Legal</button>
+    <button class="pill">Tax Prep</button><button class="pill">Grants</button>
+    <span>→</span><button class="pill">HC Strategist</button><span>→</span><button class="pill">Main Strategist</button>
+    <span>→</span><button class="pill yellow">⚡ Executive Portal</button>
+  </div>
+  <button class="upload">📁 PoC Upload</button>
+</div>
+
+<div class="ticker">
+  MANAGER ACTIONS FIRST // CLAIMS BACKLOG — 247 PENDING ADJUDICATIONS // DENIAL RATE — 18.4% VS TARGET 9% // PRIOR AUTH FRICTION — HIGH // OPERATIONS NODE — LIVE
+</div>
+
+<div class="kpis">
+  <div class="kpi"><small>REVENUE AT RISK</small><b style="color:#ff4d6d">$2.1M</b><span>active rev-cycle value</span></div>
+  <div class="kpi"><small>CLAIMS PENDING</small><b style="color:#ffc400">247</b><span>adjudication queue</span></div>
+  <div class="kpi"><small>COMPLIANCE SCORE</small><b>84%</b><span>HIPAA + CMS + OIG</span></div>
+  <div class="kpi"><small>DENIAL RATE</small><b style="color:#ff7a00">18.4%</b><span>above target window</span></div>
+  <div class="kpi"><small>NODES LIVE</small><b>11 / 11</b><span>bnca mesh online</span></div>
+  <div class="kpi"><small>OPS QUEUE</small><b style="color:#00aaff">31</b><span>front-desk pressure</span></div>
+</div>
+
+<div class="shell">
+  <aside class="left">
+    <h4>BNCA PLAYBOOKS</h4>
+    <div class="play active">Claim Recovery <span>●</span></div>
+    <div class="play">Denial Sweep <span>HOT</span></div>
+    <div class="play">Prior Auth <span>QUEUE</span></div>
+    <div class="play">Audit Sweep <span style="color:#ff4d6d">RISK</span></div>
+    <div class="play">Staffing / Throughput <span>OPS</span></div>
+    <div class="play">Vendor / Supply Risk <span>2</span></div>
+    <div class="play">Cash Flow <span>LIVE</span></div>
+    <div class="play">Tax / Filing Window <span style="color:#b56cff">APR</span></div>
+
+    <h4>ENTERPRISE</h4>
+    <div class="play">BNCA Brief <span>READY</span></div>
+    <div class="play">Capacity / Throughput <span>+18%</span></div>
+    <div class="play">Staff / Vendor ROI <span>LIVE</span></div>
+    <div class="play">Report Memory <span style="color:#b56cff">ACTIVE</span></div>
+  </aside>
+
+  <main class="main" id="nodeGrid"></main>
+
+  <aside class="right">
+    <h3>Healthcare Strategist</h3>
+    <div class="sub">BNCA · OFFICE MANAGER SYNTHESIS · NODE COORDINATION</div>
+    <div class="rgrid">
+      <button>OPERATIONS</button><button>MEDICAL</button><button class="gold">PHARMACY</button><button>FINANCIAL</button>
+      <button style="border-color:#b56cff;color:#b56cff">LEGAL</button><button style="border-color:#ff7a00;color:#ff7a00">VENDORS</button>
+      <button class="hot">COMPLIANCE</button><button>BILLING</button>
+      <button style="border-color:#d86cff;color:#d86cff">TAX PREP</button><button>GRANTS</button>
+    </div>
+    <div class="bnca">BNCA OUTPUT
+
+TOP ISSUE
+Cross-lane operational drag is the primary issue.
+
+WHY IT MATTERS
+Live telemetry received for HonorHealth · Scottsdale - Shea.
+
+BEST NEXT COURSE OF ACTION
+1. Clear highest-value backlog first
+2. Escalate auth and documentation blockers older than 24-72 hours
+3. Align intake, billing, and scheduling handoffs</div>
+  </aside>
+</div>
+
+<div class="footer">● NEURAL LINK · HC-STRATEGIST</div>
+<div class="bottom-actions"><button>OPS INTEL</button><button>BILLING</button><button>COMPLIANCE</button></div>
+
+<script>
+const nodes = [
+  ["operations","OPERATIONS","Staffing · Scheduling · Intake · Throughput","#00aaff","Rebalance intake, scheduling, and documentation workload before backlog expands."],
+  ["medical","MEDICAL","CPT Billing · Clinical Compliance · Audit","#00ffc6","Prioritize clinical documentation gaps and route blocked cases to the right owner."],
+  ["pharmacy","PHARMACY","DEA Schedules · Drug Interactions · Rx","#ffc400","Escalate medication access blockers and clear prior authorization dependencies."],
+  ["financial","FINANCIAL","Revenue Cycle · Billing · P&L Analysis","#00aaff","Prioritize high-value aging claims and blocked payment workflows."],
+  ["legal","LEGAL","HIPAA · Contracts · Regulatory Defense","#b56cff","Review documentation and contract-risk exceptions before escalation."],
+  ["vendors","VENDORS","Supply Chain · Contract Review · ROI","#ff7a00","Escalate vendor SLA exceptions and confirm next-action ownership."],
+  ["compliance","COMPLIANCE","HIPAA · CMS · OIG · Audit Trail","#ff4d6d","Close documentation and policy gaps before billing handoff."],
+  ["billing","BILLING","Claims · Coding · Denials · AR","#00ffc6","Drive denial reduction, claim scrubbing, and AR recovery workflows."],
+  ["taxprep","TAX PREP","1099 · W-9 · Filing Readiness","#d86cff","Clear filing windows and vendor tax documentation gaps."],
+  ["grants","GRANTS","Grant Compliance · Reports · Funding","#4aa3ff","Track restricted funding, HRSA reports, and overdue grant documentation."],
+  ["insurance","INSURANCE","Eligibility · Prior Auth · Payer Rules","#00aaff","Resolve payer friction and authorization backlog."]
+];
+
+document.getElementById("nodeGrid").innerHTML = nodes.map(([key,title,meta,color,issue])=>`
+  <section class="node-card" data-node="${key}" style="--c:${color}">
+    <div style="color:${color};font-size:11px;font-weight:900">● LIVE <span style="float:right;color:#35556f">PORT 30${Math.floor(Math.random()*30)+10}</span></div>
+    <h2>${title}</h2>
+    <div class="meta">${meta}</div>
+    <div class="label">TOP ISSUE</div>
+    <p>${issue}</p>
+    <div class="label">WHY IT MATTERS</div>
+    <p>This creates operational drag, delayed handoffs, revenue risk, or compliance exposure if unresolved.</p>
+    <button class="intel-btn">INTEL WORKBENCH</button>
+    <button class="open-btn" onclick="window.open('/healthcare/hc-${key}/index.html','_blank')">OPEN ↗</button>
+    <div class="live">LIVE</div>
+  </section>
+`).join("");
+</script>
+
+<script src="/healthcare/js/hc-node-enhance.js?v=deep-intel-final"></script>
+
+<script>
+(function(){
+  if(window.__HC_HUB_BUTTONS_TXT_GUIDE__) return;
+  window.__HC_HUB_BUTTONS_TXT_GUIDE__ = true;
+
+  const nodeGuide = {
+    operations: {
+      title:"OPERATIONS INTEL",
+      text:"Use this node to explain intake pressure, scheduling backlog, staffing coverage, and throughput blockers. Click INTEL WORKBENCH to show timeline, notes, smart prompts, and BNCA."
+    },
+    medical: {
+      title:"MEDICAL INTEL",
+      text:"Use this node to show clinical documentation gaps, CPT/audit exposure, provider routing, and care-flow blockers."
+    },
+    pharmacy: {
+      title:"PHARMACY INTEL",
+      text:"Use this node to show prior auth dependencies, medication access blockers, DEA/drug interaction risk, and pharmacy workflow pressure."
+    },
+    financial: {
+      title:"FINANCIAL INTEL",
+      text:"Use this node to connect revenue-cycle drag, P&L pressure, aging claims, and cash-flow impact."
+    },
+    legal: {
+      title:"LEGAL INTEL",
+      text:"Use this node to show contracts, HIPAA/regulatory defense, escalation memos, and policy-risk ownership."
+    },
+    vendors: {
+      title:"VENDORS INTEL",
+      text:"Use this node to show supplier SLA exceptions, contract review, vendor ROI, and supply-chain blockers."
+    },
+    compliance: {
+      title:"COMPLIANCE INTEL",
+      text:"Use this node to show HIPAA, CMS, OIG, audit trail, documentation gaps, and policy remediation."
+    },
+    billing: {
+      title:"BILLING INTEL",
+      text:"Use this node to show denials, coding, claim scrubbing, AR recovery, clean-claim rate, and payer friction."
+    },
+    taxprep: {
+      title:"TAX PREP INTEL",
+      text:"Use this node to show 1099/W-9 readiness, filing windows, vendor tax gaps, and APR risk."
+    },
+    grants: {
+      title:"GRANTS INTEL",
+      text:"Use this node to show restricted funding, HRSA reporting, grant compliance, and overdue report risk."
+    },
+    insurance: {
+      title:"INSURANCE INTEL",
+      text:"Use this node to show eligibility, prior auth aging, payer rules, appeal queues, and authorization SLA."
+    }
+  };
+
+  function keyFromCard(card){
+    if(!card) return "operations";
+    const ds = card.dataset || {};
+    if(ds.node) return ds.node;
+    const t=(card.innerText||"").toLowerCase();
+    if(t.includes("tax")) return "taxprep";
+    return Object.keys(nodeGuide).find(k=>t.includes(k)) || "operations";
+  }
+
+  function ensureGuide(){
+    let g=document.getElementById("hc-txt-guide");
+    if(g) return g;
+
+    g=document.createElement("aside");
+    g.id="hc-txt-guide";
+    g.style.cssText=`
+      position:fixed;right:22px;top:170px;width:330px;z-index:99998;
+      background:#07131d;border:1px solid rgba(0,255,198,.35);
+      border-radius:14px;padding:16px;color:#dff7ff;
+      box-shadow:0 0 28px rgba(0,255,198,.16);font-family:Inter,system-ui,Arial;
+    `;
+    g.innerHTML=`
+      <div style="color:#00ffc6;font-weight:950;letter-spacing:.14em;margin-bottom:8px">HC PRESENTATION GUIDE</div>
+      <pre id="hc-guide-script" style="white-space:pre-wrap;background:#050b12;border:1px solid rgba(0,255,198,.18);border-radius:10px;padding:10px;margin-top:12px;font-size:12px;color:#dff7ff">Talk track:
+“This is the office-manager command layer. We are not replacing systems. We are connecting the operational signals and telling the office what to do next.”</pre>
+    `;
+    document.body.appendChild(g);
+    return g;
+  }
+
+  function updateGuide(key){
+    const g=ensureGuide();
+    const data=nodeGuide[key] || nodeGuide.operations;
+    g.querySelector("#hc-guide-title").textContent=data.title;
+    g.querySelector("#hc-guide-text").textContent=data.text;
+    g.querySelector("#hc-guide-script").textContent =
+`Talk track:
+“This is ${data.title.replace(" INTEL","").toLowerCase()} in the healthcare command chain. The purpose is to identify the top issue, assign ownership, and push unresolved risk into the Healthcare Strategist.”
+
+Demo move:
+1. Click INTEL WORKBENCH.
+2. Show Timeline.
+3. Click Smart Prompts.
+4. Click BNCA.
+5. Explain owner lane and next action.`;
+  }
+
+  function openWorkbench(key){
+    updateGuide(key);
+    if(window.hcOpenEnhancedNode){
+      window.hcOpenEnhancedNode(key);
+      return;
+    }
+    alert((nodeGuide[key]||nodeGuide.operations).title + "\n\nWorkbench script is loading. Refresh once if needed.");
+  }
+
+  function wire(){
+    ensureGuide();
+
+    document.querySelectorAll(".node-card,[data-node]").forEach(card=>{
+      const key=keyFromCard(card);
+
+      card.addEventListener("mouseenter",()=>updateGuide(key));
+
+      card.querySelectorAll(".intel-btn,.hc-intel-gold-btn,.nc-open-btn,button").forEach(btn=>{
+        const txt=(btn.innerText||"").toLowerCase();
+        if(!txt.includes("intel")) return;
+
+        btn.style.pointerEvents="auto";
+        btn.style.cursor="pointer";
+        btn.onclick=function(e){
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          openWorkbench(key);
+          return false;
+        };
+      });
+    });
+
+    document.querySelectorAll(".bottom-actions button").forEach(btn=>{
+      btn.onclick=function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const t=(btn.innerText||"").toLowerCase();
+        if(t.includes("billing")) openWorkbench("billing");
+        else if(t.includes("compliance")) openWorkbench("compliance");
+        else openWorkbench("operations");
+        return false;
+      };
+    });
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",wire);
+  else wire();
+
+  [500,1200,2500,4000].forEach(ms=>setTimeout(wire,ms));
+})();
+</script>
+
+<script id="tsm-direct-wire">
+/** TSM SOVEREIGN CORE - UNIVERSAL DIRECT WIRE **/
+(function() {
+    async function forceSync() {
+        const feed = document.getElementById('intelligence-feed') || document.querySelector('.intelligence-feed');
+        const uplink = document.getElementById('uplink-status') || document.getElementById('tsm-neural-core-key');
+        
+        if (uplink) {
+            uplink.innerText = 'ACTIVE';
+            uplink.style.color = '#00ffcc';
+        }
+
+        if (feed) {
+            feed.innerHTML = `
+                <div style="color: #00ffcc; border-left: 2px solid #00ffcc; padding-left: 15px; background: rgba(0, 255, 204, 0.08);">
+                    <strong>[NEURAL BRIDGE]</strong> System Synchronized.<br>
+                    Status: 11/11 Nodes Active | Direct Neural Link Established.
+                </div>
+            `;
+        }
+    }
+    window.addEventListener('load', forceSync);
+})();
+</script>
+
+</body>
+</html>

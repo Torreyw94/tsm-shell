@@ -945,7 +945,7 @@ console.log("TSM_UI: Direct Neural Link Established.");
     statusBadge.className = 'panel-badge watch';
 
     try {
-      const res = await fetch('https://tsm-shell.fly.dev/api/hc/cfo-report');
+      const res = await fetch('https://tsm-shell.fly.dev/api/cfo-chat');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       reportData = data.report || data;

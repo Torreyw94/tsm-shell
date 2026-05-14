@@ -1,78 +1,31 @@
 (function(){
-  if(window.__TSM_HC_BRIDGE_V2__) return;
-  window.__TSM_HC_BRIDGE_V2__=true;
-
-  const NODE_MAP = [
-    ["billing","BILLING"],["medical","MEDICAL"],["compliance","COMPLIANCE"],["financial","FINANCIAL"],
-    ["insurance","INSURANCE"],["pharmacy","PHARMACY"],["vendors","VENDORS"],["vendor","VENDORS"],
-    ["legal","LEGAL"],["grants","GRANTS"],["taxprep","TAXPREP"],["tax-prep","TAXPREP"],
-    ["operations","OPERATIONS"],["strategist","STRATEGIST"]
-  ];
-
-  function detectNode(){
-    const p=location.pathname.toLowerCase();
-    const t=(document.body?.innerText || "").toLowerCase();
-    for(const [needle,node] of NODE_MAP){
-      if(p.includes(needle) || t.includes(`hc ${needle}`) || t.includes(`${needle} command`) || t.includes(`${needle} node`)) return node;
-    }
+  window.__TSM_HC_BRIDGE_FORCE__=true;
+  function node(){
+    const p=location.pathname.toLowerCase(), t=(document.body.innerText||"").toLowerCase();
+    if(p.includes("billing")||t.includes("billing command")) return "BILLING";
+    if(p.includes("medical")||t.includes("medical command")) return "MEDICAL";
+    if(p.includes("compliance")||t.includes("compliance command")) return "COMPLIANCE";
+    if(p.includes("financial")||t.includes("financial command")) return "FINANCIAL";
+    if(p.includes("insurance")) return "INSURANCE";
+    if(p.includes("pharmacy")) return "PHARMACY";
+    if(p.includes("vendor")) return "VENDORS";
+    if(p.includes("legal")) return "LEGAL";
+    if(p.includes("grant")) return "GRANTS";
+    if(p.includes("tax")) return "TAXPREP";
+    if(p.includes("strategist")) return "STRATEGIST";
     return "OPERATIONS";
   }
-
-  function activeTab(){
-    const selectors=[
-      ".active[role='tab']",".tab.active","nav .active","button.active","a.active",
-      "[aria-selected='true']", ".tabs .on", ".selected"
-    ];
-    for(const q of selectors){
-      const el=document.querySelector(q);
-      const txt=(el?.innerText || el?.textContent || "").trim();
-      if(txt) return txt.replace(/\s+/g," ");
-    }
-    return "Current View";
+  function tab(){
+    const el=document.querySelector(".active,[aria-selected='true']");
+    return (el?.innerText||"Current View").trim().replace(/\s+/g," ");
   }
-
-  function pageContext(){
-    const node=detectNode();
-    const tab=activeTab();
-    const kpis=[...document.querySelectorAll(".kpi,.metric,.card,.stat")].slice(0,12).map(el=>(el.innerText||"").trim()).filter(Boolean);
-    const alerts=[...document.querySelectorAll(".alert,.risk,.warning,.urgent,tr,li")].slice(0,20).map(el=>(el.innerText||"").trim()).filter(Boolean);
-    return {node,tab,kpis,alerts,url:location.pathname};
-  }
-
   async function askHC(prompt, extra={}){
-    const ctx=pageContext();
-    const body={
-      action: extra.action || "HC_NODE_AI",
-      payload:{
-        node: extra.node || ctx.node,
-        tab: extra.tab || ctx.tab,
-        context: prompt || extra.context || "Analyze this healthcare node and return BNCA.",
-        page_context: ctx,
-        priority: extra.priority || "HIGH",
-        human_in_the_loop: true,
-        relay_to_strategist: true
-      }
-    };
-
-    const r=await fetch("/api/hc/query",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(body)
-    });
-
+    const n=extra.node||node(), tb=extra.tab||tab();
+    const r=await fetch("/api/hc/query",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({payload:{node:n,tab:tb,context:prompt,priority:"HIGH",human_in_the_loop:true,relay_to_strategist:true}})});
     const d=await r.json();
-    return d.reply || d.content || d.analysis || d.answer || JSON.stringify(d,null,2);
+    return d.reply||d.content||JSON.stringify(d,null,2);
   }
-
-  window.TSMBridge = window.TSMBridge || {};
-  window.TSMBridge.detectNode=detectNode;
-  window.TSMBridge.activeTab=activeTab;
-  window.TSMBridge.pageContext=pageContext;
-  window.TSMBridge.askHC=askHC;
-
-  window.tsmAskHC = askHC;
-  window.tsmDetectHCNode = detectNode;
-  window.tsmActiveHCTab = activeTab;
-
-  console.log("TSM HC Bridge V2 ready", pageContext());
+  window.TSMBridge={detectNode:node,activeTab:tab,askHC};
+  window.tsmAskHC=askHC;
+  window.tsmDetectHCNode=node;
 })();
