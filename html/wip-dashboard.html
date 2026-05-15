@@ -288,6 +288,44 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
 
 
 
+<script>
+window.TSM_MESH_CONTROLLER={
+
+async relay(sector,context){
+
+const routeMap={
+HEALTHCARE:"/api/hc/query",
+CONSTRUCTION:"/api/construction/query",
+FINANCE:"/api/finance/query"
+};
+
+const route=routeMap[sector]||routeMap.HEALTHCARE;
+
+const res=await fetch(route,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+payload:{
+sector,
+context,
+source:"WIP_DASHBOARD",
+hitl:true
+}
+})
+});
+
+return await res.json();
+
+}
+
+};
+
+console.log("TSM WIP RELAY ACTIVE");
+</script>
+
+
 <!-- ══ INSURANCE WIP SECTOR — AUTO-INJECTED ══ -->
 <section id="wip-insurance" class="wip-sector" data-sector="insurance" style="display:none">
   <div class="sector-header">
@@ -445,94 +483,41 @@ function switchSector(s) {
 
 
 
-<script id="tsm-wip-final-controller">
-(function(){
-  if(window.__TSM_WIP_FINAL_CONTROLLER__) return;
-  window.__TSM_WIP_FINAL_CONTROLLER__ = true;
 
-  const DATA = {
-    construction: [["CON-1042","MEP Inspection Delay",68,"$165.5K","CRIT"],["CON-2210","Steel Delivery Variance",74,"$84K","HIGH"],["CON-3104","Permit Review Hold",60,"$42K","MED"]],
-    healthcare: [["ENC-8821","Prior Auth Denial",85,"$4.2K","CRIT"],["ENC-8912","Claim Scrubbing Hold",30,"$2.75K","HIGH"],["ENC-8834","Coding Review Queue",60,"$1.85K","MED"],["ENC-8750","Payer Adjudication",90,"$6.1K","LOW"]],
-    insurance: [["POL-2201","Coverage Verification",72,"$18K","HIGH"],["CLM-9921","Claim Review Hold",44,"$9.8K","MED"],["REN-3402","Renewal Risk",81,"$31K","LOW"]],
-    finops: [["FIN-1001","AP Aging Risk",64,"$312K","HIGH"],["FIN-1007","Recon Variance",78,"$48K","MED"],["FIN-1040","Close Readiness",84,"$0","LOW"]]
+<script id="tsm-wip-mesh-relay-safe">
+(function(){
+  if(window.__TSM_WIP_MESH_RELAY_SAFE__) return;
+  window.__TSM_WIP_MESH_RELAY_SAFE__ = true;
+
+  window.TSM_MESH_CONTROLLER = {
+    async relay(sector, context){
+      const key = String(sector || "healthcare").toLowerCase();
+      const routes = {
+        healthcare: "/api/hc/query",
+        construction: "/api/construction/query",
+        finops: "/api/finance/query",
+        insurance: "/api/finance/query"
+      };
+      const route = routes[key] || routes.healthcare;
+      const res = await fetch(route,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          payload:{
+            sector:key.toUpperCase(),
+            node:key.toUpperCase(),
+            source:"WIP_DASHBOARD",
+            context,
+            hitl:true,
+            relay_to_strategist:true
+          }
+        })
+      });
+      return await res.json();
+    }
   };
 
-  const ROUTES = {healthcare:"/api/hc/query", construction:"/api/construction/query", insurance:"/api/finance/query", finops:"/api/finance/query"};
-  let sector="construction", entity=DATA.construction[0];
-
-  function findPanel(title){
-    return [...document.querySelectorAll("div,section,article")]
-      .find(el => (el.textContent || "").toLowerCase().includes(title.toLowerCase()));
-  }
-
-  function riskStyle(r){
-    return r==="CRIT" ? "color:#ff4d6d;font-weight:900" :
-           r==="HIGH" ? "color:#ff7a00;font-weight:900" :
-           r==="MED" ? "color:#ffc400;font-weight:900" :
-           "color:#00ffc6;font-weight:900";
-  }
-
-  function renderMatrix(){
-    const box=findPanel("WORK IN PROGRESS MATRIX"); if(!box) return;
-    box.innerHTML = `<div style="padding:10px;color:#ffc400;font-weight:900;letter-spacing:.12em">WORK IN PROGRESS MATRIX <span style="float:right">${DATA[sector].length} ACTIVE FLAGS</span></div>` +
-      DATA[sector].map((e,i)=>`<div onclick="window.selectWIPEntity(${i})" style="display:grid;grid-template-columns:1fr 1.5fr .6fr .7fr .5fr;gap:10px;padding:10px;border-top:1px solid rgba(255,255,255,.08);cursor:pointer"><b>${e[0]}</b><span>${e[1]}</span><span>${e[2]}%</span><span>${e[3]}</span><span style="${riskStyle(e[4])}">${e[4]}</span></div>`).join("");
-  }
-
-  function renderEntities(){
-    const box=findPanel("ACTIVE ENTITIES"); if(!box) return;
-    box.innerHTML = `<div style="padding:10px;color:#ffc400;font-weight:900;letter-spacing:.12em">ACTIVE ENTITIES</div>` +
-      DATA[sector].map((e,i)=>`<div onclick="window.selectWIPEntity(${i})" style="padding:11px;border-top:1px solid rgba(255,255,255,.08);cursor:pointer"><b>${e[1]}</b><span style="float:right;${riskStyle(e[4])}">${e[4]}</span><div style="color:#7fa1b8;font-size:12px">${e[0]} · ${e[2]}% · ${e[3]}</div></div>`).join("");
-  }
-
-  function renderFlags(){
-    const box=findPanel("ACTIVE INTELLIGENCE FLAGS"); if(!box) return;
-    box.innerHTML = `<div style="padding:10px;color:#ffc400;font-weight:900;letter-spacing:.12em">ACTIVE INTELLIGENCE FLAGS</div>` +
-      DATA[sector].slice(0,3).map(e=>`<div style="padding:9px 12px;border-top:1px solid rgba(255,255,255,.08)"><b style="${riskStyle(e[4])}">${e[4]}</b> · ${e[1]} — ${e[3]} exposure</div>`).join("");
-  }
-
-  function renderSchema(){
-    const box=findPanel("UNIFIED WIP SCHEMA"); if(!box) return;
-    box.innerHTML = `<div style="padding:10px;color:#405b70;font-weight:900;letter-spacing:.12em">UNIFIED WIP SCHEMA · ACTIVE ENTITY</div><pre style="white-space:pre-wrap;color:#b56cff;padding:12px;margin:0">{
-  "entity_id":"${entity[0]}",
-  "sector":"${sector}",
-  "status":"${entity[1]}",
-  "percent_complete":${entity[2]},
-  "exposure":"${entity[3]}",
-  "risk":"${entity[4]}",
-  "controller_route":"${ROUTES[sector]}"
-}</pre>`;
-  }
-
-  async function generate(){
-    const box=findPanel("STRATEGIST AUTO-NARRATIVE"); if(!box) return;
-    box.innerHTML = `<div style="display:flex;justify-content:space-between;padding:10px;color:#ffc400;font-weight:900;letter-spacing:.12em"><span>STRATEGIST AUTO-NARRATIVE</span><button onclick="window.generateWIPNarrative()" style="background:#ffc400;color:#001;border:0;border-radius:4px;padding:7px 10px;font-weight:900">REGENERATE</button></div><pre style="white-space:pre-wrap;padding:14px;color:#b9dfff">Running strategist relay...</pre>`;
-    try{
-      const res=await fetch(ROUTES[sector],{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({payload:{sector:sector.toUpperCase(),node:sector.toUpperCase(),source:"WIP_DASHBOARD",context:`Analyze ${entity[0]} ${entity[1]} with ${entity[3]} exposure and ${entity[4]} risk. Return HITL BNCA.`}})});
-      const d=await res.json();
-      box.querySelector("pre").textContent=d.reply||d.content||JSON.stringify(d,null,2);
-    }catch(e){box.querySelector("pre").textContent="Strategist relay unavailable.";}
-  }
-
-  window.selectWIPEntity=function(i){ entity=DATA[sector][i]||DATA[sector][0]; renderSchema(); generate(); };
-  window.setSector=function(s){ sector=(s||"construction").toLowerCase(); if(!DATA[sector]) sector="construction"; entity=DATA[sector][0]; renderAll(); };
-
-  function wire(){
-    document.querySelectorAll("button,a").forEach(el=>{
-      const t=(el.textContent||"").toLowerCase();
-      if(t.includes("healthcare")) el.onclick=e=>{e.preventDefault();window.setSector("healthcare");};
-      if(t.includes("construction")) el.onclick=e=>{e.preventDefault();window.setSector("construction");};
-      if(t.includes("insurance")) el.onclick=e=>{e.preventDefault();window.setSector("insurance");};
-      if(t.includes("finops")) el.onclick=e=>{e.preventDefault();window.setSector("finops");};
-      if(t.includes("generate")) el.onclick=e=>{e.preventDefault();generate();};
-    });
-  }
-
-  function renderAll(){ renderMatrix(); renderEntities(); renderFlags(); renderSchema(); wire(); }
-  window.generateWIPNarrative=generate;
-  window.addEventListener("DOMContentLoaded",()=>setTimeout(renderAll,250));
-  setTimeout(renderAll,900);
-  setTimeout(renderAll,1800);
-  console.log("TSM WIP FINAL CONTROLLER ONLINE");
+  console.log("TSM WIP SAFE MESH RELAY ONLINE");
 })();
 </script>
 
