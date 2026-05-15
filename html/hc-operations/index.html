@@ -977,5 +977,66 @@ buildNodeCards();
 
 <script src="/healthcare/js/hc-node-universal-controller.js?v=hc-universal-fix" defer></script>
 
+
+<section id="hc-ops-tab-system" style="margin:18px;padding:16px;background:#07131d;border:1px solid rgba(0,255,198,.22);border-radius:16px;color:#dff">
+  <div style="color:#00ffc6;font-weight:950;letter-spacing:.14em;font-size:12px">HC OPERATIONS · TAB COMMAND</div>
+
+  <div class="hc-ops-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <button class="hc-ops-tab active" data-tab="ops-intake" onclick="hcOpsSwitchTab('ops-intake')">Intake Queue</button>
+    <button class="hc-ops-tab" data-tab="ops-staffing" onclick="hcOpsSwitchTab('ops-staffing')">Staffing Coverage</button>
+    <button class="hc-ops-tab" data-tab="ops-scheduling" onclick="hcOpsSwitchTab('ops-scheduling')">Scheduling Backlog</button>
+    <button class="hc-ops-tab" data-tab="ops-vendors" onclick="hcOpsSwitchTab('ops-vendors')">Vendor Alerts</button>
+    <button class="hc-ops-tab" data-tab="ops-ai" onclick="hcOpsSwitchTab('ops-ai')">AI Analysis</button>
+  </div>
+
+  <div class="hc-ops-panel tab-content" data-panel="ops-intake" id="ops-intake" style="margin-top:14px">
+    <b>Intake Queue</b><br>Tracks front-desk queue volume, critical intakes, missing data, and routing readiness.
+  </div>
+  <div class="hc-ops-panel tab-content" data-panel="ops-staffing" id="ops-staffing" style="display:none;margin-top:14px">
+    <b>Staffing Coverage</b><br>Monitors coverage gaps, shift pressure, burnout risk, and owner-lane response.
+  </div>
+  <div class="hc-ops-panel tab-content" data-panel="ops-scheduling" id="ops-scheduling" style="display:none;margin-top:14px">
+    <b>Scheduling Backlog</b><br>Surfaces appointment backlog, no-show exposure, room utilization, and throughput impact.
+  </div>
+  <div class="hc-ops-panel tab-content" data-panel="ops-vendors" id="ops-vendors" style="display:none;margin-top:14px">
+    <b>Vendor Alerts</b><br>Flags supply blockers, SLA exceptions, room-readiness risk, and procurement ownership.
+  </div>
+  <div class="hc-ops-panel tab-content" data-panel="ops-ai" id="ops-ai" style="display:none;margin-top:14px">
+    <b>AI Analysis</b><br>Run operations BNCA for staffing, intake, scheduling, vendor blockers, and throughput risk.
+    <br><br>
+    <button onclick="window.hcOpsRunAI && window.hcOpsRunAI()" style="background:#00ffc6;color:#001;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Run Ops BNCA</button>
+    <pre id="hcOpsAIOutput" style="white-space:pre-wrap;margin-top:10px;padding:12px;background:#050c13;border:1px solid rgba(0,255,198,.14);border-radius:12px">Ready.</pre>
+  </div>
+</section>
+
+<script id="hc-ops-tab-switching">
+function hcOpsSwitchTab(key){
+  document.querySelectorAll(".hc-ops-tab").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".hc-ops-tab[data-tab='"+key+"']").forEach(b=>b.classList.add("active"));
+  document.querySelectorAll(".hc-ops-panel").forEach(p=>p.style.display="none");
+  const panel=document.querySelector("[data-panel='"+key+"']");
+  if(panel) panel.style.display="";
+}
+async function hcOpsRunAI(){
+  const out=document.getElementById("hcOpsAIOutput");
+  if(out) out.textContent="Running HC Operations BNCA...";
+  try{
+    const r=await fetch("/api/hc/query",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({payload:{
+      sector:"HEALTHCARE",
+      node:"HC OPERATIONS",
+      tab:"Operations AI Analysis",
+      context:"Analyze operations node: intake queue, staffing coverage, scheduling backlog, vendor alerts, throughput risk, owner lane, and BNCA.",
+      hitl:true,
+      executive:true,
+      relay_to_strategist:true
+    }})});
+    const d=await r.json();
+    if(out) out.textContent=d.reply||d.content||JSON.stringify(d,null,2);
+  }catch(e){
+    if(out) out.textContent="HC Operations AI unavailable.";
+  }
+}
+</script>
+
 </body>
 </html>
