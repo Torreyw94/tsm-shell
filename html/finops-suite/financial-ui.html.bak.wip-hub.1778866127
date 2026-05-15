@@ -864,24 +864,6 @@ border-radius:14px;
 color:#dff;
 "></div>
 
-
-<section id="tsm-sector-wip-card-finops" style="
-margin:20px;
-padding:20px;
-background:#07131d;
-border:1px solid rgba(0,255,200,.24);
-border-radius:18px;
-box-shadow:0 0 28px rgba(0,255,200,.08);
-">
-  <div style="color:#00ffc6;font-weight:950;letter-spacing:.14em;font-size:12px;text-transform:uppercase">Sector WIP Intelligence</div>
-  <h2 style="margin:8px 0;color:#eaffff">FinOps WIP Intelligence</h2>
-  <p style="color:#9fb8c8;max-width:760px">AP aging, reconciliations, close readiness, controller actions, cash exposure, and finance strategist relay.</p>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-    <button onclick="location.href='/finops-suite/wip/index.html?v=sector-wip'" style="background:#00ffc6;color:#001;border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer">Open WIP Command</button>
-    <button onclick="location.href='/finops-suite/financial-ui.html?v=strategist-relay'" style="background:#102030;color:#dff;border:1px solid rgba(0,255,200,.28);border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer">Open Main Strategist</button>
-  </div>
-</section>
-
 </body>
 </html>
 
