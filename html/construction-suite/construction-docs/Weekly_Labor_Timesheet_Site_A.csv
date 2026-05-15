@@ -1,0 +1,5 @@
+Employee_ID,Name,Task_Code,Lot_Number,Hours,Rate,Total_Cost
+W-8812,J. Morales,Structural-Slab,Lot 202,8.5,45.00,382.50
+W-8814,A. Chen,Framing-Inspection,Lot 202,6.0,42.00,252.00
+W-9901,R. Kowalski,Supervision,Lot 202,4.0,65.00,260.00
+W-7723,D. Lara,Safety-Audit,Lot 202,2.0,55.00,110.00

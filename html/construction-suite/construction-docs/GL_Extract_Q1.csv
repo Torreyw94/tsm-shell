@@ -1,0 +1,5 @@
+Account_Name,Debit,Credit,Reference,Description
+1200-CIP-Mesa,$450000.00,0.00,JE-990,Q1 Construction Accumulation
+2100-Grant-Liability,0.00,$112000.00,GR-88,HOME Grant Drawdown
+5400-Direct-Labor,$85200.00,0.00,PR-12,Construction Payroll Q1
+4500-Donation-Income,0.00,$24000.00,DON-4,Individual Givers Q1
