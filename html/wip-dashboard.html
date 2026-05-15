@@ -250,6 +250,60 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
 })();
 </script>
 
+
+<script id="wip-mesh-fetch-guard">
+(function(){
+  if(window.__WIP_MESH_FETCH_GUARD__) return;
+  window.__WIP_MESH_FETCH_GUARD__ = true;
+
+  const realFetch = window.fetch.bind(window);
+
+  function activeSector(){
+    const txt = (document.body.innerText || "").toLowerCase();
+    const attr = document.body.getAttribute("data-active-sector");
+    if(attr) return attr;
+    if(txt.includes("healthcare rcm")) return "healthcare";
+    if(txt.includes("construction")) return "construction";
+    if(txt.includes("insurance")) return "insurance";
+    if(txt.includes("finops") || txt.includes("financial")) return "finops";
+    return "healthcare";
+  }
+
+  function routeFor(sector){
+    sector = String(sector || activeSector()).toLowerCase();
+    if(sector === "construction") return "/api/construction/query";
+    if(sector === "finops" || sector === "finance" || sector === "insurance") return "/api/finance/query";
+    return "/api/hc/query";
+  }
+
+  window.fetch = function(input, init){
+    let url = typeof input === "string" ? input : (input && input.url) || "";
+    if(url.includes("/api/groq")){
+      const sector = activeSector();
+      const newUrl = routeFor(sector);
+      console.log("WIP mesh fetch guard rerouted", url, "→", newUrl);
+
+      const body = init && init.body ? init.body : JSON.stringify({
+        payload:{
+          sector:sector.toUpperCase(),
+          source:"WIP_DASHBOARD",
+          context:"Generate WIP executive narrative, HITL BNCA, owner lane, strategist relay, and CFO-ready next actions."
+        }
+      });
+
+      return realFetch(newUrl, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body
+      });
+    }
+    return realFetch(input, init);
+  };
+
+  console.log("WIP mesh fetch guard online");
+})();
+</script>
+
 </head>
 <body class="sector-construction">
 
@@ -638,7 +692,7 @@ async function runNarrative() {
   const prompt = SECTORS[currentSector].narrativePrompt(selectedEntity);
 
   try {
-    const res = await fetch('/api/groq/stream', {
+    const res = await fetch('/api/hc/query/stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
