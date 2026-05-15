@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TSM · WIP + Billing Command Center</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--bg:#050b12;--panel:#07131d;--line:#123548;--cyan:#00ffc6;--blue:#00aaff;--gold:#ffc400;--red:#ff4d6d;--muted:#8fb1c5;--white:#eaffff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,system-ui,Arial;padding-bottom:92px}
+header{position:sticky;top:0;z-index:50;background:#06111bcc;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);padding:16px 22px;display:flex;justify-content:space-between;align-items:center}
+h1{margin:0;color:var(--cyan);letter-spacing:.14em;font-size:18px}.sub{color:var(--muted);font-size:12px;margin-top:4px}
+.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:900;cursor:pointer;background:var(--cyan);color:#001}.btn.gold{background:var(--gold)}.btn.dark{background:#102030;color:#dff}.btn.purple{background:#b56cff;color:white}
+.wrap{max-width:1460px;margin:0 auto;padding:20px}
+.grid{display:grid;gap:14px}.kpis{grid-template-columns:repeat(6,1fr)}.two{grid-template-columns:1.1fr .9fr}.charts{grid-template-columns:1fr 1fr}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 0 22px rgba(0,255,198,.06)}
+.ey{font-size:11px;letter-spacing:.16em;color:var(--cyan);font-weight:900;text-transform:uppercase}.num{font-size:28px;font-weight:950;margin:7px 0}.good{color:var(--cyan)}.warn{color:var(--gold)}.bad{color:var(--red)}
+.small{font-size:12px;color:var(--muted);line-height:1.45}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}th{color:var(--muted);font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+input,select{background:#07131d;border:1px solid var(--line);color:#dff;border-radius:10px;padding:10px}
+.insight{border-left:3px solid var(--cyan);padding:12px;background:#050c13;border-radius:10px;margin-top:10px;white-space:pre-wrap}
+.actionbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99;background:#06111b;border:1px solid rgba(0,255,198,.3);border-radius:16px;padding:10px;display:flex;gap:8px;box-shadow:0 0 28px rgba(0,255,198,.16)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:200}.modal.open{display:flex}.modalbox{width:min(920px,92vw);max-height:82vh;overflow:auto;background:#07131d;border:1px solid var(--cyan);border-radius:20px;padding:24px}
+@media(max-width:1000px){.kpis,.two,.charts{grid-template-columns:1fr}.actionbar{left:12px;right:12px;transform:none;flex-wrap:wrap}.wrap{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>WIP + BILLING COMMAND CENTER</h1>
+    <div class="sub">Construction Finance · WIP Accounting · AIA Billing · BNCA Strategist Relay</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <input id="search" placeholder="Search job / issue..." oninput="renderTable()">
+    <select id="riskFilter" onchange="renderTable()"><option value="">All Risk</option><option>CRIT</option><option>HIGH</option><option>MED</option><option>LOW</option></select>
+    <button class="btn" onclick="runAI()">AI Refresh</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="grid kpis" id="kpis"></section>
+
+  <section class="grid two" style="margin-top:14px">
+    <div class="card">
+      <div class="ey">Revenue & Billing Alignment</div>
+      <canvas id="earnedBilling"></canvas>
+      <div class="small">Shows earned revenue versus billings. Gaps identify over/under billing pressure.</div>
+    </div>
+    <div class="card">
+      <div class="ey">Job Health + Profitability</div>
+      <canvas id="profitFade"></canvas>
+      <div class="small">Tracks margin fade/gain by job and highlights jobs needing controller review.</div>
+    </div>
+  </section>
+
+  <section class="grid charts" style="margin-top:14px">
+    <div class="card">
+      <div class="ey">Monthly Cash Flow Forecast</div>
+      <canvas id="cashFlow"></canvas>
+    </div>
+    <div class="card">
+      <div class="ey">Cost-to-Complete Curve</div>
+      <canvas id="costCurve"></canvas>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+      <div>
+        <div class="ey">Unified WIP + Billing Table</div>
+        <div class="small">Click a row to open job detail. Use AI Explain for row-level controller guidance.</div>
+      </div>
+      <button class="btn dark" onclick="exportCSV()">Export Table CSV</button>
+    </div>
+    <div style="overflow:auto;margin-top:12px">
+      <table>
+        <thead><tr><th>Job</th><th>Rev Contract</th><th>Cost To Date</th><th>% Complete</th><th>Earned Rev</th><th>Billings</th><th>Over/Under</th><th>GP</th><th>Final Profit</th><th>Fade/Gain</th><th>Risk</th><th>AI</th></tr></thead>
+        <tbody id="jobRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="grid two" style="margin-top:14px">
+    <div class="card">
+      <div class="ey">AI Insights & Recommendations</div>
+      <div id="insights"></div>
+    </div>
+    <div class="card">
+      <div class="ey">Backend Schema Connections</div>
+      <div class="insight">Job Master Schema → contract values, approved COs, percent complete, cost to date, earned revenue, projected cost at completion.</div>
+      <div class="insight">Billing Schema → previous billings, this period completed, retainage, stored materials, AIA G702/G703 values.</div>
+      <div class="insight">WIP Schema → over/under billing, fade/gain, GP to date, revenue recognition, risk indicators.</div>
+    </div>
+  </section>
+</div>
+
+<div class="actionbar">
+  <button class="btn" onclick="generateReport()">Generate WIP Report</button>
+  <button class="btn gold" onclick="openBilling()">Generate AIA G702/G703</button>
+  <button class="btn" onclick="addCO()">Add Change Order</button>
+  <button class="btn purple" onclick="runAI()">Regenerate AI Insights</button>
+  <button class="btn dark" onclick="requestDocs()">Request Documents</button>
+  <button class="btn dark" onclick="location.href='/construction-suite/construction-hub.html'">Back to Construction Hub</button>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox"><button class="btn dark" style="float:right" onclick="closeModal()">Close</button><div id="modalContent"></div></div></div>
+
+<script>
+const jobs=[
+ {job:"JOB-203 · Westside Holdings",contract:1820000,cost:1140000,complete:63,earned:1146600,billed:1760000,over:613400,gp:26,final:390000,fade:-87000,risk:"CRIT",co:24000},
+ {job:"JOB-211 · Phoenix Distribution Hub",contract:3100000,cost:1510000,complete:41,earned:1271000,billed:1184000,over:-87000,gp:18,final:420000,fade:-200000,risk:"HIGH",co:17700},
+ {job:"JOB-187 · Tempe Retail Complex",contract:4200000,cost:3190000,complete:97,earned:4074000,billed:4220000,over:146000,gp:31,final:920000,fade:20000,risk:"LOW",co:0},
+ {job:"JOB-215 · Chandler Residential",contract:900000,cost:430000,complete:22,earned:198000,billed:850000,over:652000,gp:16,final:110000,fade:-50000,risk:"MED",co:0},
+ {job:"JOB-219 · Mesa Clinic Expansion",contract:2700000,cost:880000,complete:38,earned:1026000,billed:932000,over:-94000,gp:23,final:510000,fade:-41000,risk:"HIGH",co:0}
+];
+
+function money(n){return (n<0?"-$":"$")+Math.abs(n).toLocaleString()}
+function cls(r){return r==="CRIT"||r==="HIGH"?"bad":r==="MED"?"warn":"good"}
+
+function kpiData(){
+ const contract=jobs.reduce((a,j)=>a+j.contract,0), earned=jobs.reduce((a,j)=>a+j.earned,0), billed=jobs.reduce((a,j)=>a+j.billed,0), pos=billed-earned;
+ const margin=Math.round(jobs.reduce((a,j)=>a+j.gp,0)/jobs.length);
+ const risk=Math.round(jobs.filter(j=>["CRIT","HIGH"].includes(j.risk)||j.fade<0||j.over<0).length/jobs.length*100);
+ return [
+  ["Total Contract Value",money(contract),"Active portfolio", "good"],
+  ["Earned Revenue",money(earned),"Revenue recognized", "good"],
+  ["Billings To Date",money(billed),"AIA billing position", "good"],
+  ["Billing Position",money(pos),pos>=0?"Over-billed":"Under-billed", pos>=0?"good":"bad"],
+  ["Portfolio Margin Health",margin+"%","Weighted GP", margin>=25?"good":"warn"],
+  ["Risk Index",risk+"%","Jobs with fade / underbilling", risk>40?"bad":"warn"]
+ ];
+}
+
+function renderKPIs(){
+ kpis.innerHTML=kpiData().map(k=>`<div class="card" title="AI: ${k[0]} is calculated from WIP, billing, and job master schema."><div class="ey">${k[0]}</div><div class="num ${k[3]}">${k[1]}</div><div class="small">${k[2]}</div></div>`).join("");
+}
+
+function renderTable(){
+ const q=search.value.toLowerCase(), rf=riskFilter.value;
+ jobRows.innerHTML=jobs.filter(j=>(!q||j.job.toLowerCase().includes(q)||j.risk.toLowerCase().includes(q))&&(!rf||j.risk===rf)).map((j,i)=>`
+ <tr onclick="openJob(${i})">
+  <td><b>${j.job}</b></td><td>${money(j.contract)}</td><td>${money(j.cost)}</td><td>${j.complete}%</td><td>${money(j.earned)}</td><td>${money(j.billed)}</td>
+  <td class="${j.over<0?'bad':'good'}">${money(j.over)}</td><td>${j.gp}%</td><td>${money(j.final)}</td><td class="${j.fade<0?'bad':'good'}">${money(j.fade)}</td><td class="${cls(j.risk)}">${j.risk}</td>
+  <td><button class="btn dark" onclick="event.stopPropagation();explainRow(${i})">Explain</button></td>
+ </tr>`).join("");
+}
+
+function insightText(){
+ const under=jobs.filter(j=>j.over<0), fade=jobs.filter(j=>j.fade<0), co=jobs.reduce((a,j)=>a+j.co,0);
+ return [
+  ["Portfolio Summary",`Across ${jobs.length} active jobs, billing alignment shows ${money(jobs.reduce((a,j)=>a+j.over,0))} net position. ${fade.length} jobs show profit fade due to labor, subcontractor, or CO pressure.`],
+  ["Billing Recommendations",`Issue invoices for ${money(Math.abs(under.reduce((a,j)=>a+j.over,0)))} across ${under.map(j=>j.job.split(" · ")[0]).join(", ")} to correct under-billing positions.`],
+  ["Change Order Impact",`Unapproved COs total ${money(co)} and are suppressing projected final margin. Push CO approval before next billing cycle.`],
+  ["Risk Alerts",`Critical: JOB-203 profit fade. High: JOB-211 under-billed and JOB-219 billing gap. MED: JOB-215 retainage / overbilling review.`]
+ ];
+}
+
+function renderInsights(){insights.innerHTML=insightText().map(x=>`<div class="insight"><b class="good">${x[0]}</b><br>${x[1]}</div>`).join("");}
+
+async function mesh(context){
+ const r=await fetch("/api/construction/query",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({payload:{sector:"CONSTRUCTION",node:"WIP+BILLING",context,hitl:true,executive:true}})});
+ return await r.json();
+}
+
+async function runAI(){
+ insights.innerHTML='<div class="insight">Running TSM strategist analysis...</div>';
+ try{
+  const d=await mesh("Analyze unified WIP + billing dashboard. Return portfolio summary, billing recommendations, CO impact, and risk alerts.");
+  insights.innerHTML=`<div class="insight">${d.reply||d.content}</div>`+insightText().map(x=>`<div class="insight"><b class="good">${x[0]}</b><br>${x[1]}</div>`).join("");
+ }catch(e){renderInsights();}
+}
+
+function openJob(i){const j=jobs[i];modal.classList.add("open");modalContent.innerHTML=`<h2>${j.job}</h2><div class="grid kpis">${Object.entries(j).map(([k,v])=>`<div class="card"><div class="ey">${k}</div><div class="num">${typeof v==="number"&&k!=="complete"&&k!=="gp"?money(v):v}</div></div>`).join("")}</div><div class="insight"><b>AI Row Summary</b><br>${j.risk} risk. Billing position ${money(j.over)}. Fade/Gain ${money(j.fade)}. Recommended: ${j.over<0?"generate progress billing":"review overbilling / retainage"} and push unresolved issue to controller.</div>`}
+function explainRow(i){openJob(i)}
+function closeModal(){modal.classList.remove("open")}
+function exportCSV(){download("wip-billing-table.csv",["Job,Contract,Cost,% Complete,Earned,Billed,OverUnder,GP,FinalProfit,Fade,Risk",...jobs.map(j=>[j.job,j.contract,j.cost,j.complete,j.earned,j.billed,j.over,j.gp,j.final,j.fade,j.risk].join(","))].join("\n"))}
+function download(name,content){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content]));a.download=name;a.click()}
+function generateReport(){download("wip-billing-report.txt","TSM WIP + BILLING REPORT\n\n"+insightText().map(x=>x[0]+"\n"+x[1]).join("\n\n"))}
+function openBilling(){modal.classList.add("open");modalContent.innerHTML="<h2>AIA G702/G703 Billing Draft</h2><div class='insight'>Pre-filled billing values ready for JOB-211, JOB-219, and JOB-203. Review retainage, stored materials, and this-period completed work before export.</div>"}
+function addCO(){modal.classList.add("open");modalContent.innerHTML="<h2>Add Change Order</h2><div class='insight'>CO workflow: enter description, value, approval status, and linked job. Approved COs update contract value and WIP automatically.</div>"}
+function requestDocs(){modal.classList.add("open");modalContent.innerHTML="<h2>Request Documents</h2><div class='insight'>Client-facing request ready: missing auth docs, CO approvals, retainage release support, and subcontractor backup.</div>"}
+
+let charts=[];
+function makeCharts(){
+ charts.forEach(c=>c.destroy()); charts=[];
+ charts.push(new Chart(earnedBilling,{type:"line",data:{labels:jobs.map(j=>j.job.split(" · ")[0]),datasets:[{label:"Earned Revenue",data:jobs.map(j=>j.earned)},{label:"Billings",data:jobs.map(j=>j.billed)}]}}));
+ charts.push(new Chart(profitFade,{type:"bar",data:{labels:jobs.map(j=>j.job.split(" · ")[0]),datasets:[{label:"Fade/Gain",data:jobs.map(j=>j.fade)}]}}));
+ charts.push(new Chart(cashFlow,{type:"line",data:{labels:["May","Jun","Jul","Aug","Sep","Oct"],datasets:[{label:"Cash In",data:[520,610,730,690,650,780]},{label:"Cash Out",data:[490,530,640,590,560,710]}]}}));
+ charts.push(new Chart(costCurve,{type:"line",data:{labels:["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],datasets:[{label:"Actual Cost",data:[120,320,680,1100,1480,1620]},{label:"Forecast",data:[100,300,700,1160,1550,1850]}]}}));
+}
+renderKPIs();renderTable();renderInsights();makeCharts();
+</script>
+</body>
+</html>
