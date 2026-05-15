@@ -190,5 +190,58 @@ function makeCharts(){
 }
 renderKPIs();renderTable();renderInsights();makeCharts();
 </script>
+
+<script id="tsm-universal-wip-ai">
+(function(){
+
+window.runSectorAI = async function(sector, question){
+
+  const out =
+    document.querySelector("#narrative-output") ||
+    document.querySelector("#strategist-output") ||
+    document.querySelector(".narrative") ||
+    document.querySelector("#ai-output");
+
+  if(out){
+    out.innerHTML = "Running strategist synthesis...";
+  }
+
+  try{
+
+    const res = await fetch("/api/wip/sector-ai",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        sector,
+        question
+      })
+    });
+
+    const data = await res.json();
+
+    if(out){
+      out.innerHTML =
+        "<pre style='white-space:pre-wrap;font-family:inherit'>" +
+        (data.content || "No AI response") +
+        "</pre>";
+    }
+
+    console.log("WIP strategist complete", data);
+
+    return data;
+
+  }catch(e){
+
+    console.error(e);
+
+    if(out){
+      out.innerHTML = "AI route unavailable";
+    }
+  }
+};
+
+})();
+</script>
+
 </body>
 </html>

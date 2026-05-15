@@ -64,6 +64,27 @@ body{margin:0;background:radial-gradient(circle at top right,rgba(0,255,198,.08)
 <script src="/healthcare/js/hc-howto-system.js?v=force3" defer></script>
 </head>
 <body>
+
+<!-- TSM WIP INTELLIGENCE BANNER — HEALTHCARE — AUTO-INJECTED -->
+
+<div class="tsm-wip-banner healthcare" id="tsm-wip-healthcare">
+  <div class="tsm-wip-left">
+    <div class="tsm-wip-icon">🏥</div>
+    <div>
+      <div class="tsm-wip-label">WIP Intelligence · RCM Revenue Cycle</div>
+      <div class="tsm-wip-title">Healthcare RCM WIP · BNCA Active</div>
+    </div>
+  </div>
+  <div class="tsm-wip-kpis">
+    <div class="tsm-wip-kpi"><div class="tsm-wip-kpi-val" style="color:#00e87a">$2.3M</div><div class="tsm-wip-kpi-lbl">Unbilled</div></div><div class="tsm-wip-kpi"><div class="tsm-wip-kpi-val" style="color:#00e87a">148</div><div class="tsm-wip-kpi-lbl">Pending Claims</div></div><div class="tsm-wip-kpi"><div class="tsm-wip-kpi-val" style="color:#f4a800">23%</div><div class="tsm-wip-kpi-lbl">Denial Risk</div></div><div class="tsm-wip-kpi"><div class="tsm-wip-kpi-val" style="color:#f4a800">61%</div><div class="tsm-wip-kpi-lbl">Reconciled</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
+    <span class="tsm-wip-flag" style="background:rgba(255,61,87,.1);border:1px solid #ff3d57;color:#ff3d57">🔴 2 CRIT · ENC-8821 · ENC-8912</span>
+    <a href="/wip-dashboard.html?sector=healthcare" class="tsm-wip-btn">VIEW WIP DASHBOARD ↗</a>
+  </div>
+</div>
+<!-- END TSM WIP BANNER -->
+
 <div class="top">
   <div class="logo">HC COMMAND CHAIN:</div>
   <div class="chain">
@@ -360,5 +381,58 @@ Demo move:
   </div>
   <a href="/wip-dashboard.html?sector=healthcare" style="position:absolute;right:12px;bottom:12px;background:#00ff88;color:#040810;border:0;padding:7px 14px;font-weight:900;font-size:.6rem;font-family:monospace;text-decoration:none;letter-spacing:.08em">OPEN WIP ↗</a>
 </div>
+
+<script id="tsm-universal-wip-ai">
+(function(){
+
+window.runSectorAI = async function(sector, question){
+
+  const out =
+    document.querySelector("#narrative-output") ||
+    document.querySelector("#strategist-output") ||
+    document.querySelector(".narrative") ||
+    document.querySelector("#ai-output");
+
+  if(out){
+    out.innerHTML = "Running strategist synthesis...";
+  }
+
+  try{
+
+    const res = await fetch("/api/wip/sector-ai",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        sector,
+        question
+      })
+    });
+
+    const data = await res.json();
+
+    if(out){
+      out.innerHTML =
+        "<pre style='white-space:pre-wrap;font-family:inherit'>" +
+        (data.content || "No AI response") +
+        "</pre>";
+    }
+
+    console.log("WIP strategist complete", data);
+
+    return data;
+
+  }catch(e){
+
+    console.error(e);
+
+    if(out){
+      out.innerHTML = "AI route unavailable";
+    }
+  }
+};
+
+})();
+</script>
+
 </body>
 </html>

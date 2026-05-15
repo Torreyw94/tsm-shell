@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Universal WIP Intelligence · TSM Sovereign Mesh</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040810;--surf:#080f1c;--surf2:#0c1525;--b1:rgba(0,229,255,.07);--b2:rgba(0,229,255,.15);
+  --cyan:#00e5ff;--green:#00ff88;--amber:#ffb300;--red:#ff4455;--purple:#a855f7;--gold:#f5c842;
+  --muted:#2a4a6a;--text:#90b8d8;--white:#e0f0ff;
+  --mono:'JetBrains Mono',monospace;--head:'Barlow Condensed',sans-serif;--body:'Barlow',sans-serif;
+  /* sector themes */
+  --s-color:var(--cyan);
+}
+body.sector-healthcare{--s-color:#00ff88}
+body.sector-insurance{--s-color:#a855f7}
+body.sector-finops{--s-color:#f5c842}
+body.sector-construction{--s-color:#ffb300}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13px;min-height:100vh}
+
+/* TOPBAR */
+.tb{position:sticky;top:0;z-index:200;background:rgba(4,8,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem;gap:1rem}
+.tb-brand{font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;color:var(--s-color);transition:color .4s}
+.tb-nav{display:flex;gap:.3rem;flex-wrap:wrap}
+.tb-link{font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;color:var(--muted);padding:.28rem .55rem;border:1px solid transparent;text-decoration:none;transition:all .2s;cursor:pointer;background:transparent}
+.tb-link:hover{color:var(--s-color);border-color:var(--b2)}
+.tb-status{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;color:var(--green);display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+.tb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+/* HERO */
+.hero{padding:2.5rem 1.2rem 1.5rem;max-width:1200px;margin:0 auto}
+.hero-eye{font-family:var(--mono);font-size:.48rem;letter-spacing:.2em;color:var(--s-color);margin-bottom:.8rem;transition:color .4s}
+.hero-title{font-family:var(--head);font-size:clamp(2rem,5vw,3.8rem);font-weight:900;color:var(--white);line-height:.92;margin-bottom:.6rem}
+.hero-title em{color:var(--s-color);font-style:normal;transition:color .4s}
+
+/* SECTOR SWITCHER */
+.sector-bar{display:flex;gap:0;border:1px solid var(--b2);border-radius:4px;overflow:hidden;margin-bottom:2rem;width:fit-content}
+.sector-btn{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;padding:.45rem 1.1rem;border:none;background:transparent;color:var(--muted);cursor:pointer;border-right:1px solid var(--b2);transition:all .25s;text-transform:uppercase}
+.sector-btn:last-child{border-right:none}
+.sector-btn.active-construction{background:rgba(255,179,0,.12);color:var(--amber)}
+.sector-btn.active-healthcare{background:rgba(0,255,136,.1);color:var(--green)}
+.sector-btn.active-insurance{background:rgba(168,85,247,.1);color:var(--purple)}
+
+/* MAIN GRID */
+.main{max-width:1200px;margin:0 auto;padding:0 1.2rem 2rem;display:grid;grid-template-columns:1fr 320px;gap:1rem}
+@media(max-width:900px){.main{grid-template-columns:1fr}}
+
+/* WIP MATRIX */
+.wip-matrix{background:var(--surf);border:1px solid var(--b2);border-radius:4px;overflow:hidden;margin-bottom:1rem}
+.wm-head{background:var(--surf2);padding:.6rem 1rem;border-bottom:1px solid var(--b2);display:flex;justify-content:space-between;align-items:center}
+.wm-title{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;color:var(--s-color);transition:color .4s}
+.wm-badge{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;padding:.15rem .5rem;border:1px solid;border-radius:2px}
+.wip-table{width:100%;border-collapse:collapse}
+.wip-table th{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;color:var(--muted);padding:.5rem .8rem;border-bottom:1px solid var(--b1);text-align:left;font-weight:400;text-transform:uppercase}
+.wip-table td{padding:.55rem .8rem;border-bottom:1px solid var(--b1);font-size:.72rem}
+.wip-table tr:last-child td{border-bottom:none}
+.wip-table tr:hover td{background:var(--surf2)}
+.cell-label{font-family:var(--mono);font-size:.55rem;color:var(--text)}
+.cell-value{font-size:.8rem;font-weight:600;color:var(--white);font-family:var(--mono)}
+.cell-pct{font-size:.75rem;font-weight:700;font-family:var(--mono)}
+.cell-good{color:var(--green)}
+.cell-warn{color:var(--amber)}
+.cell-bad{color:var(--red)}
+.cell-bar-wrap{width:120px;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:.5rem}
+.cell-bar{height:100%;border-radius:2px;transition:width .6s}
+.bar-good{background:var(--green)}
+.bar-warn{background:var(--amber)}
+.bar-bad{background:var(--red)}
+
+/* WIP CARDS */
+.wip-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:1rem}
+.wc{background:var(--surf);border:1px solid var(--b1);border-radius:4px;padding:.9rem;position:relative;overflow:hidden}
+.wc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--s-color);opacity:.6;transition:background .4s}
+.wc-label{font-family:var(--mono);font-size:.42rem;letter-spacing:.12em;color:var(--muted);margin-bottom:.3rem}
+.wc-value{font-family:var(--head);font-size:1.6rem;font-weight:800;color:var(--white);line-height:1}
+.wc-sub{font-family:var(--mono);font-size:.48rem;color:var(--muted);margin-top:.25rem}
+.wc-delta{font-family:var(--mono);font-size:.5rem;margin-top:.35rem}
+.delta-up{color:var(--green)}
+.delta-down{color:var(--red)}
+.delta-warn{color:var(--amber)}
+
+/* ALERT FEED */
+.alert-feed{background:var(--surf);border:1px solid var(--b2);border-radius:4px;overflow:hidden;margin-bottom:1rem}
+.af-head{background:var(--surf2);padding:.5rem .8rem;border-bottom:1px solid var(--b2);font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--s-color);transition:color .4s}
+.af-item{padding:.5rem .8rem;border-bottom:1px solid var(--b1);display:flex;gap:.6rem;align-items:flex-start}
+.af-item:last-child{border-bottom:none}
+.af-sev{font-family:var(--mono);font-size:.45rem;letter-spacing:.06em;padding:.1rem .3rem;border:1px solid;flex-shrink:0;margin-top:1px}
+.sev-crit{color:var(--red);border-color:var(--red)}
+.sev-high{color:var(--amber);border-color:var(--amber)}
+.sev-med{color:var(--cyan);border-color:var(--cyan)}
+.af-text{font-size:.65rem;color:var(--text);line-height:1.5}
+.af-text strong{color:var(--white)}
+
+/* AI NARRATIVE */
+.ai-panel{background:var(--surf);border:1px solid var(--b2);border-radius:4px;overflow:hidden;margin-bottom:1rem}
+.ap-head{background:var(--surf2);padding:.55rem .8rem;border-bottom:1px solid var(--b2);display:flex;justify-content:space-between;align-items:center}
+.ap-title{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--s-color);transition:color .4s}
+.ap-run{font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;padding:.28rem .7rem;background:var(--s-color);color:#040810;border:none;cursor:pointer;font-weight:700;transition:opacity .2s}
+.ap-run:hover{opacity:.85}
+.ap-run:disabled{opacity:.4;cursor:not-allowed}
+.ap-body{padding:.7rem .8rem;min-height:120px;font-size:.68rem;color:var(--text);line-height:1.7;white-space:pre-wrap;font-family:var(--mono)}
+.ap-placeholder{color:var(--muted);font-style:italic}
+
+/* ACTION RAIL */
+.action-rail{background:var(--surf);border:1px solid var(--b2);border-radius:4px;overflow:hidden;margin-bottom:1rem}
+.ar-head{background:var(--surf2);padding:.5rem .8rem;border-bottom:1px solid var(--b2);font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--s-color);transition:color .4s}
+.ar-btn{display:block;width:100%;text-align:left;padding:.55rem .8rem;border:none;border-bottom:1px solid var(--b1);background:transparent;color:var(--text);font-size:.68rem;cursor:pointer;font-family:var(--body);transition:all .2s}
+.ar-btn:last-child{border-bottom:none}
+.ar-btn:hover{background:var(--surf2);color:var(--white)}
+.ar-btn::before{content:'⚡ ';color:var(--s-color);font-size:.55rem;transition:color .4s}
+
+/* SCHEMA VIEWER */
+.schema-panel{background:var(--surf);border:1px solid var(--b1);border-radius:4px;overflow:hidden;margin-bottom:1rem}
+.sp-head{background:var(--surf2);padding:.5rem .8rem;border-bottom:1px solid var(--b1);font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--muted)}
+.sp-body{padding:.6rem .8rem;font-family:var(--mono);font-size:.6rem;color:var(--text);line-height:1.7;overflow-x:auto;max-height:200px;overflow-y:auto}
+.sp-key{color:var(--cyan)}
+.sp-val{color:var(--green)}
+.sp-num{color:var(--amber)}
+.sp-str{color:var(--purple)}
+
+/* SECTOR ENTITIES */
+.entity-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.entity{background:var(--surf);border:1px solid var(--b1);border-radius:4px;padding:.7rem .9rem;cursor:pointer;transition:all .2s;border-left:3px solid var(--b1)}
+.entity.selected{border-left-color:var(--s-color);background:var(--surf2)}
+.entity:hover{border-left-color:var(--b2)}
+.entity-id{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;color:var(--muted)}
+.entity-name{font-size:.78rem;font-weight:600;color:var(--white);margin:.15rem 0}
+.entity-meta{font-family:var(--mono);font-size:.48rem;color:var(--muted)}
+.entity-risk{float:right;font-family:var(--mono);font-size:.65rem;font-weight:700}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes stream{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+.streaming .ap-body span{animation:stream .1s ease forwards}
+</style>
+
+<style id="tsm-chart-css">
+.charts-section{max-width:1200px;margin:0 auto;padding:0 1.2rem 2rem}
+.charts-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.charts-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:900px){.charts-grid-2,.charts-grid-3{grid-template-columns:1fr}}
+.chart-card{background:var(--surf);border:1px solid var(--b2);border-radius:4px;overflow:hidden}
+.chart-head{background:var(--surf2);padding:.5rem .9rem;border-bottom:1px solid var(--b2);display:flex;justify-content:space-between;align-items:center}
+.chart-label{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;color:var(--s-color);transition:color .4s}
+.chart-sub{font-family:var(--mono);font-size:.42rem;color:var(--muted)}
+.chart-body{padding:.8rem;position:relative}
+.chart-insight{background:rgba(0,0,0,.2);border-left:2px solid var(--s-color);padding:.4rem .6rem;margin:.6rem 0 0;font-size:.6rem;color:var(--text);font-family:var(--mono);line-height:1.5;transition:border-color .4s}
+.chart-insight strong{color:var(--white)}
+
+/* HEATMAP */
+.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem;padding:.8rem}
+.hm-job{border-radius:3px;padding:.7rem .8rem;position:relative;min-height:70px}
+.hm-green{background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3)}
+.hm-yellow{background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.3)}
+.hm-red{background:rgba(255,68,85,.12);border:1px solid rgba(255,68,85,.3)}
+.hm-id{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;color:var(--muted)}
+.hm-name{font-size:.72rem;font-weight:600;color:var(--white);margin:.15rem 0}
+.hm-stat{font-family:var(--mono);font-size:.55rem}
+.hm-green .hm-stat{color:#00ff88}
+.hm-yellow .hm-stat{color:#ffb300}
+.hm-red .hm-stat{color:#ff4455}
+
+/* JOB HEALTH TILES */
+.health-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;padding:.8rem}
+.health-tile{background:var(--surf2);border-radius:3px;padding:.6rem;text-align:center}
+.ht-label{font-family:var(--mono);font-size:.4rem;letter-spacing:.1em;color:var(--muted);margin-bottom:.2rem}
+.ht-value{font-family:var(--mono);font-size:1rem;font-weight:700;line-height:1}
+.ht-sub{font-family:var(--mono);font-size:.42rem;color:var(--muted);margin-top:.15rem}
+.risk-pill{display:inline-block;font-family:var(--mono);font-size:.5rem;letter-spacing:.08em;padding:.2rem .5rem;border-radius:2px;margin-top:.3rem}
+.risk-low{background:rgba(0,255,136,.15);color:#00ff88}
+.risk-med{background:rgba(255,179,0,.15);color:#ffb300}
+.risk-high{background:rgba(255,68,85,.15);color:#ff4455}
+</style>
+
+
+<script id="wip-safe-function-shim">
+(function(){
+  if(window.__WIP_SAFE_FUNCTION_SHIM__) return;
+  window.__WIP_SAFE_FUNCTION_SHIM__ = true;
+
+  const routes = {
+    healthcare: "/api/hc/query",
+    construction: "/api/construction/query",
+    finops: "/api/finance/query",
+    insurance: "/api/finance/query"
+  };
+
+  window.setSector = window.setSector || function(sector){
+    sector = String(sector || "construction").toLowerCase();
+    document.body.setAttribute("data-active-sector", sector);
+
+    document.querySelectorAll("[data-sector]").forEach(el=>{
+      el.style.display = el.getAttribute("data-sector") === sector ? "" : "none";
+    });
+
+    console.log("WIP sector selected:", sector);
+  };
+
+  window.runNarrative = window.runNarrative || async function(){
+    const sector = document.body.getAttribute("data-active-sector") || "construction";
+    const route = routes[sector] || routes.construction;
+
+    const narrativeBox =
+      document.querySelector("#narrativeOutput") ||
+      document.querySelector("[data-narrative-output]") ||
+      [...document.querySelectorAll("pre, .narrative, .output, div")]
+        .find(el => (el.textContent || "").includes("Select an entity"));
+
+    if(narrativeBox) narrativeBox.textContent = "Running strategist relay...";
+
+    try{
+      const res = await fetch(route,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          payload:{
+            sector:sector.toUpperCase(),
+            source:"WIP_DASHBOARD",
+            context:"Generate WIP executive narrative, HITL BNCA, owner lane, strategist relay, and CFO-ready next actions."
+          }
+        })
+      });
+      const data = await res.json();
+      const txt = data.reply || data.content || JSON.stringify(data,null,2);
+      if(narrativeBox) narrativeBox.textContent = txt;
+      console.log("WIP narrative complete", data);
+    }catch(e){
+      if(narrativeBox) narrativeBox.textContent = "Strategist relay unavailable. Local dashboard still active.";
+      console.warn(e);
+    }
+  };
+
+  window.TSM_MESH_CONTROLLER = window.TSM_MESH_CONTROLLER || {
+    async relay(sector, context){
+      const key = String(sector || "healthcare").toLowerCase();
+      const res = await fetch(routes[key] || routes.healthcare,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({payload:{sector:key.toUpperCase(),context,source:"WIP_DASHBOARD",hitl:true}})
+      });
+      return await res.json();
+    }
+  };
+
+  console.log("WIP SAFE FUNCTION SHIM ONLINE");
+})();
+</script>
+
+</head>
+<body class="sector-construction">
+
+<!-- TOPBAR -->
+<div class="tb">
+  <div class="tb-brand" id="tb-brand">TSM · SOVEREIGN MESH · WIP INTELLIGENCE</div>
+  <nav class="tb-nav">
+    <a class="tb-link" href="/construction-suite/construction-pro.html">CONSTRUCTION ↗</a>
+    <a class="tb-link" href="/finops-suite/financial-ui.html">FINOPS ↗</a>
+    <a class="tb-link" href="/healthcare/index.html">HEALTHCARE ↗</a>
+  </nav>
+
+<!-- TSM HUB LINK PATCH — tsm-hub-link-patch -->
+<style>
+.tsm-hub-links-bar{display:flex;gap:.75rem;padding:.6rem 2rem;background:#070c10;border-bottom:1px solid #1e2530;flex-wrap:wrap;align-items:center}
+.tsm-hub-link{font-family:'Share Tech Mono',monospace;font-size:.48rem;letter-spacing:.12em;padding:.3rem .8rem;border:1px solid #1e2530;color:#4a5a6a;text-decoration:none;text-transform:uppercase;transition:all .15s}
+.tsm-hub-link:hover{color:#00d4ff;border-color:#00d4ff}
+.tsm-hub-link.construction:hover{color:#00d4b8;border-color:#00d4b8}
+.tsm-hub-link.finops:hover{color:#3a8cf0;border-color:#3a8cf0}
+.tsm-hub-link.healthcare:hover{color:#00e87a;border-color:#00e87a}
+.tsm-hub-link.insurance:hover{color:#f4a800;border-color:#f4a800}
+</style>
+<div class="tsm-hub-links-bar">
+  <span style="font-family:monospace;font-size:.48rem;color:#304858;letter-spacing:.1em">SUITE HUBS ↗</span>
+  <a class="tsm-hub-link construction" href="/html/construction-suite/construction-hub.html">🏗 Construction Hub</a>
+  <a class="tsm-hub-link finops"       href="/html/finops-suite/financial-ui.html">📊 FinOps Hub</a>
+  <a class="tsm-hub-link healthcare"   href="/html/healthcare/index.html">🏥 Healthcare Hub</a>
+  <a class="tsm-hub-link insurance"    href="/html/tsm-insurance/az-ins.html">🛡 Insurance Hub</a>
+</div>
+
+  <div class="tb-status"><div class="tb-dot"></div><span id="tb-status-text">SOVEREIGN MESH ONLINE</span></div>
+</div>
+
+<!-- HERO + SECTOR SWITCHER -->
+<div style="max-width:1200px;margin:0 auto;padding:2rem 1.2rem 0">
+  <div class="hero-eye" id="hero-eye">// UNIVERSAL WIP INTELLIGENCE · AUDITOPS ENGINE V2</div>
+  <h1 class="hero-title">Universal <em id="sector-label">WIP</em><br>Intelligence Dashboard</h1>
+  <p style="font-size:.85rem;color:var(--text);margin:.5rem 0 1.2rem;max-width:560px">One engine. Any industry. Real-time percent-complete analysis, profit fade detection, and CFO-ready narratives — powered by UPCODE-DETECT-V2 and the TSM Sovereign Mesh.</p>
+
+  <div class="sector-bar">
+    <button class="sector-btn active-construction" id="btn-construction" onclick="setSector('construction')">🏗 CONSTRUCTION</button>
+    <button class="sector-btn" id="btn-healthcare" onclick="setSector('healthcare')">🏥 HEALTHCARE</button>
+    <button class="sector-btn" id="btn-insurance" onclick="setSector('insurance')">📋 INSURANCE</button>
+    <button class="sector-btn" id="btn-finops" onclick="setSector('finops')">💰 FINOPS</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- LEFT COLUMN -->
+  <div>
+    <!-- KPI CARDS -->
+    <div class="wip-cards" id="kpi-cards">
+      <!-- injected by JS -->
+    </div>
+
+    <!-- WIP MATRIX TABLE -->
+    <div class="wip-matrix">
+      <div class="wm-head">
+        <span class="wm-title" id="matrix-title">WORK IN PROGRESS MATRIX</span>
+        <span class="wm-badge" id="matrix-badge" style="color:var(--amber);border-color:var(--amber)">3 ACTIVE FLAGS</span>
+      </div>
+      <table class="wip-table" id="wip-table">
+        <!-- injected by JS -->
+      </table>
+    </div>
+
+    <!-- ALERT FEED -->
+    <div class="alert-feed">
+      <div class="af-head" id="alert-title">ACTIVE INTELLIGENCE FLAGS</div>
+      <div id="alert-items"><!-- injected --></div>
+    </div>
+
+    <!-- AI NARRATIVE -->
+    <div class="ai-panel">
+      <div class="ap-head">
+        <span class="ap-title" id="ai-panel-title">STRATEGIST AUTO-NARRATIVE</span>
+        <button class="ap-run" id="ap-run-btn" onclick="runNarrative()">⚡ GENERATE</button>
+      </div>
+      <div class="ap-body" id="ap-body">
+        <span class="ap-placeholder">Select an entity and click GENERATE to produce a CFO-ready AI narrative for this sector.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div>
+    <!-- ENTITY LIST -->
+    <div class="alert-feed" style="margin-bottom:1rem">
+      <div class="af-head" id="entity-title">ACTIVE ENTITIES</div>
+      <div class="entity-list" id="entity-list"><!-- injected --></div>
+    </div>
+
+    <!-- ACTION RAIL -->
+    <div class="action-rail">
+      <div class="ar-head" id="action-title">QUICK ACTIONS</div>
+      <div id="action-btns"><!-- injected --></div>
+    </div>
+
+    <!-- LIVE SCHEMA -->
+    <div class="schema-panel">
+      <div class="sp-head">UNIFIED WIP SCHEMA · ACTIVE ENTITY</div>
+      <div class="sp-body" id="schema-body">
+        <span style="color:var(--muted)">Select an entity to view schema.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- removed malformed WIP inline script around line 473 -->
+
+
+<!-- ═══ CHARTS B-F ═══════════════════════════════════════════════ -->
+<div class="charts-section" id="charts-section">
+
+  <!-- CHART HEADER -->
+  <div style="margin-bottom:1rem;padding-top:.5rem">
+    <div style="font-family:var(--mono);font-size:.48rem;letter-spacing:.18em;color:var(--s-color);margin-bottom:.3rem;transition:color .4s" id="charts-eye">// WIP ANALYTICS · CHARTS B–F</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--white)">Financial Intelligence Charts</div>
+  </div>
+
+  <!-- ROW 1: Chart B + Chart C -->
+  <div class="charts-grid-2">
+
+    <!-- CHART B: Cost-to-Complete -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-label">CHART B · COST-TO-COMPLETE CURVE</span>
+        <span class="chart-sub">Forecast vs Actual</span>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartB" height="180"></canvas>
+        <div class="chart-insight" id="insightB"><strong>Loading insight…</strong></div>
+      </div>
+    </div>
+
+    <!-- CHART C: Profit Fade -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-label">CHART C · PROFIT FADE / GAIN</span>
+        <span class="chart-sub">Margin delta by period</span>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartC" height="180"></canvas>
+        <div class="chart-insight" id="insightC"><strong>Loading insight…</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Chart D full width -->
+  <div style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-label">CHART D · MONTHLY CASH FLOW PROJECTION</span>
+        <span class="chart-sub">Billings in / Costs out / Net position</span>
+      </div>
+      <div class="chart-body">
+        <canvas id="chartD" height="140"></canvas>
+        <div class="chart-insight" id="insightD"><strong>Loading insight…</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Chart E + Chart F -->
+  <div class="charts-grid-2">
+
+    <!-- CHART E: Job Health Dashboard -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-label">CHART E · JOB HEALTH DASHBOARD</span>
+        <span class="chart-sub" id="chartE-job">JOB-203 · Mesa Medical Center</span>
+      </div>
+      <div class="health-grid" id="chartE-tiles"></div>
+      <div class="chart-insight" style="margin:.4rem .8rem .8rem" id="insightE"><strong>Loading insight…</strong></div>
+    </div>
+
+    <!-- CHART F: Portfolio Heatmap -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-label">CHART F · PORTFOLIO RISK HEATMAP</span>
+        <span class="chart-sub" id="heatmap-summary">All active jobs</span>
+      </div>
+      <div class="heatmap-grid" id="chartF-grid"></div>
+      <div class="chart-insight" style="margin:.4rem .8rem .8rem" id="insightF"><strong>Loading insight…</strong></div>
+    </div>
+  </div>
+
+</div>
+<!-- ═══ END CHARTS ════════════════════════════════════════════════ -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script id="tsm-wip-charts">
+// ── CHART INSTANCES ──────────────────────────────────────────────
+let _cB=null, _cC=null, _cD=null;
+
+const CHART_DATA = {
+  construction: {
+    B: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'],
+      actual:  [0, 420, 980, 1650, 2400, 3100, null, null, null, null],
+      forecast:[0, 400, 850, 1500, 2200, 2900, 3600, 4200, 4700, 5100],
+      budget:  [0, 450, 950, 1600, 2300, 3050, 3700, 4300, 4750, 5200],
+      insight: '<strong>Current cost trend</strong> indicates a $41K overrun by end of project. Labor curve shows a spike next period — anticipate scheduling pressure on JOB-211.',
+    },
+    C: {
+      labels: ['Q1','Q2','Q3','Q4 Est'],
+      orig:    [8.4, 8.4, 8.4, 8.4],
+      current: [8.4, 7.9, 6.0, 5.5],
+      insight: '<strong>Profit fade of 2.4%</strong> occurred in Q3 due to material pricing surge on JOB-211. JOB-198 and JOB-187 holding margins — portfolio blended GP projected at 5.5% vs 8.4% bid.',
+    },
+    D: {
+      labels: ['May','Jun','Jul','Aug','Sep','Oct'],
+      billings:[420, 680, 510, 890, 730, 620],
+      costs:   [380, 720, 490, 810, 650, 540],
+      net:     [40, -40, 20, 80, 80, 80],
+      insight: '<strong>Cash tight in July</strong> — cost spike from JOB-211 subcontractors. Consider accelerating JOB-187 CO billing ($50K+). Positive cash position returns Q3.',
+    },
+    E: {
+      job: 'JOB-203 · Mesa Medical Center',
+      tiles: [
+        {label:'% COMPLETE', value:'63%', sub:'cost-to-cost', color:'#ffb300'},
+        {label:'COST TO DATE', value:'$8.9M', sub:'of $14.2M budget', color:'#00e5ff'},
+        {label:'EARNED REV', value:'$8.85M', sub:'% complete × contract', color:'#00ff88'},
+        {label:'BILLING POS', value:'-$60K', sub:'under-billed', color:'#ff4455'},
+        {label:'GP TO DATE', value:'$-50K', sub:'vs $840K projected', color:'#ff4455'},
+        {label:'RISK LEVEL', value:'HIGH', sub:'risk score: 74', color:'#ff4455', pill:'risk-high'},
+      ],
+      stability: 'DEGRADING',
+      insight: '<strong>JOB-203 billing position critical</strong>: $60K under-billed. GP erosion driven by labor overruns. Invoice immediately — AIA G702 ready.',
+    },
+    F: {
+      jobs: [
+        {id:'JOB-203', name:'Mesa Medical', stat:'-$60K under', cls:'hm-yellow', pct:'63%'},
+        {id:'JOB-198', name:'Scottsdale Office', stat:'+$50K over', cls:'hm-green', pct:'88%'},
+        {id:'JOB-211', name:'Phoenix Dist Hub', stat:'Profit Fade', cls:'hm-red', pct:'41%'},
+        {id:'JOB-187', name:'Tempe Retail', stat:'On budget', cls:'hm-green', pct:'97%'},
+        {id:'JOB-215', name:'Chandler Res.', stat:'-$50K under', cls:'hm-yellow', pct:'22%'},
+      ],
+      insight: '<strong>Job 211 and Job 203</strong> present high billing risk. Portfolio: 2 green / 2 yellow / 1 red. Immediate action required on JOB-211 profit fade.',
+    },
+  },
+  healthcare: {
+    B: {
+      labels: ['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6'],
+      actual:  [0, 310, 680, 1100, 1480, 1650],
+      forecast:[0, 350, 720, 1150, 1550, 1850],
+      budget:  [0, 380, 760, 1200, 1600, 1900],
+      insight: '<strong>RCM collections trending $200K below</strong> forecast at Week 6. UPCODE-DETECT flags driving hold queue — correct 14 instances to unblock $4.2K/mo.',
+    },
+    C: {
+      labels: ['Jan','Feb','Mar','Apr','May Est'],
+      orig:    [78, 78, 78, 78, 78],
+      current: [78, 75, 71, 68, 65],
+      insight: '<strong>Collection rate declining</strong>: 78% → 65% over 5 months. Primary driver: prior auth denials (32%) and coding errors (28%). UPCODE-DETECT-V2 remediation projected to recover 8 points.',
+    },
+    D: {
+      labels: ['May','Jun','Jul','Aug','Sep','Oct'],
+      billings:[520, 610, 480, 730, 690, 650],
+      costs:   [440, 530, 410, 640, 590, 560],
+      net:     [80, 80, 70, 90, 100, 90],
+      insight: '<strong>Steady positive cash position</strong> projected through Q3. Denial resolution on ENC-8821 adds $4.2K to June. Accelerate WPS payer submissions before month-end.',
+    },
+    E: {
+      job: 'ENC-8821 · Prior Auth Denial',
+      tiles: [
+        {label:'RCM STAGE', value:'85%', sub:'adjudication', color:'#ffb300'},
+        {label:'EXPECTED', value:'$4,200', sub:'reimbursement', color:'#00e5ff'},
+        {label:'COLLECTED', value:'$0', sub:'denied — appeal open', color:'#ff4455'},
+        {label:'DENIAL GAP', value:'-$4.2K', sub:'prior auth missing', color:'#ff4455'},
+        {label:'DAYS IN AR', value:'52d', sub:'target: 35d', color:'#ff4455'},
+        {label:'RISK LEVEL', value:'CRIT', sub:'risk score: 95', color:'#ff4455', pill:'risk-high'},
+      ],
+      stability: 'CRITICAL',
+      insight: '<strong>ENC-8821 appeal window:</strong> 30 days remaining. File with auth reference immediately. $4,200 recoverable — do not let timely filing expire.',
+    },
+    F: {
+      jobs: [
+        {id:'ENC-8821', name:'Prior Auth Denial', stat:'$4.2K at risk', cls:'hm-red', pct:'85%'},
+        {id:'ENC-8912', name:'Scrubbing Hold', stat:'Missing modifier', cls:'hm-red', pct:'30%'},
+        {id:'ENC-8834', name:'Coding Review', stat:'UPCODE flag', cls:'hm-yellow', pct:'60%'},
+        {id:'ENC-8756', name:'Payer Adjudication', stat:'On track', cls:'hm-green', pct:'90%'},
+        {id:'ENC-8801', name:'Payment Posted', stat:'Collected', cls:'hm-green', pct:'100%'},
+      ],
+      insight: '<strong>2 encounters critical</strong>, 1 yellow, 2 green. Portfolio collection rate at risk — resolve ENC-8821 and ENC-8912 this week to protect revenue.',
+    },
+  },
+
+  finops: {
+    B: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'],
+      actual:  [0, 180, 420, 810, 1240, null, null, null, null, null],
+      forecast:[0, 200, 480, 890, 1350, 1680, 1920, 2100, 2250, 2380],
+      budget:  [0, 220, 500, 920, 1400, 1750, 2000, 2180, 2330, 2450],
+      insight: '<strong>AP/AR resolution trending $110K below forecast.</strong> Westside Holdings and bank variance driving gap. Resolve both by May 10 to hit close target.',
+    },
+    C: {
+      labels: ['Q1','Q2','Q3 Est','Q4 Est'],
+      orig:    [95, 95, 95, 95],
+      current: [95, 88, 82, 78],
+      insight: '<strong>Collection rate declining:</strong> 95% → 78% projected. Primary drivers: AR dispute (Delta Logistics), 97-day aging (Westside). Controller Action Plan remediation targets 90%+ by Q3.',
+    },
+    D: {
+      labels: ['May','Jun','Jul','Aug','Sep','Oct'],
+      billings:[680, 820, 590, 940, 870, 790],
+      costs:   [720, 760, 540, 880, 800, 720],
+      net:     [-40, 60, 50, 60, 70, 70],
+      insight: '<strong>Cash tight in May</strong> — AP batch + unresolved bank variance. Positive position June onward if Westside collected and bank recon cleared.',
+    },
+    E: {
+      job: 'RECON-001 · Bank Variance $48K',
+      tiles: [
+        {label:'VARIANCE OPEN', value:'$48K', sub:'bank reconciliation', color:'#ff4455'},
+        {label:'DEPOSITS IN TRANSIT', value:'2', sub:'over 30 days old', color:'#ff4455'},
+        {label:'OUTSTANDING CHECK', value:'Jan', sub:'since January', color:'#ff4455'},
+        {label:'CLOSE IMPACT', value:'HIGH', sub:'will block sign-off', color:'#ff4455'},
+        {label:'DAYS OPEN', value:'47d', sub:'target: cleared by close', color:'#ffb300'},
+        {label:'RISK LEVEL', value:'CRIT', sub:'risk score: 92', color:'#ff4455', pill:'risk-high'},
+      ],
+      stability: 'CRITICAL',
+      insight: '<strong>Bank recon must clear before May 10</strong>: $48K variance blocks close sign-off. Assign staff accountant to trace both deposits in transit today.',
+    },
+    F: {
+      jobs: [
+        {id:'RECON-001', name:'Bank Variance', stat:'$48K unresolved', cls:'hm-red', pct:'20%'},
+        {id:'AR-WEST', name:'Westside AR', stat:'$18.4K 97d', cls:'hm-red', pct:'15%'},
+        {id:'CLOSE-MAY', name:'Month-End Close', stat:'70% — blocked', cls:'hm-yellow', pct:'70%'},
+        {id:'AR-DELTA', name:'Delta Dispute', stat:'$12.2K disputed', cls:'hm-yellow', pct:'40%'},
+        {id:'TAX-1099', name:'1099 Readiness', stat:'3 W-9s missing', cls:'hm-yellow', pct:'55%'},
+      ],
+      insight: '<strong>Portfolio: 2 critical / 3 yellow / 0 green.</strong> Month-end close at risk — bank variance and payroll blockage must resolve by May 10.',
+    },
+  },
+  insurance: {
+    B: {
+      labels: ['Month 1','Month 2','Month 3','Month 4','Month 5','Month 6'],
+      actual:  [0, 210, 580, 1050, 1680, 2100],
+      forecast:[0, 250, 620, 1100, 1720, 2200],
+      budget:  [0, 240, 600, 1080, 1700, 2150],
+      insight: '<strong>Reserve spend tracking $100K below</strong> forecast — CLM-923 hold pending SIU review. CLM-882 approaching reserve ceiling at 75% utilization with only 40% liability established.',
+    },
+    C: {
+      labels: ['Q1','Q2','Q3','Q4 Est'],
+      orig:    [92, 92, 92, 92],
+      current: [92, 88, 81, 76],
+      insight: '<strong>Loss ratio increasing</strong>: from 92% to projected 76% favorable margin erosion. CLM-923 fraud exposure ($840K) creating reserve volatility. SIU referral protects portfolio.',
+    },
+    D: {
+      labels: ['May','Jun','Jul','Aug','Sep','Oct'],
+      billings:[380, 420, 310, 580, 490, 450],
+      costs:   [290, 380, 270, 510, 420, 390],
+      net:     [90, 40, 40, 70, 70, 60],
+      insight: '<strong>Positive cash position</strong> maintained. CLM-901 over-reserve release ($52K) improves July position. CLM-923 SIU hold prevents premature payout.',
+    },
+    E: {
+      job: 'CLM-923 · E&O Malpractice',
+      tiles: [
+        {label:'% LIAB EST.', value:'60%', sub:'liability established', color:'#ffb300'},
+        {label:'RESERVE SET', value:'$840K', sub:'total allocated', color:'#00e5ff'},
+        {label:'PAID TO DATE', value:'$504K', sub:'60% of reserve', color:'#ffb300'},
+        {label:'VARIANCE', value:'FRAUD', sub:'pattern detected', color:'#ff4455'},
+        {label:'CYCLE TIME', value:'47d', sub:'vs 30d SLA', color:'#ff4455'},
+        {label:'RISK LEVEL', value:'CRIT', sub:'risk score: 97', color:'#ff4455', pill:'risk-high'},
+      ],
+      stability: 'CRITICAL',
+      insight: '<strong>CLM-923 SIU referral required:</strong> Payment pattern anomaly on $840K reserve. Do not release any additional reserve pending investigation.',
+    },
+    F: {
+      jobs: [
+        {id:'CLM-923', name:'E&O Malpractice', stat:'FRAUD FLAG', cls:'hm-red', pct:'60%'},
+        {id:'CLM-882', name:'Auto Liability', stat:'Reserve thin', cls:'hm-red', pct:'40%'},
+        {id:'CLM-901', name:'Workers Comp', stat:'Over-reserved', cls:'hm-yellow', pct:'25%'},
+        {id:'CLM-867', name:'Commercial GL', stat:'On track', cls:'hm-green', pct:'78%'},
+        {id:'CLM-841', name:'Property Damage', stat:'Closing', cls:'hm-green', pct:'95%'},
+      ],
+      insight: '<strong>Portfolio: 2 red / 1 yellow / 2 green.</strong> $840K fraud exposure dominates risk profile. CLM-882 reserve increase needed before next adjuster review.',
+    },
+  },
+};
+
+const CHART_COLORS = {
+  construction: { primary:'#ffb300', accent:'#00e5ff', neg:'#ff4455' },
+  healthcare:   { primary:'#00ff88', accent:'#00e5ff', neg:'#ff4455' },
+  insurance:    { primary:'#a855f7', accent:'#00e5ff', neg:'#ff4455' },
+  finops:       { primary:'#f5c842', accent:'#00e5ff', neg:'#ff4455' },
+};
+
+function renderCharts(sector) {
+  const d = CHART_DATA[sector];
+  const c = CHART_COLORS[sector];
+  const gridColor = 'rgba(255,255,255,0.04)';
+  const tickColor = 'rgba(255,255,255,0.25)';
+  const fontMono = 'JetBrains Mono';
+
+  const baseOpts = {
+    responsive:true,
+    animation:{duration:600},
+    plugins:{legend:{labels:{color:tickColor,font:{family:fontMono,size:9},boxWidth:10}}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{family:fontMono,size:8}}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor,font:{family:fontMono,size:8}}},
+    }
+  };
+
+  // ── Chart B: Cost-to-Complete ──
+  if (_cB) _cB.destroy();
+  _cB = new Chart(document.getElementById('chartB'), {
+    type:'line',
+    data:{
+      labels: d.B.labels,
+      datasets:[
+        { label:'Actual Cost ($K)', data:d.B.actual, borderColor:c.primary, backgroundColor:'transparent', pointRadius:4, pointBackgroundColor:c.primary, tension:.4, borderWidth:2 },
+        { label:'Forecast', data:d.B.forecast, borderColor:c.accent, backgroundColor:'transparent', borderDash:[4,3], pointRadius:2, tension:.4, borderWidth:1.5 },
+        { label:'Budget', data:d.B.budget, borderColor:'rgba(255,255,255,.2)', backgroundColor:'transparent', borderDash:[2,4], pointRadius:0, tension:.4, borderWidth:1 },
+      ]
+    },
+    options: {...baseOpts}
+  });
+  document.getElementById('insightB').innerHTML = d.B.insight;
+
+  // ── Chart C: Profit Fade ──
+  if (_cC) _cC.destroy();
+  _cC = new Chart(document.getElementById('chartC'), {
+    type:'bar',
+    data:{
+      labels: d.C.labels,
+      datasets:[
+        { label:'Original GP%', data:d.C.orig, backgroundColor:'rgba(255,255,255,.08)', borderColor:'rgba(255,255,255,.2)', borderWidth:1 },
+        { label:'Current GP%', data:d.C.current, backgroundColor: d.C.current.map((v,i) => v < d.C.orig[i] ? 'rgba(255,68,85,.5)' : 'rgba(0,255,136,.4)'), borderColor: d.C.current.map((v,i) => v < d.C.orig[i] ? '#ff4455' : '#00ff88'), borderWidth:1.5 },
+      ]
+    },
+    options: {...baseOpts, plugins:{...baseOpts.plugins, tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y+'%'}}}}
+  });
+  document.getElementById('insightC').innerHTML = d.C.insight;
+
+  // ── Chart D: Cash Flow ──
+  if (_cD) _cD.destroy();
+  _cD = new Chart(document.getElementById('chartD'), {
+    type:'bar',
+    data:{
+      labels: d.D.labels,
+      datasets:[
+        { label:'Billings In ($K)', data:d.D.billings, backgroundColor:'rgba(0,229,255,.3)', borderColor:'#00e5ff', borderWidth:1.5, order:2 },
+        { label:'Costs Out ($K)', data:d.D.costs, backgroundColor:'rgba(255,68,85,.25)', borderColor:'#ff4455', borderWidth:1.5, order:2 },
+        { label:'Net Cash ($K)', data:d.D.net, type:'line', borderColor:c.primary, backgroundColor:'transparent', pointRadius:4, pointBackgroundColor:c.primary, tension:.4, borderWidth:2, order:1 },
+      ]
+    },
+    options:{...baseOpts}
+  });
+  document.getElementById('insightD').innerHTML = d.D.insight;
+
+  // ── Chart E: Job Health Tiles ──
+  document.getElementById('chartE-job').textContent = d.E.job;
+  document.getElementById('chartE-tiles').innerHTML = d.E.tiles.map(t => `
+    <div class="health-tile">
+      <div class="ht-label">${t.label}</div>
+      <div class="ht-value" style="color:${t.color}">${t.value}</div>
+      <div class="ht-sub">${t.sub}</div>
+      ${t.pill ? `<span class="risk-pill ${t.pill}">${t.value}</span>` : ''}
+    </div>`).join('');
+  document.getElementById('insightE').innerHTML = d.E.insight;
+
+  // ── Chart F: Heatmap ──
+  const greenCount = d.F.jobs.filter(j=>j.cls==='hm-green').length;
+  const redCount   = d.F.jobs.filter(j=>j.cls==='hm-red').length;
+  document.getElementById('heatmap-summary').textContent = `${greenCount} green · ${d.F.jobs.length - greenCount - redCount} yellow · ${redCount} red`;
+  document.getElementById('chartF-grid').innerHTML = d.F.jobs.map(j=>`
+    <div class="hm-job ${j.cls}">
+      <div class="hm-id">${j.id}</div>
+      <div class="hm-name">${j.name}</div>
+      <div class="hm-stat">${j.pct} · ${j.stat}</div>
+    </div>`).join('');
+  document.getElementById('insightF').innerHTML = d.F.insight;
+}
+
+// ── Hook into existing setSector ────────────────────────────────
+const _origSetSector = window.setSector;
+window.setSector = function(s) {
+  _origSetSector(s);
+  renderCharts(s);
+};
+
+// ── Init ────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => renderCharts('construction'));
+// Fallback if DOMContentLoaded already fired
+if (document.readyState !== 'loading') renderCharts('construction');
+</script>
+
+
+<script>
+window.TSM_MESH_CONTROLLER={
+
+async relay(sector,context){
+
+const routeMap={
+HEALTHCARE:"/api/hc/query",
+CONSTRUCTION:"/api/construction/query",
+FINANCE:"/api/finance/query"
+};
+
+const route=routeMap[sector]||routeMap.HEALTHCARE;
+
+const res=await fetch(route,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+payload:{
+sector,
+context,
+source:"WIP_DASHBOARD",
+hitl:true
+}
+})
+});
+
+return await res.json();
+
+}
+
+};
+
+console.log("TSM WIP RELAY ACTIVE");
+</script>
+
+
+<!-- ══ INSURANCE WIP SECTOR — AUTO-INJECTED ══ -->
+<section id="wip-insurance" class="wip-sector" data-sector="insurance" style="display:none">
+  <div class="sector-header">
+    <div class="sector-eyebrow">// INSURANCE WIP INTELLIGENCE · P&amp;C PREMIUM AUDIT</div>
+    <h2 class="sector-title">TSM-Insurance <span>WIP Reconciliation</span></h2>
+    <p class="sector-sub">Real-time percent-complete analysis, premium audit reconciliation, and surety bond risk scoring — powered by AUDIT-RECON and the TSM Sovereign Mesh.</p>
+    <div class="sector-tabs">
+      <button class="stab active" data-tab="ins-recon">🛡 AUDIT-RECON</button>
+      <button class="stab" data-tab="ins-surety">📋 SURETY BOND</button>
+      <button class="stab" data-tab="ins-reserve">⚠ RESERVE RISK</button>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="wip-kpi-row">
+    <div class="wip-kpi" style="--kc:#f4a800">
+      <div class="wip-kpi-val">$7.8M</div>
+      <div class="wip-kpi-lbl">Earned Premium</div>
+      <div class="wip-kpi-sub">Current quarter</div>
+    </div>
+    <div class="wip-kpi" style="--kc:#00d4ff">
+      <div class="wip-kpi-val">$6.1M</div>
+      <div class="wip-kpi-lbl">Audited Premium</div>
+      <div class="wip-kpi-sub">78% audit completion</div>
+    </div>
+    <div class="wip-kpi" style="--kc:#ff3d57">
+      <div class="wip-kpi-val">$1.7M</div>
+      <div class="wip-kpi-lbl">Unaudited Gap</div>
+      <div class="wip-kpi-sub">Reserve misstatement risk</div>
+    </div>
+    <div class="wip-kpi" style="--kc:#ffb300">
+      <div class="wip-kpi-val">12</div>
+      <div class="wip-kpi-lbl">Policies Pending</div>
+      <div class="wip-kpi-sub">Audit schedule needed</div>
+    </div>
+  </div>
+
+  <!-- ALERT FLAGS -->
+  <div class="wip-flags">
+    <div class="wip-flag red">⚠ RESERVE RISK: $1.7M unaudited P&amp;C premium — actuarial review recommended before period close.</div>
+    <div class="wip-flag yellow">📋 SURETY FLAG: Profit fade detected on 2 contractor bonds — bonding capacity review triggered.</div>
+    <div class="wip-flag blue">🛡 AUDIT-RECON: Schedule pushed to 12 policyholders. Collect payroll/exposure data within 30 days.</div>
+  </div>
+
+  <!-- WIP MATRIX TABLE -->
+  <div class="wip-matrix-wrap">
+    <div class="wip-matrix-header">
+      <span class="wip-matrix-title">POLICY / AUDIT STATUS MATRIX</span>
+      <span class="wip-flag-count">3 ACTIVE FLAGS</span>
+    </div>
+    <table class="wip-matrix-table">
+      <thead>
+        <tr>
+          <th>Policy #</th><th>Line of Business</th><th>Audit Stage</th>
+          <th>Premium Earned</th><th>Premium Audited</th><th>Gap</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>POL-4421</td><td>General Liability</td>
+          <td><span class="pct red">38%</span> <span class="pct-bar"><span style="width:38%;background:#ff3d57"></span></span></td>
+          <td>$1,200,000</td><td>$456,000</td><td class="td-red">-$744,000</td><td class="status-red">AUDIT OPEN</td>
+        </tr>
+        <tr>
+          <td>POL-4389</td><td>Workers Comp</td>
+          <td><span class="pct yellow">65%</span> <span class="pct-bar"><span style="width:65%;background:#ffb300"></span></span></td>
+          <td>$890,000</td><td>$578,500</td><td class="td-yellow">-$311,500</td><td class="status-yellow">IN PROGRESS</td>
+        </tr>
+        <tr>
+          <td>POL-4402</td><td>Commercial Auto</td>
+          <td><span class="pct green">100%</span> <span class="pct-bar"><span style="width:100%;background:#00e676"></span></span></td>
+          <td>$540,000</td><td>$540,000</td><td class="td-green">$0</td><td class="status-green">CLOSED</td>
+        </tr>
+        <tr>
+          <td>POL-4415</td><td>Umbrella / Excess</td>
+          <td><span class="pct red">22%</span> <span class="pct-bar"><span style="width:22%;background:#ff3d57"></span></span></td>
+          <td>$3,100,000</td><td>$682,000</td><td class="td-red">-$2,418,000</td><td class="status-red">AUDIT OPEN</td>
+        </tr>
+        <tr>
+          <td>POL-4438</td><td>Property / Inland Marine</td>
+          <td><span class="pct green">95%</span> <span class="pct-bar"><span style="width:95%;background:#00e676"></span></span></td>
+          <td>$980,000</td><td>$931,000</td><td class="td-green">-$49,000</td><td class="status-green">NEAR CLOSE</td>
+        </tr>
+        <tr>
+          <td>POL-4447</td><td>Surety Bond · Performance</td>
+          <td><span class="pct yellow">71%</span> <span class="pct-bar"><span style="width:71%;background:#ffb300"></span></span></td>
+          <td>$1,090,000</td><td>$773,900</td><td class="td-yellow">-$316,100</td><td class="status-yellow">WATCH</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SURETY BOND ANALYSIS -->
+  <div class="wip-surety-grid">
+    <div class="wip-surety-card">
+      <div class="wip-surety-title">🛡 Surety Bond Risk — Arizona P&amp;C Context</div>
+      <div class="wip-surety-row"><span>Bonding Capacity Signal</span><span class="warn">REVIEW REQUIRED</span></div>
+      <div class="wip-surety-row"><span>Profit Fade Flag (Performance Bond)</span><span class="risk">YES — 2.4% loss detected</span></div>
+      <div class="wip-surety-row"><span>Under-billing Risk (Liquidity)</span><span class="risk">$900k contractor gap</span></div>
+      <div class="wip-surety-row"><span>Maintenance of Records (ARS §20-461)</span><span class="ok">AIA G702/G703 compliant ✓</span></div>
+      <div class="wip-surety-row"><span>Reserve Misstatement Risk</span><span class="risk">$1.7M unaudited — HIGH</span></div>
+      <div class="wip-surety-row"><span>Audit Schedule Compliance</span><span class="warn">12 policies pending push</span></div>
+    </div>
+    <div class="wip-surety-card">
+      <div class="wip-surety-title">⚡ AUDIT-RECON Actions</div>
+      <div class="wip-surety-row"><span>Action</span><span>AUDIT_SCHEDULE_PUSH</span></div>
+      <div class="wip-surety-row"><span>Policies Queued</span><span class="ok">12 policyholders</span></div>
+      <div class="wip-surety-row"><span>Data Required</span><span>Payroll + exposure reports</span></div>
+      <div class="wip-surety-row"><span>Deadline</span><span class="warn">30 days (period close)</span></div>
+      <div class="wip-surety-row"><span>Estimated Adjustment</span><span class="ok">+$140k earned premium</span></div>
+      <div style="margin-top:.75rem;display:flex;gap:.5rem">
+        <button onclick="runAuditRecon()" style="flex:1;padding:.5rem;background:#f4a800;color:#000;border:none;font-family:inherit;font-size:.52rem;font-weight:700;letter-spacing:.1em;cursor:pointer;text-transform:uppercase">⚡ RUN AUDIT-RECON</button>
+        <a href="/html/tsm-insurance/az-ins.html" style="flex:1;padding:.5rem;border:1px solid #f4a800;color:#f4a800;font-family:inherit;font-size:.52rem;letter-spacing:.1em;cursor:pointer;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;justify-content:center">VIEW HUB ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+function runAuditRecon() {
+  fetch('/api/wip/insurance/audit-recon', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ earned_premium:7800000, audited:6100000, period:'Q2-2026' })
+  })
+  .then(r=>r.json())
+  .catch(()=>({ action:'AUDIT_SCHEDULE_PUSH', message:'Audit schedule pushed for $1.7M unaudited P&C premium.', _source:'mock' }))
+  .then(d=>{ alert('AUDIT-RECON:\n\n' + (d.message || d.action)); });
+}
+</script>
+<!-- END INSURANCE WIP SECTOR -->
+
+
+<script id="tsm-sector-switch">
+function switchSector(s) {
+  document.querySelectorAll('.wip-sector').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.sector-tab').forEach(el => el.classList.remove('active'));
+  const sec = document.getElementById('wip-' + s);
+  if (sec) sec.style.display = 'block';
+  const btn = document.querySelector('[data-sector="' + s + '"]');
+  if (btn) btn.classList.add('active');
+}
+// Auto-select from URL param
+(function(){
+  const p = new URLSearchParams(window.location.search).get('sector');
+  if (p) { switchSector(p); }
+})();
+</script>
+
+</html>
+
+
+<div style="display:none" data-test-marker="Universal Healthcare RCM WIP">
+  Universal Healthcare RCM WIP · Prior Auth Denial · Claim Scrubbing Hold · Coding Review Queue
+</div>
+
+
+<script id="tsm-wip-bootstrap">
+window.WIP_ENTITIES = [
+{
+  id:"ENC-8821",
+  title:"Prior Auth Denial",
+  percent:85,
+  expected:4200,
+  collected:0,
+  gap:-4200,
+  risk:"CRIT",
+  narrative:"Missing prior authorization documentation."
+},
+{
+  id:"ENC-8912",
+  title:"Claim Scrubbing Hold",
+  percent:30,
+  expected:2750,
+  collected:0,
+  gap:-2750,
+  risk:"HIGH",
+  narrative:"Claim held in scrubbing queue."
+},
+{
+  id:"ENC-8834",
+  title:"Coding Review Queue",
+  percent:60,
+  expected:1850,
+  collected:1480,
+  gap:-370,
+  risk:"MED",
+  narrative:"Coding modifier review pending."
+},
+{
+  id:"ENC-8750",
+  title:"Payer Adjudication",
+  percent:90,
+  expected:6100,
+  collected:5490,
+  gap:-610,
+  risk:"LOW",
+  narrative:"Payer processing active."
+}
+];
+
+window.TSM_MESH_CONTROLLER = true;
+
+window.initializeWIPDashboard = function(){
+
+  const matrix = document.querySelector('#wipMatrix');
+  const entities = document.querySelector('#activeEntities');
+  const flags = document.querySelector('#activeFlags');
+
+  if(matrix){
+    matrix.innerHTML = window.WIP_ENTITIES.map(e => `
+      <div class="wip-row">
+        <div>${e.id}</div>
+        <div>${e.title}</div>
+        <div>${e.percent}%</div>
+        <div>$${e.expected.toLocaleString()}</div>
+        <div class="risk-${e.risk.toLowerCase()}">${e.risk}</div>
+      </div>
+    `).join('');
+  }
+
+  if(entities){
+    entities.innerHTML = window.WIP_ENTITIES.map(e => `
+      <div class="entity-card">
+        <b>${e.title}</b><br>
+        ${e.percent}% stage · Risk ${e.risk}
+      </div>
+    `).join('');
+  }
+
+  if(flags){
+    flags.innerHTML = `
+      <div class="flag critical">Prior Auth Risk</div>
+      <div class="flag high">Claim Scrubbing Hold</div>
+      <div class="flag med">Coding Review Queue</div>
+    `;
+  }
+
+  console.log("TSM WIP HYDRATION ONLINE");
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if(window.initializeWIPDashboard){
+      window.initializeWIPDashboard();
+    }
+  }, 250);
+});
+</script>
+
+
+<script id="wip-narrative-format-final">
+(function(){
+  if(window.__WIP_NARRATIVE_FORMAT_FINAL__) return;
+  window.__WIP_NARRATIVE_FORMAT_FINAL__ = true;
+
+  function findNarrativeBox(){
+    return document.querySelector("#narrativeOutput")
+      || document.querySelector("[data-narrative-output]")
+      || [...document.querySelectorAll("pre,div")]
+        .find(el => (el.textContent || "").includes("BNCA SYNTHESIS"));
+  }
+
+  const oldRun = window.runNarrative;
+  window.runNarrative = async function(){
+    if(typeof oldRun === "function"){
+      await oldRun();
+    }
+
+    setTimeout(()=>{
+      const box=findNarrativeBox();
+      if(!box) return;
+
+      box.style.whiteSpace="pre-wrap";
+      box.style.lineHeight="1.55";
+      box.style.fontSize="12px";
+      box.style.padding="14px";
+      box.style.border="1px solid rgba(0,255,198,.18)";
+      box.style.borderRadius="12px";
+      box.style.background="#06111b";
+
+      let t=box.textContent || "";
+      t=t
+        .replace(/(BNCA SYNTHESIS)/g,"$1\n\n")
+        .replace(/(TOP ISSUE)/g,"\n$1\n")
+        .replace(/(WHY IT MATTERS)/g,"\n$1\n")
+        .replace(/(BEST NEXT ACTIONS)/g,"\n$1\n")
+        .replace(/(OWNER LANE)/g,"\n$1\n")
+        .replace(/(CONTROLLER)/g,"\n$1\n")
+        .replace(/(ENTERPRISE RISKS)/g,"\n$1\n")
+        .replace(/(HITL DECISION)/g,"\n$1\n")
+        .replace(/(STRATEGIST RELAY)/g,"\n$1\n")
+        .replace(/(CONFIDENCE)/g,"\n$1\n")
+        .replace(/\n{3,}/g,"\n\n");
+
+      box.textContent=t.trim();
+    },500);
+  };
+
+  console.log("WIP narrative formatter online");
+})();
+</script>
+
+
+<script id="wip-export-home-bar">
+(function(){
+  if(window.__WIP_EXPORT_HOME_BAR__) return;
+  window.__WIP_EXPORT_HOME_BAR__ = true;
+
+  function getOutput(){
+    const txt = [...document.querySelectorAll("pre, .narrative, div")]
+      .map(x => (x.innerText || x.textContent || "").trim())
+      .filter(t => /BNCA|TOP ISSUE|BEST NEXT ACTIONS|OWNER LANE|STRATEGIST RELAY|CONFIDENCE/i.test(t))
+      .sort((a,b)=>b.length-a.length)[0] || "No WIP output found.";
+    return txt;
+  }
+
+  function download(name, content, type="text/plain"){
+    const blob = new Blob([content], {type});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function saveOutput(){
+    const item = {
+      title:"TSM WIP Strategist Output",
+      sector:document.body.getAttribute("data-active-sector") || "current",
+      output:getOutput(),
+      saved_at:new Date().toISOString(),
+      source:"wip-dashboard"
+    };
+    const list = JSON.parse(localStorage.getItem("tsm_wip_saved_outputs") || "[]");
+    list.unshift(item);
+    localStorage.setItem("tsm_wip_saved_outputs", JSON.stringify(list.slice(0,25)));
+    alert("Saved WIP output locally.");
+  }
+
+  function exportTxt(){
+    download("tsm-wip-strategist-output.txt", getOutput());
+  }
+
+  function exportJson(){
+    const item = {
+      sector:document.body.getAttribute("data-active-sector") || "current",
+      output:getOutput(),
+      exported_at:new Date().toISOString(),
+      source:"TSM WIP Intelligence Dashboard"
+    };
+    download("tsm-wip-strategist-output.json", JSON.stringify(item,null,2), "application/json");
+  }
+
+  async function copyOutput(){
+    await navigator.clipboard.writeText(getOutput());
+    alert("Copied WIP output.");
+  }
+
+  function goHome(){
+    location.href="/";
+  }
+
+  function openSector(path){
+    location.href=path;
+  }
+
+  function inject(){
+    if(document.getElementById("wip-export-bar")) return;
+
+    const bar=document.createElement("div");
+    bar.id="wip-export-bar";
+    bar.style.cssText=`
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+      z-index:9999;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+      background:#06111b;border:1px solid rgba(0,255,198,.28);
+      box-shadow:0 0 28px rgba(0,255,198,.16);
+      padding:10px;border-radius:16px;font-family:Inter,system-ui,Arial;
+    `;
+
+    const btn=(txt,fn,bg="#00ffc6",fg="#001")=>{
+      const b=document.createElement("button");
+      b.textContent=txt;
+      b.style.cssText=`border:0;border-radius:10px;padding:9px 11px;background:${bg};color:${fg};font-weight:900;cursor:pointer`;
+      b.onclick=fn;
+      return b;
+    };
+
+    bar.append(
+      btn("← Home", goHome, "#102030", "#dff"),
+      btn("Healthcare", ()=>openSector("/healthcare/index.html?v=wip-return"), "#00ffc6"),
+      btn("Construction", ()=>openSector("/construction-suite/construction-hub.html?v=wip-return"), "#ffc400"),
+      btn("FinOps", ()=>openSector("/finops-suite/financial-ui.html?v=wip-return"), "#00aaff", "#fff"),
+      btn("Executive", ()=>openSector("/healthcare/executive-portal/index.html?v=wip-return"), "#b56cff", "#fff"),
+      btn("Save", saveOutput),
+      btn("Export TXT", exportTxt, "#ffc400"),
+      btn("Export JSON", exportJson, "#b56cff", "#fff"),
+      btn("Copy", copyOutput, "#102030", "#dff")
+    );
+
+    document.body.appendChild(bar);
+  }
+
+  window.wipSaveOutput=saveOutput;
+  window.wipExportTxt=exportTxt;
+  window.wipExportJson=exportJson;
+  window.wipCopyOutput=copyOutput;
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",inject);
+  else inject();
+
+  setTimeout(inject,800);
+})();
+</script>
+
+</body>

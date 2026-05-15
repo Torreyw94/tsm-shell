@@ -1,128 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AuditOps | G703 Continuation Sheet</title>
-    <link rel="stylesheet" href="/shared/styles.css">
-    <style>
-        .g703-container { background: #fff; color: #000; padding: 30px; font-family: "Times New Roman", serif; margin-top: 20px; overflow-x: auto; }
-        .g703-table { width: 100%; border-collapse: collapse; border: 2px solid #000; font-size: 11px; }
-        .g703-table th, .g703-table td { border: 1px solid #000; padding: 4px; text-align: left; }
-        .g703-header { background: #f0f0f0; font-weight: bold; text-align: center; }
-        .risk-row { background: rgba(255, 75, 43, 0.1); }
-        .risk-text { color: #ff4b2b; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AuditOps CFO Suite — AIA G702/G703</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+:root{--bg:#0a0c10;--surface:#111418;--border:#1e2530;--border2:#2a3340;--text:#c8d4e0;--muted:#4a5a6a;--accent:#00d4ff;--green:#00e676;--yellow:#ffb300;--red:#ff3d57;--orange:#ff6b35;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;min-height:100vh}
+.topbar{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.logo{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.logo span{color:var(--muted)}
+.topbar-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:3px;border:1px solid;text-transform:uppercase;letter-spacing:.06em}
+.tag-blue{border-color:var(--accent);color:var(--accent)}.tag-green{border-color:var(--green);color:var(--green)}.tag-red{border-color:var(--red);color:var(--red)}.tag-yellow{border-color:var(--yellow);color:var(--yellow)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nodes-status{font-family:var(--mono);font-size:11px;color:var(--green)}
+.nodes-dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-export{background:var(--accent);color:#000;font-family:var(--mono);font-size:11px;font-weight:600;padding:6px 14px;border:none;border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.main{padding:16px 20px;display:flex;flex-direction:column;gap:16px}
+.section-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--kpi-color,var(--accent))}
+.kpi-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.kpi-value{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--kpi-color,var(--accent));line-height:1}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.card-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-title{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.07em}
+.card-badge{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:2px;background:rgba(0,212,255,.12);color:var(--accent);border:1px solid rgba(0,212,255,.25);text-transform:uppercase;letter-spacing:.05em}
+.card-body{padding:14px}
+.alert-strip{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:3px;font-size:12px;margin-bottom:12px;line-height:1.5}
+.alert-red{background:rgba(255,61,87,.1);border:1px solid rgba(255,61,87,.25);color:var(--red)}
+.alert-yellow{background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.25);color:var(--yellow)}
+.alert-blue{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);color:var(--accent)}
+.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.hm-cell{border-radius:4px;padding:12px 10px;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;border:1px solid transparent}
+.hm-cell:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.hm-cell.red{background:rgba(255,61,87,.15);border-color:rgba(255,61,87,.35)}
+.hm-cell.yellow{background:rgba(255,179,0,.12);border-color:rgba(255,179,0,.3)}
+.hm-cell.green{background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.25)}
+.hm-job{font-family:var(--mono);font-size:12px;font-weight:600;margin-bottom:4px}
+.hm-cell.red .hm-job{color:var(--red)}.hm-cell.yellow .hm-job{color:var(--yellow)}.hm-cell.green .hm-job{color:var(--green)}
+.hm-label{font-size:10px;color:var(--muted);margin-bottom:3px}
+.hm-val{font-family:var(--mono);font-size:13px;font-weight:500}
+.hm-cell.red .hm-val{color:var(--red)}.hm-cell.yellow .hm-val{color:var(--yellow)}.hm-cell.green .hm-val{color:var(--green)}
+.hm-risk{font-family:var(--mono);font-size:9px;margin-top:6px;padding:2px 6px;border-radius:2px;display:inline-block;text-transform:uppercase;letter-spacing:.05em}
+.hm-cell.red .hm-risk{background:rgba(255,61,87,.25);color:var(--red)}.hm-cell.yellow .hm-risk{background:rgba(255,179,0,.2);color:var(--yellow)}.hm-cell.green .hm-risk{background:rgba(0,230,118,.15);color:var(--green)}
+.g703-wrap{overflow-x:auto}
+.g703-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px;min-width:800px}
+.g703-table th{background:rgba(0,212,255,.07);color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:8px;text-align:right;border-bottom:1px solid var(--border2);white-space:nowrap}
+.g703-table th:first-child,.g703-table th:nth-child(2){text-align:left}
+.g703-table td{padding:7px 8px;border-bottom:1px solid var(--border);text-align:right;color:var(--text)}
+.g703-table td:first-child{text-align:left;color:var(--muted);font-size:10px}.g703-table td:nth-child(2){text-align:left}
+.g703-table tr:hover td{background:rgba(255,255,255,.02)}
+.g703-table tfoot td{border-top:2px solid var(--border2);font-weight:600;color:var(--accent);background:rgba(0,212,255,.04)}
+.td-red{color:var(--red)!important}.td-yellow{color:var(--yellow)!important}.td-green{color:var(--green)!important}
+.g702-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border2);border-radius:4px;overflow:hidden;font-family:var(--mono);font-size:11px}
+.g702-block{padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.g702-block:nth-child(even){border-right:none}
+.g702-block-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.g702-block-val{font-size:14px;color:var(--text)}
+.g702-block-val.accent{color:var(--accent)}.g702-block-val.green{color:var(--green)}.g702-block-val.red{color:var(--red)}
+.g702-total{grid-column:1/-1;padding:12px 14px;background:rgba(0,212,255,.06);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.g702-total-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.g702-total-val{font-size:20px;font-weight:600;color:var(--accent)}
+.surety-box{background:rgba(255,179,0,.05);border:1px solid rgba(255,179,0,.2);border-radius:4px;padding:12px 14px;margin-top:12px}
+.surety-title{font-family:var(--mono);font-size:10px;color:var(--yellow);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.surety-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,179,0,.08);font-size:12px}
+.surety-row:last-child{border-bottom:none}
+.surety-key{color:var(--muted)}
+.surety-val{font-family:var(--mono)}.surety-val.ok{color:var(--green)}.surety-val.risk{color:var(--red)}.surety-val.warn{color:var(--yellow)}
+.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:11px;font-weight:500;padding:7px 14px;border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;border:none;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--accent);color:#000}.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text)}
+canvas{width:100%!important}
+</style>
 </head>
-<body style="background: #000; color: #fff; font-family: 'JetBrains Mono', monospace;">
-
-    <div style="padding: 20px;">
-        <h3 style="color: #00f2ff;">CFO WORKSPACE: G703 CONTINUATION SHEET</h3>
-        <p style="color: #666; font-size: 12px;">PROJECT: BANNER HEALTH MEDICAL CENTER EXPANSION</p>
-        
-        <div class="g703-container">
-            <table class="g703-table">
-                <thead>
-                    <tr class="g703-header">
-                        <th>ITEM<br>NO.</th>
-                        <th>DESCRIPTION OF WORK (CSI CODES)</th>
-                        <th>SCHEDULED<br>VALUE</th>
-                        <th>WORK FROM<br>PREV APPS</th>
-                        <th>THIS PERIOD<br>WORK</th>
-                        <th>MATERIALS<br>STORED</th>
-                        <th>TOTAL<br>COMPLETED</th>
-                        <th>%</th>
-                        <th>BALANCE TO<br>FINISH</th>
-                        <th>RETAINAGE<br>(10%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>01-000</td>
-                        <td>General Requirements</td>
-                        <td>$150,000</td>
-                        <td>$120,000</td>
-                        <td>$10,000</td>
-                        <td>$0</td>
-                        <td>$130,000</td>
-                        <td>86%</td>
-                        <td>$20,000</td>
-                        <td>$13,000</td>
-                    </tr>
-                    <tr class="risk-row">
-                        <td>03-300</td>
-                        <td>Cast-in-Place Concrete <span class="risk-text">(JOB 211)</span></td>
-                        <td>$450,000</td>
-                        <td>$300,000</td>
-                        <td>$82,500</td>
-                        <td>$10,000</td>
-                        <td>$392,500</td>
-                        <td>87%</td>
-                        <td>$57,500</td>
-                        <td>$39,250</td>
-                    </tr>
-                    <tr>
-                        <td>05-000</td>
-                        <td>Metals / Structural Steel</td>
-                        <td>$500,000</td>
-                        <td>$150,000</td>
-                        <td>$50,000</td>
-                        <td>$100,000</td>
-                        <td>$300,000</td>
-                        <td>60%</td>
-                        <td>$200,000</td>
-                        <td>$30,000</td>
-                    </tr>
-                    <tr>
-                        <td>26-000</td>
-                        <td>Electrical Systems</td>
-                        <td>$720,140</td>
-                        <td>$200,000</td>
-                        <td>$80,000</td>
-                        <td>$5,000</td>
-                        <td>$285,000</td>
-                        <td>39%</td>
-                        <td>$435,140</td>
-                        <td>$28,500</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr style="background: #f0f0f0; font-weight: bold;">
-                        <td colspan="2">GRAND TOTALS</td>
-                        <td>$1,820,140</td>
-                        <td>$770,000</td>
-                        <td>$222,500</td>
-                        <td>$115,000</td>
-                        <td>$1,107,500</td>
-                        <td>61%</td>
-                        <td>$712,640</td>
-                        <td>$110,750</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        
-        <div style="margin-top: 20px;">
-            <button class="toggle-btn" onclick="window.print()">EXPORT TO AUDIT PDF</button>
-            <p style="font-size: 10px; color: #ff4b2b; margin-top: 10px;">⚠️ REDLINE ALERT: Item 03-300 shows 87% completion with 94% of budget spent. PROFIT FADE DETECTED.</p>
-        </div>
+<body>
+<div class="topbar">
+  <div class="logo">AuditOps <span>/</span> CFO Suite</div>
+  <div class="topbar-tags">
+    <span class="tag tag-blue">AIA G702</span><span class="tag tag-blue">G703 SOV</span>
+    <span class="tag tag-green">WIP-RECON</span><span class="tag tag-yellow">Surety Bond</span>
+    <span class="tag tag-red">P&amp;C Arizona</span>
+  </div>
+  <div class="topbar-right">
+    <span class="nodes-status"><span class="nodes-dot"></span>11/11 Nodes Online</span>
+    <button class="btn-export" onclick="exportG702()">⬇ Export G702 PDF</button>
+  </div>
+</div>
+<div class="main">
+  <div>
+    <div class="section-label">Portfolio Summary — All Active Jobs</div>
+    <div class="kpi-row">
+      <div class="kpi" style="--kpi-color:var(--accent)"><div class="kpi-label">Contract Value</div><div class="kpi-value">$24.7M</div><div class="kpi-sub">8 active jobs</div></div>
+      <div class="kpi" style="--kpi-color:var(--yellow)"><div class="kpi-label">Total Billed</div><div class="kpi-value">$18.2M</div><div class="kpi-sub">73.7% of contract</div></div>
+      <div class="kpi" style="--kpi-color:var(--red)"><div class="kpi-label">Under-Billed</div><div class="kpi-value">$2.1M</div><div class="kpi-sub">Jobs 211, 214, 218</div></div>
+      <div class="kpi" style="--kpi-color:var(--orange)"><div class="kpi-label">Profit Fade</div><div class="kpi-value">−2.4%</div><div class="kpi-sub">Material surge M4–M6</div></div>
+      <div class="kpi" style="--kpi-color:var(--green)"><div class="kpi-label">Retainage Held</div><div class="kpi-value">$1.4M</div><div class="kpi-sub">Release Sept</div></div>
+      <div class="kpi" style="--kpi-color:var(--red)"><div class="kpi-label">Forecast Overrun</div><div class="kpi-value">$41k</div><div class="kpi-sub">Job 211 · Ameris</div></div>
     </div>
-
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Chart B — Forecast Curve</span><span class="card-badge">Cost to Complete</span></div>
+      <div class="card-body">
+        <div class="alert-strip alert-red"><span>⚠</span><span>Current trend indicates a <strong>$41k overrun</strong> by project end on Job 211 (Ameris).</span></div>
+        <canvas id="chartB" height="200"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Chart C — Profit Fade</span><span class="card-badge">GP Deltas</span></div>
+      <div class="card-body">
+        <div class="alert-strip alert-yellow"><span>📉</span><span>Margin loss of <strong>2.4%</strong> detected — material price surges months 4–6.</span></div>
+        <canvas id="chartC" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Chart D — Cash Flow &amp; Retainage Timeline</span><span class="card-badge">Monthly View</span></div>
+    <div class="card-body">
+      <div class="alert-strip alert-blue"><span>💡</span><span>Cash tight in <strong>August</strong> — accelerate Change Order (CO) billing. Retainage release projected September.</span></div>
+      <canvas id="chartD" height="140"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Chart F — WIP Portfolio Heatmap</span><span class="card-badge">Multi-Job Risk</span></div>
+    <div class="card-body">
+      <div class="alert-strip alert-red"><span>🔴</span><span><strong>Job 211</strong> and <strong>Job 214</strong> are Red: Significant under-billing. INVOICE_TRIGGER queued.</span></div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">AIA G703 — Schedule of Values</span><span class="card-badge">Job 211 · Ameris</span></div>
+    <div class="card-body">
+      <div class="g703-wrap"><table class="g703-table"><thead><tr><th>#</th><th>Description</th><th>Scheduled Value</th><th>Prev Completed</th><th>This Period</th><th>Stored Materials</th><th>Total Completed</th><th>% Complete</th><th>Balance to Finish</th><th>Retainage (10%)</th></tr></thead><tbody id="g703Body"></tbody><tfoot id="g703Foot"></tfoot></table></div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="runWIPRecon()">⚡ Run WIP-RECON</button><button class="btn btn-outline" onclick="exportG702()">📄 Generate G702</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">AIA G702 — Application for Payment</span><span class="card-badge">Bond-Ready</span></div>
+    <div class="card-body">
+      <div class="g702-grid" id="g702Grid"></div>
+      <div class="surety-box">
+        <div class="surety-title">🛡 Surety Bond Analysis — P&amp;C Arizona Exam Context</div>
+        <div class="surety-row"><span class="surety-key">Bonding Capacity Signal</span><span class="surety-val warn">REVIEW REQUIRED</span></div>
+        <div class="surety-row"><span class="surety-key">Profit Fade Flag</span><span class="surety-val risk">YES — 2.4% loss (Performance Bond risk)</span></div>
+        <div class="surety-row"><span class="surety-key">Under-billing Risk (Liquidity)</span><span class="surety-val risk">$900k unbilled — capital tied up</span></div>
+        <div class="surety-row"><span class="surety-key">WIP Schedule Accuracy</span><span class="surety-val ok">G703 SOV reconciled ✓</span></div>
+        <div class="surety-row"><span class="surety-key">Maintenance of Records</span><span class="surety-val ok">AIA G702/G703 compliant ✓</span></div>
+        <div class="surety-row"><span class="surety-key">Forecasted Final Profit</span><span class="surety-val warn">$459k → dropping (surety underwriter alert)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const SOV=[
+  {num:'01',desc:'General Conditions',sv:320000,prev:280000,curr:25000,stored:0},
+  {num:'02',desc:'Site Work & Demolition',sv:185000,prev:185000,curr:0,stored:0},
+  {num:'03',desc:'Concrete & Foundations',sv:760000,prev:720000,curr:40000,stored:0},
+  {num:'04',desc:'Structural Steel',sv:540000,prev:490000,curr:30000,stored:15000},
+  {num:'05',desc:'Exterior Enclosure',sv:420000,prev:310000,curr:55000,stored:22000},
+  {num:'06',desc:'Roofing',sv:195000,prev:195000,curr:0,stored:0},
+  {num:'07',desc:'Interior Finishes',sv:680000,prev:380000,curr:80000,stored:8000},
+  {num:'08',desc:'MEP Systems',sv:890000,prev:620000,curr:95000,stored:30000},
+  {num:'09',desc:'Elevators',sv:210000,prev:150000,curr:0,stored:0},
+  {num:'10',desc:'Sitework & Landscaping',sv:280000,prev:80000,curr:40000,stored:0},
+  {num:'11',desc:'FF&E Allowance',sv:120000,prev:0,curr:0,stored:120000},
+  {num:'12',desc:'General Requirements',sv:500000,prev:450000,curr:35000,stored:0},
+];
+const JOBS=[
+  {id:'Job 211',name:'Ameris Bank',gap:-900000,pct:82,risk:'red',label:'Under-billed $900k'},
+  {id:'Job 214',name:'Mesa Civic Ctr',gap:-540000,pct:71,risk:'red',label:'Under-billed $540k'},
+  {id:'Job 218',name:'Chandler Retail',gap:-210000,pct:89,risk:'yellow',label:'Watch $210k'},
+  {id:'Job 220',name:'Scottsdale Med',gap:120000,pct:94,risk:'green',label:'Over-billed $120k'},
+  {id:'Job 223',name:'Tempe Office',gap:80000,pct:97,risk:'green',label:'On Track'},
+  {id:'Job 225',name:'Gilbert Warehouse',gap:-85000,pct:92,risk:'yellow',label:'Watch $85k'},
+  {id:'Job 227',name:'Phoenix Airport',gap:200000,pct:61,risk:'green',label:'Healthy'},
+  {id:'Job 229',name:'Glendale School',gap:-30000,pct:95,risk:'green',label:'Minimal Gap'},
+];
+function fmt(n){return '$'+Math.round(n).toLocaleString();}
+function fmtPct(n){return n.toFixed(1)+'%';}
+Chart.defaults.color='#4a5a6a';
+Chart.defaults.font.family='IBM Plex Mono';
+function buildChartB(){
+  new Chart(document.getElementById('chartB').getContext('2d'),{type:'line',data:{labels:MONTHS,datasets:[
+    {label:'Budget',data:[420,850,1300,1820,2400,2900,3400,3850,4300,4700,5050,5100].map(v=>v/1000),borderColor:'rgba(0,212,255,0.5)',borderDash:[6,3],borderWidth:1.5,pointRadius:0,fill:false,tension:0.4},
+    {label:'Actual Cost',data:[420,860,1340,1900,2510,3050,3580,4100,null,null,null,null].map(v=>v?v/1000:null),borderColor:'#ff3d57',borderWidth:2,pointRadius:3,pointBackgroundColor:'#ff3d57',fill:false,tension:0.4,spanGaps:false},
+    {label:'Forecast (EAC)',data:[null,null,null,null,null,null,null,4100,4620,5090,5141,5141].map(v=>v?v/1000:null),borderColor:'#ffb300',borderDash:[4,4],borderWidth:2,pointRadius:0,fill:false,tension:0.4,spanGaps:false},
+  ]},options:{responsive:true,plugins:{legend:{labels:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: $${c.parsed.y.toFixed(0)}k`}}},scales:{x:{ticks:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10}},grid:{color:'#1e2530'}},y:{ticks:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10},callback:v=>`$${v}k`},grid:{color:'#1e2530'}}}}});
+}
+function buildChartC(){
+  const gp=[18.2,18.0,17.8,17.1,16.4,15.6,15.8,null,null,null,null,null];
+  new Chart(document.getElementById('chartC').getContext('2d'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'Budgeted GP%',data:MONTHS.map(()=>18),type:'line',borderColor:'rgba(0,212,255,0.5)',borderDash:[6,3],borderWidth:1.5,pointRadius:0,fill:false,tension:0,order:1},
+    {label:'Actual GP%',data:gp,backgroundColor:gp.map(v=>!v?'transparent':v>=17?'rgba(0,230,118,0.5)':v>=16?'rgba(255,179,0,0.5)':'rgba(255,61,87,0.6)'),borderWidth:0,borderRadius:2,order:2},
+    {label:'Forecast GP%',data:[null,null,null,null,null,null,15.8,15.6,15.7,15.7,null,null],backgroundColor:'rgba(255,179,0,0.2)',borderColor:'rgba(255,179,0,0.5)',borderWidth:1,borderRadius:2,order:3},
+  ]},options:{responsive:true,plugins:{legend:{labels:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y}%`}}},scales:{x:{ticks:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10}},grid:{color:'#1e2530'}},y:{min:14,max:20,ticks:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10},callback:v=>`${v}%`},grid:{color:'#1e2530'}}}}});
+}
+function buildChartD(){
+  new Chart(document.getElementById('chartD').getContext('2d'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'Billed',data:[380,780,1180,1540,1940,2350,2750,3050,3480,4000,4200,4200].map(v=>v/1000),backgroundColor:'rgba(0,212,255,0.25)',borderColor:'rgba(0,212,255,0.6)',borderWidth:1,borderRadius:2,order:2},
+    {label:'Cash Received',data:[0,340,740,1100,1480,1860,2260,2560,null,null,null,null].map(v=>v?v/1000:null),backgroundColor:'rgba(0,230,118,0.3)',borderColor:'rgba(0,230,118,0.6)',borderWidth:1,borderRadius:2,order:3},
+    {label:'Retainage Held',data:[38,78,118,154,194,235,275,305,348,400,420,420].map(v=>v/1000),type:'line',borderColor:'#ffb300',borderWidth:2,pointRadius:3,pointBackgroundColor:'#ffb300',fill:false,tension:0.4,order:1},
+  ]},options:{responsive:true,plugins:{legend:{labels:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: $${c.parsed.y}k`}}},scales:{x:{ticks:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10}},grid:{color:'#1e2530'}},y:{ticks:{color:'#4a5a6a',font:{family:'IBM Plex Mono',size:10},callback:v=>`$${v}k`},grid:{color:'#1e2530'}}}}});
+}
+function buildHeatmap(){
+  const g=document.getElementById('heatmapGrid');g.innerHTML='';
+  JOBS.forEach(j=>{
+    const gapStr=j.gap<0?`-$${Math.abs(Math.round(j.gap/1000))}k`:`+$${Math.round(j.gap/1000)}k`;
+    const c=document.createElement('div');c.className=`hm-cell ${j.risk}`;
+    c.innerHTML=`<div class="hm-job">${j.id}</div><div class="hm-label">${j.name}</div><div class="hm-val">${gapStr}</div><div class="hm-label" style="margin-top:4px">Billed: ${j.pct}%</div><div class="hm-risk">${j.label}</div>`;
+    g.appendChild(c);
+  });
+}
+function buildG703(){
+  const tbody=document.getElementById('g703Body'),tfoot=document.getElementById('g703Foot');
+  tbody.innerHTML='';
+  let tSV=0,tPrev=0,tCurr=0,tStored=0,tComp=0,tBal=0,tRet=0;
+  SOV.forEach(r=>{
+    const total=r.prev+r.curr+r.stored,pct=(total/r.sv)*100,bal=r.sv-total,ret=total*0.10;
+    tSV+=r.sv;tPrev+=r.prev;tCurr+=r.curr;tStored+=r.stored;tComp+=total;tBal+=bal;tRet+=ret;
+    const pc=pct<75?'td-red':pct<90?'td-yellow':'td-green';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.num}</td><td>${r.desc}</td><td>${fmt(r.sv)}</td><td>${fmt(r.prev)}</td><td>${fmt(r.curr)}</td><td>${r.stored?fmt(r.stored):'—'}</td><td>${fmt(total)}</td><td class="${pc}">${fmtPct(pct)}</td><td>${fmt(bal)}</td><td>${fmt(ret)}</td>`;
+    tbody.appendChild(tr);
+  });
+  tfoot.innerHTML=`<tr><td colspan="2">TOTALS</td><td>${fmt(tSV)}</td><td>${fmt(tPrev)}</td><td>${fmt(tCurr)}</td><td>${fmt(tStored)}</td><td>${fmt(tComp)}</td><td>${fmtPct((tComp/tSV)*100)}</td><td>${fmt(tBal)}</td><td>${fmt(tRet)}</td></tr>`;
+  return {tSV,tPrev,tCurr,tStored,tComp,tBal,tRet};
+}
+function buildG702(s){
+  const earned=s.tComp,ret=s.tRet,due=earned-ret-s.tPrev;
+  document.getElementById('g702Grid').innerHTML=`
+    <div class="g702-total"><span class="g702-total-label">Current Payment Due</span><span class="g702-total-val">${fmt(due)}</span></div>
+    <div class="g702-block"><div class="g702-block-label">A. Original Contract Sum</div><div class="g702-block-val accent">${fmt(s.tSV)}</div></div>
+    <div class="g702-block"><div class="g702-block-label">B. Change Orders to Date</div><div class="g702-block-val">$0</div></div>
+    <div class="g702-block"><div class="g702-block-label">C. Contract Sum to Date</div><div class="g702-block-val accent">${fmt(s.tSV)}</div></div>
+    <div class="g702-block"><div class="g702-block-label">D. Total Completed &amp; Stored</div><div class="g702-block-val">${fmt(s.tComp)}</div></div>
+    <div class="g702-block"><div class="g702-block-label">E. Retainage (10%)</div><div class="g702-block-val red">${fmt(ret)}</div></div>
+    <div class="g702-block"><div class="g702-block-label">F. Total Earned Less Retainage</div><div class="g702-block-val green">${fmt(earned-ret)}</div></div>
+    <div class="g702-block"><div class="g702-block-label">G. Less Previous Payments</div><div class="g702-block-val">${fmt(s.tPrev)}</div></div>
+    <div class="g702-block"><div class="g702-block-label">H. Balance to Finish</div><div class="g702-block-val">${fmt(s.tBal+ret)}</div></div>`;
+}
+function runWIPRecon(){
+  const b=event.target;b.textContent='⏳ Running...';b.disabled=true;
+  fetch('https://tsm-shell.fly.dev/api/wip/construction/recon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({job:'Ameris',costs:5100000,billed:4200000})})
+    .then(r=>r.json()).catch(()=>({action:'INVOICE_TRIGGER',message:'Recoup $900k — invoice packet queued for Ameris PM approval.',_source:'mock'}))
+    .then(data=>{b.textContent='✓ '+( data.action||'RECON_COMPLETE');b.style.background='#00e676';b.style.color='#000';b.disabled=false;console.log('WIP-RECON result:',data);});
+}
+function exportG702(){alert('G702 PDF export\n\nPOST https://tsm-shell.fly.dev/api/wip/construction/g702-export\n\nReturns bond-ready PDF:\n• AIA G702 cover\n• G703 SOV\n• Notarized signature block\n• Surety underwriter summary');}
+buildChartB();buildChartC();buildChartD();buildHeatmap();
+const sov=buildG703();buildG702(sov);
+</script>
 </body>
 </html>
-
-<div id="ai-narrative-section" style="margin-top: 30px; padding: 20px; border: 1px solid #00f2ff; background: rgba(0,242,255,0.05);">
-    <h3 style="color: #00f2ff; margin-top: 0;">🤖 AI AUDIT NARRATIVE: JOB 211 ANALYSIS</h3>
-    <div style="font-size: 14px; line-height: 1.6;">
-        <p><strong>EXECUTIVE SUMMARY:</strong> Item 03-300 (Cast-in-Place Concrete) has entered a <strong>Profit Fade</strong> state. While the project reports 87% physical completion, the consumption of the scheduled value has reached 94%, indicating a projected overrun of approximately <strong>$31,500</strong> upon item completion.</p>
-        
-        <ul style="color: #ccc;">
-            <li><span style="color: #ff4b2b;">●</span> <strong>Variance Detection:</strong> Labor hours for the last two periods exceeded estimates by 18% due to site access delays.</li>
-            <li><span style="color: #ff4b2b;">●</span> <strong>Billing Risk:</strong> Under-billing of stored materials detected; $10k in concrete forms remains unbilled, impacting current liquidity.</li>
-            <li><span style="color: #00f2ff;">●</span> <strong>Action Required:</strong> Immediate review of Change Order #04 (Site Conditions) to recoup labor overages.</li>
-        </ul>
-        
-        <div style="background: #222; padding: 10px; border-left: 3px solid #ff4b2b; font-style: italic;">
-            "If current trends persist, the net margin for the Concrete phase will erode from the projected 12% to 5.4%."
-        </div>
-    </div>
-</div>
