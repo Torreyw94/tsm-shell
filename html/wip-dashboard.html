@@ -476,49 +476,25 @@ function switchSector(s) {
 </html>
 
 
-<div style="display:none" data-test-marker="Universal Healthcare RCM WIP">
-  Universal Healthcare RCM WIP · Prior Auth Denial · Claim Scrubbing Hold · Coding Review Queue
-</div>
-
-
-
-
-
-<script id="tsm-wip-mesh-relay-safe">
-(function(){
-  if(window.__TSM_WIP_MESH_RELAY_SAFE__) return;
-  window.__TSM_WIP_MESH_RELAY_SAFE__ = true;
-
-  window.TSM_MESH_CONTROLLER = {
-    async relay(sector, context){
-      const key = String(sector || "healthcare").toLowerCase();
-      const routes = {
-        healthcare: "/api/hc/query",
-        construction: "/api/construction/query",
-        finops: "/api/finance/query",
-        insurance: "/api/finance/query"
-      };
-      const route = routes[key] || routes.healthcare;
-      const res = await fetch(route,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          payload:{
-            sector:key.toUpperCase(),
-            node:key.toUpperCase(),
-            source:"WIP_DASHBOARD",
-            context,
-            hitl:true,
-            relay_to_strategist:true
-          }
-        })
-      });
-      return await res.json();
-    }
-  };
-
-  console.log("TSM WIP SAFE MESH RELAY ONLINE");
-})();
+<script id="tsm-wip-safe-mesh-relay">
+window.TSM_MESH_CONTROLLER = {
+  async relay(sector, context){
+    const routes = {
+      healthcare:"/api/hc/query",
+      construction:"/api/construction/query",
+      finops:"/api/finance/query",
+      insurance:"/api/finance/query"
+    };
+    const key = String(sector || "healthcare").toLowerCase();
+    const res = await fetch(routes[key] || routes.healthcare, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({payload:{sector:key.toUpperCase(),node:key.toUpperCase(),context,source:"WIP_DASHBOARD",hitl:true}})
+    });
+    return await res.json();
+  }
+};
+console.log("TSM WIP SAFE MESH RELAY ONLINE");
 </script>
 
 </body>
