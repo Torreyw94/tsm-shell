@@ -12,8 +12,6 @@ app.use(express.json());
 
 
 // =====================================================
-// TSM SOVEREIGN MESH
-// =====================================================
 const TSM_MESH = {
   HEALTHCARE: {
     owner: "HC Strategist",
@@ -174,8 +172,6 @@ app.use('/healthcare', express.static(path.join(__dirname, 'html', 'healthcare')
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// ======================================================
-// MUSIC COMMAND API ROUTES
 // ======================================================
 app.all('/api/music/structure', async (req,res) => {
   res.json({
@@ -400,8 +396,6 @@ app.use((req,res) => res.status(404).send('Not found: '+req.path));
 
 
 
-// ======================================================
-// FINAL FORCED HC QUERY ROUTE
 // ======================================================
 
 function finalHCProfile(node){
@@ -971,3 +965,72 @@ app.post('/api/music/hooks/generate10', (req, res, next) => {
 });
 
 app.listen(8080, () => console.log('Sovereign Mesh Online on 8080'));
+
+
+// ============================================================================
+// 🎵 TSM MUSIC COMMAND SYSTEMS - UNIFIED PRODUCTION INTERCEPTORS
+// ============================================================================
+app.post('/api/music/blueprint', async (req, res) => {
+    console.log("⚡ Music Engine: Compiling Song Blueprint Grid Array...");
+    try {
+        const Groq = require('groq-sdk');
+        const token = req.headers.authorization?.split(' ')[1] || process.env.GROQ_API_KEY;
+        
+        if (!token) {
+            return res.status(401).json({ error: "Missing active session credential token context." });
+        }
+
+        const client = new Groq({ apiKey: token });
+        const completion = await client.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            messages: [
+                { 
+                    role: "system", 
+                    content: "You are ZAY, an expert executive music producer. Your sole task is to generate structural arrangement blueprints. Return ONLY a valid, minified JSON object matching this schema template: { \"ok\": true, \"producer\": \"ZAY\", \"structure\": { \"intro\": \"4 bars\", \"hook\": \"8 bars\", \"verse1\": \"16 bars\", \"bridge\": \"8 bars\", \"verse2\": \"16 bars\", \"outro\": \"4 bars\" }, \"narrative\": \"Summary of style parameters\" }. Do not include markdown code wrappers, intro, or prose filler."
+                },
+                { role: "user", content: `Build a song layout structural grid for this concept: ${JSON.stringify(req.body)}` }
+            ],
+            temperature: 0.3,
+            response_format: { type: "json_object" }
+        });
+
+        res.json(JSON.parse(completion.choices[0].message.content.trim()));
+    } catch (err) {
+        console.error("❌ Blueprint Engine Fault:", err.message);
+        res.status(500).json({ error: err.message, fallback: true });
+    }
+});
+
+app.post('/api/music/hooks/generate10', async (req, res) => {
+    console.log("⚡ Music Engine: Compiling 10 Catchy Track Hooks...");
+    try {
+        const Groq = require('groq-sdk');
+        const token = req.headers.authorization?.split(' ')[1] || process.env.GROQ_API_KEY;
+        
+        if (!token) {
+            return res.status(401).json({ error: "Missing active session credential token context." });
+        }
+
+        const client = new Groq({ apiKey: token });
+        const completion = await client.chat.completions.create({
+            model: "llama-3.1-8b-instant",
+            messages: [
+                { 
+                    role: "system", 
+                    content: "You are ZAY, an elite hip-hop and R&B songwriter. Return ONLY a valid, minified JSON object matching this schema template: { \"ok\": true, \"producer\": \"ZAY\", \"hooks\": [\"Hook text entry line 1\", \"Hook text entry line 2\"] }. Provide exactly 10 distinct high-fidelity lyrical hooks. Do not include markdown formatting, backticks, or conversational commentary."
+                },
+                { role: "user", content: `Write 10 hooks targeting this theme context: ${JSON.stringify(req.body)}` }
+            ],
+            temperature: 0.7,
+            response_format: { type: "json_object" }
+        });
+
+        res.json(JSON.parse(completion.choices[0].message.content.trim()));
+    } catch (err) {
+        console.error("❌ Hook Engine Fault:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Re-append the dynamic suite router catch-all signature path
+app.post(path, (req, res) => handle(req, res, HANDLERS[suite]));
