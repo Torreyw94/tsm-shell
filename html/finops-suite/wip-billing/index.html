@@ -4,10 +4,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FinOps WIP + Billing</title>
+<title>TSM · FinOps WIP + Billing Intelligence</title>
 
 <style>
-:root{ --accent:#00ffc6; }
+:root{ --accent:#ffc400; }
 
 body{
  margin:0;
@@ -85,7 +85,7 @@ button{
 <body>
 
 <div class="header">
-  <h1>FinOps WIP + Billing</h1>
+  <h1>Construction WIP + Billing</h1>
   <div>Unified WIP • Billing • Strategist Relay • HITL</div>
 </div>
 
@@ -174,12 +174,12 @@ async function runBNCA(){
 
   try{
 
-    const r=await fetch("/api/finops/query",{
+    const r=await fetch("/api/construction/query",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
         payload:{
-          sector:"FINOPS",
+          sector:"CONSTRUCTION",
           context:"Analyze WIP exposure, billing drift, HITL escalation, strategist relay, and executive risk."
         }
       })
@@ -203,7 +203,7 @@ function exportBrief(){
   const txt=document.getElementById("out").textContent;
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));
-  a.download="finops-wip-brief.txt";
+  a.download="construction-wip-brief.txt";
   a.click();
 }
 </script>
