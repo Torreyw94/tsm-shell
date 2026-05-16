@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TSM Music Command · Producer Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08040f;--surf:#0f0818;--surf2:#150d20;--b1:rgba(168,85,247,.08);--b2:rgba(168,85,247,.18);
+  --purple:#a855f7;--pink:#ec4899;--cyan:#00e5ff;--gold:#f5c842;--green:#00ff88;--red:#ff4455;
+  --muted:#4a2a6a;--text:#c090e0;--white:#f0e0ff;
+  --mono:'JetBrains Mono',monospace;--head:'Syne',sans-serif;--body:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:rgba(8,4,15,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--b2);display:flex;align-items:center;justify-content:space-between;padding:.55rem 1.2rem;position:sticky;top:0;z-index:100}
+.tb-brand{font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;color:var(--purple)}
+.tb-nav{display:flex;gap:.3rem}
+.tb-link{font-family:var(--mono);font-size:.48rem;letter-spacing:.08em;color:var(--muted);padding:.28rem .6rem;border:1px solid transparent;text-decoration:none;transition:all .2s}
+.tb-link:hover{color:var(--purple);border-color:var(--b2)}
+.tb-status{font-family:var(--mono);font-size:.48rem;color:var(--green);display:flex;align-items:center;gap:.35rem}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:260px 1fr 300px;height:calc(100vh - 41px);overflow:hidden}
+@media(max-width:1100px){.layout{grid-template-columns:200px 1fr}}
+@media(max-width:800px){.layout{grid-template-columns:1fr}}
+
+/* LEFT: STEPS PANEL */
+.steps-panel{border-right:1px solid var(--b1);background:var(--surf);overflow-y:auto;padding:1rem .8rem;height:100%}
+.sp-title{font-family:var(--mono);font-size:.48rem;letter-spacing:.15em;color:var(--purple);margin-bottom:1rem}
+.step-item{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .4rem;border-radius:4px;cursor:pointer;margin-bottom:.25rem;transition:all .2s;border:1px solid transparent}
+.step-item:hover{background:var(--surf2);border-color:var(--b1)}
+.step-item.active{background:rgba(168,85,247,.1);border-color:var(--b2)}
+.step-item.done .step-num{background:var(--green);color:#040810;border-color:var(--green)}
+.step-num{width:22px;height:22px;border-radius:50%;border:1px solid var(--muted);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.45rem;color:var(--muted);flex-shrink:0;transition:all .2s}
+.step-item.active .step-num{border-color:var(--purple);color:var(--purple)}
+.step-info{flex:1}
+.step-label{font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;color:var(--muted)}
+.step-name{font-size:.75rem;font-weight:600;color:var(--white);margin:.1rem 0}
+.step-desc{font-size:.6rem;color:var(--muted);line-height:1.4}
+.step-item.done .step-name{color:var(--green)}
+
+/* CENTER: STUDIO */
+.studio{display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.studio-head{border-bottom:1px solid var(--b1);padding:.7rem 1.2rem;display:flex;align-items:center;justify-content:space-between;background:var(--surf2)}
+.sh-title{font-family:var(--head);font-size:1.1rem;font-weight:700;color:var(--white)}
+.sh-sub{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;color:var(--muted);margin-top:.15rem}
+.studio-body{flex:1;overflow-y:auto;padding:1.2rem 1.2rem 4rem;min-height:0;height:0}
+
+/* PANELS */
+.panel{display:none;width:100%}
+.panel.active{display:block;width:100%}
+
+/* INPUTS */
+.field-label{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;color:var(--purple);margin-bottom:.4rem;display:block}
+.field-input{width:100%;background:var(--surf2);border:1px solid var(--b2);color:var(--white);font-family:var(--mono);font-size:.7rem;padding:.5rem .7rem;border-radius:4px;outline:none;transition:border-color .2s;margin-bottom:.8rem}
+.field-input:focus{border-color:var(--purple)}
+textarea.field-input{resize:vertical;min-height:80px;line-height:1.6}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.pill-group{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+.pill{font-family:var(--mono);font-size:.45rem;letter-spacing:.06em;padding:.25rem .6rem;border:1px solid var(--b2);color:var(--muted);cursor:pointer;border-radius:20px;transition:all .2s;background:transparent}
+.pill.active{background:rgba(168,85,247,.2);border-color:var(--purple);color:var(--purple)}
+.pill:hover:not(.active){border-color:var(--b2);color:var(--text)}
+
+/* BUTTONS */
+.btn{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;padding:.45rem 1rem;border-radius:4px;cursor:pointer;border:1px solid;transition:all .2s;text-transform:uppercase}
+.btn-primary{background:var(--purple);color:#fff;border-color:var(--purple)}
+.btn-primary:hover{opacity:.85}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-ghost{background:transparent;border-color:var(--b2);color:var(--muted)}
+.btn-ghost:hover{color:var(--text);border-color:var(--b2)}
+.btn-green{background:var(--green);color:#040810;border-color:var(--green)}
+.btn-row{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+
+/* OUTPUT CARDS */
+.output-card{background:var(--surf2);border:1px solid var(--b2);border-radius:4px;overflow:hidden;margin-bottom:.8rem}
+.oc-head{background:rgba(168,85,247,.08);padding:.45rem .7rem;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center}
+.oc-title{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;color:var(--purple)}
+.oc-copy{font-family:var(--mono);font-size:.42rem;padding:.18rem .45rem;border:1px solid var(--b2);color:var(--muted);cursor:pointer;background:transparent;transition:all .2s}
+.oc-copy:hover{color:var(--white)}
+.oc-body{padding:.7rem;font-family:var(--mono);font-size:.65rem;color:var(--text);line-height:1.8;white-space:pre-wrap;min-height:60px}
+.oc-placeholder{color:var(--muted);font-style:italic;font-family:var(--mono);font-size:.6rem}
+
+/* HOOK GRID */
+.hook-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.6rem 0}
+.hook-card{background:var(--surf);border:1px solid var(--b1);border-radius:3px;padding:.5rem .6rem;cursor:pointer;transition:all .2s}
+.hook-card:hover{border-color:var(--purple);background:rgba(168,85,247,.06)}
+.hook-card.selected{border-color:var(--purple);background:rgba(168,85,247,.12)}
+.hook-num{font-family:var(--mono);font-size:.42rem;color:var(--muted);margin-bottom:.15rem}
+.hook-text{font-size:.65rem;color:var(--white);line-height:1.5}
+
+/* RIGHT: ASSISTANT */
+.assistant-panel{border-left:1px solid var(--b1);background:var(--surf);display:flex;flex-direction:column}
+.ap-head{background:var(--surf2);border-bottom:1px solid var(--b1);padding:.6rem .8rem}
+.ap-title{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--purple)}
+.ap-sub{font-family:var(--mono);font-size:.42rem;color:var(--muted);margin-top:.1rem}
+.chat-feed{flex:1;overflow-y:auto;padding:.6rem .7rem;display:flex;flex-direction:column;gap:.5rem;height:0}
+.msg{display:flex;gap:.4rem;align-items:flex-start}
+.msg-avatar{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;font-family:var(--mono);margin-top:1px}
+.msg-zay .msg-avatar{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
+.msg-user .msg-avatar{background:var(--surf2);border:1px solid var(--b2);color:var(--muted)}
+.msg-bubble{background:var(--surf2);border:1px solid var(--b1);border-radius:0 6px 6px 6px;padding:.45rem .6rem;font-size:.62rem;color:var(--text);line-height:1.55;max-width:calc(100% - 30px)}
+.msg-user .msg-bubble{background:rgba(168,85,247,.08);border-color:var(--b2);border-radius:6px 0 6px 6px}
+.msg-user{flex-direction:row-reverse}
+.chat-input-row{border-top:1px solid var(--b1);padding:.5rem .6rem;display:flex;gap:.4rem}
+.chat-input{flex:1;background:var(--surf2);border:1px solid var(--b2);color:var(--white);font-family:var(--mono);font-size:.6rem;padding:.4rem .6rem;border-radius:4px;outline:none}
+.chat-input:focus{border-color:var(--purple)}
+.chat-send{font-family:var(--mono);font-size:.5rem;padding:.38rem .7rem;background:var(--purple);color:#fff;border:none;cursor:pointer;border-radius:3px}
+
+/* PROGRESS */
+.progress-bar-wrap{height:3px;background:rgba(168,85,247,.12);border-radius:2px;margin:1rem 0;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .5s;border-radius:2px}
+
+/* SONG PREVIEW */
+.song-preview{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(236,72,153,.05));border:1px solid var(--b2);border-radius:6px;padding:1.2rem;margin-top:.8rem}
+.sp-section{font-family:var(--mono);font-size:.45rem;letter-spacing:.12em;color:var(--purple);margin:.6rem 0 .2rem}
+.sp-text{font-size:.7rem;color:var(--white);line-height:1.7}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes thinking{0%,100%{opacity:.4}50%{opacity:1}}
+.thinking span{animation:thinking 1s infinite}
+.thinking span:nth-child(2){animation-delay:.2s}
+.thinking span:nth-child(3){animation-delay:.4s}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand">TSM · MUSIC COMMAND · PRODUCER STUDIO</div>
+  <nav class="tb-nav">
+    <a class="tb-link" href="/music">HOME</a>
+    <a class="tb-link" href="/html/music-command/how-to-guide.html">HOW TO</a>
+    <a class="tb-link" href="/html/music-command/marketing.html">MARKETING</a>
+  </nav>
+  <div class="tb-status"><div class="dot"></div><span>ZAY PRODUCER ONLINE</span></div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- STEPS PANEL -->
+  <div class="steps-panel">
+    <div class="sp-title">// SONG CREATION STEPS</div>
+
+    <div class="step-item active" id="step-btn-1" onclick="goStep(1)">
+      <div class="step-num">1</div>
+      <div class="step-info">
+        <div class="step-label">FOUNDATION</div>
+        <div class="step-name">Song Concept</div>
+        <div class="step-desc">Genre, mood, theme, artist style</div>
+      </div>
+    </div>
+
+    <div class="step-item" id="step-btn-2" onclick="goStep(2)">
+      <div class="step-num">2</div>
+      <div class="step-info">
+        <div class="step-label">STRUCTURE</div>
+        <div class="step-name">Song Blueprint</div>
+        <div class="step-desc">AI builds your arrangement</div>
+      </div>
+    </div>
+
+    <div class="step-item" id="step-btn-3" onclick="goStep(3)">
+      <div class="step-num">3</div>
+      <div class="step-info">
+        <div class="step-label">HOOKS</div>
+        <div class="step-name">Hook Generator</div>
+        <div class="step-desc">10 hook options to choose from</div>
+      </div>
+    </div>
+
+    <div class="step-item" id="step-btn-4" onclick="goStep(4)">
+      <div class="step-num">4</div>
+      <div class="step-info">
+        <div class="step-label">LYRICS</div>
+        <div class="step-name">Write the Song</div>
+        <div class="step-desc">Full lyrics with your chosen hook</div>
+      </div>
+    </div>
+
+    <div class="step-item" id="step-btn-5" onclick="goStep(5)">
+      <div class="step-num">5</div>
+      <div class="step-info">
+        <div class="step-label">REVISION</div>
+        <div class="step-name">Polish & Refine</div>
+        <div class="step-desc">AI revision with your notes</div>
+      </div>
+    </div>
+
+    <div class="step-item" id="step-btn-6" onclick="goStep(6)">
+      <div class="step-num">6</div>
+      <div class="step-info">
+        <div class="step-label">STRATEGY</div>
+        <div class="step-name">Release Plan</div>
+        <div class="step-desc">Distribution, marketing, playlists</div>
+      </div>
+    </div>
+
+    <div class="step-item" id="step-btn-7" onclick="goStep(7)">
+      <div class="step-num">7</div>
+      <div class="step-info">
+        <div class="step-label">EXPORT</div>
+        <div class="step-name">Song Package</div>
+        <div class="step-desc">Full song + strategy export</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.2rem;padding:.6rem;background:rgba(168,85,247,.06);border:1px solid var(--b1);border-radius:4px">
+      <div style="font-family:var(--mono);font-size:.42rem;letter-spacing:.1em;color:var(--purple);margin-bottom:.4rem">SONG DNA</div>
+      <div style="font-size:.6rem;color:var(--muted)" id="dna-preview">No concept yet. Start at Step 1.</div>
+    </div>
+  </div>
+
+  <!-- STUDIO CENTER -->
+  <div class="studio">
+    <div class="studio-head">
+      <div>
+        <div class="sh-title" id="studio-title">Song Concept</div>
+        <div class="sh-sub" id="studio-sub">Tell ZAY what you're creating — genre, mood, theme, artist vibe</div>
+      </div>
+      <div class="progress-bar-wrap" style="width:200px;margin:0">
+        <div class="progress-bar" id="progress-bar" style="width:14%"></div>
+      </div>
+    </div>
+    <div class="studio-body">
+
+      <!-- STEP 1: CONCEPT -->
+      <div class="panel active" id="panel-1">
+        <span class="field-label">GENRE</span>
+        <div class="pill-group" id="genre-pills">
+          <div class="pill active" onclick="togglePill(this,'genre')">Hip-Hop</div>
+          <div class="pill" onclick="togglePill(this,'genre')">R&B</div>
+          <div class="pill" onclick="togglePill(this,'genre')">Pop</div>
+          <div class="pill" onclick="togglePill(this,'genre')">Trap</div>
+          <div class="pill" onclick="togglePill(this,'genre')">Afrobeats</div>
+          <div class="pill" onclick="togglePill(this,'genre')">Gospel</div>
+          <div class="pill" onclick="togglePill(this,'genre')">Latin</div>
+          <div class="pill" onclick="togglePill(this,'genre')">Drill</div>
+        </div>
+
+        <span class="field-label">MOOD</span>
+        <div class="pill-group" id="mood-pills">
+          <div class="pill active" onclick="togglePill(this,'mood')">Motivational</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Dark</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Romantic</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Aggressive</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Melancholy</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Triumphant</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Chill</div>
+          <div class="pill" onclick="togglePill(this,'mood')">Spiritual</div>
+        </div>
+
+        <div class="field-row">
+          <div>
+            <span class="field-label">ARTIST / STYLE REFERENCE</span>
+            <input class="field-input" id="artist-ref" placeholder="e.g. Drake, Kendrick, SZA, Rod Wave...">
+          </div>
+          <div>
+            <span class="field-label">SONG TITLE (optional)</span>
+            <input class="field-input" id="song-title" placeholder="Leave blank to let ZAY name it">
+          </div>
+        </div>
+
+        <span class="field-label">WHAT IS THIS SONG ABOUT?</span>
+        <textarea class="field-input" id="song-theme" placeholder="Describe the story, emotion, or message. The more detail, the better ZAY can write for you..."></textarea>
+
+        <span class="field-label">PERSONAL LINE OR PHRASE (optional)</span>
+        <input class="field-input" id="personal-line" placeholder="Any specific line you want included, or leave blank">
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="runStep1()">⚡ BUILD MY SONG BLUEPRINT</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: STRUCTURE -->
+      <div class="panel" id="panel-2">
+        <div class="output-card">
+          <div class="oc-head"><span class="oc-title">SONG STRUCTURE · AI BLUEPRINT</span><button class="oc-copy" onclick="copyOC('structure-out')">COPY</button></div>
+          <div class="oc-body" id="structure-out"><span class="oc-placeholder">Run Step 1 first to generate your blueprint.</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="runStep3()">⚡ GENERATE 10 HOOKS</button>
+          <button class="btn btn-ghost" onclick="rerunStructure()">↺ REGENERATE</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: HOOKS -->
+      <div class="panel" id="panel-3">
+        <div style="font-family:var(--mono);font-size:.6rem;color:var(--text);margin-bottom:.6rem">Pick the hook that hits hardest — ZAY will build your full song around it.</div>
+        <div class="hook-grid" id="hook-grid">
+          <div style="color:var(--muted);font-family:var(--mono);font-size:.6rem;grid-column:1/-1">Run Step 2 first to generate hooks.</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="write-song-btn" onclick="runStep4()" disabled>⚡ WRITE FULL SONG</button>
+          <button class="btn btn-ghost" onclick="runStep3()">↺ NEW HOOKS</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: LYRICS -->
+      <div class="panel" id="panel-4">
+        <div class="output-card">
+          <div class="oc-head"><span class="oc-title">FULL SONG LYRICS</span><button class="oc-copy" onclick="copyOC('lyrics-out')">COPY</button></div>
+          <div class="oc-body" id="lyrics-out"><span class="oc-placeholder">Pick a hook in Step 3 first.</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="goStep(5)">REFINE WITH NOTES →</button>
+          <button class="btn btn-ghost" onclick="runStep4()">↺ REWRITE</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: REVISION -->
+      <div class="panel" id="panel-5">
+        <span class="field-label">YOUR REVISION NOTES</span>
+        <textarea class="field-input" id="revision-notes" placeholder="What should ZAY change? e.g. 'Make verse 2 harder', 'Change the hook to mention loyalty', 'Add an ad-lib section'..."></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="runStep5()">⚡ REVISE SONG</button>
+        </div>
+        <div class="output-card" style="margin-top:.8rem">
+          <div class="oc-head"><span class="oc-title">REVISED VERSION</span><button class="oc-copy" onclick="copyOC('revision-out')">COPY</button></div>
+          <div class="oc-body" id="revision-out"><span class="oc-placeholder">Add notes and click Revise.</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="goStep(6)">BUILD RELEASE PLAN →</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: STRATEGY -->
+      <div class="panel" id="panel-6">
+        <div class="output-card">
+          <div class="oc-head"><span class="oc-title">RELEASE STRATEGY · MARKETING PLAN</span><button class="oc-copy" onclick="copyOC('strategy-out')">COPY</button></div>
+          <div class="oc-body" id="strategy-out"><span class="oc-placeholder">Generating your release plan…</span></div>
+        </div>
+        <div class="output-card">
+          <div class="oc-head"><span class="oc-title">INDUSTRY GUIDANCE · NEXT STEPS</span><button class="oc-copy" onclick="copyOC('guidance-out')">COPY</button></div>
+          <div class="oc-body" id="guidance-out"><span class="oc-placeholder">Loading guidance…</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="goStep(7)">EXPORT FULL PACKAGE →</button>
+          <button class="btn btn-ghost" onclick="runStep6()">↺ REGENERATE PLAN</button>
+        </div>
+      </div>
+
+      <!-- STEP 7: EXPORT -->
+      <div class="panel" id="panel-7">
+        <div class="song-preview" id="song-export-preview">
+          <div style="font-family:var(--head);font-size:1.2rem;color:var(--white);margin-bottom:.3rem" id="export-title">Your Song</div>
+          <div style="font-family:var(--mono);font-size:.48rem;color:var(--purple);margin-bottom:.8rem" id="export-meta">— —</div>
+          <div class="sp-section">HOOK</div>
+          <div class="sp-text" id="export-hook">—</div>
+          <div class="sp-section">FULL LYRICS</div>
+          <div class="sp-text" id="export-lyrics">—</div>
+          <div class="sp-section">RELEASE STRATEGY</div>
+          <div class="sp-text" id="export-strategy">—</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="exportTXT()">⬇ EXPORT .TXT</button>
+          <button class="btn btn-primary" onclick="copyAll()">⎘ COPY FULL PACKAGE</button>
+          <button class="btn btn-ghost" onclick="startOver()">↺ NEW SONG</button>
+        </div>
+      </div>
+
+    </div><!-- /studio-body -->
+  </div><!-- /studio -->
+
+  <!-- RIGHT: ZAY ASSISTANT -->
+  <div class="assistant-panel">
+    <div class="ap-head">
+      <div class="ap-title">ZAY · TSM PRODUCER ASSISTANT</div>
+      <div class="ap-sub">Ask anything about your song, industry, or next steps</div>
+    </div>
+    <div class="chat-feed" id="chat-feed">
+      <div class="msg msg-zay">
+        <div class="msg-avatar">Z</div>
+        <div class="msg-bubble">What's good. I'm ZAY — your TSM Producer. I'm here every step of the way. Start by telling me what kind of song you want to make. Genre, mood, what it's about — give me something to work with and I'll build it out for you.</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input" placeholder="Ask ZAY anything…" onkeydown="if(e.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">SEND</button>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────
+const DNA = {
+  genre: 'Hip-Hop', mood: 'Motivational',
+  artist: '', title: '', theme: '', personalLine: '',
+  structure: '', selectedHook: '', lyrics: '',
+  revised: '', strategy: '', guidance: '',
+};
+let currentStep = 1;
+
+const STEPS = {
+  1: { title: 'Song Concept', sub: 'Tell ZAY what you\'re creating — genre, mood, theme, artist vibe', pct: 14 },
+  2: { title: 'Song Blueprint', sub: 'AI-generated structure for your track', pct: 28 },
+  3: { title: 'Hook Generator', sub: 'Pick the hook that hits hardest', pct: 42 },
+  4: { title: 'Full Song Lyrics', sub: 'ZAY writes your complete song around your chosen hook', pct: 57 },
+  5: { title: 'Polish & Refine', sub: 'Give ZAY revision notes and get a tighter version', pct: 71 },
+  6: { title: 'Release Strategy', sub: 'Distribution, marketing, and playlist targeting plan', pct: 85 },
+  7: { title: 'Song Package Export', sub: 'Your complete song + strategy, ready to use', pct: 100 },
+};
+
+// ── NAVIGATION ───────────────────────────────────────────────────
+function goStep(n) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('panel-' + n).classList.add('active');
+  document.getElementById('step-btn-' + n).classList.add('active');
+  const s = STEPS[n];
+  document.getElementById('studio-title').textContent = s.title;
+  document.getElementById('studio-sub').textContent = s.sub;
+  document.getElementById('progress-bar').style.width = s.pct + '%';
+  currentStep = n;
+  if (n === 6 && !DNA.strategy) runStep6();
+  if (n === 7) buildExport();
+}
+
+function markDone(n) {
+  document.getElementById('step-btn-' + n).classList.add('done');
+}
+
+function updateDNA() {
+  const g = document.querySelector('#genre-pills .pill.active')?.textContent || DNA.genre;
+  const m = document.querySelector('#mood-pills .pill.active')?.textContent || DNA.mood;
+  DNA.genre = g; DNA.mood = m;
+  DNA.artist = document.getElementById('artist-ref').value;
+  DNA.title  = document.getElementById('song-title').value;
+  DNA.theme  = document.getElementById('song-theme').value;
+  DNA.personalLine = document.getElementById('personal-line').value;
+  document.getElementById('dna-preview').textContent =
+    `${g} · ${m}${DNA.artist ? ' · ' + DNA.artist : ''}${DNA.title ? ' · "' + DNA.title + '"' : ''}`;
+}
+
+function togglePill(el, group) {
+  document.querySelectorAll(`#${group}-pills .pill`).forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── API CALLS ────────────────────────────────────────────────────
+async function apiCall(endpoint, body) {
+  const r = await fetch('/api' + endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': 'TSM_PRO_ALPHA_2026' },
+    body: JSON.stringify(body),
+  });
+  return r.json();
+}
+
+function setOutput(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+function streamOutput(id, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  let i = 0;
+  const iv = setInterval(() => {
+    el.textContent = text.slice(0, i) + '▌';
+    el.scrollTop = el.scrollHeight;
+    i += 8;
+    if (i >= text.length) { clearInterval(iv); el.textContent = text; }
+  }, 12);
+}
+
+// ── STEP 1: BUILD BLUEPRINT ──────────────────────────────────────
+async function runStep1() {
+  updateDNA();
+  if (!DNA.theme.trim()) {
+    zayMessage("Tell me what the song is about first — give me a theme, story, or emotion to work with.");
+    return;
+  }
+  const btn = document.querySelector('#panel-1 .btn-primary');
+  btn.disabled = true; btn.textContent = 'ZAY IS BUILDING…';
+  zayMessage(`Got it. ${DNA.genre}, ${DNA.mood} vibes${DNA.artist ? ', ' + DNA.artist + ' style' : ''}. Let me build your blueprint…`);
+
+  const prompt = `You are ZAY, an elite music producer and songwriter AI for TSM Music Command.
+Artist style: ${DNA.artist || 'versatile'}
+Genre: ${DNA.genre}
+Mood: ${DNA.mood}
+Theme/Story: ${DNA.theme}
+${DNA.personalLine ? 'Must include this line: ' + DNA.personalLine : ''}
+${DNA.title ? 'Song title: ' + DNA.title : ''}
+
+Create a detailed SONG BLUEPRINT with:
+1. SUGGESTED TITLE (if none given)
+2. CONCEPT SUMMARY (2-3 sentences)
+3. SONG STRUCTURE (Intro / Verse 1 / Pre-Hook / Hook / Verse 2 / Bridge / Outro with bar counts)
+4. PRODUCTION NOTES (BPM range, key, instruments, vibe)
+5. LYRICAL DIRECTION (themes per section, tone, key words/phrases to hit)
+6. ARTIST DIRECTION (delivery style, ad-libs, energy)
+
+Be specific, creative, and make it feel like a real producer session.`;
+
+  try {
+    const d = await apiCall('/music/structure', { query: prompt, genre: DNA.genre, mood: DNA.mood });
+    DNA.structure = d.blueprint || d.structure || d.content || d.reply || 'Blueprint unavailable.';
+    streamOutput('structure-out', DNA.structure);
+    markDone(1);
+    goStep(2);
+    zayMessage("Blueprint is locked in. Check it out — this is your song's foundation. When you're ready, I'll generate 10 hooks for you to choose from.");
+  } catch(e) {
+    setOutput('structure-out', 'Error: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = '⚡ BUILD MY SONG BLUEPRINT';
+}
+
+function rerunStructure() { runStep1(); }
+
+// ── STEP 3: HOOKS ───────────────────────────────────────────────
+async function runStep3() {
+  if (!DNA.structure) { zayMessage("Build your blueprint first — Step 1."); return; }
+  document.getElementById('hook-grid').innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:.6rem;grid-column:1/-1" class="thinking"><span>.</span><span>.</span><span>.</span> Generating hooks</div>';
+  document.getElementById('write-song-btn').disabled = true;
+  goStep(3);
+  zayMessage("Generating 10 hooks for you. Pick the one that hits hardest — that's what I'll build the whole song around.");
+
+  try {
+    const d = await apiCall('/music/hooks/generate10', {
+      genre: DNA.genre, mood: DNA.mood, theme: DNA.theme,
+      artist: DNA.artist, structure: DNA.structure.slice(0, 500),
+    });
+    const hooks = d.hooks || [];
+    if (!hooks.length) { document.getElementById('hook-grid').innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:.6rem">Hook generation failed. Try again.</div>'; return; }
+    document.getElementById('hook-grid').innerHTML = hooks.map((h, i) => `
+      <div class="hook-card" id="hc-${i}" onclick="selectHook(${i}, this)">
+        <div class="hook-num">#${i+1}</div>
+        <div class="hook-text">${h}</div>
+      </div>`).join('');
+    markDone(2);
+    zayMessage(`Here are your 10 hooks. Click the one that feels right — I'll write the full song around it.`);
+  } catch(e) {
+    document.getElementById('hook-grid').innerHTML = `<div style="color:var(--red)">${e.message}</div>`;
+  }
+}
+
+function selectHook(i, el) {
+  document.querySelectorAll('.hook-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  DNA.selectedHook = el.querySelector('.hook-text').textContent;
+  document.getElementById('write-song-btn').disabled = false;
+  zayMessage(`Hook ${i+1} selected. That's the one. Hit "Write Full Song" and I'll build the whole thing around it.`);
+}
+
+// ── STEP 4: LYRICS ───────────────────────────────────────────────
+async function runStep4() {
+  if (!DNA.selectedHook) { zayMessage("Pick a hook first."); return; }
+  const btn = document.getElementById('write-song-btn');
+  btn.disabled = true; btn.textContent = 'ZAY IS WRITING…';
+  goStep(4);
+  setOutput('lyrics-out', '▌');
+  zayMessage(`Writing your full song now. Hook locked: "${DNA.selectedHook.slice(0,40)}…"`);
+
+  const prompt = `You are ZAY, an elite songwriter AI for TSM Music Command.
+Genre: ${DNA.genre} | Mood: ${DNA.mood} | Style: ${DNA.artist || 'versatile'}
+Theme: ${DNA.theme}
+HOOK (use exactly): ${DNA.selectedHook}
+${DNA.personalLine ? 'Must include: ' + DNA.personalLine : ''}
+Structure: ${DNA.structure.slice(0,400)}
+
+Write a COMPLETE SONG with:
+- [INTRO] if applicable
+- [VERSE 1] (16 bars)
+- [PRE-HOOK] (4-8 bars)
+- [HOOK] (using the exact hook provided, 8 bars)
+- [VERSE 2] (16 bars)
+- [PRE-HOOK]
+- [HOOK]
+- [BRIDGE] (8 bars, optional)
+- [OUTRO/HOOK]
+
+Make it feel real, emotional, and specific. Use internal rhymes, wordplay, and storytelling.
+Label each section clearly.`;
+
+  try {
+    const d = await apiCall('/music/song', { query: prompt, hook: DNA.selectedHook, genre: DNA.genre });
+    DNA.lyrics = d.content || d.reply || '';
+    streamOutput('lyrics-out', DNA.lyrics);
+    markDone(3); markDone(4);
+    zayMessage("Song is written. Read through it — if anything needs to change, go to Step 5 and give me your notes. Otherwise let's build your release plan.");
+  } catch(e) {
+    setOutput('lyrics-out', 'Error: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = '⚡ WRITE FULL SONG';
+}
+
+// ── STEP 5: REVISION ─────────────────────────────────────────────
+async function runStep5() {
+  const notes = document.getElementById('revision-notes').value.trim();
+  if (!notes) { zayMessage("Tell me what to change — be specific."); return; }
+  if (!DNA.lyrics) { zayMessage("Write the song first in Step 4."); return; }
+  setOutput('revision-out', '▌');
+  zayMessage(`On it. Revising based on your notes: "${notes.slice(0,60)}…"`);
+
+  try {
+    const d = await apiCall('/music/revision/run', {
+      lyrics: DNA.lyrics, notes, genre: DNA.genre, hook: DNA.selectedHook,
+    });
+    DNA.revised = d.content || d.reply || '';
+    streamOutput('revision-out', DNA.revised);
+    markDone(5);
+    zayMessage("Revision done. Compare it to the original — if it's better, use this version for export.");
+  } catch(e) {
+    setOutput('revision-out', 'Error: ' + e.message);
+  }
+}
+
+// ── STEP 6: STRATEGY ─────────────────────────────────────────────
+async function runStep6() {
+  setOutput('strategy-out', '▌');
+  setOutput('guidance-out', '▌');
+  const finalLyrics = DNA.revised || DNA.lyrics;
+
+  try {
+    const [s, g] = await Promise.all([
+      apiCall('/music/strategy', {
+        genre: DNA.genre, mood: DNA.mood, artist: DNA.artist,
+        title: DNA.title, theme: DNA.theme,
+        query: `Release strategy for a ${DNA.genre} song: "${DNA.title || 'Untitled'}" — ${DNA.theme}. Include: release timeline, DSP strategy, playlist targeting, social media rollout, sync licensing opportunities, and marketing angles.`,
+      }),
+      apiCall('/music/guidance', {
+        genre: DNA.genre, artist: DNA.artist, theme: DNA.theme,
+        query: `Industry guidance for an independent artist releasing a ${DNA.genre} track. Career development, networking, monetization, and next steps after release.`,
+      }),
+    ]);
+    DNA.strategy = s.content || s.reply || '';
+    DNA.guidance = g.content || g.reply || '';
+    streamOutput('strategy-out', DNA.strategy);
+    streamOutput('guidance-out', DNA.guidance);
+    markDone(6);
+    zayMessage("Release plan and guidance are ready. When you're satisfied, go to Step 7 to export your full song package.");
+  } catch(e) {
+    setOutput('strategy-out', 'Error: ' + e.message);
+  }
+}
+
+// ── STEP 7: EXPORT ───────────────────────────────────────────────
+function buildExport() {
+  const final = DNA.revised || DNA.lyrics;
+  document.getElementById('export-title').textContent = DNA.title || 'Untitled Song';
+  document.getElementById('export-meta').textContent = `${DNA.genre} · ${DNA.mood}${DNA.artist ? ' · ' + DNA.artist + ' style' : ''}`;
+  document.getElementById('export-hook').textContent = DNA.selectedHook || '—';
+  document.getElementById('export-lyrics').textContent = final || '—';
+  document.getElementById('export-strategy').textContent = DNA.strategy || '—';
+  markDone(7);
+}
+
+function exportTXT() {
+  const final = DNA.revised || DNA.lyrics;
+  const text = `TSM MUSIC COMMAND — SONG PACKAGE
+Generated by ZAY Producer AI
+=====================================
+
+TITLE: ${DNA.title || 'Untitled'}
+GENRE: ${DNA.genre} | MOOD: ${DNA.mood}
+STYLE REF: ${DNA.artist || 'N/A'}
+THEME: ${DNA.theme}
+
+HOOK:
+${DNA.selectedHook}
+
+FULL LYRICS:
+${final}
+
+RELEASE STRATEGY:
+${DNA.strategy}
+
+INDUSTRY GUIDANCE:
+${DNA.guidance}
+
+SONG BLUEPRINT:
+${DNA.structure}
+=====================================
+TSM Music Command · tsm-shell.fly.dev`;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (DNA.title || 'song-package').replace(/\s+/g, '-').toLowerCase() + '.txt';
+  a.click();
+}
+
+function copyAll() {
+  const final = DNA.revised || DNA.lyrics;
+  navigator.clipboard.writeText(`${DNA.title || 'Untitled'}\n\nHOOK:\n${DNA.selectedHook}\n\nLYRICS:\n${final}\n\nSTRATEGY:\n${DNA.strategy}`);
+  zayMessage("Full package copied to clipboard.");
+}
+
+function copyOC(id) {
+  const el = document.getElementById(id);
+  if (el) navigator.clipboard.writeText(el.textContent);
+}
+
+function startOver() {
+  Object.keys(DNA).forEach(k => DNA[k] = '');
+  DNA.genre = 'Hip-Hop'; DNA.mood = 'Motivational';
+  document.querySelectorAll('.step-item').forEach(s => { s.classList.remove('done','active'); });
+  document.querySelectorAll('.oc-body').forEach(el => el.innerHTML = '<span class="oc-placeholder">—</span>');
+  goStep(1);
+  zayMessage("Fresh start. What are we making?");
+}
+
+// ── ZAY CHAT ─────────────────────────────────────────────────────
+function zayMessage(text) {
+  const feed = document.getElementById('chat-feed');
+  const msg = document.createElement('div');
+  msg.className = 'msg msg-zay';
+  msg.innerHTML = `<div class="msg-avatar">Z</div><div class="msg-bubble">${text}</div>`;
+  feed.appendChild(msg);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function userMessage(text) {
+  const feed = document.getElementById('chat-feed');
+  const msg = document.createElement('div');
+  msg.className = 'msg msg-user';
+  msg.innerHTML = `<div class="msg-avatar">U</div><div class="msg-bubble">${text}</div>`;
+  feed.appendChild(msg);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  userMessage(text);
+
+  // Build context from current DNA
+  const context = `Current song context: Genre=${DNA.genre}, Mood=${DNA.mood}, Artist=${DNA.artist||'none'}, Theme=${DNA.theme||'not set yet'}, Step=${currentStep}/7, Has lyrics=${!!DNA.lyrics}`;
+
+  try {
+    const d = await apiCall('/music/coach', {
+      query: `${context}\n\nUser: ${text}\n\nRespond as ZAY, a real producer/artist coach. Keep it direct, real, and helpful. Under 80 words.`,
+    });
+    const reply = d.content || d.reply || "Let me think on that.";
+    zayMessage(reply);
+  } catch(e) {
+    zayMessage("Connection dropped for a sec. Ask me again.");
+  }
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendChat();
+});
+</script>
+
+
+
+
+
+
+
+
+<script>
+// --- TSM Native Audio Engine & Cadence Simulation Pipeline ---
+let tsmAudioCtx = null;
+let metroTimer = null;
+let metroActive = false;
+let systemBpm = 95;
+
+const tsmDeliveryProfiles = {
+    'cardi b': { rate: 1.15, pitch: 0.95, text: "Staccato, aggressive, heavy emphasis on downbeats." },
+    'aggressive': { rate: 1.20, pitch: 0.85, text: "Rapid-fire delivery, tight rhythmic pocket, sharp enunciation." },
+    'melodic': { rate: 0.95, pitch: 1.10, text: "Smooth melodic delivery, slightly behind the beat, drawn out vowels." },
+    'default': { rate: 1.0, pitch: 1.0, text: "Steady mid-tempo structural cadence delivery." }
+};
+
+function playMetroClick(time) {
+    if (!tsmAudioCtx) tsmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = tsmAudioCtx.createOscillator();
+    const gainNode = tsmAudioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(650, time);
+    gainNode.gain.setValueAtTime(0.12, time);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+    osc.connect(gainNode);
+    gainNode.connect(tsmAudioCtx.destination);
+    osc.start(time);
+    osc.stop(time + 0.04);
+}
+
+function syncMetronomeEngine() {
+    const btn = document.getElementById('toggle-metro-btn');
+    if (!btn) return;
+    if (metroActive) {
+        clearInterval(metroTimer);
+        metroActive = false;
+        btn.innerText = "Start Metronome";
+        btn.className = btn.className.replace('text-green-400 bg-purple-900/60', 'text-purple-300 bg-purple-950/40');
+    } else {
+        if (!tsmAudioCtx) tsmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const intervalMs = (60 / systemBpm) * 1000;
+        metroTimer = setInterval(() => playMetroClick(tsmAudioCtx.currentTime), intervalMs);
+        metroActive = true;
+        btn.innerText = "Stop Metronome";
+        btn.className = btn.className.replace('text-purple-300 bg-purple-950/40', 'text-green-400 bg-purple-900/60');
+    }
+}
+
+function runCadenceSimulation() {
+    if (!('speechSynthesis' in window)) return alert("Browser text-to-speech engine unavailable.");
+    window.speechSynthesis.cancel();
+
+    const textBlock = document.getElementById('full-lyrics-content')?.innerText || document.body.innerText;
+    const cleanLines = textBlock.split('\n').filter(l => l.trim() && !l.startsWith('[')).slice(0, 4).join('\n');
+    
+    const activeDNA = window.DNA || {};
+    const styleStr = (activeDNA.style || activeDNA.genre || 'default').toLowerCase();
+    const profileKey = Object.keys(tsmDeliveryProfiles).find(k => styleStr.includes(k)) || 'default';
+    const activeProfile = tsmDeliveryProfiles[profileKey];
+
+    const utterance = new SpeechSynthesisUtterance(cleanLines || "No operational lyrics parsed.");
+    utterance.rate = activeProfile.rate;
+    utterance.pitch = activeProfile.pitch;
+
+    const visualBar = document.getElementById('cadence-visual-bar');
+    if (visualBar) {
+        utterance.onstart = () => {
+            visualBar.style.width = '100%';
+            visualBar.style.transitionDuration = `${(cleanLines.length * 0.06) / activeProfile.rate}s`;
+        };
+        utterance.onend = () => {
+            visualBar.style.width = '0%';
+            visualBar.style.transitionDuration = '0.2s';
+        };
+    }
+    window.speechSynthesis.speak(utterance);
+}
+
+// Hook state listener dynamically into the system loop
+function initAudioAssistanceMatrix() {
+    const activeDNA = window.DNA || {};
+    systemBpm = activeDNA.bpm || (activeDNA.style?.toLowerCase().includes('aggressive') ? 112 : 90);
+    
+    const bpmDisp = document.getElementById('assistance-bpm-display');
+    if (bpmDisp) bpmDisp.innerText = `BPM: ${systemBpm}`;
+
+    const styleStr = (activeDNA.style || activeDNA.genre || 'default').toLowerCase();
+    const profileKey = Object.keys(tsmDeliveryProfiles).find(k => styleStr.includes(k)) || 'default';
+    
+    const labelDisp = document.getElementById('cadence-pocket-label');
+    if (labelDisp) labelDisp.innerText = `Delivery Pocket: ${tsmDeliveryProfiles[profileKey].text}`;
+
+    const metroBtn = document.getElementById('toggle-metro-btn');
+    const speechBtn = document.getElementById('play-cadence-btn');
+    
+    if (metroBtn) metroBtn.onclick = syncMetronomeEngine;
+    if (speechBtn) speechBtn.onclick = runCadenceSimulation;
+}
+
+// Intercept execution pipeline automatically when user captures the song data object
+const originalZyUseCurrentSong = window.zyUseCurrentSong;
+window.zyUseCurrentSong = function() {
+    if (typeof originalZyUseCurrentSong === 'function') originalZyUseCurrentSong();
+    setTimeout(initAudioAssistanceMatrix, 200);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initAudioAssistanceMatrix, 1000);
+});
+</script>
+
+
+
+
+
+
+<style id="zay-clean-studio-style">
+html,body{height:auto!important;min-height:100%;overflow-y:auto!important}
+body{padding-bottom:130px!important}
+main,.main,.content,.stage,.app,.workspace,.center-panel{overflow:visible!important}
+pre,.output,.lyrics-output,.song-output,.blueprint-output{max-height:none!important;overflow:visible!important;padding-bottom:70px!important}
+
+#zayCleanTools{
+  margin:18px 24px;
+  padding:16px;
+  background:linear-gradient(135deg,rgba(181,108,255,.16),rgba(255,0,200,.05));
+  border:1px solid rgba(181,108,255,.35);
+  border-radius:18px;
+  color:#f7eaff;
+  font-family:Inter,system-ui,Arial;
+}
+#zayCleanTools .tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+#zayCleanTools button{
+  border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer;
+  background:#b56cff;color:white;
+}
+#zayCleanTools button.green{background:#00ffc6;color:#001}
+#zayCleanTools button.gold{background:#ffc400;color:#111}
+#zayCleanTools button.dark{background:#180024;border:1px solid rgba(181,108,255,.35);color:#f7eaff}
+#zayCadencePanel{
+  margin-top:14px;
+  padding:14px;
+  background:#08000e;
+  border:1px solid rgba(181,108,255,.28);
+  border-radius:16px;
+}
+#zayTapStatus{color:#cfa8ff;font-size:12px;margin-top:8px}
+</style>
+
+<section id="zayCleanTools">
+  <div style="font-size:11px;letter-spacing:.16em;color:#d86cff;font-weight:950;text-transform:uppercase">
+    ZAY Producer Tools · Clean Studio Layer
+  </div>
+  <div class="tools">
+    <button class="green" onclick="zayBuildSongClean()">Build Complete Song</button>
+    <button onclick="zayHooksClean()">Concept Hooks</button>
+    <button onclick="zayAdlibsClean()">Adlibs + Bridge</button>
+    <button onclick="zayProducerNotesClean()">Producer Notes</button>
+    <button class="gold" onclick="zayDAWClean()">DAW Mode</button>
+    <button class="dark" onclick="zaySaveClean()">Save Song</button>
+    <button class="dark" onclick="zayExportClean()">Export TXT</button>
+  </div>
+
+  <div id="zayCadencePanel">
+    <div style="font-size:11px;letter-spacing:.14em;color:#d86cff;font-weight:950;text-transform:uppercase">
+      Tap Tempo / Play Cadence Guide
+    </div>
+    <div class="tools">
+      <button class="gold" onclick="zayTapTempo()">Tap Tempo</button>
+      <button class="green" onclick="zayPlayCadenceGuide()">Play Cadence Guide</button>
+      <button class="dark" onclick="zayStopCadenceGuide()">Stop</button>
+      <button onclick="zaySpeakCadenceCues()">Speak Cadence Cues</button>
+    </div>
+    <div id="zayTapStatus">Suggested pocket: 86–90 BPM · steady mid-tempo structural cadence.</div>
+  </div>
+
+  <div id="zaySongBankClean" style="margin-top:12px;color:#cfa8ff">No saved songs yet.</div>
+</section>
+
+
+
+
+<script id="zay-clean-studio-js">
+(function(){
+  console.log("ZAY Clean Studio Runtime Repair loading");
+
+  let taps=[], cadenceTimer=null, audioCtx=null, bpm=88, beat=0;
+
+  function q(sel){ return document.querySelector(sel); }
+  function qa(sel){ return [...document.querySelectorAll(sel)]; }
+
+  function getConcept(){
+    const fields = qa("textarea,input").map(x => (x.value || "").trim()).filter(Boolean);
+    return fields[0] || localStorage.getItem("zay-current-concept") || "Motivational rap about pressure, hustle, and no fakeness.";
+  }
+
+  function findOutput(){
+    return q("#zayProductionOutput") ||
+      q("#zaySongOutput") ||
+      q("#lyrics-output") ||
+      q("#song-output") ||
+      q(".song-output") ||
+      q(".output") ||
+      qa("pre").find(p => (p.innerText||"").length > 20) ||
+      qa("pre")[0];
+  }
+
+  function ensureOutput(){
+    let out = findOutput();
+    if(out) return out;
+
+    out = document.createElement("pre");
+    out.id = "zayRuntimeOutput";
+    out.style.cssText = "white-space:pre-wrap;margin:18px 24px;padding:16px;background:#08000e;border:1px solid rgba(181,108,255,.35);border-radius:16px;color:#f7eaff;min-height:260px;";
+    const anchor = q("#zayCleanTools") || q("main") || document.body;
+    anchor.parentNode.insertBefore(out, anchor.nextSibling);
+    return out;
+  }
+
+  function write(txt){
+    const out = ensureOutput();
+    out.textContent = txt;
+    out.style.whiteSpace = "pre-wrap";
+    out.scrollIntoView({behavior:"smooth",block:"center"});
+    localStorage.setItem("zay-last-output", txt);
+    localStorage.setItem("zay-current-song", txt);
+  }
+
+  function beep(freq=880,dur=.055,type="sine"){
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    osc.type=type;
+    osc.frequency.value=freq;
+    gain.gain.setValueAtTime(.0001,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.22,audioCtx.currentTime+.01);
+    gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime+dur+.02);
+  }
+
+  window.zayTapTempo=function(){
+    const now=Date.now();
+    taps=taps.filter(t=>now-t<4000);
+    taps.push(now);
+    if(taps.length>=2){
+      const diffs=taps.slice(1).map((t,i)=>t-taps[i]);
+      const avg=diffs.reduce((a,b)=>a+b,0)/diffs.length;
+      bpm=Math.max(55,Math.min(160,Math.round(60000/avg)));
+    }
+    const status=q("#zayTapStatus");
+    if(status) status.textContent=`Tapped BPM: ${bpm} · Delivery pocket: ${bpm<82?'laid-back':bpm>98?'urgent/aggressive':'steady mid-tempo bounce'}`;
+    beep(1000,.04);
+  };
+
+  window.zayPlayCadenceGuide=function(){
+    window.zayStopCadenceGuide();
+    beat=0;
+    const interval=60000/bpm;
+    const status=q("#zayTapStatus");
+    if(status) status.textContent=`Playing cadence guide at ${bpm} BPM · punch on 1 and 3.`;
+    cadenceTimer=setInterval(()=>{
+      beat=(beat%4)+1;
+      if(beat===1) beep(1200,.07,"square");
+      else if(beat===3) beep(920,.055,"triangle");
+      else beep(620,.045,"sine");
+    }, interval);
+  };
+
+  window.zayStopCadenceGuide=function(){
+    if(cadenceTimer){ clearInterval(cadenceTimer); cadenceTimer=null; }
+    const status=q("#zayTapStatus");
+    if(status) status.textContent=`Stopped. Current pocket: ${bpm} BPM.`;
+  };
+
+  window.zaySpeakCadenceCues=function(){
+    const text=`ZAY cadence guide. Tempo ${bpm} BPM. Count one, two, three, four. Punch Grindin and Slavin on beat one. Pause before Rule One. Double the final hook. Keep adlibs low under the verse.`;
+    if("speechSynthesis" in window){
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(text);
+      u.rate=.92; u.pitch=.82;
+      speechSynthesis.speak(u);
+    } else {
+      write(text);
+    }
+  };
+
+  window.zayBuildSongClean=function(){
+    const raw=getConcept();
+    write(`TITLE: Rule 1 No Fakeness
+
+SONG DNA
+BPM: ${bpm}
+Pocket: Southern motivational bounce
+Delivery: confident, gritty, controlled
+Cadence: punch beat 1 and 3, pause before Rule 1
+
+[HOOK]
+Grindin' n slavin', still misbehavin',
+Fresh n clean even missed on shavin'.
+Some fear hustle, some can't take struggle,
+Real ones know when it's time for muscle.
+
+I plan for greatness, rule one: no fakeness,
+Real is what you feel, that's pill, so take this.
+Built from the bottom where the pressure'll break kids,
+Now the whole room quiet every time the bass hits.
+
+[VERSE 1]
+${raw}
+
+[BRIDGE]
+If I bend, I won't break,
+If I fall, I still wake.
+Every risk that I take
+Put my name on the gate.
+
+No fake, no fear,
+I made pain disappear.
+Now the mission so clear,
+Whole team right here.
+
+[FINAL HOOK]
+Repeat hook with stacked doubles, low adlibs, and wide choir pad.
+
+ADLIBS
+(Yeah!) (Too real!) (No fakeness!) (Pressure!) (Talk to 'em!)
+
+DAW POCKET
+${bpm} BPM · punch beat 1 and 3 · pause before Rule 1.`);
+  };
+
+  window.zayHooksClean=function(){
+    write(`CONCEPT HOOKS
+
+1. Grindin' n slavin', still misbehavin' / Fresh n clean even missed on shavin'
+2. Rule one: no fake when the pressure get real / Truth in my chest, that's the pill you can feel
+3. Fresh out the fire, still clean with the cadence / Made for the greatness, no room for the fakeness
+
+ZAY PICK
+Use Hook 1. It keeps your identity and has the strongest bounce.`);
+  };
+
+  window.zayAdlibsClean=function(){
+    write(`ADLIBS + BRIDGE
+
+Verse adlibs:
+(Talk to 'em) (Facts) (Still here) (No mask)
+
+Hook adlibs:
+(Yeah!) (Fresh n clean!) (No fakeness!) (Bass hit!)
+
+Bridge:
+If I bend, I won't break,
+If I fall, I still wake.
+Every risk that I take
+Put my name on the gate.`);
+  };
+
+  window.zayProducerNotesClean=function(){
+    write(`ZAY PRODUCER NOTES
+
+• Keep original hook wording.
+• Tap tempo around ${bpm} BPM.
+• Pause before "Rule 1."
+• Double the final hook.
+• Keep verse adlibs low and gritty.
+• Use choir pad or filtered soul sample behind final hook.
+• Delivery should feel confident, not rushed.`);
+  };
+
+  window.zayDAWClean=function(){
+    write(`DAW MODE
+
+BPM: ${bpm}
+Key: F minor
+Pocket: steady mid-tempo bounce
+
+Markers:
+0:00 Intro
+0:12 Hook
+0:38 Verse 1
+1:18 Hook
+1:44 Verse 2
+2:24 Bridge
+2:48 Final Hook
+3:18 Outro
+
+Tracks:
+Lead vocal
+Hook doubles L/R
+Low adlibs
+Hype adlibs
+Choir pad
+808
+Snare
+FX risers`);
+  };
+
+  window.zaySaveClean=function(){
+    const txt=localStorage.getItem("zay-last-output") || ensureOutput().textContent || "";
+    const bank=JSON.parse(localStorage.getItem("zay-song-bank")||"[]");
+    const title=(txt.match(/TITLE:\\s*(.*)/)||[])[1] || "Untitled Song";
+    bank.unshift({title,content:txt,ts:Date.now(),bpm});
+    localStorage.setItem("zay-song-bank",JSON.stringify(bank.slice(0,20)));
+    renderBank();
+  };
+
+  window.zayExportClean=function(){
+    const txt=localStorage.getItem("zay-last-output") || ensureOutput().textContent || "";
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));
+    a.download="zay-song-package.txt";
+    a.click();
+  };
+
+  function renderBank(){
+    const el=q("#zaySongBankClean");
+    if(!el) return;
+    const bank=JSON.parse(localStorage.getItem("zay-song-bank")||"[]");
+    if(!bank.length){ el.textContent="No saved songs yet."; return; }
+    el.innerHTML=bank.map((s,i)=>`
+      <div style="padding:8px;border-top:1px solid rgba(255,255,255,.08);cursor:pointer" data-song-idx="${i}">
+        <b>${s.title}</b> · ${s.bpm||88} BPM<br><small>${new Date(s.ts).toLocaleString()}</small>
+      </div>`).join("");
+    el.querySelectorAll("[data-song-idx]").forEach(x=>{
+      x.onclick=()=>{
+        const i=Number(x.dataset.songIdx);
+        const b=JSON.parse(localStorage.getItem("zay-song-bank")||"[]");
+        write(b[i].content);
+      };
+    });
+  }
+
+  function bindButtons(){
+    const map=[
+      ["Build Complete Song", window.zayBuildSongClean],
+      ["Concept Hooks", window.zayHooksClean],
+      ["Adlibs + Bridge", window.zayAdlibsClean],
+      ["Producer Notes", window.zayProducerNotesClean],
+      ["DAW Mode", window.zayDAWClean],
+      ["Save Song", window.zaySaveClean],
+      ["Export TXT", window.zayExportClean],
+      ["Tap Tempo", window.zayTapTempo],
+      ["Play Cadence Guide", window.zayPlayCadenceGuide],
+      ["Stop", window.zayStopCadenceGuide],
+      ["Speak Cadence Cues", window.zaySpeakCadenceCues]
+    ];
+    qa("button").forEach(btn=>{
+      const txt=(btn.innerText||"").trim();
+      const hit=map.find(([label])=>txt.includes(label));
+      if(hit){
+        btn.onclick=hit[1];
+        btn.dataset.zayRuntimeBound="1";
+      }
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded",()=>{bindButtons();renderBank();});
+  setTimeout(()=>{bindButtons();renderBank();},500);
+  setTimeout(()=>{bindButtons();renderBank();},1500);
+
+  console.log("ZAY Clean Studio Runtime Repair online");
+})();
+</script>
+
+
+<script id="zay-force-tools-visible">
+(function(){
+  function ensureBar(){
+    if(document.getElementById("zayStickyTools")) return;
+
+    const bar=document.createElement("div");
+    bar.id="zayStickyTools";
+    bar.style.cssText="position:fixed;left:280px;right:340px;bottom:16px;z-index:99998;background:#170020;border:1px solid rgba(181,108,255,.5);border-radius:18px;padding:12px;box-shadow:0 0 28px rgba(181,108,255,.25);display:flex;gap:8px;flex-wrap:wrap";
+
+    bar.innerHTML=`
+      <button onclick="zayBuildSongClean()" style="background:#00ffc6;color:#001;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Build Song</button>
+      <button onclick="zayHooksClean()" style="background:#b56cff;color:white;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Hooks</button>
+      <button onclick="zayAdlibsClean()" style="background:#b56cff;color:white;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Adlibs</button>
+      <button onclick="zayDAWClean()" style="background:#ffc400;color:#111;border:0;border-radius:10px;padding:10px 12px;font-weight:900">DAW</button>
+      <button onclick="zayTapTempo()" style="background:#ffc400;color:#111;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Tap Tempo</button>
+      <button onclick="zayPlayCadenceGuide()" style="background:#00ffc6;color:#001;border:0;border-radius:10px;padding:10px 12px;font-weight:900">Play Cadence</button>
+      <button onclick="zayStopCadenceGuide()" style="background:#1a0828;color:#fff;border:1px solid rgba(181,108,255,.4);border-radius:10px;padding:10px 12px;font-weight:900">Stop</button>
+      <button onclick="zaySaveClean()" style="background:#1a0828;color:#fff;border:1px solid rgba(181,108,255,.4);border-radius:10px;padding:10px 12px;font-weight:900">Save</button>
+      <button onclick="zayExportClean()" style="background:#1a0828;color:#fff;border:1px solid rgba(181,108,255,.4);border-radius:10px;padding:10px 12px;font-weight:900">Export</button>
+    `;
+
+    document.body.appendChild(bar);
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",ensureBar);
+  else ensureBar();
+
+  setTimeout(ensureBar,800);
+})();
+</script>
+
+</body>
+</html>
