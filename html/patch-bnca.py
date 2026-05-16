@@ -8,7 +8,7 @@ Usage:    python3 patch-bnca.py
 import os, sys, re, shutil
 from datetime import datetime
 
-TARGET = "html/healthcare/healthcare-command-center.html"
+TARGET = "healthcare/index.html"
 
 if not os.path.exists(TARGET):
     sys.exit(f"❌ Not found: {TARGET}\n   Run from /workspaces/tsm-shell")
@@ -250,7 +250,7 @@ open(TARGET, "w", encoding="utf-8").write(content)
 print(f"✅ Patch injected into {TARGET}")
 print()
 print("Next steps:")
-print("  1. git add html/healthcare/healthcare-command-center.html")
+print("  1. git add healthcare/index.html")
 print("  2. git commit -m 'feat: persistent BNCA renderer + Groq fix'")
 print("  3. git push")
 print()
