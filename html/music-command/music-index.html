@@ -501,7 +501,7 @@ Be specific, creative, and make it feel like a real producer session.`;
 
   try {
     const d = await apiCall('/music/structure', { query: prompt, genre: DNA.genre, mood: DNA.mood });
-    DNA.structure = d.content || d.reply || 'Blueprint unavailable.';
+    DNA.structure = d.blueprint || d.structure || d.content || d.reply || 'Blueprint unavailable.';
     streamOutput('structure-out', DNA.structure);
     markDone(1);
     goStep(2);
@@ -1152,6 +1152,114 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hooksBtn) {
         hooksBtn.addEventListener('click', () => refreshProducerGuardrails(3));
     }
+});
+</script>
+<script>
+// --- TSM Native Audio Engine & Cadence Simulation Pipeline ---
+let tsmAudioCtx = null;
+let metroTimer = null;
+let metroActive = false;
+let systemBpm = 95;
+
+const tsmDeliveryProfiles = {
+    'cardi b': { rate: 1.15, pitch: 0.95, text: "Staccato, aggressive, heavy emphasis on downbeats." },
+    'aggressive': { rate: 1.20, pitch: 0.85, text: "Rapid-fire delivery, tight rhythmic pocket, sharp enunciation." },
+    'melodic': { rate: 0.95, pitch: 1.10, text: "Smooth melodic delivery, slightly behind the beat, drawn out vowels." },
+    'default': { rate: 1.0, pitch: 1.0, text: "Steady mid-tempo structural cadence delivery." }
+};
+
+function playMetroClick(time) {
+    if (!tsmAudioCtx) tsmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = tsmAudioCtx.createOscillator();
+    const gainNode = tsmAudioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(650, time);
+    gainNode.gain.setValueAtTime(0.12, time);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+    osc.connect(gainNode);
+    gainNode.connect(tsmAudioCtx.destination);
+    osc.start(time);
+    osc.stop(time + 0.04);
+}
+
+function syncMetronomeEngine() {
+    const btn = document.getElementById('toggle-metro-btn');
+    if (!btn) return;
+    if (metroActive) {
+        clearInterval(metroTimer);
+        metroActive = false;
+        btn.innerText = "Start Metronome";
+        btn.className = btn.className.replace('text-green-400 bg-purple-900/60', 'text-purple-300 bg-purple-950/40');
+    } else {
+        if (!tsmAudioCtx) tsmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const intervalMs = (60 / systemBpm) * 1000;
+        metroTimer = setInterval(() => playMetroClick(tsmAudioCtx.currentTime), intervalMs);
+        metroActive = true;
+        btn.innerText = "Stop Metronome";
+        btn.className = btn.className.replace('text-purple-300 bg-purple-950/40', 'text-green-400 bg-purple-900/60');
+    }
+}
+
+function runCadenceSimulation() {
+    if (!('speechSynthesis' in window)) return alert("Browser text-to-speech engine unavailable.");
+    window.speechSynthesis.cancel();
+
+    const textBlock = document.getElementById('full-lyrics-content')?.innerText || document.body.innerText;
+    const cleanLines = textBlock.split('\n').filter(l => l.trim() && !l.startsWith('[')).slice(0, 4).join('\n');
+    
+    const activeDNA = window.DNA || {};
+    const styleStr = (activeDNA.style || activeDNA.genre || 'default').toLowerCase();
+    const profileKey = Object.keys(tsmDeliveryProfiles).find(k => styleStr.includes(k)) || 'default';
+    const activeProfile = tsmDeliveryProfiles[profileKey];
+
+    const utterance = new SpeechSynthesisUtterance(cleanLines || "No operational lyrics parsed.");
+    utterance.rate = activeProfile.rate;
+    utterance.pitch = activeProfile.pitch;
+
+    const visualBar = document.getElementById('cadence-visual-bar');
+    if (visualBar) {
+        utterance.onstart = () => {
+            visualBar.style.width = '100%';
+            visualBar.style.transitionDuration = `${(cleanLines.length * 0.06) / activeProfile.rate}s`;
+        };
+        utterance.onend = () => {
+            visualBar.style.width = '0%';
+            visualBar.style.transitionDuration = '0.2s';
+        };
+    }
+    window.speechSynthesis.speak(utterance);
+}
+
+// Hook state listener dynamically into the system loop
+function initAudioAssistanceMatrix() {
+    const activeDNA = window.DNA || {};
+    systemBpm = activeDNA.bpm || (activeDNA.style?.toLowerCase().includes('aggressive') ? 112 : 90);
+    
+    const bpmDisp = document.getElementById('assistance-bpm-display');
+    if (bpmDisp) bpmDisp.innerText = `BPM: ${systemBpm}`;
+
+    const styleStr = (activeDNA.style || activeDNA.genre || 'default').toLowerCase();
+    const profileKey = Object.keys(tsmDeliveryProfiles).find(k => styleStr.includes(k)) || 'default';
+    
+    const labelDisp = document.getElementById('cadence-pocket-label');
+    if (labelDisp) labelDisp.innerText = `Delivery Pocket: ${tsmDeliveryProfiles[profileKey].text}`;
+
+    const metroBtn = document.getElementById('toggle-metro-btn');
+    const speechBtn = document.getElementById('play-cadence-btn');
+    
+    if (metroBtn) metroBtn.onclick = syncMetronomeEngine;
+    if (speechBtn) speechBtn.onclick = runCadenceSimulation;
+}
+
+// Intercept execution pipeline automatically when user captures the song data object
+const originalZyUseCurrentSong = window.zyUseCurrentSong;
+window.zyUseCurrentSong = function() {
+    if (typeof originalZyUseCurrentSong === 'function') originalZyUseCurrentSong();
+    setTimeout(initAudioAssistanceMatrix, 200);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initAudioAssistanceMatrix, 1000);
 });
 </script>
 </body>
