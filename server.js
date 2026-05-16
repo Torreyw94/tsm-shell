@@ -870,20 +870,26 @@ CONFIDENCE
 }
 
 
-app.all("/api/wip/sector-ai",(req,res)=>{
-  const body=req.body||{};
-  const sector=body.sector || body.payload?.sector || "CONSTRUCTION";
-  const context=body.question || body.context || body.payload?.context || "Sector WIP review";
-  const txt=tsmSectorWipReply(sector,context);
-  res.json({ok:true,sector:String(sector).toUpperCase(),reply:txt,content:txt,mesh:true,timestamp:new Date().toISOString()});
-// TSM_INSURANCE_QUERY_ROUTE_FINAL
-
+app.all("/api/wip/sector-ai", (req, res) => {
+    const body = req.body || {};
+    const sector = body.sector || body.payload?.sector || "CONSTRUCTION";
+    const context = body.question || body.context || body.payload?.context || "Sector WIP review";
+    const txt = tsmSectorWipReply(sector, context);
+    res.json({
+        ok: true,
+        sector: String(sector).toUpperCase(),
+        reply: txt,
+        content: txt,
+        mesh: true,
+        timestamp: new Date().toISOString()
+    });
+});
 
 // TSM_FINOPS_QUERY_NODE01_FINAL
-app.all("/api/finance/query",(req,res)=>{
-  const payload=(req.body&&(req.body.payload||req.body))||{};
-  const context=payload.context || "FinOps WIP review";
-  const txt=`FINOPS BNCA SYNTHESIS
+app.all("/api/finance/query", (req, res) => {
+    const payload = (req.body && (req.body.payload || req.body)) || {};
+    const context = payload.context || "FinOps WIP review";
+    const txt = `FINOPS BNCA SYNTHESIS
 
 TOP ISSUE
 ${context}
@@ -918,9 +924,8 @@ Signal routed to FinOps Strategist for executive BNCA synthesis.
 
 CONFIDENCE
 94%`;
-  res.json({ok:true,sector:"FINOPS",node:"NODE 01 · FINANCIAL ACCOUNTING",reply:txt,content:txt,mesh:true,timestamp:new Date().toISOString()});
+    res.json({ ok: true, sector: "FINOPS", node: "NODE 01 · FINANCIAL ACCOUNTING", reply: txt, content: txt, mesh: true, timestamp: new Date().toISOString() });
 });
-
 
 // ── Music Command route ───────────────────────────────────────────
 app.get(['/music','/suite/music'],
