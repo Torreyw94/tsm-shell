@@ -35,7 +35,7 @@ PATCH = r"""
     });
   })();
 
-  var MODELS = ["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768"];
+  var MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"];
 
   /* ── Groq caller with 429 retry + model cascade ── */
   async function callGroq(prompt) {

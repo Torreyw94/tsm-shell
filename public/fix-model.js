@@ -3,7 +3,7 @@
 
 /**
  * fix-model.js
- * Replaces the decommissioned llama3-8b-8192 model with llama-3.3-70b-versatile
+ * Replaces the decommissioned llama-3.1-8b-instant model with llama-3.3-70b-versatile
  * in both the HTML app and the test script.
  *
  * Usage: node fix-model.js
@@ -11,7 +11,7 @@
 
 const fs = require('fs');
 
-const OLD_MODEL = 'llama3-8b-8192';
+const OLD_MODEL = 'llama-3.1-8b-instant';
 const NEW_MODEL = 'llama-3.3-70b-versatile';   // current Groq flagship — best for creative/music tasks
 
 const TARGETS = [

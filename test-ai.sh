@@ -3,7 +3,7 @@
 # Usage: GROQ_API_KEY=gsk_xxx ./test-ai.sh [--app=all|strategist|docengine|compliance|tax] [--verbose]
 set -eo pipefail
 
-APP="all"; VERBOSE=false; MODEL="llama3-8b-8192"
+APP="all"; VERBOSE=false; MODEL="llama-3.1-8b-instant"
 for arg in "$@"; do
   case $arg in
     --app=*)   APP="${arg#*=}" ;;
