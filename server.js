@@ -198,6 +198,27 @@ FINAL HOOK — 8 bars
 OUTRO — 4 bars
 `,
 
+
+    blueprint: `
+INTRO — 4 bars
+HOOK — 8 bars
+VERSE 1 — 16 bars
+BRIDGE — 8 bars
+VERSE 2 — 16 bars
+FINAL HOOK — 8 bars
+OUTRO — 4 bars
+`,
+
+    structureText: `
+INTRO — 4 bars
+HOOK — 8 bars
+VERSE 1 — 16 bars
+BRIDGE — 8 bars
+VERSE 2 — 16 bars
+FINAL HOOK — 8 bars
+OUTRO — 4 bars
+`,
+
     structure:{
       intro:"4 bars",
       hook:"8 bars",
