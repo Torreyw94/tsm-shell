@@ -25,12 +25,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 
 /* LAYOUT */
-.layout{display:grid;grid-template-columns:260px 1fr 300px;height:calc(100vh - 41px)}
+.layout{display:grid;grid-template-columns:260px 1fr 300px;height:calc(100vh - 41px);overflow:hidden}
 @media(max-width:1100px){.layout{grid-template-columns:200px 1fr}}
 @media(max-width:800px){.layout{grid-template-columns:1fr}}
 
 /* LEFT: STEPS PANEL */
-.steps-panel{border-right:1px solid var(--b1);background:var(--surf);overflow-y:auto;padding:1rem .8rem}
+.steps-panel{border-right:1px solid var(--b1);background:var(--surf);overflow-y:auto;padding:1rem .8rem;height:100%}
 .sp-title{font-family:var(--mono);font-size:.48rem;letter-spacing:.15em;color:var(--purple);margin-bottom:1rem}
 .step-item{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .4rem;border-radius:4px;cursor:pointer;margin-bottom:.25rem;transition:all .2s;border:1px solid transparent}
 .step-item:hover{background:var(--surf2);border-color:var(--b1)}
@@ -45,15 +45,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:1
 .step-item.done .step-name{color:var(--green)}
 
 /* CENTER: STUDIO */
-.studio{display:flex;flex-direction:column;overflow:hidden}
+.studio{display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .studio-head{border-bottom:1px solid var(--b1);padding:.7rem 1.2rem;display:flex;align-items:center;justify-content:space-between;background:var(--surf2)}
 .sh-title{font-family:var(--head);font-size:1.1rem;font-weight:700;color:var(--white)}
 .sh-sub{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;color:var(--muted);margin-top:.15rem}
-.studio-body{flex:1;overflow-y:auto;padding:1.2rem}
+.studio-body{flex:1;overflow-y:auto;padding:1.2rem 1.2rem 4rem;min-height:0;height:0}
 
 /* PANELS */
-.panel{display:none}
-.panel.active{display:block}
+.panel{display:none;width:100%}
+.panel.active{display:block;width:100%}
 
 /* INPUTS */
 .field-label{font-family:var(--mono);font-size:.45rem;letter-spacing:.1em;color:var(--purple);margin-bottom:.4rem;display:block}
@@ -98,7 +98,7 @@ textarea.field-input{resize:vertical;min-height:80px;line-height:1.6}
 .ap-head{background:var(--surf2);border-bottom:1px solid var(--b1);padding:.6rem .8rem}
 .ap-title{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:var(--purple)}
 .ap-sub{font-family:var(--mono);font-size:.42rem;color:var(--muted);margin-top:.1rem}
-.chat-feed{flex:1;overflow-y:auto;padding:.6rem .7rem;display:flex;flex-direction:column;gap:.5rem}
+.chat-feed{flex:1;overflow-y:auto;padding:.6rem .7rem;display:flex;flex-direction:column;gap:.5rem;height:0}
 .msg{display:flex;gap:.4rem;align-items:flex-start}
 .msg-avatar{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;font-family:var(--mono);margin-top:1px}
 .msg-zay .msg-avatar{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
@@ -750,5 +750,373 @@ document.getElementById('chat-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') sendChat();
 });
 </script>
+
+<style id="zy-best-scroll-fix">
+html,body{
+  min-height:100%;
+  height:auto !important;
+  overflow-y:auto !important;
+}
+body{
+  padding-bottom:120px !important;
+}
+main,.main,.content,.stage,.app,.workspace,.song-area,.center-panel{
+  min-height:calc(100vh - 90px);
+  overflow:visible !important;
+}
+pre,.output,.lyrics-output,.song-output,.blueprint-output{
+  max-height:none !important;
+  overflow:visible !important;
+  padding-bottom:70px !important;
+}
+#zy-best-assistant{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  width:360px;
+  max-width:calc(100vw - 36px);
+  z-index:99999;
+  background:#12001f;
+  border:1px solid rgba(181,108,255,.45);
+  border-radius:18px;
+  box-shadow:0 0 28px rgba(181,108,255,.22);
+  color:#f7eaff;
+  font-family:Inter,system-ui,Arial;
+}
+#zy-best-assistant header{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(181,108,255,.22);
+  color:#d86cff;
+  font-size:11px;
+  letter-spacing:.15em;
+  font-weight:950;
+}
+#zy-best-assistant .zy-body{padding:12px}
+#zy-best-assistant textarea{
+  width:100%;
+  min-height:74px;
+  background:#08000e;
+  color:#f7eaff;
+  border:1px solid rgba(181,108,255,.35);
+  border-radius:12px;
+  padding:10px;
+}
+#zy-best-assistant button,.zy-best-btn{
+  background:#b56cff;
+  color:#fff;
+  border:0;
+  border-radius:10px;
+  padding:9px 11px;
+  font-weight:900;
+  cursor:pointer;
+}
+#zy-best-assistant pre{
+  white-space:pre-wrap;
+  max-height:220px !important;
+  overflow:auto !important;
+  background:#08000e;
+  border:1px solid rgba(181,108,255,.24);
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+}
+#zy-best-guide{
+  margin:18px 24px;
+  padding:16px;
+  background:linear-gradient(135deg,rgba(181,108,255,.16),rgba(255,0,200,.05));
+  border:1px solid rgba(181,108,255,.35);
+  border-radius:18px;
+  color:#f7eaff;
+}
+#zy-best-guide textarea{
+  width:100%;
+  min-height:90px;
+  background:#090012;
+  border:1px solid rgba(181,108,255,.35);
+  color:#f7eaff;
+  border-radius:14px;
+  padding:12px;
+  margin-top:10px;
+}
+</style>
+
+<section id="zy-best-guide">
+  <div style="color:#d86cff;font-size:11px;letter-spacing:.16em;font-weight:950;text-transform:uppercase">
+    BEST OF BOTH WORLDS · ORIGINAL ZY FLOW + ZAY PRODUCER GUIDE
+  </div>
+  <h3 style="margin:8px 0;color:#fff">Concept-aware hooks, song guidance, adlibs, bridge, and full-song polish.</h3>
+  <textarea id="zyConceptInput" placeholder="Paste your concept, lyrics, mood, artist reference, or hook idea...">Grindin' n Slavin' while Misbavin'!
+Feelin' so Fresh n So Clean even Missed on Shavin'!
+Some look at the Hustle! n Cant Stand the Struggle,
+Those Real in the Field see A Time for Muscle!
+I Plan for Greatest! Rule 1: No Fakeness!
+Real is What You FEEL! That's Pill! So Take This!</textarea>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+    <button class="zy-best-btn" onclick="zyGenerateConceptHooks()">Generate Concept Hooks</button>
+    <button class="zy-best-btn" onclick="zyBuildCompleteSong()">Build Complete Song</button>
+    <button class="zy-best-btn" onclick="zyAddAdlibsBridge()">Add Adlibs + Bridge</button>
+    <button class="zy-best-btn" onclick="zyProducerRecommendations()">Producer Recommendations</button>
+  </div>
+</section>
+
+<div id="zy-best-assistant">
+  <header>ZAY PRODUCER ASSISTANT</header>
+  <div class="zy-body">
+    <textarea id="zyAssistantQuery" placeholder="Ask ZAY: make hook stronger, add bridge, clean radio version, improve cadence..."></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="zyAskAssistant()">Ask ZAY</button>
+      <button onclick="zyUseCurrentSong()">Use Current Song</button>
+    </div>
+    <pre id="zyAssistantOutput">Ready. Ask about hooks, cadence, adlibs, structure, bridge, radio polish, or release plan.</pre>
+  </div>
+</div>
+
+<script id="zy-best-worlds-js">
+(function(){
+  if(window.__ZY_BEST_WORLDS__) return;
+  window.__ZY_BEST_WORLDS__=true;
+
+  function concept(){
+    return document.getElementById("zyConceptInput")?.value?.trim()
+      || document.querySelector("textarea")?.value?.trim()
+      || document.body.innerText.slice(0,800);
+  }
+
+  function outputBox(){
+    return document.querySelector("#zaySongOutput")
+      || document.querySelector("#songOutput")
+      || document.querySelector(".song-output")
+      || document.querySelector("pre")
+      || document.querySelector(".output");
+  }
+
+  function write(txt){
+    const out=outputBox();
+    if(out){
+      out.textContent=txt;
+      out.style.whiteSpace="pre-wrap";
+    }
+    localStorage.setItem("zy_music_last_output",txt);
+    return txt;
+  }
+
+  function cadenceNotes(txt){
+    return `STYLE READ
+Gritty motivational rap · Southern bounce · confident street wisdom
+
+CADENCE
+Short punch phrases, internal rhyme, hook-ready bounce, call-and-response energy.
+
+SOURCE CONCEPT
+${txt}`;
+  }
+
+  window.zyGenerateConceptHooks=function(){
+    const c=concept();
+    return write(`${cadenceNotes(c)}
+
+CONCEPT-AWARE HOOKS
+
+HOOK 1
+Grindin' n slavin', still misbehavin',
+Fresh n clean even when I missed on shavin'.
+They don't love the hustle, can't stand the struggle,
+Real ones in the field know it's time for muscle.
+
+HOOK 2
+Rule one: no fake when the pressure get real,
+Truth in my chest, that's the pill you can feel.
+Built from the grind, came alive through the struggle,
+Now the whole room move when I flex that muscle.
+
+HOOK 3
+Fresh out the fire, still clean with the cadence,
+Made for the greatness, no room for the fakeness.
+Some fold in the struggle, some build in the rubble,
+Real ones know timing — now it's time for muscle.
+
+ZAY PICK
+Use Hook 1 as the main hook. It keeps your original personality and has the strongest bounce.`);
+  }
+
+  window.zyBuildCompleteSong=function(){
+    const c=concept();
+    return write(`TITLE: Rule 1: No Fakeness
+
+[INTRO]
+Yeah...
+ZAY, let it breathe.
+Fresh out the struggle.
+Still clean with it.
+
+[HOOK]
+Grindin' n slavin', still misbehavin',
+Feelin' so fresh n so clean, even missed on shavin'.
+Some look at the hustle, can't stand the struggle,
+Those real in the field see a time for muscle.
+
+I plan for greatness, rule one: no fakeness,
+Real is what you feel, that's pill, so take this.
+Built from the bottom where the pressure'll break kids,
+Now the whole room quiet every time the bass hits.
+
+[VERSE 1]
+Late nights, cold floors, notebook full of missions,
+Had to turn pain into purpose, faith into precision.
+They was talkin' from the side, I was locked in position,
+I was buildin' up a life while they begged for permission.
+
+Fresh but I ain't shave, still a king in the making,
+Worked through the storm while the whole ground shaking.
+Some people love shine but they hate when you patient,
+They don't see the grind, only see celebration.
+
+I kept it too real when the fake looked safer,
+Had to learn quick: every favor ain't favor.
+Now I move clean, no mask, no waiver,
+Real ones feel truth when it cut like a razor.
+
+[HOOK]
+Grindin' n slavin', still misbehavin',
+Feelin' so fresh n so clean, even missed on shavin'.
+Some look at the hustle, can't stand the struggle,
+Those real in the field see a time for muscle.
+
+[VERSE 2]
+I ain't chase clout, I was chasing alignment,
+Put the plan on the table, then I added refinement.
+Every setback came with a hidden assignment,
+Now the vision too loud for the room to silence.
+
+They want smooth roads, I was made by the gravel,
+Had to pack faith every time I would travel.
+No fake love, no chain they can rattle,
+I'm from where dreams get tested in battle.
+
+Rule one: keep it solid when the pressure get heavy,
+Rule two: stay ready when they swear you ain't ready.
+Rule three: if it's real, let it stand on its own,
+I built mine brick by brick till it looked like a throne.
+
+[BRIDGE]
+If I bend, I won't break,
+If I fall, I still wake.
+Every risk that I take
+Put my name on the gate.
+
+No fake, no fear,
+I made pain disappear.
+Now the mission so clear,
+Whole team right here.
+
+[FINAL HOOK]
+Grindin' n slavin', still misbehavin',
+Feelin' so fresh n so clean, even missed on shavin'.
+Some look at the hustle, can't stand the struggle,
+Those real in the field see a time for muscle.
+
+I plan for greatness, rule one: no fakeness,
+Real is what you feel, that's pill, so take this.
+Built from the bottom where the pressure'll break kids,
+Now the whole room quiet every time the bass hits.
+
+[OUTRO]
+Rule one.
+No fakeness.
+Real is what you feel.
+ZAY.
+
+PRODUCER NOTE
+Source concept used:
+${c}`);
+  }
+
+  window.zyAddAdlibsBridge=function(){
+    return write(`ADLIB + BRIDGE PACKAGE
+
+HOOK ADLIBS
+(Yeah!)
+(Too real!)
+(Fresh n clean!)
+(No fakeness!)
+(Take this!)
+(Bass hit!)
+
+VERSE ADLIBS
+(Talk to 'em!)
+(Facts!)
+(Stay solid!)
+(No mask!)
+(Brick by brick!)
+(Whole team!)
+
+BRIDGE
+If I bend, I won't break,
+If I fall, I still wake.
+Every risk that I take
+Put my name on the gate.
+
+No fake, no fear,
+I made pain disappear.
+Now the mission so clear,
+Whole team right here.
+
+PRODUCER NOTES
+Stack final hook left/right.
+Keep verse adlibs low and gritty.
+Make bridge wider, emotional, and cinematic.`);
+  }
+
+  window.zyProducerRecommendations=function(){
+    return write(`ZAY PRODUCER RECOMMENDATIONS
+
+1. Keep the original hook wording — it has personality.
+2. Tighten grammar only where it improves bounce.
+3. Use a Southern cinematic beat around 84–90 BPM.
+4. Add choir pad or filtered soul sample behind final hook.
+5. Put adlibs after every 2 bars, not every line.
+6. Make the bridge emotional so the final hook hits harder.
+7. Export two versions: raw street version + radio-clean version.
+
+BEST RELEASE ANGLE
+Motivational hustle anthem with gritty authenticity.
+
+BEST TITLE
+Rule 1: No Fakeness`);
+  }
+
+  window.zyUseCurrentSong=function(){
+    const txt=(outputBox()?.textContent||"").trim();
+    document.getElementById("zyAssistantQuery").value = txt.slice(0,1200);
+  }
+
+  window.zyAskAssistant=function(){
+    const q=document.getElementById("zyAssistantQuery")?.value?.trim() || "Give recommendations.";
+    const out=document.getElementById("zyAssistantOutput");
+    out.textContent=`ZAY RECOMMENDATION
+
+QUERY
+${q}
+
+BEST NEXT MOVE
+Turn the raw lyric into a hook-first record. Your strongest phrase is “Rule 1: No Fakeness.” Build the song around that as the identity.
+
+STRUCTURE
+Intro → Hook → Verse 1 → Hook → Verse 2 → Bridge → Final Hook → Outro
+
+PERFORMANCE
+Punch “Grindin’ n Slavin’” with bounce.
+Pause before “Rule 1.”
+Double the final hook.
+Keep adlibs gritty but not crowded.
+
+PRODUCER NOTE
+This works best as a motivational street anthem, not a sad record. Keep it confident.`;
+  }
+
+  console.log("ZY best-of-both guide online");
+})();
+</script>
+
 </body>
 </html>
