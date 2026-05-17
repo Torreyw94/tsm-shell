@@ -35,3 +35,20 @@ temp/
 # LARGE GENERATED
 *.zip
 *.tar.gz
+
+# HEALTHCARE BACKUP MIRRORS
+html/_backup_*/
+html/_backup_scroll_fix_*/
+html/_backup_pricing_*/
+
+# DUPLICATE HTML MIRRORS
+html/html/
+
+# TEMP BUILD FILES
+rebuild_hc_nodes.py
+make_player.js
+
+# MUSIC TEST FILES
+html/music-command/*.json
+html/music-command/track-banger.html
+
