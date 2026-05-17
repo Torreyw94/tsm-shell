@@ -75,15 +75,16 @@
         }
         .lyric-row {
             margin: 8px 0;
-            opacity: 0.4;
+            opacity: 0.3;
             transition: all 0.3s ease;
+            padding-left: 8px;
         }
         .lyric-row.active {
             opacity: 1;
             color: #fff;
-            transform: scale(1.02);
+            transform: scale(1.01);
             border-left: 3px solid var(--pink-accent);
-            padding-left: 8px;
+            padding-left: 12px;
         }
         .adlib-highlight {
             color: var(--purple-accent);
@@ -107,7 +108,7 @@
         <div class="track-header">
             <div>
                 <h1 class="track-title">Scottsdale Payback (Arrangement Replay)</h1>
-                <div class="track-meta">BPM: 150 &bull; High-Energy Luxury Trap &bull; Live Synthesis Layout</div>
+                <div class="track-meta">BPM: 150 &bull; High-Energy Luxury Trap Blueprint</div>
             </div>
             <button class="control-btn" id="play-trigger" onclick="togglePlayback()">START REPLAY</button>
         </div>
@@ -119,8 +120,8 @@
             <div class="lyric-row" id="l3">Heard my ex was outside flexin', now he's really outta luck. <span class="adlib-highlight">[Straight facts!]</span></div>
 
             <span class="section-tag">[Chorus / Hook]</span>
-            <div class="lyric-row" id="l4" style="color: var(--pink-accent);">FROM RAGS TO RICHES, RUNNIN' CIRCLES 'ROUND BITCHES! <span class="adlib-highlight">[Woo!]</span></div>
-            <div class="lyric-row" id="l5" style="color: var(--pink-accent);">DEY MAN'S FACE ALL IN MY CAT, LIKE A HUNGRY MAN DINNER... <span class="adlib-highlight">[Eat it up!]</span></div>
+            <div class="lyric-row" id="l4" style="color: var(--pink-accent); font-weight: bold;">FROM RAGS TO RICHES, RUNNIN' CIRCLES 'ROUND BITCHES! <span class="adlib-highlight">[Woo!]</span></div>
+            <div class="lyric-row" id="l5" style="color: var(--pink-accent); font-weight: bold;">DEY MAN'S FACE ALL IN MY CAT, LIKE A HUNGRY MAN DINNER... <span class="adlib-highlight">[Eat it up!]</span></div>
 
             <span class="section-tag">[Verse 1]</span>
             <div class="lyric-row" id="l6">Red Impala pullin' up, windows tinted out to space, <span class="adlib-highlight">[Skrrt!]</span></div>
@@ -152,7 +153,6 @@
         }
 
         function runLiveTrackSequence() {
-            // Reset state
             for(let i = 1; i <= totalSteps; i++) {
                 document.getElementById(`l${i}`).classList.remove('active');
             }
@@ -171,7 +171,7 @@
                 const activeRow = document.getElementById(`l${currentStep}`);
                 activeRow.classList.add('active');
                 activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 3000); // 3-second pacing simulating active verse bars
+            }, 3000);
         }
     </script>
 </body>
