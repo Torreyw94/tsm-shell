@@ -1,421 +1,94 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LegalOps BPO · TSM Matter</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TSM BPO - Legal Operations Portfolio Engine</title>
 <style>
-:root{--a:#ff8c00;--bg:#05090d;--p:#081522;--b:rgba(255,255,255,.09);--t:#e8f7ff;--m:#8aa6b7}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top right,rgba(0,255,198,.08),transparent 35%),var(--bg);color:var(--t);font-family:Inter,system-ui,Arial}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:#07131d;border-bottom:1px solid var(--b)}.logo{color:var(--a);font-weight:900;letter-spacing:.18em;font-size:20px}.sub{color:var(--m);font-size:11px;letter-spacing:.12em}a{color:var(--a)}#nav{display:flex;gap:8px;padding:10px 20px;background:#07131d;border-bottom:1px solid var(--b);overflow:auto}.nb{background:#0b1722;color:#dff7ff;border:1px solid var(--b);border-radius:8px;padding:9px 12px;font-weight:800;white-space:nowrap}.nb.active,.nb:hover{color:var(--a);border-color:var(--a)}#app{display:flex}aside{width:240px;background:#07131d;min-height:calc(100vh - 110px);border-right:1px solid var(--b);padding:12px}main{flex:1;padding:18px}.si{display:flex;justify-content:space-between;padding:10px;border-left:3px solid transparent;color:#bad3e4}.si.active{border-left-color:var(--a);background:rgba(255,255,255,.04)}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stat,.card{background:rgba(8,21,34,.94);border:1px solid var(--b);border-radius:14px;padding:18px}.stat small,.ey{color:var(--m);letter-spacing:.16em;font-size:11px}.stat strong{display:block;color:var(--a);font-size:34px;margin:8px 0}.stat span{color:#9fb8c8}.hero h1{font-size:42px;margin:8px 0;color:#fff}.hero p{color:#bad3e4;line-height:1.6}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}input,textarea{width:100%;background:#050b12;color:#dff7ff;border:1px solid var(--b);border-radius:10px;padding:12px;margin:8px 0;font-family:monospace}textarea{min-height:130px}button.primary,.prompt{background:var(--a);color:#001;border:0;border-radius:10px;padding:11px 14px;font-weight:900;margin:5px;cursor:pointer}.prompt{display:block;width:100%;text-align:left;background:#0b1722;color:#dff7ff;border:1px solid rgba(0,255,198,.18)}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid rgba(255,255,255,.06)}td:first-child{color:var(--a)}em{color:#ffc400;font-style:normal}.out{display:none;white-space:pre-wrap;background:#050b12;border:1px solid rgba(0,255,198,.18);border-left:3px solid var(--a);padding:14px;border-radius:10px;margin-top:12px;line-height:1.5}.view{display:none}.view.active{display:block}@media(max-width:900px){#app{display:block}aside{width:auto;min-height:auto}.kpis,.grid2{grid-template-columns:1fr}}
-<script>
-window.TSM_UI = {
-    runAudit: async (sector, factor) => {
-        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
-        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
-        try {
-            const res = await fetch('/api/audit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
-            });
-            const data = await res.json();
-            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
-        } catch (e) {
-            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
-        }
-    }
-};
-// Wire the sector cards to the auto-fill search prompt logic
-document.addEventListener('click', (e) => {
-    const card = e.target.closest('.module-card');
-    if (card) {
-        const sector = card.dataset.sector || "Construction";
-        const factor = card.querySelector('h3')?.innerText || "General Audit";
-        TSM_UI.runAudit(sector, factor);
-    }
-});
-console.log("TSM_UI: Direct Neural Link Established.");
-</script>
-<script>
-window.TSM_UI = {
-    runAudit: async (sector, factor) => {
-        const feed = document.querySelector('.intelligence-feed-output') || document.getElementById('intelligence-feed-output');
-        if (feed) feed.innerHTML = '<span style="color: #00ffff;">[STRATEGIST] Internal Link: Processing...</span>';
-        try {
-            const res = await fetch('/api/audit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: `auditops "${sector}" --factor "${factor}" --logic strategist` })
-            });
-            const data = await res.json();
-            if (feed) feed.innerText = `[STRATEGIST] ${data.output || "Analysis Complete."}`;
-        } catch (e) {
-            if (feed) feed.innerText = "[STRATEGIST] Local API Bridge Failed.";
-        }
-    }
-};
-// Wire the sector cards to the auto-fill search prompt logic
-document.addEventListener('click', (e) => {
-    const card = e.target.closest('.module-card');
-    if (card) {
-        const sector = card.dataset.sector || "Construction";
-        const factor = card.querySelector('h3')?.innerText || "General Audit";
-        TSM_UI.runAudit(sector, factor);
-    }
-});
-console.log("TSM_UI: Direct Neural Link Established.");
-</script>
-</style></head><body>
-<header><div><div class="logo">LegalOps BPO</div><div class="sub">CONTRACTS · MATTER OPS · DISCOVERY · COMPLIANCE · EXECUTIVE RISK</div></div><div><a href="/bpo/bpo-website.html">BPO Website</a> · <a href="/bpo/launch.html">Launch</a></div></header>
-<div id="nav"><button class="nb active" onclick="sv('dashboard',this)">⬛ DASHBOARD</button><button class="nb " onclick="sv('intake',this)">📋 MATTER INTAKE</button><button class="nb " onclick="sv('billing',this)">💰 BILLING AUDIT</button><button class="nb " onclick="sv('contracts',this)">📄 CONTRACT REVIEW</button><button class="nb " onclick="sv('compliance',this)">✅ QC / COMPLIANCE</button><button class="nb " onclick="sv('ai',this)">🤖 AI ANALYST</button></div><div id="app"><aside><div class="si active"><span>⬛ DASHBOARD</span><b>1</b></div><div class="si "><span>📋 MATTER INTAKE</span><b>2</b></div><div class="si "><span>💰 BILLING AUDIT</span><b>3</b></div><div class="si "><span>📄 CONTRACT REVIEW</span><b>4</b></div><div class="si "><span>✅ QC / COMPLIANCE</span><b>5</b></div><div class="si "><span>🤖 AI ANALYST</span><b>6</b></div></aside><main><div class="kpis"><div class="stat"><small>ACTIVE MATTERS</small><strong>47</strong><span>+4 today</span></div><div class="stat"><small>BILLING DISPUTES</small><strong>6</strong><span>requires review</span></div><div class="stat"><small>COMPLETED MTD</small><strong>128</strong><span>97% on time</span></div><div class="stat"><small>AVG CYCLE</small><strong>3.2d</strong><span>SLA 5 days</span></div></div>
-<section id="view-dashboard" class="view active">
-  <div class="card hero"><p class="ey">OPERATING LANE</p><h1>DASHBOARD</h1><p>This lane manages intake, queue ownership, SLA risk, document processing, BNCA recommendations, and strategist escalation for LegalOps BPO.</p></div>
-  <div class="grid2">
-    <div class="card"><p class="ey">WORKFLOW INTAKE</p><input placeholder="Client / matter / project / account"><textarea id="dashboard-input" placeholder="Paste notes, documents, issue summary, or operational context..."></textarea><button onclick="runLane('dashboard')" class="primary">⚡ RUN BNCA</button><pre id="dashboard-out" class="out"></pre></div>
-    <div class="card"><p class="ey">ACTIVE QUEUE</p><table><tr><td>MAT-7701</td><td>Skyline Builders</td><td>Lien Waiver</td><td><em>OPEN</em></td></tr><tr><td>MAT-7702</td><td>Mesa Premier</td><td>Contract Review</td><td><em>WATCH</em></td></tr><tr><td>MAT-7703</td><td>AFCU Legal</td><td>Compliance Filing</td><td><em>REVIEW</em></td></tr><tr><td>MAT-7704</td><td>Desert Ridge</td><td>Billing Dispute</td><td><em>RESOLVED</em></td></tr></table></div>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f172a;color:#f8fafc;margin:0;padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px;background:#1e293b;border-bottom:2px solid #334155;border-radius:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.panel{background:#1e293b;border:1px solid #334155;padding:20px;border-radius:8px}
+h1,h2{margin:0;color:#f59e0b}
+.badge{display:inline-block;padding:6px 12px;border-radius:4px;font-weight:bold;font-size:.85rem;width:fit-content}
+.status-warning{background:#92400e;color:#fef3c7}
+.progress-container{background:#334155;border-radius:4px;height:20px;width:100%;overflow:hidden;margin-top:10px;position:relative}
+.progress-bar{background:#f59e0b;height:100%;width:68%}
+.risk-bar{background:#ef4444;height:100%;width:52%}
+.progress-label{position:absolute;width:100%;text-align:center;font-size:.8rem;font-weight:bold;color:#fff;line-height:20px;text-shadow:1px 1px 2px rgba(0,0,0,.8)}
+pre{background:#020617;padding:12px;border-radius:6px;font-size:.9rem;color:#fde68a;border:1px solid #1e293b;white-space:pre-wrap;font-family:monospace}
+.extension-row{background:#0f172a;border-left:3px solid #f59e0b;padding:10px;margin-top:10px;border-radius:0 4px 4px 0;font-size:.85rem}
+.actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
+a{color:#020617;background:#f59e0b;text-decoration:none;padding:10px 14px;border-radius:6px;font-weight:800}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Legal Matter WIP + Risk BPO Portal</h1>
+    <small style="color:#94a3b8;">TSM Automated Legal Back-Office Infrastructure</small>
   </div>
-</section>
-<section id="view-intake" class="view ">
-  <div class="card hero"><p class="ey">OPERATING LANE</p><h1>📋 MATTER INTAKE</h1><p>This lane manages intake, queue ownership, SLA risk, document processing, BNCA recommendations, and strategist escalation for LegalOps BPO.</p></div>
-  <div class="grid2">
-    <div class="card"><p class="ey">WORKFLOW INTAKE</p><input placeholder="Client / matter / project / account"><textarea id="intake-input" placeholder="Paste notes, documents, issue summary, or operational context..."></textarea><button onclick="runLane('intake')" class="primary">⚡ RUN BNCA</button><pre id="intake-out" class="out"></pre></div>
-    <div class="card"><p class="ey">ACTIVE QUEUE</p><table><tr><td>MAT-7701</td><td>Skyline Builders</td><td>Lien Waiver</td><td><em>OPEN</em></td></tr><tr><td>MAT-7702</td><td>Mesa Premier</td><td>Contract Review</td><td><em>WATCH</em></td></tr><tr><td>MAT-7703</td><td>AFCU Legal</td><td>Compliance Filing</td><td><em>REVIEW</em></td></tr><tr><td>MAT-7704</td><td>Desert Ridge</td><td>Billing Dispute</td><td><em>RESOLVED</em></td></tr></table></div>
+  <span class="badge status-warning">NODE ACTIVE</span>
+</header>
+
+<div class="grid">
+  <div class="panel">
+    <h2>A. Matter Lifecycle Progress</h2>
+    <div class="progress-container">
+      <div class="progress-label">68% Complete</div>
+      <div class="progress-bar"></div>
+    </div>
+    <div class="extension-row">Current Stage: Discovery packet review + filing deadline validation.</div>
   </div>
-</section>
-<section id="view-billing" class="view ">
-  <div class="card hero"><p class="ey">OPERATING LANE</p><h1>💰 BILLING AUDIT</h1><p>This lane manages intake, queue ownership, SLA risk, document processing, BNCA recommendations, and strategist escalation for LegalOps BPO.</p></div>
-  <div class="grid2">
-    <div class="card"><p class="ey">WORKFLOW INTAKE</p><input placeholder="Client / matter / project / account"><textarea id="billing-input" placeholder="Paste notes, documents, issue summary, or operational context..."></textarea><button onclick="runLane('billing')" class="primary">⚡ RUN BNCA</button><pre id="billing-out" class="out"></pre></div>
-    <div class="card"><p class="ey">ACTIVE QUEUE</p><table><tr><td>MAT-7701</td><td>Skyline Builders</td><td>Lien Waiver</td><td><em>OPEN</em></td></tr><tr><td>MAT-7702</td><td>Mesa Premier</td><td>Contract Review</td><td><em>WATCH</em></td></tr><tr><td>MAT-7703</td><td>AFCU Legal</td><td>Compliance Filing</td><td><em>REVIEW</em></td></tr><tr><td>MAT-7704</td><td>Desert Ridge</td><td>Billing Dispute</td><td><em>RESOLVED</em></td></tr></table></div>
+
+  <div class="panel">
+    <h2>B. Work Performed vs Billed / Collected</h2>
+    <p>Legal Work Value: <strong>$84,000</strong></p>
+    <p>Billed / Collected: <strong>$61,500</strong></p>
+    <div class="extension-row">WIP Exposure: $22,500 unbilled legal work pending invoice approval.</div>
   </div>
-</section>
-<section id="view-contracts" class="view ">
-  <div class="card hero"><p class="ey">OPERATING LANE</p><h1>📄 CONTRACT REVIEW</h1><p>This lane manages intake, queue ownership, SLA risk, document processing, BNCA recommendations, and strategist escalation for LegalOps BPO.</p></div>
-  <div class="grid2">
-    <div class="card"><p class="ey">WORKFLOW INTAKE</p><input placeholder="Client / matter / project / account"><textarea id="contracts-input" placeholder="Paste notes, documents, issue summary, or operational context..."></textarea><button onclick="runLane('contracts')" class="primary">⚡ RUN BNCA</button><pre id="contracts-out" class="out"></pre></div>
-    <div class="card"><p class="ey">ACTIVE QUEUE</p><table><tr><td>MAT-7701</td><td>Skyline Builders</td><td>Lien Waiver</td><td><em>OPEN</em></td></tr><tr><td>MAT-7702</td><td>Mesa Premier</td><td>Contract Review</td><td><em>WATCH</em></td></tr><tr><td>MAT-7703</td><td>AFCU Legal</td><td>Compliance Filing</td><td><em>REVIEW</em></td></tr><tr><td>MAT-7704</td><td>Desert Ridge</td><td>Billing Dispute</td><td><em>RESOLVED</em></td></tr></table></div>
+
+  <div class="panel">
+    <h2>C. Deadline / Compliance Exposure</h2>
+    <div style="margin-top:15px;">
+      <span class="badge status-warning">UNDER-BILLED + DEADLINE RISK</span>
+    </div>
+    <div class="extension-row">3 matters require action inside 7 days. One filing packet missing supporting exhibit.</div>
   </div>
-</section>
-<section id="view-compliance" class="view ">
-  <div class="card hero"><p class="ey">OPERATING LANE</p><h1>✅ QC / COMPLIANCE</h1><p>This lane manages intake, queue ownership, SLA risk, document processing, BNCA recommendations, and strategist escalation for LegalOps BPO.</p></div>
-  <div class="grid2">
-    <div class="card"><p class="ey">WORKFLOW INTAKE</p><input placeholder="Client / matter / project / account"><textarea id="compliance-input" placeholder="Paste notes, documents, issue summary, or operational context..."></textarea><button onclick="runLane('compliance')" class="primary">⚡ RUN BNCA</button><pre id="compliance-out" class="out"></pre></div>
-    <div class="card"><p class="ey">ACTIVE QUEUE</p><table><tr><td>MAT-7701</td><td>Skyline Builders</td><td>Lien Waiver</td><td><em>OPEN</em></td></tr><tr><td>MAT-7702</td><td>Mesa Premier</td><td>Contract Review</td><td><em>WATCH</em></td></tr><tr><td>MAT-7703</td><td>AFCU Legal</td><td>Compliance Filing</td><td><em>REVIEW</em></td></tr><tr><td>MAT-7704</td><td>Desert Ridge</td><td>Billing Dispute</td><td><em>RESOLVED</em></td></tr></table></div>
-  </div>
-</section>
-<section id="view-ai" class="view">
-  <div class="grid2">
-    <div class="card"><p class="ey">QUICK PROMPTS</p><button class="prompt" onclick="askPrompt(`Audit a legal bill for reasonableness, block billing, ARPC fee factors, and recommended write-down.`)">Audit a legal bill for reasonableness, block billing, ARPC fee factors, and recommended write-down.</button><button class="prompt" onclick="askPrompt(`Review a construction contract for indemnity, lien, pay-if-paid, change-order, and termination risk.`)">Review a construction contract for indemnity, lien, pay-if-paid, change-order, and termination risk.</button><button class="prompt" onclick="askPrompt(`Create a matter intake checklist with conflict check, engagement letter, scope, deadline, and owner lane.`)">Create a matter intake checklist with conflict check, engagement letter, scope, deadline, and owner lane.</button></div>
-    <div class="card"><p class="ey">AI ANALYST</p><textarea id="ai-prompt" placeholder="Ask the BPO analyst..."></textarea><button onclick="runAI()" class="primary">🤖 ANALYZE</button><pre id="ai-out" class="out"></pre></div>
-  </div>
-</section></main></div>
-<script>
-const SYS=`You are LegalOps BPO AI for TSM Matter. Focus on legal document processing, contract summarization, matter administration, discovery organization, compliance review, regulatory monitoring, billing audits, and executive risk briefs. This is non-attorney legal operations support, not legal advice.`;
-function sv(n,b){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));document.getElementById('view-'+n)?.classList.add('active');b?.classList.add('active')}
-function askPrompt(p){document.getElementById('ai-prompt').value=p;sv('ai',document.querySelectorAll('.nb')[document.querySelectorAll('.nb').length-1])}
-async function run(prompt,out){out.style.display='block';out.textContent='TSM Neural Core running...';try{const r=await fetch('/api/hc/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'BPO_ANALYSIS',agent:'TSM_BPO',payload:{sector:'LegalOps BPO',context:SYS+'\n\n'+prompt,priority:'HIGH'}})});const d=await r.json();out.textContent=d.reply||d.content||'No response';}catch(e){out.textContent='TOP ISSUE\n'+prompt+'\n\nRISK LEVEL\nMEDIUM\n\nBEST NEXT ACTIONS\n1. Assign owner lane.\n2. Validate documents.\n3. Clear blockers older than SLA.\n4. Relay unresolved risk to Strategist.\n\nCONFIDENCE\n92%';}}
-function runLane(k){run(document.getElementById(k+'-input')?.value||'Run LegalOps BPO BNCA for this operating lane.',document.getElementById(k+'-out'))}
-function runAI(){run(document.getElementById('ai-prompt').value,document.getElementById('ai-out'))}
-</script>
-<script>
-(function(){
-  if(window.__BPO_REAL_TAB_PANELS__) return;
-  window.__BPO_REAL_TAB_PANELS__ = true;
 
-  const TAB_DATA = {
-'MATTER INTAKE': ['Conflict Check', 'Engagement Letter', 'Scope Review', 'Deadline Capture'],
-'BILLING AUDIT': ['Rate Review', 'Block Billing', 'AR Exposure', 'Write-Down Recommendation'],
-'CONTRACT REVIEW': ['Risk Clauses', 'Indemnity', 'Termination', 'Governing Law'],
-'QC / COMPLIANCE': ['Ethics Review', 'Trust Accounting', 'File Retention', 'Policy Gaps'],
-'AI ANALYST': ['LegalOps BNCA', 'Matter Risk', 'Contract Summary', 'Owner Lane']
-};
+  <div class="panel">
+    <h2>D. AI-Driven Legal Risk Engine</h2>
+    <div class="progress-container">
+      <div class="progress-label">Risk Index: 52/100</div>
+      <div class="risk-bar"></div>
+    </div>
+    <h3 style="margin-top:15px;font-size:.95rem;color:#94a3b8;">Synthesized Executive Briefing</h3>
+    <pre>LEGAL WIP BNCA SYNTHESIS
 
-  function titleFromButton(btn){
-    return (btn.innerText || "")
-      .replace(/[📥📤🏦📆📋💰📄✅🤖🏗📐📎⬛🩺📑💳🛡🏢📬🖨🏠🔍]/g,"")
-      .trim()
-      .toUpperCase();
-  }
+TOP ISSUE
+Matter backlog shows unbilled attorney work, discovery packet delay, and deadline exposure.
 
-  function ensurePanel(){
-    let panel = document.getElementById("bpo-dynamic-panel");
-    if(panel) return panel;
+OWNER LANE
+Legal Strategist
 
-    panel = document.createElement("section");
-    panel.id = "bpo-dynamic-panel";
-    panel.className = "card";
-    panel.style.marginTop = "14px";
-
-    const main = document.querySelector("main") || document.getElementById("main") || document.body;
-    main.appendChild(panel);
-    return panel;
-  }
-
-  function renderTab(title){
-    const panel = ensurePanel();
-    const items = TAB_DATA[title] || TAB_DATA[Object.keys(TAB_DATA)[0]] || ["Intake","Queue","BNCA","Strategist"];
-
-    panel.innerHTML = `
-      <p class="ey" style="color:var(--a,#00ffc6);letter-spacing:.16em;font-size:11px">ACTIVE OPERATING LANE</p>
-      <h1 style="font-size:38px;margin:8px 0;color:#fff">${title}</h1>
-      <p style="color:#9fb8c8;line-height:1.6;max-width:860px">
-        This lane now changes the operating content, not just the title. Review the queue, run BNCA, assign ownership, and relay unresolved risk into Strategist.
-      </p>
-
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0">
-        ${items.map(x=>`
-          <div style="background:#07131d;border:1px solid rgba(0,255,198,.16);border-radius:12px;padding:14px">
-            <b style="color:var(--a,#00ffc6)">${x}</b>
-            <p style="color:#8aa6b7;font-size:13px;line-height:1.45">
-              Queue status, owner lane, SLA risk, and next-action readiness.
-            </p>
-          </div>
-        `).join("")}
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-        <div style="background:#050b12;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px">
-          <b style="color:#ffc400">WORKFLOW QUEUE</b>
-          <pre style="white-space:pre-wrap;color:#dff7ff;font-family:monospace;margin-top:12px">1. Intake received
-2. Document / issue classified
-3. Risk scored
-4. Owner lane assigned
-5. BNCA ready</pre>
-        </div>
-
-        <div style="background:#050b12;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px">
-          <b style="color:#00ffc6">STRATEGIST OUTPUT</b>
-          <pre style="white-space:pre-wrap;color:#dff7ff;font-family:monospace;margin-top:12px">TOP ISSUE
-${title} requires operational review.
+CONTROLLER
+Legal Command
 
 BEST NEXT ACTIONS
-1. Assign accountable owner.
-2. Clear blockers older than current SLA.
-3. Document evidence.
-4. Relay unresolved risk to Strategist.
+1. Prepare invoice packet for $22,500 unbilled WIP.
+2. Escalate missing exhibit to paralegal owner.
+3. Confirm filing deadline coverage.
+4. Generate client-facing matter status brief.
 
-CONFIDENCE
-92%</pre>
-        </div>
-      </div>
-    `;
-  }
+HITL DECISION
+Attorney or legal ops manager approval required before client filing or billing action.</pre>
+  </div>
+</div>
 
-  function wire(){
-    const buttons = [...document.querySelectorAll(".nb, .nav-btn, button")];
+<div class="actions">
+  <a href="/bpo/legal-bpo.html">Legal BPO</a>
+  <a href="/wip-dashboard.html">Universal WIP Mesh</a>
+</div>
 
-    buttons.forEach(btn => {
-      const title = titleFromButton(btn);
-      if(!title || title === "DASHBOARD") return;
-      if(btn.dataset.bpoTabWired) return;
-      btn.dataset.bpoTabWired = "true";
-
-      btn.addEventListener("click", e => {
-        setTimeout(() => {
-          document.querySelectorAll(".nb,.nav-btn").forEach(b=>b.classList.remove("active"));
-          btn.classList.add("active");
-          renderTab(title);
-        }, 30);
-      }, true);
-    });
-
-    const active = document.querySelector(".nb.active,.nav-btn.active");
-    if(active) {
-      const t = titleFromButton(active);
-      if(t && t !== "DASHBOARD") renderTab(t);
-    }
-  }
-
-  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);
-  else wire();
-
-  setTimeout(wire, 500);
-  setTimeout(wire, 1500);
-})();
-</script>
-
-
-<script>
-(function(){
-  if(window.__BPO_REPLACE_MAIN_CONTENT__) return;
-  window.__BPO_REPLACE_MAIN_CONTENT__ = true;
-
-  const DATA = {
-    "AP OPS":["Vendor Invoice Intake","Duplicate Detection","Approval Routing","Payment Timing"],
-    "AR OPS":["Collections Queue","Aging Buckets","Client Follow-Up","Cash Acceleration"],
-    "RECON":["Bank Reconciliation","GL Matching","Variance Detection","Controller Review"],
-    "CLOSE":["Close Checklist","Accruals / Prepaids","JE Support","Blocker Ownership"],
-    "AUDIT":["Audit Trail","Exception Package","Support Evidence","Compliance Review"],
-
-    "DOC INTAKE":["Batch Intake","Metadata Capture","Routing Rules","Exception Detection"],
-    "PRINT / MAIL":["Print Queue","Mail Hold","Address Validation","SLA Timing"],
-    "QA ROUTING":["Batch QA","Error Review","Rework Queue","Release Approval"],
-    "COMPLIANCE":["PII / PHI Review","Regulated Mail","Audit Trail","Exception Log"],
-
-    "MATTER INTAKE":["Conflict Check","Engagement Letter","Scope Review","Deadline Capture"],
-    "BILLING AUDIT":["Rate Review","Block Billing","AR Exposure","Write-Down Recommendation"],
-    "CONTRACT REVIEW":["Risk Clauses","Indemnity","Termination","Governing Law"],
-    "QC / COMPLIANCE":["Ethics Review","Trust Accounting","File Retention","Policy Gaps"],
-
-    "FILE INTAKE":["Buyer File","Listing File","Escrow Docs","Broker Review"],
-    "DISCLOSURES":["SPDS","HOA Docs","Inspection Items","Missing Signatures"],
-    "COMMISSION RECON":["Split Review","Referral Fees","Broker Fees","Payout Timing"],
-    "MLS / BROKER QC":["MLS Compliance","Listing Risk","Close Readiness","Audit Trail"],
-
-    "FIELDOPS":["Daily Logs","Manpower Tracking","Weather Impact","Site Blockers"],
-    "PLANROOM":["Blueprint OCR","Revision Compare","Spec Extraction","Issue Pins"],
-    "RFI / SUBMITTALS":["RFI Aging","Architect Routing","Submittal SLA","Delay Exposure"],
-    "COST CONTROL":["Change Orders","Pay Apps","Lien Waivers","Budget Drift"],
-
-    "INTAKE":["Patient Intake","Eligibility Check","Scheduling Pressure","Document Routing"],
-    "PRIOR AUTH":["Auth Aging","Payer Rules","Appeal Queue","Approval SLA"],
-    "BILLING / RCM":["Claim Scrubbing","Denial Queue","AR Follow-Up","Clean Claim Rate"],
-
-    "TAX INTAKE":["W2 / 1099 Intake","K-1 Tracking","Missing Docs","Client Organizer"],
-    "PREP OPS":["Preparer Queue","Reviewer Routing","E-file Status","Return Readiness"],
-    "ENTITY":["LLC / S-Corp","Compliance Calendar","Election Tracking","Registered Agent"],
-    "IRS / STATE":["Notice Intake","Transcript Review","Penalty Risk","Response Deadline"],
-
-    "AI ANALYST":["BNCA Engine","Risk Summary","Owner Lane","Executive Report"]
-  };
-
-  function cleanTitle(btn){
-    return (btn.innerText || "")
-      .replace(/[📥📤🏦📆📋💰📄✅🤖🏗📐📎⬛🩺📑💳🛡🏢📬🖨🏠🔍🧾]/g,"")
-      .replace(/[0-9]+$/,"")
-      .trim()
-      .toUpperCase();
-  }
-
-  function main(){
-    return document.querySelector("main") || document.getElementById("main");
-  }
-
-  function render(title){
-    if(title === "DASHBOARD") return;
-
-    const m = main();
-    if(!m) return;
-
-    const items = DATA[title] || ["Intake","Queue","BNCA","Strategist"];
-    const color = getComputedStyle(document.documentElement).getPropertyValue("--a") || "#00ffc6";
-
-    m.innerHTML = `
-      <div class="kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
-        <div class="stat"><small>LANE STATUS</small><strong>ACTIVE</strong><span>${title}</span></div>
-        <div class="stat"><small>SLA WATCH</small><strong>4</strong><span>needs review</span></div>
-        <div class="stat"><small>QUEUE ITEMS</small><strong>18</strong><span>in operating lane</span></div>
-        <div class="stat"><small>BNCA</small><strong>READY</strong><span>strategist relay</span></div>
-      </div>
-
-      <section class="card hero">
-        <p class="ey">ACTIVE OPERATING LANE</p>
-        <h1>${title}</h1>
-        <p>
-          This lane is now replacing the page content with a focused operating view.
-          Use it for intake, queue review, risk scoring, BNCA, ownership, and Strategist escalation.
-        </p>
-      </section>
-
-      <section style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
-        ${items.map(x=>`
-          <div class="card" style="min-height:120px">
-            <p class="ey">${title}</p>
-            <h2 style="color:${color};margin:8px 0">${x}</h2>
-            <p style="color:#8aa6b7;line-height:1.45">
-              Queue status, owner lane, SLA risk, document evidence, and next action readiness.
-            </p>
-          </div>
-        `).join("")}
-      </section>
-
-      <section style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-        <div class="card">
-          <p class="ey">WORKFLOW INTAKE</p>
-          <input placeholder="Client / matter / project / account">
-          <textarea id="lane-context" placeholder="Paste notes, documents, issue summary, or operational context..."></textarea>
-          <button class="primary" onclick="window.bpoRunLane && window.bpoRunLane('${title}')">⚡ RUN ${title} BNCA</button>
-          <pre id="lane-output" class="out" style="display:none"></pre>
-        </div>
-
-        <div class="card">
-          <p class="ey">STRATEGIST OUTPUT</p>
-          <pre style="white-space:pre-wrap;background:#050b12;border:1px solid rgba(0,255,198,.18);border-radius:10px;padding:14px;color:#dff7ff">TOP ISSUE
-${title} requires operating review.
-
-BEST NEXT ACTIONS
-1. Assign accountable owner.
-2. Clear blockers older than current SLA.
-3. Document evidence.
-4. Relay unresolved risk to Strategist.
-
-CONFIDENCE
-92%</pre>
-        </div>
-      </section>
-    `;
-  }
-
-  window.bpoRunLane = async function(title){
-    const out = document.getElementById("lane-output");
-    const ctx = document.getElementById("lane-context")?.value || `Run ${title} BNCA.`;
-    if(!out) return;
-
-    out.style.display="block";
-    out.textContent="TSM Neural Core running...";
-
-    try{
-      const r = await fetch("/api/hc/query",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          action:"BPO_LANE_BNCA",
-          agent:"TSM_BPO",
-          payload:{sector:title,context:ctx,priority:"HIGH"}
-        })
-      });
-      const d = await r.json();
-      out.textContent = d.reply || d.content || "No response";
-    }catch(e){
-      out.textContent = `TOP ISSUE
-${title} operating lane has unresolved queue pressure.
-
-RISK LEVEL
-MEDIUM
-
-BEST NEXT ACTIONS
-1. Assign owner lane.
-2. Validate supporting documents.
-3. Clear blockers older than SLA.
-4. Relay unresolved risk to Strategist.
-
-CONFIDENCE
-92%`;
-    }
-  };
-
-  function wire(){
-    document.querySelectorAll(".nb, .si, .nav-btn, aside div, button").forEach(btn=>{
-      const title = cleanTitle(btn);
-      if(!title || title.length > 30) return;
-      if(!DATA[title]) return;
-      if(btn.dataset.replaceWired) return;
-      btn.dataset.replaceWired="true";
-      btn.style.cursor="pointer";
-
-      btn.addEventListener("click", e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        document.querySelectorAll(".nb,.si,.nav-btn").forEach(x=>x.classList.remove("active"));
-        btn.classList.add("active");
-        render(title);
-      }, true);
-    });
-  }
-
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",wire);
-  else wire();
-
-  [300,900,1800].forEach(ms=>setTimeout(wire,ms));
-})();
-</script>
-
-<script src="/bpo/js/bpo-ops-cloud.js?v=phase2"></script>
-<script src="/bpo/js/bpo-ops-cloud-phase3.js?v=phase3"></script>
-</body></html>
+</body>
+</html>
