@@ -1,675 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TSM | BPO Services Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg-deep: #020509;
-  --bg-panel: #060d14;
-  --bg-card: #0a1520;
-  --border-dim: rgba(0,180,255,0.12);
-  --border-active: rgba(0,200,255,0.45);
-  --accent-cyan: #00c8ff;
-  --accent-gold: #ffc400;
-  --accent-green: #00ff9d;
-  --text-primary: #e8f4ff;
-  --text-dim: #5a7a9a;
-  --text-muted: #2a4a6a;
-  --glow-cyan: 0 0 20px rgba(0,200,255,0.4);
-  --glow-gold: 0 0 20px rgba(255,196,0,0.4);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg-deep);
-  color: var(--text-primary);
-  font-family: 'Exo 2', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* GRID BG */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* SCANLINE */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* CORNER BRACKETS */
-.corner-bracket {
-  position: fixed;
-  width: 40px; height: 40px;
-  z-index: 10;
-  opacity: 0.5;
-}
-.corner-bracket.tl { top: 16px; left: 16px; border-top: 2px solid var(--accent-cyan); border-left: 2px solid var(--accent-cyan); }
-.corner-bracket.tr { top: 16px; right: 16px; border-top: 2px solid var(--accent-cyan); border-right: 2px solid var(--accent-cyan); }
-.corner-bracket.bl { bottom: 16px; left: 16px; border-bottom: 2px solid var(--accent-cyan); border-left: 2px solid var(--accent-cyan); }
-.corner-bracket.br { bottom: 16px; right: 16px; border-bottom: 2px solid var(--accent-cyan); border-right: 2px solid var(--accent-cyan); }
-
-/* HEADER */
-header {
-  position: relative;
-  z-index: 5;
-  padding: 40px 60px 30px;
-  border-bottom: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(180deg, rgba(0,200,255,0.04) 0%, transparent 100%);
-}
-
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.tsm-logo {
-  font-family: 'Orbitron', monospace;
-  font-weight: 900;
-  font-size: 28px;
-  color: var(--accent-cyan);
-  letter-spacing: 4px;
-  text-shadow: var(--glow-cyan);
-  position: relative;
-}
-.tsm-logo::after {
-  content: '';
-  position: absolute;
-  bottom: -4px; left: 0; right: 0;
-  height: 1px;
-  background: var(--accent-cyan);
-  box-shadow: var(--glow-cyan);
-}
-
-.header-divider {
-  width: 1px; height: 40px;
-  background: linear-gradient(180deg, transparent, var(--accent-cyan), transparent);
-  opacity: 0.4;
-}
-
-.header-title {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.header-label {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-.header-name {
-  font-family: 'Orbitron', monospace;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 2px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: var(--accent-green);
-}
-.status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--accent-green);
-  box-shadow: 0 0 8px var(--accent-green);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.85); }
-}
-
-.nav-link {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: var(--text-dim);
-  text-decoration: none;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  border: 1px solid transparent;
-  padding: 6px 14px;
-  transition: all 0.2s;
-}
-.nav-link:hover {
-  color: var(--accent-cyan);
-  border-color: var(--border-active);
-  background: rgba(0,200,255,0.05);
-}
-
-/* HERO SECTION */
-.hero {
-  position: relative;
-  z-index: 5;
-  text-align: center;
-  padding: 70px 60px 50px;
-  border-bottom: 1px solid var(--border-dim);
-}
-
-.hero-eyebrow {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: var(--accent-gold);
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-.hero-eyebrow::before, .hero-eyebrow::after {
-  content: '';
-  width: 60px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-gold));
-}
-.hero-eyebrow::after { transform: scaleX(-1); }
-
-.hero-title {
-  font-family: 'Orbitron', monospace;
-  font-weight: 900;
-  font-size: clamp(36px, 5vw, 62px);
-  line-height: 1.1;
-  letter-spacing: 2px;
-  color: var(--text-primary);
-  margin-bottom: 16px;
-}
-.hero-title span {
-  color: var(--accent-cyan);
-  text-shadow: var(--glow-cyan);
-}
-
-.hero-sub {
-  font-size: 15px;
-  color: var(--text-dim);
-  font-weight: 300;
-  letter-spacing: 0.5px;
-  max-width: 620px;
-  margin: 0 auto 40px;
-  line-height: 1.7;
-  font-style: italic;
-}
-
-.hero-stats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-}
-.hero-stat {
-  padding: 16px 40px;
-  border: 1px solid var(--border-dim);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  position: relative;
-}
-.hero-stat + .hero-stat { border-left: none; }
-.hero-stat-value {
-  font-family: 'Orbitron', monospace;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--accent-cyan);
-}
-.hero-stat-label {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-/* VERTICALS GRID */
-.verticals-section {
-  position: relative;
-  z-index: 5;
-  padding: 60px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 40px;
-}
-.section-tag {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--accent-cyan);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-.section-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--border-active), transparent);
-}
-
-.section-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-
-.verticals-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2px;
-  background: var(--border-dim);
-  border: 1px solid var(--border-dim);
-}
-
-.vertical-card {
-  background: var(--bg-card);
-  padding: 40px;
-  position: relative;
-  cursor: pointer;
-  text-decoration: none;
-  display: block;
-  overflow: hidden;
-  transition: background 0.3s;
-}
-.vertical-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent-cyan)), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.vertical-card:hover { background: rgba(0,200,255,0.04); }
-.vertical-card:hover::before { opacity: 1; }
-
-/* Per-card accent colors */
-.card-tax   { --card-accent: #ffc400; }
-.card-legal { --card-accent: #9d6dff; }
-.card-realty { --card-accent: #00ff9d; }
-.card-healthcare { --card-accent: #ff6d6d; }
-
-.card-index {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 3px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.card-index::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border-dim);
-}
-
-.card-icon {
-  width: 52px; height: 52px;
-  border: 1px solid var(--card-accent, var(--accent-cyan));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  position: relative;
-  transition: box-shadow 0.3s;
-}
-.vertical-card:hover .card-icon {
-  box-shadow: 0 0 20px rgba(0,200,255,0.25);
-}
-.card-icon svg { width: 26px; height: 26px; }
-
-.card-name {
-  font-family: 'Orbitron', monospace;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-}
-
-.card-tagline {
-  font-size: 13px;
-  color: var(--text-dim);
-  font-weight: 300;
-  font-style: italic;
-  margin-bottom: 28px;
-  line-height: 1.6;
-}
-
-.card-services {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 30px;
-}
-.service-pill {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--card-accent, var(--accent-cyan));
-  letter-spacing: 1.5px;
-  padding: 4px 10px;
-  border: 1px solid;
-  border-color: color-mix(in srgb, var(--card-accent, var(--accent-cyan)) 30%, transparent);
-  background: color-mix(in srgb, var(--card-accent, var(--accent-cyan)) 5%, transparent);
-  text-transform: uppercase;
-}
-
-.card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-dim);
-}
-.card-metric {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.metric-value {
-  font-family: 'Orbitron', monospace;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--card-accent, var(--accent-cyan));
-}
-.metric-label {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 9px;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.card-cta {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: var(--card-accent, var(--accent-cyan));
-  letter-spacing: 2px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  opacity: 0;
-  transform: translateX(-8px);
-  transition: all 0.3s;
-}
-.vertical-card:hover .card-cta { opacity: 1; transform: translateX(0); }
-
-/* BOTTOM BAND */
-.hub-footer {
-  position: relative;
-  z-index: 5;
-  padding: 30px 60px;
-  border-top: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0,200,255,0.02);
-}
-.footer-brand {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-}
-.footer-links {
-  display: flex;
-  gap: 30px;
-}
-.footer-links a {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  color: var(--text-dim);
-  text-decoration: none;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.footer-links a:hover { color: var(--accent-cyan); }
-
-/* FADE-IN */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero { animation: fadeUp 0.6s ease both; }
-.verticals-section { animation: fadeUp 0.7s 0.1s ease both; }
-.vertical-card:nth-child(1) { animation: fadeUp 0.5s 0.15s ease both; }
-.vertical-card:nth-child(2) { animation: fadeUp 0.5s 0.25s ease both; }
-.vertical-card:nth-child(3) { animation: fadeUp 0.5s 0.35s ease both; }
-.vertical-card:nth-child(4) { animation: fadeUp 0.5s 0.45s ease both; }
-
-@media (max-width: 900px) {
-  header { padding: 24px 24px; flex-wrap: wrap; gap: 16px; }
-  .hero { padding: 40px 24px 30px; }
-  .verticals-section { padding: 40px 24px; }
-  .verticals-grid { grid-template-columns: 1fr; }
-  .hero-stats { flex-direction: column; gap: 0; }
-  .hero-stat { width: 100%; }
-  .hub-footer { padding: 20px 24px; flex-direction: column; gap: 16px; }
-}
-</style>
+<title>TSM BPO Services Pro</title>
+<link rel="stylesheet" href="/bpo/shared/bpo-framework.css">
 </head>
 <body>
-<div class="corner-bracket tl"></div>
-<div class="corner-bracket tr"></div>
-<div class="corner-bracket bl"></div>
-<div class="corner-bracket br"></div>
 
 <header>
-  <div class="header-brand">
-    <div class="tsm-logo">TSM</div>
-    <div class="header-divider"></div>
-    <div class="header-title">
-      <div class="header-label">Enterprise Division</div>
-      <div class="header-name">BPO Services Hub</div>
-    </div>
-  </div>
-  <div class="header-right">
-    <div class="status-indicator">
-      <div class="status-dot"></div>
-      ALL SYSTEMS OPERATIONAL
-    </div>
-    <a href="/client-access" class="nav-link">CLIENT ACCESS</a>
-    <a href="/concierge-command" class="nav-link">CONCIERGE CMD</a>
-  </div>
+  <div class="brand">TSM · BPO SERVICES PRO</div>
+  <div class="small">AI-Assisted Operational Workforce</div>
 </header>
 
+<div class="wrap">
+
 <section class="hero">
-  <div class="hero-eyebrow">TACTICAL SERVICES MANAGEMENT · ENTERPRISE BPO</div>
-  <h1 class="hero-title">OUTSOURCE OPERATIONS.<br><span>RETAIN CONTROL.</span></h1>
-  <p class="hero-sub">Four fully staffed verticals. One unified command layer. TSM's BPO infrastructure handles the operational weight so your team can execute at the highest level.</p>
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <div class="hero-stat-value">4</div>
-      <div class="hero-stat-label">Active Verticals</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-value">99.4%</div>
-      <div class="hero-stat-label">SLA Compliance</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-value">72h</div>
-      <div class="hero-stat-label">Avg Onboarding</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-value">24/7</div>
-      <div class="hero-stat-label">Live Coverage</div>
-    </div>
+  <div class="badge green">SOVEREIGN OPERATIONS MESH</div>
+
+  <h1>
+    Enterprise BPO
+    <span style="color:#00ffc6">Operations Cloud</span>
+  </h1>
+
+  <p>
+    TSM BPO Services Pro combines AI-assisted operations, WIP intelligence,
+    strategist escalation, SLA enforcement, queue ownership, BNCA synthesis,
+    and executive reporting into one unified operational workforce.
+  </p>
+
+  <div class="tabs">
+    <a class="tab active" href="/bpo/index.html">BPO Hub</a>
+    <a class="tab" href="/bpo/construction-bpo.html">Construction</a>
+    <a class="tab" href="/bpo/insurance-bpo.html">Insurance</a>
+    <a class="tab" href="/bpo/legal-bpo.html">Legal</a>
+    <a class="tab" href="/bpo/realty-bpo.html">RealtyOps</a>
   </div>
 </section>
 
-<section class="verticals-section">
-  <div class="section-header">
-    <div class="section-tag">VERTICAL · SELECT</div>
-    <div class="section-title">ACTIVE SERVICE DIVISIONS</div>
-    <div class="section-line"></div>
+<section class="grid kpi-grid">
+  <div class="card">
+    <div class="small">LIVE QUEUES</div>
+    <div class="kpi">148</div>
+    <div class="small">active operational workflows</div>
   </div>
 
-  <div class="verticals-grid">
+  <div class="card">
+    <div class="small">BNCA ESCALATIONS</div>
+    <div class="kpi">$6.8M</div>
+    <div class="small">risk exposure managed</div>
+  </div>
 
-    <!-- TAX BPO -->
-    <a href="/bpo-tax" class="vertical-card card-tax">
-      <div class="card-index">01 · TAX</div>
-      <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#ffc400" stroke-width="1.5">
-          <path d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 2.5 2 2.5-2 3.5 2z"/>
-        </svg>
-      </div>
-      <div class="card-name">TAX OPERATIONS</div>
-      <div class="card-tagline">Filing, compliance monitoring, and multi-jurisdiction tax management — all offloaded, zero exposure.</div>
-      <div class="card-services">
-        <span class="service-pill">Tax Filing</span>
-        <span class="service-pill">Compliance</span>
-        <span class="service-pill">Audit Prep</span>
-        <span class="service-pill">Entity Mgmt</span>
-        <span class="service-pill">IRS Liaison</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-metric">
-          <div class="metric-value">98.7%</div>
-          <div class="metric-label">Filing Accuracy</div>
-        </div>
-        <div class="card-cta">ENTER DIVISION →</div>
-      </div>
-    </a>
+  <div class="card">
+    <div class="small">CLIENT RETENTION</div>
+    <div class="kpi">97%</div>
+    <div class="small">renewal retention target</div>
+  </div>
 
-    <!-- LEGAL BPO -->
-    <a href="/bpo-legal" class="vertical-card card-legal">
-      <div class="card-index">02 · LEGAL</div>
-      <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#9d6dff" stroke-width="1.5">
-          <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-        </svg>
-      </div>
-      <div class="card-name">LEGAL OPERATIONS</div>
-      <div class="card-tagline">Contract lifecycle, entity maintenance, and compliance ops handled by vetted legal operations specialists.</div>
-      <div class="card-services">
-        <span class="service-pill">Contract Mgmt</span>
-        <span class="service-pill">Entity Filing</span>
-        <span class="service-pill">NDA Processing</span>
-        <span class="service-pill">Compliance</span>
-        <span class="service-pill">DocReview</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-metric">
-          <div class="metric-value">48h</div>
-          <div class="metric-label">Avg Turnaround</div>
-        </div>
-        <div class="card-cta">ENTER DIVISION →</div>
-      </div>
-    </a>
+  <div class="card">
+    <div class="small">AVG RESPONSE TIME</div>
+    <div class="kpi">4m</div>
+    <div class="small">AI-assisted queue triage</div>
+  </div>
+</section>
 
-    <!-- REALTY BPO -->
-    <a href="/bpo-realty" class="vertical-card card-realty">
-      <div class="card-index">03 · REALTY</div>
-      <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#00ff9d" stroke-width="1.5">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/>
-        </svg>
-      </div>
-      <div class="card-name">REALTY OPERATIONS</div>
-      <div class="card-tagline">Transaction coordination, property management operations, and REO processing at enterprise scale.</div>
-      <div class="card-services">
-        <span class="service-pill">Transaction Coord</span>
-        <span class="service-pill">REO Processing</span>
-        <span class="service-pill">Listing Mgmt</span>
-        <span class="service-pill">Due Diligence</span>
-        <span class="service-pill">HOA Liaison</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-metric">
-          <div class="metric-value">340+</div>
-          <div class="metric-label">Active Properties</div>
-        </div>
-        <div class="card-cta">ENTER DIVISION →</div>
-      </div>
-    </a>
+<section class="grid panel-grid" style="margin-top:18px">
 
-    <!-- HEALTHCARE BPO -->
-    <a href="/bpo-healthcare" class="vertical-card card-healthcare">
-      <div class="card-index">04 · HEALTHCARE</div>
-      <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#ff6d6d" stroke-width="1.5">
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-        </svg>
+  <div class="card">
+    <h2>AI Operating Lanes</h2>
+
+    <div class="queue">
+      <strong>AI ANALYST</strong><br>
+      Reviews queues, identifies billing drift, and escalates anomalies.
+    </div>
+
+    <div class="queue med">
+      <strong>QUEUE OPS</strong><br>
+      SLA tracking, ownership assignment, workflow routing.
+    </div>
+
+    <div class="queue high">
+      <strong>EXECUTIVE ESCALATION</strong><br>
+      BNCA synthesis and strategist routing for leadership action.
+    </div>
+
+    <div class="queue">
+      <strong>CLIENT RETENTION ENGINE</strong><br>
+      Tracks renewal probability, friction, and operational health.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Why Clients Stay With TSM</h2>
+
+    <pre>
+• Faster recovery cycles
+• Real-time operational visibility
+• Executive-ready reporting
+• AI-assisted escalation
+• Revenue leakage detection
+• Queue ownership enforcement
+• Strategist-level synthesis
+• SLA transparency
+• WIP recovery intelligence
+• Lower cost than traditional BPO firms
+• Faster turnaround with fewer humans required
+    </pre>
+  </div>
+
+</section>
+
+<section class="card" style="margin-top:18px">
+  <h2>WIP Intelligence Framework</h2>
+
+  <div class="grid panel-grid">
+
+    <div>
+      <div class="metric-row">
+        <span>Lifecycle Progress Tracking</span>
+        <strong>ACTIVE</strong>
       </div>
-      <div class="card-name">HEALTHCARE OPS</div>
-      <div class="card-tagline">Claims processing, prior auth, and revenue cycle management built for HIPAA-compliant enterprise workflows.</div>
-      <div class="card-services">
-        <span class="service-pill">Claims Mgmt</span>
-        <span class="service-pill">Prior Auth</span>
-        <span class="service-pill">RCM</span>
-        <span class="service-pill">HIPAA Compliance</span>
-        <span class="service-pill">Credentialing</span>
+
+      <div class="metric-row">
+        <span>Earned vs Billed Detection</span>
+        <strong>LIVE</strong>
       </div>
-      <div class="card-footer">
-        <div class="card-metric">
-          <div class="metric-value">99.1%</div>
-          <div class="metric-label">HIPAA Compliance</div>
-        </div>
-        <div class="card-cta">ENTER DIVISION →</div>
+
+      <div class="metric-row">
+        <span>Over / Under Exposure</span>
+        <strong>MONITORED</strong>
       </div>
-    </a>
+
+      <div class="metric-row">
+        <span>AI Risk Forecasting</span>
+        <strong>ENABLED</strong>
+      </div>
+    </div>
+
+    <pre>
+"WIP represents money already spent to deliver services,
+but not yet collected."
+
+TSM transforms invisible operational drift into visible,
+actionable intelligence.
+
+The result:
+• faster collections
+• reduced leakage
+• improved liquidity
+• stronger executive visibility
+• higher client trust
+    </pre>
 
   </div>
 </section>
 
-<footer class="hub-footer">
-  <div class="footer-brand">© TSM ENTERPRISE · BPO DIVISION · ALL RIGHTS RESERVED</div>
-  <div class="footer-links">
-    <a href="/client-access">Client Portal</a>
-    <a href="/concierge-command">Command Center</a>
-    <a href="/reo-pro">REO Pro</a>
-    <a href="/real-estate-command">RE Command</a>
+<section class="card" style="margin-top:18px">
+  <h2>Pricing Structure</h2>
+
+  <div class="pricing">
+
+    <div class="price-card">
+      <div class="badge green">STARTER OPS</div>
+      <h3>AI Queue Monitoring</h3>
+      <div class="price">$1.9K</div>
+      <div class="small">per month</div>
+
+      <ul>
+        <li>AI queue monitoring</li>
+        <li>WIP visibility</li>
+        <li>BNCA summaries</li>
+        <li>SLA alerts</li>
+      </ul>
+
+      <a class="cta" href="#">Launch</a>
+    </div>
+
+    <div class="price-card">
+      <div class="badge gold">PRO OPS</div>
+      <h3>AI + Human Operations</h3>
+      <div class="price">$4.9K</div>
+      <div class="small">per month</div>
+
+      <ul>
+        <li>Dedicated operating lanes</li>
+        <li>Strategist synthesis</li>
+        <li>Executive reporting</li>
+        <li>Escalation workflows</li>
+        <li>Client retention engine</li>
+      </ul>
+
+      <a class="cta" href="#">Scale</a>
+    </div>
+
+    <div class="price-card">
+      <div class="badge red">ENTERPRISE MESH</div>
+      <h3>Full Sovereign Operations</h3>
+      <div class="price">$9.9K</div>
+      <div class="small">per month</div>
+
+      <ul>
+        <li>Cross-suite orchestration</li>
+        <li>AI workforce mesh</li>
+        <li>Portfolio intelligence</li>
+        <li>WIP recovery automation</li>
+        <li>Executive command center</li>
+      </ul>
+
+      <a class="cta" href="#">Enterprise</a>
+    </div>
+
   </div>
-</footer>
+</section>
+
+</div>
 
 </body>
 </html>
