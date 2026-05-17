@@ -2,164 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TSM Music Command - Radio Engine</title>
+    <title>TSM Music Command - Live Engine</title>
     <style>
-        :root {
-            --bg-dark: #070a13;
-            --bg-panel: #0f172a;
-            --pink-accent: #ec4899;
-            --purple-accent: #a855f7;
-            --text-main: #f8fafc;
-            --text-muted: #64748b;
-            --border-color: #1e293b;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 30px;
-            display: flex;
-            justify-content: center;
-        }
-        .audio-player-card {
-            width: 100%;
-            max-width: 650px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-        }
-        .track-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 16px;
-            margin-bottom: 20px;
-        }
-        .track-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--pink-accent);
-            margin: 0;
-        }
-        .control-btn {
-            background: var(--pink-accent);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .lyrics-viewport {
-            background: #020617;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            height: 280px;
-            overflow-y: auto;
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        .lyric-row {
-            margin: 8px 0;
-            opacity: 0.2;
-            transition: all 0.2s ease;
-        }
-        .lyric-row.active {
-            opacity: 1;
-            color: #fff;
-            font-weight: bold;
-            border-left: 3px solid var(--pink-accent);
-            padding-left: 8px;
-        }
-        .adlib-highlight {
-            color: var(--purple-accent);
-            font-style: italic;
-        }
+        :root { --bg: #070a13; --panel: #0f172a; --pink: #ec4899; --text: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 30px; display: flex; justify-content: center; }
+        .card { width: 100%; max-width: 600px; background: var(--panel); border-radius: 12px; padding: 24px; border: 1px solid #1e293b; }
+        .row { margin: 12px 0; opacity: 0.2; transition: opacity 0.3s; padding-left: 8px; }
+        .row.active { opacity: 1; border-left: 3px solid var(--pink); padding-left: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="audio-player-card">
-        <div class="track-header">
-            <div>
-                <h1 class="track-title">Scottsdale Payback (Global Broadcast Engine)</h1>
-                <div style="font-size:0.85rem; color:var(--text-muted);">BPM: 150 &bull; Direct Streaming Media Layer</div>
-            </div>
-            <button class="control-btn" id="play-trigger" onclick="togglePlayback()">START REPLAY</button>
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>Scottsdale Payback (Failproof Synth Engine)</h2>
+            <button id="btn" onclick="toggle()" style="background:var(--pink); color:#fff; border:none; padding:12px 24px; font-weight:bold; border-radius:6px; cursor:pointer;">START REPLAY</button>
         </div>
-
-        <audio id="global-track" loop crossOrigin="anonymous">
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-        </audio>
-
-        <div class="lyrics-viewport" id="viewport">
-            <div class="lyric-row" id="l1">(Yeah... uh huh...) <span class="adlib-highlight">[Look!]</span></div>
-            <div class="lyric-row" id="l2">New condo in Scottsdale, pajama party goin up, <span class="adlib-highlight">[Turn it up!]</span></div>
-            <div class="lyric-row" id="l3">Heard my ex was outside flexin, now he's really outta luck. <span class="adlib-highlight">[Straight facts!]</span></div>
-            <div class="lyric-row" id="l4" style="color: var(--pink-accent);">FROM RAGS TO RICHES, RUNNIN CIRCLES ROUND BITCHES! <span class="adlib-highlight">[Woo!]</span></div>
-            <div class="lyric-row" id="l5" style="color: var(--pink-accent);">DEY MAN'S FACE ALL IN MY CAT, LIKE A HUNGRY MAN DINNER... <span class="adlib-highlight">[Eat it up!]</span></div>
+        <div id="viewport" style="background:#020617; padding:20px; border-radius:8px; height:200px; overflow-y:auto;">
+            <div class="row" id="l1">(Yeah... uh huh...) [Look!]</div>
+            <div class="row" id="l2">New condo in Scottsdale, pajama party goin up!</div>
+            <div class="row" id="l3">Heard my ex was outside flexin, now he's outta luck.</div>
+            <div class="row" id="l4" style="color:var(--pink);">FROM RAGS TO RICHES, RUNNIN CIRCLES ROUND BITCHES!</div>
         </div>
     </div>
-
     <script>
-        let playing = false;
-        let currentStep = 0;
-        let playbackInterval;
-        const totalSteps = 5;
+        let playing = false, step = 0, interval, audioCtx, beatInterval;
+        
+        function playTone(freq, type, duration, vol) {
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
 
-        function togglePlayback() {
-            const btn = document.getElementById('play-trigger');
-            const track = document.getElementById('global-track');
-            
+        function toggle() {
+            const btn = document.getElementById('btn');
             if (playing) {
-                if (playbackInterval) clearInterval(playbackInterval);
-                track.pause();
-                btn.innerText = "START REPLAY";
-                playing = false;
+                clearInterval(interval); clearInterval(beatInterval);
+                if(audioCtx) audioCtx.close(); audioCtx = null;
+                btn.innerText = "START REPLAY"; playing = false;
             } else {
-                btn.innerText = "LOADING AUDIO...";
-                playing = true;
-                track.volume = 0.75;
+                playing = true; btn.innerText = "STOP AUDIO";
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // Safe asynchronous engine load state
-                track.play()
-                    .then(() => {
-                        btn.innerText = "STOP AUDIO";
-                        runLiveTrackSequence();
-                    })
-                    .catch(e => {
-                        console.log("Playback blocked:", e);
-                        btn.innerText = "START REPLAY";
-                        playing = false;
-                    });
+                // 150 BPM Electronic Synth Backing Loop
+                beatInterval = setInterval(() => {
+                    playTone(60, 'sine', 0.3, 0.4); // Deep Kick
+                    setTimeout(() => playTone(200, 'triangle', 0.1, 0.15), 200); // Percussion
+                }, 400);
+
+                startLyrics();
             }
         }
 
-        function runLiveTrackSequence() {
-            if (playbackInterval) clearInterval(playbackInterval);
-            
-            for(let i = 1; i <= totalSteps; i++) {
-                document.getElementById('l' + i).classList.remove('active');
-            }
-            currentStep = 1;
-            document.getElementById('l' + currentStep).classList.add('active');
-
-            playbackInterval = setInterval(() => {
-                document.getElementById('l' + currentStep).classList.remove('active');
-                currentStep++;
-                if (currentStep > totalSteps) {
-                    clearInterval(playbackInterval);
-                    document.getElementById('global-track').pause();
-                    document.getElementById('play-trigger').innerText = "START REPLAY";
-                    playing = false;
-                    return;
+        function startLyrics() {
+            for(let i=1; i<=4; i++) document.getElementById('l'+i).classList.remove('active');
+            step = 1; document.getElementById('l'+step).classList.add('active');
+            interval = setInterval(() => {
+                document.getElementById('l'+step).classList.remove('active');
+                step++; 
+                if(step > 4) { 
+                    clearInterval(interval); clearInterval(beatInterval);
+                    if(audioCtx) audioCtx.close(); audioCtx = null;
+                    document.getElementById('btn').innerText = "START REPLAY"; playing = false; return; 
                 }
-                const activeRow = document.getElementById('l' + currentStep);
-                activeRow.classList.add('active');
+                document.getElementById('l'+step).classList.add('active');
             }, 3800);
         }
     </script>
