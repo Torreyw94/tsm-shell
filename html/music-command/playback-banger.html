@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TSM Music Command - Live Audio Engine</title>
+    <title>TSM Music Command - Radio Engine</title>
     <style>
         :root {
             --bg-dark: #070a13;
@@ -86,13 +86,13 @@
     <div class="audio-player-card">
         <div class="track-header">
             <div>
-                <h1 class="track-title">Scottsdale Payback (Live Vocal Mix)</h1>
-                <div style="font-size:0.85rem; color:var(--text-muted);">BPM: 150 &bull; Streaming Core Engine</div>
+                <h1 class="track-title">Scottsdale Payback (Global Broadcast Engine)</h1>
+                <div style="font-size:0.85rem; color:var(--text-muted);">BPM: 150 &bull; Direct Streaming Media Layer</div>
             </div>
             <button class="control-btn" id="play-trigger" onclick="togglePlayback()">START REPLAY</button>
         </div>
 
-        <audio id="studio-track" loop crossOrigin="anonymous">
+        <audio id="global-track" loop crossOrigin="anonymous">
             <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
         </audio>
 
@@ -113,7 +113,7 @@
 
         function togglePlayback() {
             const btn = document.getElementById('play-trigger');
-            const track = document.getElementById('studio-track');
+            const track = document.getElementById('global-track');
             
             if (playing) {
                 clearInterval(playbackInterval);
@@ -123,8 +123,8 @@
             } else {
                 btn.innerText = "STOP AUDIO";
                 playing = true;
-                track.volume = 0.6;
-                track.play().catch(e => console.log("Stream error:", e));
+                track.volume = 0.75;
+                track.play().catch(e => console.log("Playback blocked:", e));
                 runLiveTrackSequence();
             }
         }
@@ -141,7 +141,7 @@
                 currentStep++;
                 if (currentStep > totalSteps) {
                     clearInterval(playbackInterval);
-                    document.getElementById('studio-track').pause();
+                    document.getElementById('global-track').pause();
                     document.getElementById('play-trigger').innerText = "START REPLAY";
                     playing = false;
                     return;
