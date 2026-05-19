@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TSM · AZ Insurance Command Matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── BASE ─────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0b0b;
+  --bg2:#111;
+  --bg3:#161616;
+  --bg4:#1a1a1a;
+  --border:#222;
+  --border2:#2a2a2a;
+  --text:#ccc;
+  --text-dim:#555;
+  --text-mid:#888;
+  --white:#f0f0f0;
+  --gold:#f5c518;
+  --gold2:#c9a200;
+  --cyan:#00b4d8;
+  --blue:#3b82f6;
+  --purple:#a855f7;
+  --green:#22c55e;
+  --red:#ef4444;
+  --orange:#f97316;
+  --pink:#ec4899;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Inter',sans-serif;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.5;min-height:100vh}
+button,input,select,textarea{font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* ── TOP NAV ──────────────────────────────────────────────── */
+.top-nav{
+  background:#0a0a0a;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0 12px;
+  overflow-x:auto;
+  height:44px;
+  flex-shrink:0;
+}
+.top-nav::-webkit-scrollbar{height:2px}
+.top-nav::-webkit-scrollbar-thumb{background:var(--border2)}
+.nav-brand{
+  color:var(--gold);
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.1em;
+  white-space:nowrap;
+  margin-right:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.nav-tab{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 13px;
+  border-radius:4px;
+  font-size:11px;font-weight:600;
+  letter-spacing:.02em;
+  cursor:pointer;
+  white-space:nowrap;
+  border:none;
+  background:transparent;
+  transition:background .15s,opacity .15s;
+  color:#aaa;
+}
+.nav-tab:hover{background:#1a1a1a}
+.nav-tab.active{color:#000!important}
+.nt-gold  {background:var(--gold);color:#000}
+.nt-blue  {background:#1e3a5f;color:var(--cyan)}
+.nt-pink  {background:#3a1a2a;color:var(--pink)}
+.nt-purple{background:#2a1a3a;color:var(--purple)}
+.nt-teal  {background:#1a2a2a;color:#2dd4bf}
+.nt-green {background:#1a3a1a;color:var(--green)}
+.nt-slate {background:#1e1e2a;color:#94a3b8}
+.nt-indigo{background:#1e1e3a;color:#818cf8}
+.nt-red   {background:#2a1a1a;color:#f87171}
+.nt-gold.active{background:var(--gold)}
+.nt-blue.active{background:var(--cyan);color:#000!important}
+.nt-pink.active{background:var(--pink)}
+.nt-purple.active{background:var(--purple)}
+
+/* ── COMMAND BAR ──────────────────────────────────────────── */
+.cmd-bar{
+  background:#0d0d0d;
+  border-bottom:1px solid var(--border);
+  padding:8px 16px;
+  display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;
+}
+.cmd-bar-title{
+  color:var(--gold);font-family:var(--mono);font-size:12px;
+  font-weight:700;letter-spacing:.12em;display:flex;align-items:center;gap:6px;
+}
+.cmd-input-wrap{flex:1;min-width:200px;max-width:480px}
+.cmd-input{
+  width:100%;background:#111;border:1px solid #2a2a2a;
+  border-radius:4px;color:var(--text);font-family:var(--mono);
+  font-size:12px;padding:6px 12px;outline:none;
+  transition:border-color .15s;
+}
+.cmd-input:focus{border-color:var(--gold)}
+.cmd-meta{color:var(--text-dim);font-family:var(--mono);font-size:11px;margin-left:auto;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.status-active{color:var(--green);font-weight:600}
+
+/* ── LAYOUT ───────────────────────────────────────────────── */
+.page{padding:20px;max-width:1340px;margin:0 auto}
+.page-title{color:var(--white);font-size:22px;font-weight:700;margin-bottom:4px}
+.page-title span{color:var(--gold)}
+.page-sub{color:var(--text-dim);font-size:11px;margin-bottom:20px}
+
+/* ── STAT CARDS ───────────────────────────────────────────── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:760px){.stat-row{grid-template-columns:1fr 1fr}}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:6px;padding:14px 16px;
+  border-top:2px solid transparent;
+  transition:border-color .2s;
+}
+.stat-card:nth-child(1){border-top-color:var(--gold)}
+.stat-card:nth-child(2){border-top-color:var(--cyan)}
+.stat-card:nth-child(3){border-top-color:var(--purple)}
+.stat-card:nth-child(4){border-top-color:var(--green)}
+.stat-lbl{color:var(--text-dim);font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px}
+.stat-val{font-size:28px;font-weight:700;color:var(--white);font-family:var(--mono);line-height:1}
+.stat-sub{color:var(--text-dim);font-size:10px;margin-top:4px}
+
+/* ── SECTION GRID ─────────────────────────────────────────── */
+.main-grid{display:grid;grid-template-columns:1fr 380px;gap:14px;margin-bottom:20px}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr}}
+
+/* ── PANEL ────────────────────────────────────────────────── */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.panel-hdr{
+  padding:11px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-mid);
+}
+.panel-hdr .ph-icon{margin-right:4px}
+.panel-body{padding:14px}
+
+/* ── PAIN POINT ITEMS ─────────────────────────────────────── */
+.pp-item{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:5px;
+  padding:12px 14px;margin-bottom:8px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  cursor:pointer;transition:border-color .15s;
+}
+.pp-item:hover{border-color:#3a3a3a}
+.pp-item:last-child{margin-bottom:0}
+.pp-name{color:var(--white);font-size:12px;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.pp-desc{color:var(--text-dim);font-size:11px;line-height:1.4}
+.badge{
+  display:inline-flex;align-items:center;padding:2px 8px;
+  border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.1em;
+  border:1px solid;white-space:nowrap;flex-shrink:0;
+}
+.badge-critical{color:var(--red);border-color:var(--red);background:rgba(239,68,68,.1)}
+.badge-high{color:var(--orange);border-color:var(--orange);background:rgba(249,115,22,.1)}
+.badge-medium{color:var(--gold);border-color:var(--gold);background:rgba(245,197,24,.1)}
+.badge-low{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.1)}
+.badge-wip{color:var(--purple);border-color:var(--purple);background:rgba(168,85,247,.1)}
+.badge-live{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.12)}
+.badge-p1{color:var(--cyan);border-color:var(--cyan);background:rgba(0,180,216,.1)}
+
+/* ── EXEC BUTTONS ─────────────────────────────────────────── */
+.exec-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px}
+.exec-btn{
+  padding:12px 10px;border-radius:5px;border:1px solid;
+  font-size:11px;font-weight:700;letter-spacing:.05em;
+  cursor:pointer;background:transparent;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:background .15s,color .15s;text-align:center;
+}
+.eb-gold  {color:var(--gold);border-color:var(--gold)}
+.eb-blue  {color:var(--cyan);border-color:var(--cyan)}
+.eb-orange{color:var(--orange);border-color:var(--orange)}
+.eb-yellow{color:#fbbf24;border-color:#fbbf24}
+.eb-gold:hover  {background:var(--gold);color:#000}
+.eb-blue:hover  {background:var(--cyan);color:#000}
+.eb-orange:hover{background:var(--orange);color:#000}
+.eb-yellow:hover{background:#fbbf24;color:#000}
+.exec-btn.span2{grid-column:span 2}
+.eb-green{color:var(--green);border-color:var(--green)}
+.eb-green:hover{background:var(--green);color:#000}
+.eb-purple{color:var(--purple);border-color:var(--purple)}
+.eb-purple:hover{background:var(--purple);color:#fff}
+.eb-red{color:var(--red);border-color:var(--red)}
+.eb-red:hover{background:var(--red);color:#fff}
+
+/* ── PHASE TABS ───────────────────────────────────────────── */
+.phase-nav{display:flex;gap:4px;padding:0 14px;border-bottom:1px solid var(--border);overflow-x:auto}
+.phase-nav::-webkit-scrollbar{height:2px}
+.phase-tab{
+  padding:10px 14px;font-size:11px;font-weight:600;
+  letter-spacing:.06em;color:var(--text-dim);border:none;background:transparent;
+  cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;
+  transition:color .15s,border-color .15s;
+}
+.phase-tab:hover{color:var(--text)}
+.phase-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.phase-content{display:none;padding:16px}
+.phase-content.active{display:block}
+
+/* ── FORM ELEMENTS ────────────────────────────────────────── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-row.cols3{grid-template-columns:1fr 1fr 1fr}
+.form-row.cols1{grid-template-columns:1fr}
+label{display:block;font-size:10px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:4px;text-transform:uppercase}
+input[type=text],input[type=number],input[type=email],input[type=date],select,textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px;color:var(--text);font-family:var(--sans);font-size:12px;
+  padding:7px 10px;outline:none;transition:border-color .15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+input::placeholder{color:var(--text-dim)}
+select option{background:var(--bg3)}
+textarea{resize:vertical;min-height:70px}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 18px;border-radius:4px;border:1px solid;
+  font-size:11px;font-weight:700;letter-spacing:.08em;
+  cursor:pointer;background:transparent;transition:all .15s;
+}
+.btn-gold{color:var(--gold);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold);color:#000}
+.btn-blue{color:var(--cyan);border-color:var(--cyan)}
+.btn-blue:hover{background:var(--cyan);color:#000}
+.btn-green{color:var(--green);border-color:var(--green)}
+.btn-green:hover{background:var(--green);color:#000}
+.btn-red{color:var(--red);border-color:var(--red)}
+.btn-red:hover{background:var(--red);color:#fff}
+.btn-sm{padding:5px 12px;font-size:10px}
+
+/* ── RESULT BOX ───────────────────────────────────────────── */
+.result-box{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:4px;
+  padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.7;
+  color:var(--text);min-height:80px;white-space:pre-wrap;word-break:break-word;
+  display:none;margin-top:12px;
+}
+.result-box.show{display:block}
+.result-box.loading{color:var(--text-dim);font-style:italic}
+
+/* ── TABLE ────────────────────────────────────────────────── */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{
+  text-align:left;padding:8px 12px;font-size:9px;letter-spacing:.12em;
+  color:var(--text-dim);border-bottom:1px solid var(--border);text-transform:uppercase;
+}
+.data-table td{padding:10px 12px;border-bottom:1px solid #1a1a1a;color:var(--text)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── CLIENT CARD ──────────────────────────────────────────── */
+.client-card{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:5px;
+  padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;
+}
+.client-avatar{
+  width:36px;height:36px;border-radius:50%;background:var(--border2);
+  display:flex;align-items:center;justify-content:center;font-weight:700;
+  font-size:13px;color:var(--text-mid);flex-shrink:0;
+}
+.client-info{flex:1;min-width:0}
+.client-name{color:var(--white);font-size:12px;font-weight:600}
+.client-meta{color:var(--text-dim);font-size:11px;margin-top:2px}
+.client-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── CALC DISPLAY ─────────────────────────────────────────── */
+.calc-result{
+  background:linear-gradient(135deg,#1a1a0a,#0d0d0a);
+  border:1px solid var(--gold2);border-radius:5px;padding:16px;
+  text-align:center;display:none;margin-top:12px;
+}
+.calc-result.show{display:block}
+.calc-label{color:var(--text-dim);font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.calc-amount{color:var(--gold);font-size:28px;font-weight:700;font-family:var(--mono)}
+.calc-detail{color:var(--text-dim);font-size:11px;margin-top:6px}
+
+/* ── CE TRACKER ───────────────────────────────────────────── */
+.ce-bar-wrap{margin-bottom:12px}
+.ce-bar-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ce-bar-name{font-size:11px;font-weight:600;color:var(--text)}
+.ce-bar-val{font-size:11px;color:var(--text-dim);font-family:var(--mono)}
+.ce-bar-track{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.ce-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+
+/* ── DOC UPLOAD ZONE ──────────────────────────────────────── */
+.doc-drop{
+  border:1px dashed #2a2a2a;border-radius:5px;padding:32px 20px;
+  text-align:center;cursor:pointer;position:relative;
+  transition:border-color .2s,background .2s;margin-bottom:12px;
+}
+.doc-drop:hover,.doc-drop.over{border-color:var(--gold);background:rgba(245,197,24,.03)}
+.doc-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.doc-drop-icon{font-size:28px;margin-bottom:8px;color:var(--text-dim)}
+.doc-drop-title{color:var(--text);font-size:12px;margin-bottom:3px}
+.doc-drop-sub{color:var(--text-dim);font-size:10px}
+.doc-chosen{
+  display:none;background:rgba(245,197,24,.06);border:1px solid #2a2200;
+  border-radius:4px;padding:8px 12px;font-size:11px;color:var(--gold);
+  margin-bottom:12px;align-items:center;gap:8px;
+}
+.doc-chosen.show{display:flex}
+.doc-chosen-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-chosen button{background:none;border:none;color:var(--red);cursor:pointer;font-size:13px}
+
+/* ── AI ENGINE GRID ───────────────────────────────────────── */
+.ai-engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:600px){.ai-engine-grid{grid-template-columns:1fr}}
+.ai-eng{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;overflow:hidden;transition:border-color .2s}
+.ai-eng.running{border-color:var(--gold)}
+.ai-eng.done{border-color:var(--green)}
+.ai-eng.errored{border-color:var(--red)}
+.ai-eng-hdr{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  border-bottom:1px solid var(--border);background:#111;
+}
+.ai-eng-num{
+  width:22px;height:22px;border-radius:50%;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--text-dim);flex-shrink:0;
+  transition:all .2s;
+}
+.ai-eng.running .ai-eng-num{border-color:var(--gold);color:var(--gold)}
+.ai-eng.done .ai-eng-num{border-color:var(--green);background:var(--green);color:#000}
+.ai-eng.errored .ai-eng-num{border-color:var(--red);color:var(--red)}
+.ai-eng-meta{flex:1;min-width:0}
+.ai-eng-name{color:var(--white);font-size:10px;font-weight:700;letter-spacing:.06em}
+.ai-eng-desc{color:var(--text-dim);font-size:9px;margin-top:1px}
+.ai-eng-badge{font-size:9px;padding:1px 7px;border-radius:2px;border:1px solid;letter-spacing:.06em}
+.ai-eng-badge.idle{color:var(--text-dim);border-color:var(--border2)}
+.ai-eng-badge.running{color:var(--gold);border-color:var(--gold);animation:blink .9s step-end infinite}
+.ai-eng-badge.done{color:var(--green);border-color:var(--green)}
+.ai-eng-badge.error{color:var(--red);border-color:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ai-eng-out{
+  padding:10px 12px;min-height:80px;max-height:220px;overflow-y:auto;
+  font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--text);
+  white-space:pre-wrap;word-break:break-word;
+}
+.ai-eng-out.placeholder{color:#333;font-style:italic}
+.ai-eng-out::-webkit-scrollbar{width:3px}
+.ai-eng-out::-webkit-scrollbar-thumb{background:var(--border2)}
+
+/* ── REPORT ITEMS ─────────────────────────────────────────── */
+.report-item{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.report-item:last-child{border-bottom:none}
+.report-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.report-body{flex:1;min-width:0}
+.report-title{color:var(--white);font-size:12px;font-weight:600;margin-bottom:2px}
+.report-meta{color:var(--text-dim);font-size:10px}
+.report-actions{display:flex;gap:6px;flex-shrink:0;align-items:center}
+
+/* ── SPINNER ──────────────────────────────────────────────── */
+.spin{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(245,197,24,.2);border-top-color:var(--gold);
+  border-radius:50%;animation:spinr .7s linear infinite;
+}
+@keyframes spinr{to{transform:rotate(360deg)}}
+
+/* ── SCROLLBAR ────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── TOAST ────────────────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:20px;right:20px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:5px;padding:10px 16px;font-size:12px;color:var(--text);
+  transform:translateY(60px);opacity:0;transition:all .25s;z-index:9999;
+  pointer-events:none;max-width:300px;
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.toast-ok{border-left:3px solid var(--green)}
+#toast.toast-err{border-left:3px solid var(--red)}
+
+/* ── MODAL ────────────────────────────────────────────────── */
+.modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);
+  z-index:100;align-items:center;justify-content:center;padding:16px;
+}
+.modal-bg.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:24px;width:100%;max-width:500px;position:relative;
+}
+.modal-title{color:var(--white);font-size:14px;font-weight:700;margin-bottom:16px}
+.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer}
+
+/* ── DIVIDER ──────────────────────────────────────────────── */
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.section-title{color:var(--white);font-size:12px;font-weight:700;letter-spacing:.08em;margin-bottom:10px;text-transform:uppercase}
+.tag{display:inline-block;padding:1px 8px;border-radius:2px;font-size:9px;font-weight:600;letter-spacing:.08em}
+.tag-wip{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+.tag-new{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.tag-p{background:rgba(0,180,216,.1);color:var(--cyan);border:1px solid rgba(0,180,216,.25)}
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ───────────────────────────────────────────── -->
+<div class="top-nav">
+  <div class="nav-brand">🌵 INSURANCE SUITE:</div>
+  <button class="nav-tab nt-gold active" onclick="navTo(this,'az-command')">⚡ AZ Command</button>
+  <button class="nav-tab nt-blue"  onclick="navTo(this,'agents')">👥 Agents</button>
+  <button class="nav-tab nt-pink"  onclick="navTo(this,'playbook')">📋 Playbook Library</button>
+  <button class="nav-tab nt-purple"onclick="navTo(this,'ce')">🎓 CE Study Prep</button>
+  <button class="nav-tab nt-teal"  onclick="navTo(this,'dme')">🏥 DME</button>
+  <button class="nav-tab nt-green" onclick="navTo(this,'pc')">📊 P&amp;C Command</button>
+  <button class="nav-tab nt-slate" onclick="navTo(this,'intel')">🔍 Intel</button>
+  <button class="nav-tab nt-indigo"onclick="navTo(this,'presentation')">📽 Presentation</button>
+  <button class="nav-tab nt-red"   onclick="navTo(this,'legal')">⚖ Legal</button>
+</div>
+
+<!-- ── COMMAND BAR ────────────────────────────────────────── -->
+<div class="cmd-bar">
+  <div class="cmd-bar-title">🌵 ARIZONA INSURANCE COMMAND MATRIX</div>
+  <div class="cmd-input-wrap">
+    <input class="cmd-input" type="text" id="cmdInput"
+           placeholder="auditops --domain=insurance.tsmatter.com" />
+  </div>
+  <div class="cmd-meta">
+    TSM Neural Core: <span class="status-active"><span class="status-dot"></span> Active</span>
+    &nbsp;| NPN: <span style="color:var(--gold);font-family:var(--mono)">18818059</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- PAGE: AZ COMMAND (default)                              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<div id="page-az-command" class="page">
+  <div class="page-title">Agent <span>Command Center</span></div>
+  <div class="page-sub">Arizona • Life • Health • Accident • Medicare — Premium Framework Node Hub Architecture</div>
+
+  <!-- Stats -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-lbl">Active Clients</div>
+      <div class="stat-val" id="stat-clients">0</div>
+      <div class="stat-sub">← Clients tab</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Quotes Run</div>
+      <div class="stat-val" id="stat-quotes">0</div>
+      <div class="stat-sub">This session</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Docs Analyzed</div>
+      <div class="stat-val" id="stat-docs">0</div>
+      <div class="stat-sub">AI powered telemetry</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Report Items</div>
+      <div class="stat-val" id="stat-reports">0</div>
+      <div class="stat-sub">← Reports tab</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <!-- LEFT: Pain Points + Phase panel -->
+    <div>
+      <!-- Pain Points -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <span>⚠ TOP AZ PAIN POINTS TARGET FOCUS MATRIX</span>
+          <span class="badge badge-wip">LIVE</span>
+        </div>
+        <div class="panel-body" style="padding:10px">
+          <div class="pp-item" onclick="openQuoteModal('medicare')">
+            <div>
+              <div class="pp-name">🔴 Medicare Part D Donut Hole Confusion</div>
+              <div class="pp-desc">Seniors overpaying avg $1,200/yr. Optimal matrix matching closes exposures.</div>
+            </div>
+            <span class="badge badge-critical">CRITICAL</span>
+          </div>
+          <div class="pp-item" onclick="openQuoteModal('aca')">
+            <div>
+              <div class="pp-name">🔴 ACA APTC Clawback Risk Profile</div>
+              <div class="pp-desc">MAGI income mapping deviation triggers IRS recapture calculations.</div>
+            </div>
+            <span class="badge badge-critical">CRITICAL</span>
+          </div>
+          <div class="pp-item" onclick="openQuoteModal('accident')">
+            <div>
+              <div class="pp-name">⚡ Accident Coverage Gap Mitigation</div>
+              <div class="pp-desc">ER visits clip $2,400 median baselines. Supplemental fixed indemnity buffers cash reserves.</div>
+            </div>
+            <span class="badge badge-high">HIGH</span>
+          </div>
+          <div class="pp-item">
+            <div>
+              <div class="pp-name">📋 IRMAA Bracket Creep — Income Planning</div>
+              <div class="pp-desc">Medicare premium surcharges spike with 2yr lookback. MAGI management critical.</div>
+            </div>
+            <span class="badge badge-high">HIGH</span>
+          </div>
+          <div class="pp-item">
+            <div>
+              <div class="pp-name">🏥 DME Prior Authorization Delays</div>
+              <div class="pp-desc">AZ Medicaid AHCCCS prior auth backlogs averaging 18 days. Bridge coverage gaps.</div>
+            </div>
+            <span class="badge badge-medium">MEDIUM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 1–5 Workbench -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <span>⚙ PHASE 1–5 WORKBENCH</span>
+          <div style="display:flex;gap:4px">
+            <span class="tag tag-p">P1–P5</span>
+            <span class="tag tag-wip">WIP</span>
+          </div>
+        </div>
+        <div class="phase-nav">
+          <button class="phase-tab active" onclick="showPhase(this,'p1')">P1 · Clients</button>
+          <button class="phase-tab" onclick="showPhase(this,'p2')">P2 · Quotes</button>
+          <button class="phase-tab" onclick="showPhase(this,'p3')">P3 · Doc AI</button>
+          <button class="phase-tab" onclick="showPhase(this,'p4')">P4 · Compliance</button>
+          <button class="phase-tab" onclick="showPhase(this,'p5')">P5 · Intelligence</button>
+        </div>
+
+        <!-- P1: Client Registry -->
+        <div class="phase-content active" id="phase-p1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div class="section-title" style="margin:0">Client Registry <span class="tag tag-p" style="margin-left:6px">Phase 1</span></div>
+            <button class="btn btn-gold btn-sm" onclick="document.getElementById('addClientModal').classList.add('open')">+ Add Client</button>
+          </div>
+          <div id="client-list">
+            <div class="client-card">
+              <div class="client-avatar" style="background:#1a2a1a;color:var(--green)">RJ</div>
+              <div class="client-info">
+                <div class="client-name">Robert J. — Medicare Supp + Part D</div>
+                <div class="client-meta">DOB: 1952-03-14 · IRMAA tier review due Q3 · NPN link active</div>
+              </div>
+              <div class="client-actions">
+                <span class="badge badge-live">ACTIVE</span>
+                <button class="btn btn-blue btn-sm" onclick="toast('Opening Robert J. profile…','ok')">View</button>
+              </div>
+            </div>
+            <div class="client-card">
+              <div class="client-avatar" style="background:#1a1a2a;color:var(--cyan)">MS</div>
+              <div class="client-info">
+                <div class="client-name">Maria S. — ACA Marketplace Plan</div>
+                <div class="client-meta">APTC: $412/mo · MAGI watch: $52,400 · Sep election pending</div>
+              </div>
+              <div class="client-actions">
+                <span class="badge badge-medium">REVIEW</span>
+                <button class="btn btn-blue btn-sm" onclick="toast('Opening Maria S. profile…','ok')">View</button>
+              </div>
+            </div>
+            <div class="client-card">
+              <div class="client-avatar" style="background:#2a1a1a;color:var(--orange)">TD</div>
+              <div class="client-info">
+                <div class="client-name">Tom D. — Life + Accident Bundle</div>
+                <div class="client-meta">20yr term: $500k · Accident rider: $25k · Renewal: Nov 2025</div>
+              </div>
+              <div class="client-actions">
+                <span class="badge badge-live">ACTIVE</span>
+                <button class="btn btn-blue btn-sm" onclick="toast('Opening Tom D. profile…','ok')">View</button>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;padding:10px 0">
+            <button class="btn btn-blue btn-sm" onclick="toast('Full CRM loading…','ok')">Load All Clients →</button>
+          </div>
+        </div>
+
+        <!-- P2: Quote Engine -->
+        <div class="phase-content" id="phase-p2">
+          <div class="section-title">Quote Engine <span class="tag tag-p" style="margin-left:6px">Phase 2</span></div>
+          <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+            <button class="btn btn-gold btn-sm" onclick="showCalc('life')">💛 Life Quote</button>
+            <button class="btn btn-blue btn-sm" onclick="showCalc('aca')">💙 ACA/APTC</button>
+            <button class="btn btn-sm" style="color:var(--orange);border-color:var(--orange)" onclick="showCalc('irmaa')">⭐ IRMAA Calc</button>
+            <button class="btn btn-sm" style="color:#fbbf24;border-color:#fbbf24" onclick="showCalc('accident')">⚡ Accident Calc</button>
+          </div>
+
+          <!-- Life Quote -->
+          <div id="calc-life" class="calc-section">
+            <div class="form-row">
+              <div><label>Age</label><input type="number" id="lq-age" placeholder="45" min="18" max="85"/></div>
+              <div><label>Gender</label><select id="lq-gender"><option>Male</option><option>Female</option></select></div>
+            </div>
+            <div class="form-row">
+              <div><label>Coverage Amount</label><input type="number" id="lq-cov" placeholder="500000"/></div>
+              <div><label>Term (years)</label><select id="lq-term"><option>10</option><option>15</option><option selected>20</option><option>25</option><option>30</option></select></div>
+            </div>
+            <div class="form-row cols1">
+              <div><label>Health Class</label><select id="lq-health"><option>Preferred Plus</option><option>Preferred</option><option selected>Standard Plus</option><option>Standard</option><option>Substandard</option></select></div>
+            </div>
+            <button class="btn btn-gold" onclick="calcLife()">Calculate Life Premium</button>
+            <div class="calc-result" id="life-result">
+              <div class="calc-label">Estimated Monthly Premium</div>
+              <div class="calc-amount" id="life-amount">—</div>
+              <div class="calc-detail" id="life-detail"></div>
+            </div>
+          </div>
+
+          <!-- ACA Quote -->
+          <div id="calc-aca" class="calc-section" style="display:none">
+            <div class="form-row">
+              <div><label>Household Size</label><input type="number" id="aca-hh" placeholder="2" min="1"/></div>
+              <div><label>Annual MAGI ($)</label><input type="number" id="aca-magi" placeholder="52000"/></div>
+            </div>
+            <div class="form-row">
+              <div><label>Age (Primary)</label><input type="number" id="aca-age" placeholder="38"/></div>
+              <div><label>County</label><select id="aca-county"><option>Maricopa</option><option>Pima</option><option>Yavapai</option><option>Mohave</option><option>Coconino</option><option>Pinal</option></select></div>
+            </div>
+            <button class="btn btn-blue" onclick="calcACA()">Calculate APTC Subsidy</button>
+            <div class="calc-result" id="aca-result">
+              <div class="calc-label">Estimated Monthly APTC</div>
+              <div class="calc-amount" id="aca-amount">—</div>
+              <div class="calc-detail" id="aca-detail"></div>
+            </div>
+          </div>
+
+          <!-- IRMAA -->
+          <div id="calc-irmaa" class="calc-section" style="display:none">
+            <div class="form-row">
+              <div><label>2-Year Prior MAGI ($)</label><input type="number" id="ir-magi" placeholder="105000"/></div>
+              <div><label>Filing Status</label><select id="ir-status"><option>Single</option><option>Married Joint</option><option>Married Separate</option></select></div>
+            </div>
+            <button class="btn" style="color:var(--orange);border-color:var(--orange)" onclick="calcIRMAA()">Calculate IRMAA Surcharge</button>
+            <div class="calc-result" id="irmaa-result">
+              <div class="calc-label">Monthly Part B IRMAA Surcharge</div>
+              <div class="calc-amount" id="irmaa-amount">—</div>
+              <div class="calc-detail" id="irmaa-detail"></div>
+            </div>
+          </div>
+
+          <!-- Accident -->
+          <div id="calc-accident" class="calc-section" style="display:none">
+            <div class="form-row">
+              <div><label>Age</label><input type="number" id="ac-age" placeholder="35"/></div>
+              <div><label>Benefit Level</label><select id="ac-level"><option value="10000">$10,000</option><option value="25000" selected>$25,000</option><option value="50000">$50,000</option><option value="100000">$100,000</option></select></div>
+            </div>
+            <div class="form-row cols1">
+              <div><label>Riders</label>
+                <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
+                  <label style="text-transform:none;letter-spacing:0;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text)"><input type="checkbox" id="ac-hospital"> Hospital confinement</label>
+                  <label style="text-transform:none;letter-spacing:0;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text)"><input type="checkbox" id="ac-er"> ER visit rider</label>
+                  <label style="text-transform:none;letter-spacing:0;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text)"><input type="checkbox" id="ac-death"> AD&amp;D</label>
+                </div>
+              </div>
+            </div>
+            <button class="btn" style="color:#fbbf24;border-color:#fbbf24;margin-top:8px" onclick="calcAccident()">Calculate Accident Premium</button>
+            <div class="calc-result" id="accident-result">
+              <div class="calc-label">Estimated Monthly Premium</div>
+              <div class="calc-amount" id="accident-amount">—</div>
+              <div class="calc-detail" id="accident-detail"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- P3: Doc AI -->
+        <div class="phase-content" id="phase-p3">
+          <div class="section-title">AI Document Analysis <span class="tag tag-wip" style="margin-left:6px">Phase 3</span></div>
+          <div class="doc-drop" id="docDrop">
+            <input type="file" id="docFile" accept=".pdf,.png,.jpg,.jpeg,.csv,.txt,.docx"/>
+            <div class="doc-drop-icon">🔐</div>
+            <div class="doc-drop-title">Drop Encrypted Audit Files Here</div>
+            <div class="doc-drop-sub">EOBs · SOBs · Rx Claims · Audit Exports · Carrier Statements</div>
+          </div>
+          <div class="doc-chosen" id="docChosen">
+            <span>📄</span>
+            <span class="doc-chosen-name" id="docChosenName"></span>
+            <button onclick="clearDocFile()">✕</button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+            <button class="btn btn-gold" id="docRunBtn" disabled onclick="runDocAnalysis()">
+              <span id="docSpinner" style="display:none" class="spin"></span>
+              ⚡ Run 4-Engine Analysis
+            </button>
+            <span style="color:var(--text-dim);font-size:11px" id="docStatus">Upload a document to begin</span>
+          </div>
+          <div class="ai-engine-grid">
+            <div class="ai-eng" id="ae1">
+              <div class="ai-eng-hdr">
+                <div class="ai-eng-num">1</div>
+                <div class="ai-eng-meta"><div class="ai-eng-name">CLAIM EXTRACTOR</div><div class="ai-eng-desc">Pulls policy data, claim amounts, dates</div></div>
+                <div class="ai-eng-badge idle" id="ae1-b">IDLE</div>
+              </div>
+              <div class="ai-eng-out placeholder" id="ae1-out">Awaiting document…</div>
+            </div>
+            <div class="ai-eng" id="ae2">
+              <div class="ai-eng-hdr">
+                <div class="ai-eng-num">2</div>
+                <div class="ai-eng-meta"><div class="ai-eng-name">COVERAGE GAP DETECTOR</div><div class="ai-eng-desc">Flags underinsurance &amp; AZ compliance gaps</div></div>
+                <div class="ai-eng-badge idle" id="ae2-b">IDLE</div>
+              </div>
+              <div class="ai-eng-out placeholder" id="ae2-out">Awaiting document…</div>
+            </div>
+            <div class="ai-eng" id="ae3">
+              <div class="ai-eng-hdr">
+                <div class="ai-eng-num">3</div>
+                <div class="ai-eng-meta"><div class="ai-eng-name">APTC / IRMAA CLASSIFIER</div><div class="ai-eng-desc">Maps income data to subsidy &amp; surcharge risk</div></div>
+                <div class="ai-eng-badge idle" id="ae3-b">IDLE</div>
+              </div>
+              <div class="ai-eng-out placeholder" id="ae3-out">Awaiting document…</div>
+            </div>
+            <div class="ai-eng" id="ae4">
+              <div class="ai-eng-hdr">
+                <div class="ai-eng-num">4</div>
+                <div class="ai-eng-meta"><div class="ai-eng-name">AUDIT RISK SCORER</div><div class="ai-eng-desc">Compliance risk rating + carrier red flags</div></div>
+                <div class="ai-eng-badge idle" id="ae4-b">IDLE</div>
+              </div>
+              <div class="ai-eng-out placeholder" id="ae4-out">Awaiting document…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- P4: Compliance -->
+        <div class="phase-content" id="phase-p4">
+          <div class="section-title">Compliance &amp; CE Tracker <span class="tag tag-p" style="margin-left:6px">Phase 4</span></div>
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:14px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="color:var(--white);font-size:12px;font-weight:600">AZ License Renewal — NPN 18818059</div>
+              <span class="badge badge-medium">DUE: Mar 2026</span>
+            </div>
+            <div class="ce-bar-wrap">
+              <div class="ce-bar-label"><span class="ce-bar-name">Life &amp; Health CE</span><span class="ce-bar-val">18 / 24 hrs</span></div>
+              <div class="ce-bar-track"><div class="ce-bar-fill" style="width:75%;background:var(--cyan)"></div></div>
+            </div>
+            <div class="ce-bar-wrap">
+              <div class="ce-bar-label"><span class="ce-bar-name">Ethics (Required)</span><span class="ce-bar-val">3 / 3 hrs</span></div>
+              <div class="ce-bar-track"><div class="ce-bar-fill" style="width:100%;background:var(--green)"></div></div>
+            </div>
+            <div class="ce-bar-wrap">
+              <div class="ce-bar-label"><span class="ce-bar-name">Medicare Certification (AHIP)</span><span class="ce-bar-val">Passed ✓</span></div>
+              <div class="ce-bar-track"><div class="ce-bar-fill" style="width:100%;background:var(--green)"></div></div>
+            </div>
+            <div class="ce-bar-wrap">
+              <div class="ce-bar-label"><span class="ce-bar-name">ACA Marketplace Certification</span><span class="ce-bar-val">6 / 6 hrs</span></div>
+              <div class="ce-bar-track"><div class="ce-bar-fill" style="width:100%;background:var(--green)"></div></div>
+            </div>
+          </div>
+          <div class="section-title">Compliance Checklist</div>
+          <div class="data-table" style="display:table;width:100%">
+            <table class="data-table">
+              <thead><tr><th>Item</th><th>Status</th><th>Due</th></tr></thead>
+              <tbody>
+                <tr><td>E&O Insurance Renewal</td><td><span class="badge badge-live">CURRENT</span></td><td>Dec 2025</td></tr>
+                <tr><td>AZ DOI Annual Renewal Fee</td><td><span class="badge badge-live">PAID</span></td><td>Mar 2026</td></tr>
+                <tr><td>Anti-Money Laundering (AML)</td><td><span class="badge badge-live">COMPLETE</span></td><td>Biennial</td></tr>
+                <tr><td>CMS Marketing Guidelines Review</td><td><span class="badge badge-medium">PENDING</span></td><td>Oct 2025</td></tr>
+                <tr><td>HIPAA Compliance Training</td><td><span class="badge badge-live">CURRENT</span></td><td>Jan 2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- P5: Intelligence -->
+        <div class="phase-content" id="phase-p5">
+          <div class="section-title">Market Intelligence <span class="tag tag-wip" style="margin-left:6px">Phase 5</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:12px">
+              <div style="color:var(--text-dim);font-size:9px;letter-spacing:.12em;margin-bottom:4px">AZ BENCHMARK · 2025</div>
+              <div style="color:var(--white);font-size:13px;font-weight:700;margin-bottom:6px">ACA Subsidy Coverage Rate</div>
+              <div style="color:var(--gold);font-size:22px;font-weight:700;font-family:var(--mono)">94.2%</div>
+              <div style="color:var(--text-dim);font-size:10px;margin-top:3px">of eligible AZ residents enrolled with APTC</div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:12px">
+              <div style="color:var(--text-dim);font-size:9px;letter-spacing:.12em;margin-bottom:4px">MARICOPA COUNTY</div>
+              <div style="color:var(--white);font-size:13px;font-weight:700;margin-bottom:6px">Avg Medicare Supp Premium</div>
+              <div style="color:var(--cyan);font-size:22px;font-weight:700;font-family:var(--mono)">$147/mo</div>
+              <div style="color:var(--text-dim);font-size:10px;margin-top:3px">Plan G · non-tobacco · age 65</div>
+            </div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:14px;margin-bottom:12px">
+            <div class="section-title" style="margin-bottom:10px">AI Market Brief <span class="tag tag-wip" style="margin-left:6px">Groq</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+              <select id="intel-topic" style="flex:1;min-width:180px">
+                <option value="donut">Medicare Part D Donut Hole 2025</option>
+                <option value="aptc">ACA APTC Clawback Risk AZ</option>
+                <option value="irmaa">IRMAA Brackets 2025-2026</option>
+                <option value="accident">Supplemental Accident Insurance Trends AZ</option>
+                <option value="ahcccs">AHCCCS / Medicaid AZ updates</option>
+              </select>
+              <button class="btn btn-gold btn-sm" onclick="runIntelBrief()">
+                <span id="intel-spin" style="display:none" class="spin"></span>
+                Generate Brief
+              </button>
+            </div>
+            <div class="result-box" id="intel-result">Loading…</div>
+          </div>
+          <div class="section-title">Commission Pipeline</div>
+          <table class="data-table">
+            <thead><tr><th>Client</th><th>Product</th><th>Carrier</th><th>Est. Annual Comm.</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Robert J.</td><td>Medicare Supp G</td><td>Mutual of Omaha</td><td><span style="color:var(--green);font-family:var(--mono)">$840</span></td><td><span class="badge badge-live">ACTIVE</span></td></tr>
+              <tr><td>Maria S.</td><td>ACA Silver 70</td><td>Blue Cross AZ</td><td><span style="color:var(--green);font-family:var(--mono)">$360</span></td><td><span class="badge badge-live">ACTIVE</span></td></tr>
+              <tr><td>Tom D.</td><td>Term Life 20yr</td><td>Protective Life</td><td><span style="color:var(--cyan);font-family:var(--mono)">$1,200</span></td><td><span class="badge badge-live">ACTIVE</span></td></tr>
+              <tr><td>— Prospect —</td><td>Accident + Hosp</td><td>Aflac AZ</td><td><span style="color:var(--text-dim);font-family:var(--mono)">TBD</span></td><td><span class="badge badge-wip">PENDING</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /.panel phase workbench -->
+    </div><!-- /left col -->
+
+    <!-- RIGHT: Rapid Execution -->
+    <div>
+      <div class="panel">
+        <div class="panel-hdr">⚡ RAPID OPERATIONAL EXECUTION BUTTONS</div>
+        <div class="exec-grid">
+          <button class="exec-btn eb-gold" onclick="showPhase(null,'p2');showCalc('life');activatePhaseTab('p2')">💛 LIFE QUOTE</button>
+          <button class="exec-btn eb-blue" onclick="showPhase(null,'p2');showCalc('aca');activatePhaseTab('p2')">💙 ACA QUOTE</button>
+          <button class="exec-btn eb-orange" onclick="showPhase(null,'p2');showCalc('irmaa');activatePhaseTab('p2')">⭐ IRMAA CALC</button>
+          <button class="exec-btn eb-yellow" onclick="showPhase(null,'p2');showCalc('accident');activatePhaseTab('p2')">⚡ ACCIDENT CALC</button>
+          <button class="exec-btn eb-green span2" onclick="showPhase(null,'p3');activatePhaseTab('p3');document.getElementById('docDrop').scrollIntoView({behavior:'smooth'})">
+            🔐 DROP ENCRYPTED AUDIT FILES HERE
+          </button>
+          <button class="exec-btn eb-purple" onclick="showPhase(null,'p4');activatePhaseTab('p4')">🎓 CE TRACKER</button>
+          <button class="exec-btn eb-red" onclick="showPhase(null,'p5');activatePhaseTab('p5')">🔍 INTEL BRIEF</button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="panel">
+        <div class="panel-hdr">📋 RECENT ACTIVITY LOG</div>
+        <div class="panel-body" style="padding:10px 14px" id="activityLog">
+          <div class="report-item">
+            <div class="report-icon">⚡</div>
+            <div class="report-body">
+              <div class="report-title">Session initialized</div>
+              <div class="report-meta" id="session-time">—</div>
+            </div>
+          </div>
+          <div class="report-item">
+            <div class="report-icon">🌵</div>
+            <div class="report-body">
+              <div class="report-title">AZ Command Matrix loaded</div>
+              <div class="report-meta">Phase 1–5 workbench active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick NPN Lookup -->
+      <div class="panel">
+        <div class="panel-hdr">🔍 NPN / PRODUCER LOOKUP</div>
+        <div class="panel-body">
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <input type="text" id="npn-input" placeholder="Enter NPN or producer name…" style="flex:1"/>
+            <button class="btn btn-gold btn-sm" onclick="lookupNPN()">Lookup</button>
+          </div>
+          <div class="result-box" id="npn-result"></div>
+        </div>
+      </div>
+    </div><!-- /right col -->
+  </div><!-- /.main-grid -->
+</div><!-- /#page-az-command -->
+
+<!-- Other page placeholders -->
+<div id="page-agents"       class="page" style="display:none"><div class="panel"><div class="panel-hdr">👥 AGENTS</div><div class="panel-body"><p style="color:var(--text-dim)">Agent roster — Phase 1 WIP</p></div></div></div>
+<div id="page-playbook"     class="page" style="display:none"><div class="panel"><div class="panel-hdr">📋 PLAYBOOK LIBRARY</div><div class="panel-body"><p style="color:var(--text-dim)">Sales playbooks — loading…</p></div></div></div>
+<div id="page-ce"           class="page" style="display:none"><div class="panel"><div class="panel-hdr">🎓 CE STUDY PREP</div><div class="panel-body"><p style="color:var(--text-dim)">CE modules — Phase 4 WIP</p></div></div></div>
+<div id="page-dme"          class="page" style="display:none"><div class="panel"><div class="panel-hdr">🏥 DME COMMAND</div><div class="panel-body"><p style="color:var(--text-dim)">DME prior auth tracker — Phase 2 WIP</p></div></div></div>
+<div id="page-pc"           class="page" style="display:none"><div class="panel"><div class="panel-hdr">📊 P&C COMMAND</div><div class="panel-body"><p style="color:var(--text-dim)">P&C module — WIP</p></div></div></div>
+<div id="page-intel"        class="page" style="display:none"><div class="panel"><div class="panel-hdr">🔍 INTEL</div><div class="panel-body"><p style="color:var(--text-dim)">Market intelligence — Phase 5 WIP</p></div></div></div>
+<div id="page-presentation" class="page" style="display:none"><div class="panel"><div class="panel-hdr">📽 PRESENTATION</div><div class="panel-body"><p style="color:var(--text-dim)">Deck builder — WIP</p></div></div></div>
+<div id="page-legal"        class="page" style="display:none"><div class="panel"><div class="panel-hdr">⚖ LEGAL</div><div class="panel-body"><p style="color:var(--text-dim)">Legal &amp; compliance references — WIP</p></div></div></div>
+
+<!-- ── ADD CLIENT MODAL ── -->
+<div class="modal-bg" id="addClientModal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('addClientModal').classList.remove('open')">✕</button>
+    <div class="modal-title">Add New Client</div>
+    <div class="form-row">
+      <div><label>First Name</label><input type="text" id="cl-first" placeholder="First"/></div>
+      <div><label>Last Name</label><input type="text" id="cl-last" placeholder="Last"/></div>
+    </div>
+    <div class="form-row">
+      <div><label>Date of Birth</label><input type="date" id="cl-dob"/></div>
+      <div><label>Phone</label><input type="text" id="cl-phone" placeholder="(602) 555-0100"/></div>
+    </div>
+    <div class="form-row cols1">
+      <div><label>Product Interest</label>
+        <select id="cl-product">
+          <option>Medicare Supplement</option>
+          <option>Medicare Part D</option>
+          <option>ACA Marketplace</option>
+          <option>Life Insurance</option>
+          <option>Accident / Supplemental</option>
+          <option>DME</option>
+          <option>Multiple</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row cols1">
+      <div><label>Notes</label><textarea id="cl-notes" placeholder="Initial contact, referral source, needs…"></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+      <button class="btn" style="color:var(--text-dim);border-color:var(--border2)" onclick="document.getElementById('addClientModal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-gold" onclick="addClient()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<script>
+/* ── NAV ──────────────────────────────────────────────────── */
+function navTo(btn, page) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  document.getElementById('page-' + page).style.display = '';
+}
+
+/* ── PHASE TABS ───────────────────────────────────────────── */
+function showPhase(btn, id) {
+  if (btn) {
+    document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  document.querySelectorAll('.phase-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('phase-' + id).classList.add('active');
+}
+function activatePhaseTab(id) {
+  document.querySelectorAll('.phase-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(id.replace('p',''))) {
+      t.classList.add('active');
+    } else {
+      t.classList.remove('active');
+    }
+  });
+  // more reliable: match by onclick
+  document.querySelectorAll('.phase-tab').forEach(t => {
+    const fn = t.getAttribute('onclick') || '';
+    if (fn.includes("'" + id + "'")) {
+      document.querySelectorAll('.phase-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    }
+  });
+  document.querySelectorAll('.phase-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('phase-' + id).classList.add('active');
+}
+
+/* ── TOAST ────────────────────────────────────────────────── */
+let toastTimer;
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show toast-' + (type || 'ok');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 3000);
+  logActivity(msg);
+}
+
+/* ── ACTIVITY LOG ─────────────────────────────────────────── */
+let activityCount = 0;
+function logActivity(msg) {
+  activityCount++;
+  const log = document.getElementById('activityLog');
+  const div = document.createElement('div');
+  div.className = 'report-item';
+  div.innerHTML = `<div class="report-icon">▸</div><div class="report-body"><div class="report-title">${msg}</div><div class="report-meta">${new Date().toLocaleTimeString()}</div></div>`;
+  log.prepend(div);
+  document.getElementById('stat-reports').textContent = activityCount;
+}
+
+/* ── SESSION TIME ─────────────────────────────────────────── */
+document.getElementById('session-time').textContent = new Date().toLocaleTimeString();
+
+/* ── CALC SWITCHER ────────────────────────────────────────── */
+function showCalc(type) {
+  document.querySelectorAll('.calc-section').forEach(s => s.style.display = 'none');
+  const el = document.getElementById('calc-' + type);
+  if (el) el.style.display = '';
+}
+showCalc('life');
+
+/* ── LIFE QUOTE ───────────────────────────────────────────── */
+const LIFE_RATES = { // per $1000/mo base rate lookup (simplified actuarial table)
+  male: {18:[.08,.1,.13,.16,.2], 25:[.09,.11,.14,.18,.23], 35:[.12,.15,.19,.24,.31],
+         45:[.22,.28,.35,.44,.58], 55:[.48,.6,.75,.95,1.2], 65:[1.1,1.35,1.7,2.1,2.7]},
+  female:{18:[.06,.08,.1,.13,.16], 25:[.07,.09,.12,.15,.19], 35:[.09,.12,.15,.19,.25],
+          45:[.16,.21,.26,.33,.43], 55:[.35,.44,.55,.7,.9],  65:[.8,1.0,1.25,1.6,2.1]}
+};
+const TERM_MAP = {10:0,15:1,20:2,25:3,30:4};
+const HEALTH_MAP = {'Preferred Plus':0,'Preferred':1,'Standard Plus':2,'Standard':3,'Substandard':4};
+function calcLife() {
+  const age = parseInt(document.getElementById('lq-age').value) || 45;
+  const gender = document.getElementById('lq-gender').value.toLowerCase();
+  const cov = parseInt(document.getElementById('lq-cov').value) || 500000;
+  const term = document.getElementById('lq-term').value;
+  const health = document.getElementById('lq-health').value;
+  const ageKey = [18,25,35,45,55,65].reduce((a,b) => age >= b ? b : a, 18);
+  const termIdx = TERM_MAP[term];
+  const healthIdx = HEALTH_MAP[health] || 2;
+  const rateTable = LIFE_RATES[gender] || LIFE_RATES.male;
+  const baseRate = (rateTable[ageKey] || rateTable[65])[healthIdx];
+  const monthly = ((baseRate * cov) / 1000).toFixed(2);
+  const el = document.getElementById('life-result');
+  document.getElementById('life-amount').textContent = '$' + monthly + '/mo';
+  document.getElementById('life-detail').textContent =
+    `${gender.charAt(0).toUpperCase()+gender.slice(1)}, Age ${age}, ${term}yr Term, $${cov.toLocaleString()} · ${health}`;
+  el.classList.add('show');
+  document.getElementById('stat-quotes').textContent =
+    parseInt(document.getElementById('stat-quotes').textContent || 0) + 1;
+  logActivity(`Life quote: $${monthly}/mo for $${(cov/1000).toFixed(0)}k ${term}yr term`);
+  toast('Life quote calculated ✓', 'ok');
+}
+
+/* ── ACA / APTC CALC ──────────────────────────────────────── */
+const FPL_2025 = {1:15060,2:20440,3:25820,4:31200,5:36580,6:41960};
+function calcACA() {
+  const hh   = parseInt(document.getElementById('aca-hh').value) || 2;
+  const magi = parseInt(document.getElementById('aca-magi').value) || 52000;
+  const age  = parseInt(document.getElementById('aca-age').value) || 38;
+  const county = document.getElementById('aca-county').value;
+  const fpl = FPL_2025[Math.min(hh,6)] || 20440;
+  const fplPct = (magi / fpl) * 100;
+  const SLCSP_by_county = {Maricopa:520,Pima:580,Yavapai:640,Mohave:660,Coconino:600,Pinal:540};
+  const slcsp = SLCSP_by_county[county] || 550;
+  // ACA contribution percentage (2025 enhanced — no cliff)
+  let contrPct;
+  if (fplPct <= 150) contrPct = 0;
+  else if (fplPct <= 200) contrPct = 2;
+  else if (fplPct <= 250) contrPct = 4;
+  else if (fplPct <= 300) contrPct = 6;
+  else if (fplPct <= 400) contrPct = 8.5;
+  else contrPct = 8.5;
+  const monthlyContrib = Math.max(0, (magi * (contrPct/100)) / 12);
+  const aptc = Math.max(0, slcsp - monthlyContrib);
+  const clawbackRisk = fplPct > 380 ? 'HIGH' : fplPct > 300 ? 'MEDIUM' : 'LOW';
+  document.getElementById('aca-amount').textContent = '$' + aptc.toFixed(0) + '/mo APTC';
+  document.getElementById('aca-detail').textContent =
+    `FPL: ${fplPct.toFixed(0)}% · SLCSP ${county}: $${slcsp}/mo · Your share: $${monthlyContrib.toFixed(0)}/mo\nClawback risk if income rises: ${clawbackRisk}`;
+  document.getElementById('aca-result').classList.add('show');
+  document.getElementById('stat-quotes').textContent =
+    parseInt(document.getElementById('stat-quotes').textContent || 0) + 1;
+  logActivity(`ACA APTC calc: $${aptc.toFixed(0)}/mo · FPL ${fplPct.toFixed(0)}%`);
+  toast('APTC calculated ✓','ok');
+}
+
+/* ── IRMAA CALC ───────────────────────────────────────────── */
+const IRMAA_2025 = {
+  single: [
+    {max:106000, surcharge:0,    partB:185.00},
+    {max:133000, surcharge:74.0, partB:259.00},
+    {max:167000, surcharge:185.0,partB:370.00},
+    {max:200000, surcharge:295.9,partB:480.90},
+    {max:500000, surcharge:406.9,partB:591.90},
+    {max:Infinity,surcharge:443.6,partB:628.60}
+  ],
+  'married joint': [
+    {max:212000, surcharge:0,    partB:185.00},
+    {max:266000, surcharge:74.0, partB:259.00},
+    {max:334000, surcharge:185.0,partB:370.00},
+    {max:400000, surcharge:295.9,partB:480.90},
+    {max:750000, surcharge:406.9,partB:591.90},
+    {max:Infinity,surcharge:443.6,partB:628.60}
+  ]
+};
+function calcIRMAA() {
+  const magi   = parseInt(document.getElementById('ir-magi').value) || 105000;
+  const status = document.getElementById('ir-status').value.toLowerCase();
+  const brackets = IRMAA_2025[status] || IRMAA_2025['single'];
+  const bracket = brackets.find(b => magi <= b.max) || brackets[brackets.length-1];
+  document.getElementById('irmaa-amount').textContent = bracket.surcharge > 0
+    ? '+$' + bracket.surcharge.toFixed(2) + '/mo' : '$0 (no surcharge)';
+  document.getElementById('irmaa-detail').textContent =
+    `Total Part B premium: $${bracket.partB.toFixed(2)}/mo (base $185 + IRMAA $${bracket.surcharge.toFixed(2)})\n2025 brackets based on 2023 MAGI · Filing: ${status}`;
+  document.getElementById('irmaa-result').classList.add('show');
+  document.getElementById('stat-quotes').textContent =
+    parseInt(document.getElementById('stat-quotes').textContent || 0) + 1;
+  logActivity(`IRMAA calc: MAGI $${magi.toLocaleString()} → +$${bracket.surcharge}/mo`);
+  toast('IRMAA calculated ✓','ok');
+}
+
+/* ── ACCIDENT CALC ────────────────────────────────────────── */
+function calcAccident() {
+  const age    = parseInt(document.getElementById('ac-age').value) || 35;
+  const level  = parseInt(document.getElementById('ac-level').value) || 25000;
+  const hosp   = document.getElementById('ac-hospital').checked;
+  const er     = document.getElementById('ac-er').checked;
+  const death  = document.getElementById('ac-death').checked;
+  const base   = (level / 25000) * (age < 40 ? 12 : age < 55 ? 18 : 28);
+  const riders = (hosp ? 4 : 0) + (er ? 3 : 0) + (death ? 5 : 0);
+  const total  = (base + riders).toFixed(2);
+  document.getElementById('accident-amount').textContent = '$' + total + '/mo';
+  document.getElementById('accident-detail').textContent =
+    `Base: $${base.toFixed(2)} + Riders: $${riders.toFixed(2)}\n${[hosp&&'Hospital confinement',er&&'ER visit',death&&'AD&D'].filter(Boolean).join(' · ') || 'No riders'}`;
+  document.getElementById('accident-result').classList.add('show');
+  document.getElementById('stat-quotes').textContent =
+    parseInt(document.getElementById('stat-quotes').textContent || 0) + 1;
+  logActivity(`Accident quote: $${total}/mo for $${(level/1000).toFixed(0)}k benefit`);
+  toast('Accident quote calculated ✓','ok');
+}
+
+/* ── DOC FILE HANDLING ────────────────────────────────────── */
+let docB64 = null, docMime = null, docText = null;
+const docDrop = document.getElementById('docDrop');
+const docFile = document.getElementById('docFile');
+
+docDrop.addEventListener('dragover',  e => { e.preventDefault(); docDrop.classList.add('over'); });
+docDrop.addEventListener('dragleave', () => docDrop.classList.remove('over'));
+docDrop.addEventListener('drop', e => { e.preventDefault(); docDrop.classList.remove('over'); loadDocFile(e.dataTransfer.files[0]); });
+docFile.addEventListener('change', e => loadDocFile(e.target.files[0]));
+
+function loadDocFile(file) {
+  if (!file) return;
+  docMime = file.type || 'text/plain';
+  const reader = new FileReader();
+  reader.onload = e => {
+    docB64 = e.target.result.split(',')[1];
+    if (!docMime.startsWith('image/')) { try { docText = atob(docB64); } catch { docText = ''; } }
+    document.getElementById('docChosenName').textContent = file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+    document.getElementById('docChosen').classList.add('show');
+    docDrop.style.display = 'none';
+    document.getElementById('docRunBtn').disabled = false;
+    document.getElementById('docStatus').textContent = 'Ready — click Run to analyze';
+    logActivity('Document loaded: ' + file.name);
+  };
+  reader.readAsDataURL(file);
+}
+function clearDocFile() {
+  docB64 = docMime = docText = null;
+  docFile.value = '';
+  document.getElementById('docChosen').classList.remove('show');
+  docDrop.style.display = '';
+  document.getElementById('docRunBtn').disabled = true;
+  document.getElementById('docStatus').textContent = 'Upload a document to begin';
+  resetAIEngines();
+}
+
+/* ── DOC AI ENGINES ───────────────────────────────────────── */
+const AZ_ENGINES = [
+  { n:1, system:'You are an insurance document analyzer. Extract all policy numbers, claim numbers, dates, amounts, provider names, and benefit details from this document. Format as a compact table. Max 20 rows.',
+    prompt:'Extract all insurance policy and claim data from this document.' },
+  { n:2, system:'You are an Arizona insurance coverage gap analyst. Identify coverage gaps, underinsurance risk, missing riders, AZ DOI compliance issues, or AHCCCS eligibility mismatches. Return a bulleted list. If none, say "No gaps detected."',
+    prompt:'Identify coverage gaps and compliance issues relevant to Arizona insurance.' },
+  { n:3, system:'You are an ACA/Medicare income mapping specialist. Identify MAGI levels, APTC subsidy amounts, IRMAA bracket exposure, Part D income surcharges, or clawback risk in this document. Return structured findings.',
+    prompt:'Identify APTC subsidy, IRMAA, or income-related insurance risk in this document.' },
+  { n:4, system:'You are an insurance audit risk analyst. Rate overall risk LOW/MEDIUM/HIGH, identify up to 5 carrier red flags, compliance issues, or fraud indicators. Give one-line recommendation.',
+    prompt:'Score audit risk and flag any compliance or fraud indicators.' }
+];
+
+function resetAIEngines() {
+  AZ_ENGINES.forEach(e => {
+    setAEState(e.n,'idle');
+    const out = document.getElementById('ae'+e.n+'-out');
+    out.textContent = 'Awaiting document…';
+    out.className = 'ai-eng-out placeholder';
+  });
+}
+function setAEState(n, state) {
+  const card  = document.getElementById('ae'+n);
+  const badge = document.getElementById('ae'+n+'-b');
+  card.className  = 'ai-eng ' + (state !== 'idle' ? state : '');
+  badge.className = 'ai-eng-badge ' + (state === 'errored' ? 'error' : state);
+  badge.textContent = {idle:'IDLE',running:'RUNNING',done:'DONE',errored:'ERROR'}[state] || state.toUpperCase();
+}
+function setAEOut(n, text, placeholder) {
+  const el = document.getElementById('ae'+n+'-out');
+  el.textContent = text;
+  el.className = 'ai-eng-out' + (placeholder ? ' placeholder' : '');
+}
+
+async function runDocAnalysis() {
+  if (!docB64) return;
+  const runBtn = document.getElementById('docRunBtn');
+  const spin   = document.getElementById('docSpinner');
+  runBtn.disabled = true;
+  spin.style.display = 'inline-block';
+  document.getElementById('docStatus').textContent = 'Running all 4 engines…';
+  resetAIEngines();
+
+  await Promise.all(AZ_ENGINES.map(async eng => {
+    setAEState(eng.n, 'running');
+    try {
+      const isImg = docMime && docMime.startsWith('image/');
+      const model = isImg ? 'llama-3.2-90b-vision-preview' : 'llama-3.3-70b-versatile';
+      let userContent;
+      if (isImg) {
+        userContent = [
+          { type:'image_url', image_url:{ url:'data:'+docMime+';base64,'+docB64 } },
+          { type:'text', text: eng.prompt }
+        ];
+      } else {
+        userContent = eng.prompt + '\n\nDOCUMENT:\n' + (docText||'').slice(0,20000);
+      }
+      const res = await fetch('/api/groq', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ model, max_tokens:1024,
+          messages:[{ role:'system', content:eng.system },{ role:'user', content:userContent }] })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      setAEOut(eng.n, data.choices?.[0]?.message?.content || '(no output)');
+      setAEState(eng.n, 'done');
+    } catch (err) {
+      setAEOut(eng.n, '⚠ ' + err.message);
+      setAEState(eng.n, 'errored');
+    }
+  }));
+
+  spin.style.display = 'none';
+  runBtn.disabled = false;
+  document.getElementById('docStatus').textContent = 'Complete · ' + new Date().toLocaleTimeString();
+  document.getElementById('stat-docs').textContent =
+    parseInt(document.getElementById('stat-docs').textContent || 0) + 1;
+  logActivity('4-engine doc analysis complete');
+  toast('Doc analysis complete ✓','ok');
+}
+
+/* ── INTEL BRIEF ──────────────────────────────────────────── */
+const INTEL_PROMPTS = {
+  donut: 'Explain the 2025 Medicare Part D Donut Hole (Coverage Gap): exact dollar thresholds, catastrophic coverage trigger, what clients pay in each phase, and the top 2 ways an AZ insurance agent can close this exposure with supplemental coverage.',
+  aptc:  'Explain ACA APTC clawback risk in Arizona for 2025: when it triggers, IRS Form 8962 implications, MAGI calculation for AZ residents, and the 3 most common agent strategies to prevent clawback for clients near 400% FPL.',
+  irmaa: 'Explain 2025 IRMAA Medicare surcharge brackets: exact income thresholds for single and married filers, 2-year lookback rule, how to file a Life-Changing Event appeal (SSA-44), and proactive MAGI management strategies for AZ clients.',
+  accident: 'Summarize 2025 supplemental accident insurance trends in Arizona: average ER cost benchmarks, fixed indemnity vs expense-incurred plans, top carriers in AZ (Aflac, Cigna, Allstate), and the best pitch for clients with high-deductible HDHPs.',
+  ahcccs: 'Summarize the latest AHCCCS / Arizona Medicaid updates for 2025: income limits, continuous enrollment changes post-COVID redetermination, KidsCare expansion, and what AZ agents need to know when clients transition between AHCCCS and marketplace plans.'
+};
+
+async function runIntelBrief() {
+  const topic   = document.getElementById('intel-topic').value;
+  const prompt  = INTEL_PROMPTS[topic] || 'Provide an insurance market brief for AZ agents.';
+  const result  = document.getElementById('intel-result');
+  const spin    = document.getElementById('intel-spin');
+  result.textContent = 'Generating brief via Groq…';
+  result.classList.add('show','loading');
+  spin.style.display = 'inline-block';
+  try {
+    const res = await fetch('/api/groq', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 800,
+        messages:[
+          { role:'system', content:'You are a senior Arizona insurance expert. Give concise, actionable briefings for licensed AZ insurance agents. Use bullet points and clear structure.' },
+          { role:'user',   content: prompt }
+        ]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    result.textContent = data.choices?.[0]?.message?.content || '(no output)';
+    result.classList.remove('loading');
+    logActivity('Intel brief generated: ' + document.getElementById('intel-topic').selectedOptions[0].text);
+    toast('Intel brief ready ✓','ok');
+  } catch(err) {
+    result.textContent = '⚠ ' + err.message;
+    result.classList.remove('loading');
+    toast(err.message,'err');
+  }
+  spin.style.display = 'none';
+}
+
+/* ── NPN LOOKUP ───────────────────────────────────────────── */
+async function lookupNPN() {
+  const q = document.getElementById('npn-input').value.trim();
+  if (!q) { toast('Enter an NPN or name','err'); return; }
+  const result = document.getElementById('npn-result');
+  result.textContent = 'Looking up "' + q + '" via Groq…';
+  result.classList.add('show','loading');
+  try {
+    const res = await fetch('/api/groq', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'llama-3.3-70b-versatile', max_tokens:300,
+        messages:[
+          { role:'system', content:'You are an insurance licensing assistant. Respond with a concise summary of what an NPN lookup or producer name search would return. Note that real NIPR lookup requires direct API access; provide guidance on how to look it up at nipr.com.' },
+          { role:'user',   content:'Lookup NPN or producer: ' + q }
+        ]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    result.textContent = data.choices?.[0]?.message?.content || '(no result)';
+    result.classList.remove('loading');
+  } catch(err) {
+    result.textContent = '⚠ ' + err.message;
+    result.classList.remove('loading');
+  }
+}
+
+/* ── ADD CLIENT ───────────────────────────────────────────── */
+function addClient() {
+  const first   = document.getElementById('cl-first').value.trim();
+  const last    = document.getElementById('cl-last').value.trim();
+  const product = document.getElementById('cl-product').value;
+  if (!first || !last) { toast('Enter first and last name','err'); return; }
+  const initials = (first[0]+last[0]).toUpperCase();
+  const colors = ['#1a2a1a','#1a1a2a','#2a1a1a','#1a2a2a','#2a1a2a'];
+  const tints  = ['var(--green)','var(--cyan)','var(--orange)','#2dd4bf','var(--purple)'];
+  const ci = Math.floor(Math.random()*5);
+  const card = document.createElement('div');
+  card.className = 'client-card';
+  card.innerHTML = `
+    <div class="client-avatar" style="background:${colors[ci]};color:${tints[ci]}">${initials}</div>
+    <div class="client-info">
+      <div class="client-name">${first} ${last} — ${product}</div>
+      <div class="client-meta">Added: ${new Date().toLocaleDateString()} · New client</div>
+    </div>
+    <div class="client-actions">
+      <span class="badge badge-wip">NEW</span>
+      <button class="btn btn-blue btn-sm" onclick="toast('Opening ${first} ${last} profile…','ok')">View</button>
+    </div>`;
+  document.getElementById('client-list').prepend(card);
+  document.getElementById('addClientModal').classList.remove('open');
+  const sc = document.getElementById('stat-clients');
+  sc.textContent = parseInt(sc.textContent||0) + 1;
+  logActivity(`Client added: ${first} ${last} · ${product}`);
+  toast(`${first} ${last} added ✓`,'ok');
+  ['cl-first','cl-last','cl-phone','cl-notes'].forEach(id => document.getElementById(id).value = '');
+}
+
+/* ── CMD INPUT ────────────────────────────────────────────── */
+document.getElementById('cmdInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const cmd = e.target.value.trim();
+    logActivity('CMD: ' + cmd);
+    toast('Command executed: ' + cmd,'ok');
+  }
+});
+
+/* ── QUICK QUOTE MODAL FROM PAIN POINTS ─────────────────────*/
+function openQuoteModal(type) {
+  activatePhaseTab('p2');
+  showCalc(type === 'medicare' ? 'irmaa' : type);
+  document.querySelector('.phase-content.active').scrollIntoView({behavior:'smooth'});
+  toast('Quote engine opened: ' + type,'ok');
+}
+</script>
+</body>
+</html>
