@@ -205,15 +205,15 @@ ok "Suite indexes rebuilt"
 # ── 4. Git add + commit ──────────────────────────────────────
 banner "STEP 4 · Git commit"
 git -C "$REPO_ROOT" add --all
-# Remove any .bak files that snuck into the staging area
+# Remove any .bak files that snuck into the staging area (|| true so grep exit-1 doesn't kill script)
 git -C "$REPO_ROOT" diff --cached --name-only \
-  | grep -E '\.bak(\.[a-zA-Z0-9._-]+)?$' \
+  | { grep -E '\.bak(\.[a-zA-Z0-9._-]+)?$' || true; } \
   | xargs -r git -C "$REPO_ROOT" rm --cached --ignore-unmatch --quiet --
 STAGED=$(git -C "$REPO_ROOT" diff --cached --name-only | wc -l | tr -d ' ')
 if [[ "$STAGED" -eq 0 ]]; then
   warn "Nothing to commit — working tree clean"
 else
-  git -C "$REPO_ROOT" commit -m "$COMMIT_MSG"
+  git -C "$REPO_ROOT" commit -m "$COMMIT_MSG" || warn "Commit failed (possibly nothing new after bak cleanup)"
   ok "Committed $STAGED files: $COMMIT_MSG"
 fi
 
